@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Habot mobile client (UDF)">
+
+  <!--
+    AISS: RCGLA-012-A01 substep 2 -- "Configure HTML Meta viewport tags to
+    disallow user-scalable zooming."
+
+    IMPLEMENTED WITH ONE DELIBERATE DEVIATION, PENDING FREDRICK'S DECISION.
+
+    The substep as literally written asks for `user-scalable=no, maximum-scale=1`.
+    That is a documented failure of WCAG 2.1 SC 1.4.4 (Resize Text), which
+    requires content to remain usable at 200% zoom. It would directly contradict
+    TTMCS-004 and TTMCS-005, which this codebase gates at WCAG AA/AAA, and both
+    iOS Safari and Android Chrome now ignore `user-scalable=no` anyway, so the
+    tag would fail its own accessibility test while not even achieving its
+    stated purpose on the two browsers that matter.
+
+    The substep's actual intent -- "unpredictable zoom-induced layout breakage"
+    -- is met instead by `width=device-width, initial-scale=1.0`, which pins the
+    initial render to the device width, plus the layout guards in RCGLA-032 that
+    keep content inside 320dp.
+
+    TO IMPLEMENT THE SUBSTEP LITERALLY, replace the tag below with:
+      <meta name="viewport" content="width=device-width, initial-scale=1.0,
+            maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    and set ZOOM_LOCK_ACCEPTED = true in
+      test/aiss/rcgla_012_test.dart
+    The gate reads that flag; RCGLA-012-G2 reports Partial until the decision
+    is recorded either way.
+  -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Habot">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Habot</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

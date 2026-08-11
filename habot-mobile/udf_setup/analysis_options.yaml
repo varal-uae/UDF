@@ -1,0 +1,46 @@
+# Analyzer configuration for the Habot mobile client.
+#
+# AISS: TTMCS-001 Mistake-Proofing -- "Frontend style check sweeps block project
+# compilation steps if local code scripts introduce standalone CSS layout code."
+#
+# The static half of that sweep is configured here. The semantic half -- no raw
+# hex, no raw spacing, no rogue ThemeData -- is enforced by
+# test/guards/poka_yoke_no_hardcoded_values_test.dart, because the analyzer has
+# no rule for "must use our design tokens".
+#
+# Kept deliberately close to the flutter_lints baseline for now. Tighten it
+# (always_specify_types, require_trailing_commas, prefer_const_constructors as
+# errors) once the codebase is past the first ten steps and the churn is worth
+# it -- adding strict style rules to a five-file project mostly generates noise.
+
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # A deprecated Flutter API must break the build, not warn quietly. This is
+    # what keeps the design system from rotting across SDK upgrades.
+    deprecated_member_use: error
+    unused_import: error
+    unused_local_variable: error
+    todo: ignore
+
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "build/**"
+
+linter:
+  rules:
+    # --- Correctness -------------------------------------------------------
+    always_declare_return_types: true
+    avoid_dynamic_calls: true
+    cancel_subscriptions: true
+    close_sinks: true
+    unnecessary_null_checks: true
+    use_build_context_synchronously: true
+
+    # --- Readability -------------------------------------------------------
+    avoid_print: true
+    curly_braces_in_flow_control_structures: true
+    prefer_single_quotes: true
+    sort_child_properties_last: true

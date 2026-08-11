@@ -1,0 +1,144 @@
+{
+  "$schema": "habot.device-matrix/v1",
+  "meta": {
+    "atomic_step": "SSTLA-004-A01",
+    "setup_step_description": "Collate cross-device screen resolution metrics for target mobile, tablet, and desktop viewports.",
+    "expected_output": "Approved JSON Token File and an interactive structural layout wireframe for compact mobile devices.",
+    "status": "APPROVED_PENDING_REVIEWER_SCORE",
+    "reviewer": null,
+    "reviewer_note": "SSTLA-004's metric is a Task Execution Quality Score (1-5) scored by a reviewer against a rubric. The objective coverage half is computed by the gate; the reviewer score must be entered by a human before this step can exceed its Floor of 3.5."
+  },
+
+  "decision_record": {
+    "base_breakpoint_dp": 0,
+    "base_breakpoint_name": "xs",
+    "base_column_count": 4,
+    "fluid_outer_margin_dp": 16,
+    "column_gutter_dp": 16,
+    "vertical_rhythm_dp": 8,
+    "min_supported_width_dp": 320,
+    "rationale": "Material 3 compact window-size class. 4 columns is the MD3 compact standard and the narrowest device we support (320dp) still yields a 60dp column, which clears the 48dp touch-target floor set by TTMAC-011.",
+    "conflict_resolved": {
+      "issue": "RCGLA-012 says 'explicitly at 16px with an 8px gutter grid system'. RCGLA-032 substep 1 says '16px outer margin and a 16px column gutter spacing profile'.",
+      "resolution": "Two distinct tokens. column_gutter_dp = 16 (horizontal space between grid columns, per RCGLA-032 which names it explicitly and is echoed by its UI decision row). vertical_rhythm_dp = 8 (the baseline step, which is what RCGLA-012's own UX Translation row calls a 'continuous 8px vertical rhythm alignment'). Both are gated.",
+      "cross_check": "RCGLA-032's own metric row lists Floor 4dp / Optimal 8dp / Ceiling 16dp, which the 8dp vertical rhythm hits at Optimal."
+    }
+  },
+
+  "window_classes": [
+    { "name": "compact",  "min_width_dp": 0,   "max_width_dp": 599,  "columns": 4,  "margin_dp": 16, "gutter_dp": 16 },
+    { "name": "medium",   "min_width_dp": 600, "max_width_dp": 839,  "columns": 8,  "margin_dp": 16, "gutter_dp": 16 },
+    { "name": "expanded", "min_width_dp": 840, "max_width_dp": null, "columns": 12, "margin_dp": 16, "gutter_dp": 16 }
+  ],
+
+  "navigation_collapse_dp": 768,
+
+  "devices": [
+    {
+      "name": "iPhone SE (2nd/3rd gen)",
+      "mobile_platform": "iOS",
+      "os_version": "iOS 15+",
+      "device_type": "phone",
+      "screen_width_dp": 320,
+      "screen_height_dp": 568,
+      "device_pixel_ratio": 2.0,
+      "mobile_configuration": "compact / 4-column / narrowest supported",
+      "is_narrowest": true
+    },
+    {
+      "name": "Galaxy S8 / small Android",
+      "mobile_platform": "Android",
+      "os_version": "Android 9+",
+      "device_type": "phone",
+      "screen_width_dp": 360,
+      "screen_height_dp": 740,
+      "device_pixel_ratio": 3.0,
+      "mobile_configuration": "compact / 4-column / RCGLA-032 test width"
+    },
+    {
+      "name": "iPhone 13 mini",
+      "mobile_platform": "iOS",
+      "os_version": "iOS 16+",
+      "device_type": "phone",
+      "screen_width_dp": 375,
+      "screen_height_dp": 812,
+      "device_pixel_ratio": 3.0,
+      "mobile_configuration": "compact / 4-column / RCGLA-032 test width"
+    },
+    {
+      "name": "Pixel 5",
+      "mobile_platform": "Android",
+      "os_version": "Android 11+",
+      "device_type": "phone",
+      "screen_width_dp": 393,
+      "screen_height_dp": 851,
+      "device_pixel_ratio": 2.75,
+      "mobile_configuration": "compact / 4-column"
+    },
+    {
+      "name": "iPhone 14 Pro",
+      "mobile_platform": "iOS",
+      "os_version": "iOS 16+",
+      "device_type": "phone",
+      "screen_width_dp": 393,
+      "screen_height_dp": 852,
+      "device_pixel_ratio": 3.0,
+      "mobile_configuration": "compact / 4-column / dynamic island safe area"
+    },
+    {
+      "name": "Pixel 7 Pro / large Android",
+      "mobile_platform": "Android",
+      "os_version": "Android 13+",
+      "device_type": "phone",
+      "screen_width_dp": 412,
+      "screen_height_dp": 892,
+      "device_pixel_ratio": 3.5,
+      "mobile_configuration": "compact / 4-column / RCGLA-032 test width"
+    },
+    {
+      "name": "iPad Mini (portrait)",
+      "mobile_platform": "iPadOS",
+      "os_version": "iPadOS 16+",
+      "device_type": "tablet",
+      "screen_width_dp": 744,
+      "screen_height_dp": 1133,
+      "device_pixel_ratio": 2.0,
+      "mobile_configuration": "medium / 8-column / navigation still collapsed (below 768dp)"
+    },
+    {
+      "name": "iPad Pro 12.9 (portrait)",
+      "mobile_platform": "iPadOS",
+      "os_version": "iPadOS 16+",
+      "device_type": "tablet",
+      "screen_width_dp": 1024,
+      "screen_height_dp": 1366,
+      "device_pixel_ratio": 2.0,
+      "mobile_configuration": "expanded / 12-column / navigation expanded"
+    },
+    {
+      "name": "Desktop web (baseline)",
+      "mobile_platform": "Web",
+      "os_version": "evergreen Chrome/Safari/Firefox",
+      "device_type": "desktop",
+      "screen_width_dp": 1280,
+      "screen_height_dp": 800,
+      "device_pixel_ratio": 1.0,
+      "mobile_configuration": "expanded / 12-column / content capped at 840dp reading width"
+    }
+  ],
+
+  "coverage_rubric": {
+    "_metric": "Task Execution Quality Score (1-5 scale) -- SSTLA-004",
+    "floor": 3.5,
+    "optimal": 4.5,
+    "ceiling": 5.0,
+    "objective_criteria": [
+      "every window class has at least one device in the matrix",
+      "the narrowest supported width (320dp) is represented",
+      "both iOS and Android are represented",
+      "phone, tablet and desktop device types are all represented",
+      "every RCGLA-032 test width (360, 375, 412) is represented"
+    ],
+    "scoring": "Each objective criterion is worth 1.0 of the 5.0 total, computed by SSTLA-004-G6. A reviewer may reduce the score but the gate holds the objective floor."
+  }
+}

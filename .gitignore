@@ -44,3 +44,6 @@ pnpm-debug.log*
 **/ios/.symlinks/
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/flutter_export_environment.sh
+
+# UDF: throwaway step archives
+Others/**/_to_delete/
