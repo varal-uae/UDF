@@ -22,25 +22,35 @@ All files are sourced from the **HABOT Design System Creation** Figma file (v1, 
 theme-typography/
 │
 ├── README.md
-├── tokens.json                                          ← Step 1: All design tokens
+├── tokens.json                                          ← Step 1:  All design tokens
 │
 ├── lib/
 │   └── core/
 │       ├── theme/
-│       │   └── app_theme.dart                           ← Step 1: Flutter ThemeData
+│       │   └── app_theme.dart                           ← Step 1:  Flutter ThemeData (Light + Dark)
 │       ├── typography/
-│       │   └── dynamic_typography_wrapper.dart          ← Step 2: Viewport-adaptive typography
+│       │   └── dynamic_typography_wrapper.dart          ← Step 2:  Viewport-adaptive typography
 │       ├── accessibility/
-│       │   └── touch_target_wrapper.dart                ← Step 3: 48dp touch target enforcement
+│       │   └── touch_target_wrapper.dart                ← Step 3:  48dp touch target enforcement
 │       ├── interaction/
-│       │   └── ripple_feedback.dart                     ← Step 4: Hardware-accelerated ripple
+│       │   └── ripple_feedback.dart                     ← Step 4:  Hardware-accelerated ripple
 │       ├── versioning/
-│       │   └── layout_version_control.dart              ← Step 5: Mobile layout version control
-│       └── components/
-│           └── empty_state_widget.dart                  ← Step 6: Actionable empty states
+│       │   └── layout_version_control.dart              ← Step 5:  Mobile layout version control
+│       ├── components/
+│       │   ├── empty_state_widget.dart                  ← Step 6:  Actionable empty states
+│       │   ├── trace_time_chart.dart                    ← Step 8:  Trace time Y-axis chart
+│       │   ├── skeleton_loader.dart                     ← Step 9:  Gray layout block indicators
+│       │   ├── overlay_card.dart                        ← Step 11: Overlay card status system
+│       │   ├── signed_url_card.dart                     ← Step 13: Signed URL expiry interceptor
+│       │   └── security_status_chip.dart                ← Step 14: MD3 security status color map
+│       ├── network/
+│       │   ├── uuid_payload_injector.dart               ← Step 10: UUID universal payload injection
+│       │   └── payload_size_guard.dart                  ← Step 12: MTB payload size guard
+│       └── compliance/
+│           └── auditor_validator.dart                   ← Step 15: Binary auditor legal check
 │
 └── scripts/
-    └── lint_touch_targets.js                            ← Step 3: CI/CD touch target linter
+    └── lint_touch_targets.js                            ← Step 3:  CI/CD touch target linter
 ```
 
 ---
@@ -50,11 +60,20 @@ theme-typography/
 | # | Step | Atomic Ref | Description | Metric | Status |
 |---|---|---|---|---|---|
 | 1 | BPTR-0544-A01 | Standardize MD3 Typography & Colors | `tokens.json` + `app_theme.dart` | Coverage: 100% | ✅ |
-| 2 | TTIAS-014-A01 | Viewport-Adaptive Typography Engine | `dynamic_typography_wrapper.dart` | Adherence: 100% | ✅ |
+| 2 | TTIAS-014-A01 | Viewport-Adaptive Typography Engine | `dynamic_typography_wrapper.dart` | Adherence: 100% (15/15) | ✅ |
 | 3 | TTMAC-010-A01+A10 | Touch Target Minimum Size Standards | `touch_target_wrapper.dart` + `lint_touch_targets.js` | Conformance: 100% | ✅ |
-| 4 | TTMAC-025-A01+A10 | Hardware-Accelerated Touch Ripple | `ripple_feedback.dart` | Scope: 100% · Timing: 200ms | ✅ |
+| 4 | TTMAC-025-A01+A10 | Hardware-Accelerated Touch Ripple | `ripple_feedback.dart` | Scope: 100% (15/15) · Timing: 200ms | ✅ |
 | 5 | NSKFI-014-A01 | Mobile Layout Version Control | `layout_version_control.dart` | Discovery: 10/10 = 100% | ✅ |
 | 6 | EDBAA-004-A01 | Actionable Mobile Empty States | `empty_state_widget.dart` | Coverage: 10/10 = 100% | ✅ |
+| 7 | BPTR-0693-A01 | Initialize Shakti Dashboard | Looker Studio workspace initialized | Coverage: 5/5 = 100% | ✅ |
+| 8 | SLPLU-017-A01 | Define Trace Time Y-Axis Limits | `trace_time_chart.dart` | Process Execution Quality: 100% (8/8) | ✅ |
+| 9 | SLPLU-005-A01 | Gray Layout Block Indicators | `skeleton_loader.dart` | Asset Access: < 200ms ✅ OPTIMAL | ✅ |
+| 10 | BLGTA-041-A01 | Inject UUIDs Universally Across Payloads | `uuid_payload_injector.dart` | Config Readiness: 4/4 · Untraced = 0 | ✅ |
+| 11 | REF-046-A01 | Overlay Card Status System | `overlay_card.dart` | Spec Adherence: 10/10 = 100% | ✅ |
+| 12 | MLVTP-002 | Payload Size Guard — MTB Library | `payload_size_guard.dart` | Library Installation: 1.0 = 100% | ✅ |
+| 13 | IRBCA-048 | Signed URL Expiry Interceptor | `signed_url_card.dart` | Signed URL Expiry: 1hr ✅ OPTIMAL | ✅ |
+| 14 | AGPTE-024 | MD3 Security Status Color Mapping | `security_status_chip.dart` | Design System Compliance: 5/5 = 100% | ✅ |
+| 15 | AMLCO-002 | Binary Auditor Legal Check | `auditor_validator.dart` | Security Control Coverage: 10/10 = 100% | ✅ |
 
 ---
 
@@ -345,9 +364,6 @@ print(EmptyStateCoverageChecker.check());
 - All WCAG AA pairs pass. 6 AAA-only failures (secondary 6.07:1, error 6.52:1) are non-blocking.
 - Font family override (Poppins/Inter replacing Roboto) is a documented HABOT brand decision.
 
----
-
-*UDF Team — Habot Connect DMCC | DCDF Architecture Framework | v1 — 10-Aug-2026*
 
 ---
 
@@ -466,3 +482,146 @@ dio.interceptors.add(UUIDInterceptor());
 print(UUIDConfigValidator.validate());
 // 8/8 | ✅ PASS Floor | ✅ OPTIMAL | Untraced Packets = 0 ✅
 ```
+
+---
+
+### `lib/core/components/overlay_card.dart`
+**Step:** REF-046-A01 | **Metric:** Spec Adherence: **100% (10/10) ✅ OPTIMAL**
+
+Overlay card system for status updates. Quiet, border-positioned cards slide up from screen bottom confirming task completions without interrupting active workflows. Full-width on mobile, 360dp bottom-right on tablet/desktop.
+
+**UI Design Specifications (OverlayCardSpec):**
+
+| Spec | Value |
+|---|---|
+| Layout type | Toast / Overlay card |
+| Mobile layout | Full-width · bottom-center |
+| Desktop layout | 360dp · bottom-right |
+| Edge spacing | 16dp |
+| Stack spacing | 8dp between cards |
+| Animation | Slide-up 300ms ease-out |
+| Auto-dismiss | 4000ms · paused on press/hover |
+| Max stack | 5 cards |
+| Close button | Always visible on every card (Poka-Yoke) |
+
+**5 card types:** success (green) · error (red) · warning (amber) · info (blue) · loading (primary + spinner)
+
+**Usage:**
+```dart
+import 'lib/core/components/overlay_card.dart';
+
+ToastAlertDispatcher.showSuccess(context, 'Draft saved successfully')
+ToastAlertDispatcher.showError(context, 'Sync failed', action: 'Retry', onAction: retry)
+ToastAlertDispatcher.showLoading(context, 'Calculating BigQuery metrics...')
+ToastAlertDispatcher.dismiss() // dismiss loading when done
+
+print(OverlayCardSpecChecker.check());
+// 10/10 = 100.0% | ✅ PASS Floor (≥95%) | ✅ OPTIMAL (100%)
+```
+---
+
+### `lib/core/network/payload_size_guard.dart`
+**Step:** MLVTP-002 | **Package:** MTB Component Library (shared_perimeter_utils) | **Metric:** Library Installation Rate: **1.0 = 100% ✅ OPTIMAL**
+
+Payload size enforcement component. Verifies HTTP payload size before sending. Shows standardized "Sending Failed: Payload Over Limit" toast on violation. Renders dropped packet KPI card on mobile. Eliminates compute waste on Cloud Run by dropping bad requests at the edge.
+
+**Payload limits:** 150KB mobile · 500KB desktop · 1MB API Gateway hard ceiling
+
+**Usage:**
+```dart
+import 'lib/core/network/payload_size_guard.dart';
+
+PayloadSizeGuard.guard(
+  context:   context,
+  payload:   myPayload,
+  onAllowed: () => sendRequest(),
+)
+// Shows: "Sending Failed: Payload Over Limit" toast on violation
+
+DroppedPacketKPICard(droppedCount: 6, totalCount: 100)
+print(PayloadGuardLibraryChecker.check());
+// MTB Component Library v1.0.0 | 1.0 = 100% | ✅ OPTIMAL
+```
+
+---
+
+### `lib/core/components/signed_url_card.dart`
+**Step:** IRBCA-048 | **Metric:** Signed URL Expiry Window: **1hr ✅ OPTIMAL** | **Standard:** OWASP ASVS v4.0 V3
+
+Cloud Storage Signed URL Expiry Interceptor. Validates GCS signed URL expiry before rendering any image. Blocks expired URLs per OWASP ASVS v4.0 V3 (Session Management). Image constrained to 50% of screen height (Poka-Yoke).
+
+**Expiry compliance:** Floor ≤ 24hr · Optimal ≤ 1hr · Ceiling ≤ 15min (production target)
+
+**Usage:**
+```dart
+import 'lib/core/components/signed_url_card.dart';
+
+SignedURLCard(
+  signedUrl:   'https://storage.googleapis.com/bucket/file?X-Goog-Expires=3600&...',
+  title:       'Evidence photo',
+  onRefreshUrl: () => requestFreshUrl(),
+)
+print(SignedURLExpiryChecker.check(Duration(hours: 1)));
+// 60min | OPTIMAL ✅ (≤1hr) | Floor ✅ · Optimal ✅
+```
+
+---
+
+### `lib/core/components/security_status_chip.dart`
+**Step:** AGPTE-024 | **Metric:** Design System Compliance (MD3): **5/5 = 100% ✅ OPTIMAL** | **Standard:** Google Material Design 3
+
+MD3 color mapping for API Gateway / TLS 1.3 security status. All 5 security states mapped to MD3 ColorScheme tokens. No hardcoded hex. All contrast ratios WCAG AA (≥4.5:1) or AAA (≥7:1).
+
+**MD3 Color Application Map:**
+
+| State | MD3 Token | Contrast | WCAG |
+|---|---|---|---|
+| SECURE | primaryContainer / onPrimaryContainer | 7.2:1 | AAA ✅ |
+| WARNING | tertiaryContainer / onTertiaryContainer | 6.8:1 | AAA ✅ |
+| BREACH | errorContainer / onErrorContainer | 5.1:1 | AA ✅ |
+| EXPIRED | surfaceVariant / onSurfaceVariant | 4.6:1 | AA ✅ |
+| UNKNOWN | surface + outline / onSurfaceVariant | 4.5:1 | AA ✅ |
+
+**Usage:**
+```dart
+import 'lib/core/components/security_status_chip.dart';
+
+SecurityStatusChip(status: SecurityStatus.secure)
+SecurityStatusBadge(status: SecurityStatus.breach, onRefresh: () => refresh())
+SecurityStatusBar(statuses: {'TLS': SecurityStatus.secure, 'IAM': SecurityStatus.warning})
+print(SecurityColorChecker.check());
+// 5/5 = 100% | ✅ PASS Floor (≥90%) | ✅ OPTIMAL (100%)
+```
+
+---
+
+### `lib/core/compliance/auditor_validator.dart`
+**Step:** AMLCO-002 | **Metric:** Security Control Coverage Rate: **10/10 = 100% ✅ OPTIMAL** | **Standard:** ISO/IEC 27001:2022 Annex A + NIST SP 800-53
+
+Binary legal check function to validate corporate financial auditors against authorized free zone practitioner lists. Returns PASS/FAIL only — no partial results. Generates immutable audit trail with trace_id on every check. Covers 7 UAE free zones.
+
+**10 ISO/NIST controls:** Auditor name · License format · Free zone recognized · Jurisdiction match · License not expired · Firm registration · Regulatory clearance · License length · Name length · Jurisdiction not blank
+
+**Usage:**
+```dart
+import 'lib/core/compliance/auditor_validator.dart';
+
+final result = AuditorValidator.check(
+  auditor: AuditorInfo(
+    name: 'Valid Audit Firm LLC',
+    licenseNumber: 'DMCC-AUD-2024-001',
+    freeZone: FreeZone.dmcc,
+    jurisdiction: 'UAE',
+    firmRegistrationNumber: 'DMCC-CORP-12345',
+  ),
+);
+if (result.pass) proceedWithAudit(result.toAuditTrail());
+else rejectWithReason(result.failReasons);
+
+print(AuditorValidatorChecker.check());
+// 10/10 = 100% | ✅ PASS Floor (≥90%) | ✅ OPTIMAL (≥98%)
+```
+
+---
+
+*UDF Team — Habot Connect DMCC | DCDF Architecture Framework | Wave 1 Complete — 15 of 97 zero-dependency steps | 10-Aug-2026*
