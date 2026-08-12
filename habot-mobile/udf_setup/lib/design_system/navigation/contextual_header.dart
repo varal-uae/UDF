@@ -52,7 +52,7 @@ class HeaderTitlePolicy {
   const HeaderTitlePolicy._();
 
   static const int maxChars = HabotDensity.maxHeaderTitleChars;
-  static const String ellipsis = '…';
+  static const String ellipsis = '\u2026';
 
   /// Caps [title] so it cannot push past the horizontal grid boundary.
   static String cap(String title) {

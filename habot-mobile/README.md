@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 72 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 142 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -32,15 +32,17 @@ Full explanation of what each gate defends and why:
 
 ## Design system
 
-Everything visual comes from `udf_setup/lib/design_system`. Four rules, all machine-enforced:
+Everything visual comes from `udf_setup/lib/design_system`. Five rules, all machine-enforced:
 
 1. **No raw values in `lib/`.** No hex colours, no bare numbers inside `EdgeInsets`,
-   `BorderRadius` or `SizedBox`. Import a token instead.
+   `BorderRadius` or `SizedBox`, **no raw `Duration` or `Curves.*`**. Import a token instead.
 2. **`tokens.json` is the source of truth.** The Dart constants mirror it, and `RCGLA-001-G6`
    fails the build if the two drift apart. Change both, or change neither.
 3. **Only `theme/habot_theme.dart` may construct a `ThemeData`.**
 4. **Every screen uses `HabotMasterScaffold`.** It exposes no padding parameter — spacing comes
    from tokens or it does not exist. `RCGLA-018-G4` scans for screens that skip it.
+5. **Every interactive element goes through `AtomicButton` or `HabotTouchTarget`.** Raw
+   `IconButton` and `GestureDetector` are banned in `lib/` (`TTMAC-011-G4`).
 
 ### Layout
 
@@ -77,9 +79,27 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 8 | RCGLA-018 | `HabotMasterScaffold` with locked metrics and no padding escape hatch | 6 |
 | 9 | ANSA-012 | 64dp contextual header, title cap, scroll elevation, double-tap-safe back | 7 |
 | 10 | TTMAC-011 | 48dp touch-target framework, safety margins, long-press detail | 7 |
+| 11 | BPTR-0422 | Passive failure motion curves (300ms, easing, dimming, auto-scroll) | 8 |
+| 12 | REF-377 | Progressive stepper transitions, reduced-motion honoured everywhere | 6 |
+| 13 | BPTR-0128 | `AtomicButton` (13 lines) + MD3 interaction state layers | 7 |
+| 14 | TTMAC-014 | Touch standards engine: protective padding, icon sizes, clearance | 7 |
+| 15 | CSIVW-001 | Input masking: keystroke filter, ASCII hygiene, paste caps | 7 |
+| 16 | IS12-CSIVW-011 | `ValidatedInputField`, 13 CDE rules, quick-clear, submit gating | 7 |
+| 17 | IS02-CSIVW-005 | Blur-bound inline errors, submission freeze | 6 |
+| 18 | BPTR-0160 | Compound fields as isolated 48dp components, global regex map | 7 |
+| 19 | REF-197 | Error templates, log scrubber, rollback boundary | 7 |
+| 20 | FIEVR-033 | `WizardStepMachine` + `CarouselStepper` (17 lines) with progress dots | 8 |
 
-**72 gates.** 8 steps Complete, RCGLA-012 Partial (2 deferred), SSTLA-004 awaiting a reviewer
-score.
+**142 gates across 20 steps.** 18 steps Complete, RCGLA-012 Partial (2 deferred), TTMAC-014
+Partial (1 deferred), SSTLA-004 awaiting a reviewer score.
+
+### Forms
+
+Every text input is a `ValidatedInputField` bound to a `HabotCde` (Critical Data Element). The
+CDE carries its own mask, regex, keyboard type, placeholder and plain-language error message —
+so a phone field cannot end up with a text keyboard, and an error message cannot be missing.
+`HabotFormGate` is the single authority on whether a form may be submitted; four separate steps
+in the sheet describe that rule and it is implemented once.
 
 ### Open decisions
 
@@ -88,5 +108,8 @@ score.
 2. **Zoom lock** — RCGLA-012 substep 2 asks for `user-scalable=no`, which fails WCAG 2.1
    SC 1.4.4 and is ignored by modern iOS/Android browsers anyway. Deferred; see the comment
    block in `udf_setup/web/index.html` for the one-line override.
+3. **Double-tap-correction telemetry** — TTMAC-014's `<1%` completion measure is a field metric.
+   The geometric precondition is gated; the rate itself needs UFHT-032 (UI Hesitation Tracker),
+   which is zero-dependency and available for the next batch.
 
 See the [workspace README](../README.md) for team conventions.

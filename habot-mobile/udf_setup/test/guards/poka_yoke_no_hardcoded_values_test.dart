@@ -11,6 +11,11 @@
 ///     layout padding variables use non-standard grid intervals."
 ///   TTMCS-004 Mistake-Proofing: "Style builders throw compilation errors if
 ///     raw, untokenized hex codes find their way into layout sheets."
+///   BPTR-0422 What Standardized Must Be Done: "Motion and animation design
+///     tokens" + Completion: "Standardized CSS transitions defined."
+///   BPTR-0128 Mistake-Proofing: "compiler constraints instantly flag compile
+///     errors if a developer creates a clickable component without specifying
+///     explicit touch padding parameters."
 ///
 /// This scans every `.dart` file under `lib/` and fails the build on any
 /// violation. The token declaration files are the only sanctioned place a raw
@@ -31,6 +36,7 @@ const Set<String> _colourDeclarationSites = <String>{
 
 const Set<String> _metricDeclarationSites = <String>{
   'lib/design_system/tokens/spacing_tokens.dart',
+  'lib/design_system/interaction/touch_standards.dart',
   'lib/design_system/tokens/grid_tokens.dart',
   'lib/design_system/tokens/shape_tokens.dart',
   'lib/design_system/tokens/elevation_tokens.dart',
@@ -39,6 +45,10 @@ const Set<String> _metricDeclarationSites = <String>{
 
 /// Only file allowed to build a ThemeData.
 const String _themeAdapterSite = 'lib/design_system/theme/habot_theme.dart';
+
+/// Only file allowed to declare a raw Duration or reference a raw Curve.
+/// BPTR-0422 and REF-377 both write their tokens here.
+const String _motionTokenSite = 'lib/design_system/tokens/motion_tokens.dart';
 
 /// Colour names that carry no brand meaning and are therefore permitted.
 const Set<String> _allowedMaterialColors = <String>{'transparent'};
@@ -159,8 +169,8 @@ int _lineOf(String source, int index) =>
 
 void main() {
   test(
-    'POKA-YOKE :: zero hardcoded colours, spacing values or rogue ThemeData '
-    'under lib/',
+    'POKA-YOKE :: zero hardcoded colours, spacing values, motion values or '
+    'rogue ThemeData under lib/',
     () {
       final Directory libDir = Directory('lib');
       expect(
@@ -264,7 +274,35 @@ void main() {
           }
         }
 
-        // ---- RULE 3: no standalone theme construction ------------------
+        // ---- RULE 3: no raw motion values ------------------------------
+        if (path != _motionTokenSite) {
+          for (final RegExpMatch m in RegExp(
+            r'Duration\(\s*(?:milliseconds|seconds|microseconds)\s*:',
+          ).allMatches(code)) {
+            violations.add(
+              _Violation(
+                path,
+                _lineOf(code, m.start),
+                'RAW_DURATION',
+                'Duration(...) -- use a HabotMotion token',
+              ),
+            );
+          }
+          for (final RegExpMatch m in RegExp(
+            r'\bCurves\.\w+',
+          ).allMatches(code)) {
+            violations.add(
+              _Violation(
+                path,
+                _lineOf(code, m.start),
+                'RAW_CURVE',
+                '${m.group(0)} -- use a HabotEasing token',
+              ),
+            );
+          }
+        }
+
+        // ---- RULE 4: no standalone theme construction ------------------
         if (path != _themeAdapterSite) {
           for (final RegExpMatch m
               in RegExp(r'\bThemeData\s*\(').allMatches(code)) {
@@ -297,6 +335,8 @@ void main() {
       final x = Color(0xFFAB12CD);
       const p = EdgeInsets.all(13);
       final t = ThemeData();
+      const d = Duration(milliseconds: 250);
+      const c = Curves.bounceIn;
     ''';
     final String stripped = _stripCommentsAndStrings(planted);
     expect(
@@ -308,6 +348,13 @@ void main() {
     expect(args, isNotNull);
     expect(_numericLiteral.hasMatch(args!.first.trim()), isTrue);
     expect(RegExp(r'\bThemeData\s*\(').hasMatch(stripped), isTrue);
+    expect(
+      RegExp(
+        r'Duration\(\s*(?:milliseconds|seconds|microseconds)\s*:',
+      ).hasMatch(stripped),
+      isTrue,
+    );
+    expect(RegExp(r'\bCurves\.\w+').hasMatch(stripped), isTrue);
 
     // And prove it does NOT fire on documentation that merely mentions values.
     const String docOnly = '''

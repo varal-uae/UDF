@@ -8,6 +8,7 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'data_entry_probe_page.dart';
 import 'design_system/interaction/touch_target.dart';
 import 'design_system/layout/fluid_container.dart';
 import 'design_system/layout/grid_wireframe.dart';
@@ -126,9 +127,14 @@ class _DesignSystemProbePageState extends State<DesignSystemProbePage> {
               onPressed: () => setState(() => _wireframe = !_wireframe),
             ),
             HabotHeaderAction(
-              icon: Icons.straighten,
-              label: 'Measurements',
-              onPressed: () {},
+              icon: Icons.edit_note,
+              label: 'Guided data entry (Steps 11-20)',
+              priority: 1,
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const DataEntryProbePage(),
+                ),
+              ),
             ),
             HabotHeaderAction(
               icon: Icons.accessibility_new,

@@ -13,9 +13,11 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../tokens/motion_tokens.dart';
+
 /// Serialises back-navigation so a burst of taps produces exactly one pop.
 class HabotBackNavigator {
-  HabotBackNavigator({this.debounce = const Duration(milliseconds: 500)});
+  HabotBackNavigator({this.debounce = HabotMotion.backTapDebounce});
 
   /// Window inside which a second back request is swallowed.
   final Duration debounce;
