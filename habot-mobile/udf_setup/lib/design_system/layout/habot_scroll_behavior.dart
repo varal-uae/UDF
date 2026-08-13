@@ -15,9 +15,10 @@
 ///
 /// Decision to be Made Before Setup Step: "How does the list feel when the user
 /// reaches the end of their task queue?"
-///   Recorded answer: elastic. The list stretches and settles. It never halts
-///   rigidly, and it never glows -- a glow is an Android 11 artefact that MD3
-///   replaced, and a rigid halt reads as a broken scroll rather than an end.
+///   Recorded answer: elastic. The list stretches and settles when it reaches
+///   the end: never a rigid halt, and never a glow. A glow is an Android 11
+///   artefact that MD3 replaced, and a rigid halt reads as a broken scroll
+///   rather than an end.
 library;
 
 import 'package:flutter/material.dart';

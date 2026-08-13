@@ -233,8 +233,14 @@ class HabotShellRoutes {
     settings,
   ];
 
-  /// An unrecognised link lands on the overview rather than nowhere.
-  static const HabotRoute fallback = overview;
+  /// Where an unrecognised link lands: the root path, resolved to the overview
+  /// content by the shell, which defaults to that destination when a link names
+  /// no declared screen -- so an unrecognised link still lands on the overview
+  /// rather than nowhere. Kept as its own route with a distinct '/' path rather
+  /// than an alias of [overview]: a fallback that reuses a declared route's
+  /// pattern is a duplicate path, and a duplicate pattern leaves one of the two
+  /// routes unreachable depending on list order.
+  static const HabotRoute fallback = HabotRoute(path: '/', title: 'Overview');
 
   static HabotRouter router({DeepLinkContextManager? contextManager}) =>
       HabotRouter(
