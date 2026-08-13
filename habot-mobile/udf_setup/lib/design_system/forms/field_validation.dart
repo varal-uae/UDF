@@ -34,12 +34,6 @@ enum HabotCde {
 
 /// The outcome of validating one field.
 class FieldValidationResult {
-  const FieldValidationResult._({
-    required this.isValid,
-    required this.message,
-    this.isEmpty = false,
-  });
-
   const FieldValidationResult.valid()
     : isValid = true,
       message = null,

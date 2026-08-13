@@ -132,9 +132,11 @@ class ContrastAudit {
     final StringBuffer buffer = StringBuffer()
       ..writeln('HABOT DESIGN SYSTEM -- WCAG CONTRAST AUDIT')
       ..writeln('AISS gates: TTMCS-004-A01, TTMCS-005-A01')
-      ..writeln('Text floor ${WcagThresholds.textFloor}:1  '
-          'optimal ${WcagThresholds.textOptimal}:1  '
-          'non-text floor ${WcagThresholds.nonTextFloor}:1')
+      ..writeln(
+        'Text floor ${WcagThresholds.textFloor}:1  '
+        'optimal ${WcagThresholds.textOptimal}:1  '
+        'non-text floor ${WcagThresholds.nonTextFloor}:1',
+      )
       ..writeln('Decorative exemptions: ${decorativeExempt.join(", ")}')
       ..writeln('  rationale: $decorativeExemptRationale')
       ..writeln('-' * 78);
@@ -145,8 +147,10 @@ class ContrastAudit {
 
     buffer
       ..writeln('-' * 78)
-      ..writeln('pairs=${all.length}  AAA=$aaa  '
-          'worst=${worst.toStringAsFixed(2)}:1  FAILURES=$failed')
+      ..writeln(
+        'pairs=${all.length}  AAA=$aaa  '
+        'worst=${worst.toStringAsFixed(2)}:1  FAILURES=$failed',
+      )
       ..writeln(failed == 0 ? 'RESULT: PASS' : 'RESULT: FAIL');
     return buffer.toString();
   }

@@ -168,8 +168,7 @@ void main() {
             theme.bodySmall != null &&
             theme.labelSmall != null &&
             theme.bodyLarge!.fontSize == HabotTypography.bodyLarge.sizeSp &&
-            theme.bodyLarge!.height ==
-                HabotTypography.bodyLarge.heightMultiple;
+            theme.bodyLarge!.height == HabotTypography.bodyLarge.heightMultiple;
       },
     );
 
@@ -182,8 +181,7 @@ void main() {
       () {
         double previous = -1;
         for (final double radius in HabotShape.allRadii) {
-          if (radius <= previous ||
-              radius % HabotSpacing.subBaseline != 0) {
+          if (radius <= previous || radius % HabotSpacing.subBaseline != 0) {
             return false;
           }
           previous = radius;

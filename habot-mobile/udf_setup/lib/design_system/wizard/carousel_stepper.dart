@@ -208,11 +208,7 @@ class StepperNavigation extends StatelessWidget {
 
 /// Convenience wrapper: a stepper whose gate is created and disposed with it.
 class GuidedForm extends StatefulWidget {
-  const GuidedForm({
-    required this.steps,
-    required this.stepBuilder,
-    super.key,
-  });
+  const GuidedForm({required this.steps, required this.stepBuilder, super.key});
 
   final List<WizardStep> steps;
   final Widget Function(BuildContext, WizardStep, HabotFormGate) stepBuilder;

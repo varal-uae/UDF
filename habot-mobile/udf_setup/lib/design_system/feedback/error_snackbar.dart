@@ -115,11 +115,7 @@ class HabotErrorSnackbar {
 /// boundary owns which one it uses so the choice is made once per surface, not
 /// once per error.
 class SnackbarErrorBoundary extends StatefulWidget {
-  const SnackbarErrorBoundary({
-    required this.child,
-    this.onRetry,
-    super.key,
-  });
+  const SnackbarErrorBoundary({required this.child, this.onRetry, super.key});
 
   final Widget child;
   final VoidCallback? onRetry;

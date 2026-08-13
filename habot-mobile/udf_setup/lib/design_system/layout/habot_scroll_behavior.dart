@@ -58,7 +58,7 @@ class HabotScrollBehavior extends MaterialScrollBehavior {
     if (stretchesOn(getPlatform(context))) {
       return StretchingOverscrollIndicator(
         axisDirection: details.direction,
-        clipBehavior: details.clipBehavior ?? Clip.hardEdge,
+        clipBehavior: details.decorationClipBehavior ?? Clip.hardEdge,
         child: child,
       );
     }
@@ -70,7 +70,9 @@ class HabotScrollBehavior extends MaterialScrollBehavior {
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) {
     if (bouncePlatforms.contains(getPlatform(context))) {
-      return const BouncingScrollPhysics(parent: RangeMaintainingScrollPhysics());
+      return const BouncingScrollPhysics(
+        parent: RangeMaintainingScrollPhysics(),
+      );
     }
     // Substep 3: bounds are clamped, so the stretch is a visual effect over a
     // scroll that has genuinely stopped -- content never scrolls past its end.

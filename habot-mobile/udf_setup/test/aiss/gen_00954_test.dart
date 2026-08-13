@@ -82,10 +82,11 @@ void main() {
           'the token -- so no flow can open a sheet over a scrim of its own',
       () {
         final List<String> offenders = <String>[];
-        for (final File file in Directory('lib')
-            .listSync(recursive: true)
-            .whereType<File>()
-            .where((File f) => f.path.endsWith('.dart'))) {
+        for (final File file
+            in Directory('lib')
+                .listSync(recursive: true)
+                .whereType<File>()
+                .where((File f) => f.path.endsWith('.dart'))) {
           final String code = file.readAsStringSync();
           if (!code.contains('barrierColor')) {
             continue;

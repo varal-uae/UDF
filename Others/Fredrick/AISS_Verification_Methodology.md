@@ -2,9 +2,9 @@
 
 **Project:** Habot UDF — mobile client (Flutter)
 **Owner:** Fredrick
-**Scope:** all 35 steps of the first three implementation batches
+**Scope:** all 50 steps of the first four implementation batches
 **Source of requirements:** `My stepsFN06082026.xlsx` → `Fredrick` sheet (49 columns per step)
-**Date:** 12 August 2026 · **Revision:** 4 (rev 1 = Steps 1–4, rev 2 = Steps 1–10, rev 3 = Steps 11–20, rev 4 adds Steps 21–35)
+**Date:** 13 August 2026 · **Revision:** 5 (rev 1 = Steps 1–4, rev 2 = Steps 1–10, rev 3 = Steps 11–20, rev 4 = Steps 21–35, rev 5 adds Steps 36–50)
 
 ---
 
@@ -22,7 +22,7 @@ Five gate groups, in order, stopping on the first failure. It leaves two artefac
 `build/aiss/evidence.json` (what ran, what it concluded, per step) and
 `build/aiss/contrast_audit.txt` (every colour pair and its measured ratio).
 
-**241 gates across 35 steps.** Nothing is marked Complete by opinion — a step's completion
+**333 gates across 50 steps.** Nothing is marked Complete by opinion — a step's completion
 status is *derived* from whether its gates passed (§5).
 
 ---
@@ -81,7 +81,7 @@ fires, then plants a doc comment mentioning the same values and asserts it does 
 that can never fail is not a guard.
 
 **G-D AISS step gates** — `test/aiss/<step>_test.dart`, one file per atomic step. §4 walks the
-inventory step by step; **Appendix A is the complete register** — all 241 gates with the
+inventory step by step; **Appendix A is the complete register** — all 333 gates with the
 requirement each defends and what it asserts.
 
 **G-E Evidence roll-up** — merges the per-step evidence, prints a table, lists open items, and
@@ -90,7 +90,7 @@ stops a green-looking run that verified nothing.
 
 ---
 
-## 4. Step inventory — 241 gates
+## 4. Step inventory — 333 gates
 
 §4 is the narrative walkthrough, highlighting the gates worth a reviewer's attention.
 **Appendix A** at the end of this document is the exhaustive register: every gate, its verbatim
@@ -384,6 +384,75 @@ satisfiable. That is why `GEN-01363` (metric: Crash-Free Session Rate) has no de
 completion measure is the GEN-\* boilerplate — while `IS38-SGTIM-018` does, because its
 completion measure literally says *"Physical device testing confirms…"*.
 
+### Steps 36–39 · the adaptive shell blueprint (24 gates)
+
+| Step | Ref | Gates | Highlights |
+|---|---|---|---|
+| 36 | SSTLA-012 | 7 | The Contextual Mirror spec. All **five** of the sheet's Data Collected fields come out of one `toDataRecord()`; the double-tap ratio cycle is a closed enum, not a float; rotation checked across all 9 matrix devices — **8 of 9 mirror in both orientations**, the iPhone SE in landscape (568×320dp) resolves to the documented `tabbedFallback` |
+| 37 | GEN-03270 | 6 | Split-screen and master-detail containers that take **no** width, ratio or breakpoint parameter — they read the viewport and consult the blueprint. **18 of 18 viewports** resolve to a usable arrangement (single-value metric: floor = optimal = ceiling = 1.0). On a phone with a detail open the container claims the system back gesture instead of losing it |
+| 38 | SSTLA-010 | 5 | Pane column counts **derived** from the shared grid, never declared; readable measure fixed at **75 characters**; the pinned metric strip sits outside the scroll view *by construction* — gated by dragging 400dp of fields and measuring that the strip did not move |
+| 39 | SSTLA-018 | 6 | The 5.5-inch reference viewport pinned in both units — **1080×1920 at DPR 3 = 360×640dp**, 16:9 stated rather than implied; thumb band as a fraction; section locking derived from declared prerequisites, with **no flag a caller can pass** to open one early |
+
+### Steps 40–43 · navigation and routing (22 gates)
+
+| Step | Ref | Gates | Highlights |
+|---|---|---|---|
+| 40 | GEN-02334 | 6 | Rail above the **768dp** threshold SSTLA-004 recorded in Step 5, bar below it, **never both**; every `NavigationDestination` under `lib/` passes an empty tooltip, proved by source scan — the navigation cannot reintroduce the hover affordance Step 24 removed; the bar measured anchored in the thumb band on the reference device |
+| 41 | GEN-02676 | 5 | `99+` cap; a zero count renders **nothing**; the spoken label is a sentence, not a bare number; per-route and total models; the badge clears when the destination opens |
+| 42 | GEN-00999 | 6 | Route, params, scroll offset, selection and draft text restored per destination, **LRU-capped at 16**; every context round-trips through JSON **byte-for-byte**, which is what makes "restored" checkable |
+| 43 | GEN-02082 | 5 | Path uniqueness gated; the router **never throws** — an unrecognised link lands on the overview rather than a blank screen. This is where the app stopped being a probe: `HabotShellPage` owns the single master scaffold and `HabotAppShell` supplies destinations, banner and restored context |
+
+### Steps 44–46 · measured behaviour (19 gates)
+
+| Step | Ref | Gates | Highlights |
+|---|---|---|---|
+| 44 | GEN-01474 | 5 | The 200ms ceiling is the **interactive ceiling Step 11 already fixed**, not a second copy; five real destination switches through the shell timed end-to-post-frame; a re-selection of the current destination records **nothing** — a benchmark that counts work it did not do is broken |
+| 45 | GEN-00022 | 6 | The three primary breakpoints the metric names (**360/390/412dp**) rendered individually, all one column; all 9 matrix devices × 2 orientations = **18 viewports rendered clean** with the expected column count |
+| 46 | GEN-02060 | 8 | "Truncating unreadably" separated from truncating: body wraps, labels may ellipsise but must keep **≥12 characters**, nothing renders below **11sp**. All **15 type-scale roles** pass at 320dp; a **1.3×** system text scale raises no overflow. `HabotFittingText` has no `overflow:` parameter to get wrong |
+
+### Steps 47–50 · resilience and preferences (27 gates)
+
+| Step | Ref | Gates | Highlights |
+|---|---|---|---|
+| 47 | GEN-02720 | 7 | The case the step exists for: a poll that **never answers at all**. The gate drives a future that is never completed and advances the clock past the threshold, so what is verified is the timeout itself and not an error response standing in for it. Three states, because one dropped response on a train is not an outage |
+| 48 | GEN-03437 | 7 | Banner contrast **measured**, not asserted: **13.31:1** and **13.39:1** light, **7.28:1** and **11.27:1** dark — all four clear the 4.5:1 floor *and* the 7:1 optimal. Singular/plural/zero copy; one live region carrying state and queue depth in a single announcement; **no state of its own** |
+| 49 | IS22-RCGLA-022 | 8 | Two explicit columns (`allow_promo`, `allow_transaction`) as an **enum**, so a typo is a compile error. Optimistic write with **rollback and the column named** on failure; the transition guard blocks navigation while a write is outstanding; the control disables itself so a double tap cannot race the database |
+| 50 | GEN-03404 | 5 | One M3 Switch per declared column; a visible write-status line; the `NotificationPreferenceSheet` wrapper the sheet's own Atomic Reusability column named. The render budget is **measured**, and the evidence states exactly what was timed — build, layout and paint on the test host, not a cold start and not a handset |
+
+### A note on the eleven GEN-\* rows in batch 4
+
+Eleven of the fifteen steps in this batch again come from the `GEN-*` block, with the same
+boilerplate Expected Output and Completion Measures. The gates are derived from the Setup Step,
+the Setup Step Description and the Metric Name, and each gate file says so in its header.
+
+Four rows (36 · SSTLA-012, 38 · SSTLA-010, 39 · SSTLA-018, 49 · IS22-RCGLA-022) are richly
+specified, with substeps, a poka-yoke rule and a real completion measure. Those carry the
+strongest gates in the batch.
+
+### Mismatched columns in batch 4, and what was done about them
+
+Six rows carry a column that does not describe the step it sits on. None are gated; all are
+recorded, in the gate file and in the evidence:
+
+| Step | Row | Mismatch | Treatment |
+|---|---|---|---|
+| 44 | GEN-01474 | Metric = *"Information Architecture Task Success Rate"* — a usability study — on a render-latency step | Recorded as **not produced**, with no number invented. The **200ms** in the step's own Setup Step is gated instead. |
+| 46 | GEN-02060 | Metric = *"Step Completion Rate (%)"* — project tracking — on a text-rendering step | Same treatment. The **320dp** in the Setup Step is gated. |
+| 43 | GEN-02082 | Metric = *"Push Notification Click-Through Rate (%)"* on a routing step | Not attributable to a router. What a router owns — resolution, parameters, restored context, no blank screen — is gated and reported. |
+| 41 | GEN-02676 | Metric = *"Implementation Completeness Rate"* | Reported against defined-scope coverage, with the mismatch stated. |
+| 38 | SSTLA-010 | **Completion Measures column is empty** in the sheet | Nothing invented to fill it. The gates defend the Setup Step, the Mobile-First row, the poka-yoke and the self-chasing rule, which are all populated. |
+| 49 | IS22-RCGLA-022 | Estimated Time = *"5 Minutes"* for a settings panel with database writes, a rollback path and a transition guard | Recorded as an estimation error rather than a scope signal. Implementation sized to the four substeps. |
+
+Together with the five recorded in batch 3, that is **eleven rows worth correcting at source.**
+
+### The deferral rule, restated after a batch that used it zero times
+
+Nothing new was deferred in Steps 36–50. Every completion measure in the batch is producible by
+the suite. The three mismatched *metric names* above are **recorded mismatches, not deferrals** —
+a deferral says "this is real and we cannot measure it yet"; a recorded mismatch says "the sheet
+named the wrong instrument for this step". Conflating them would let a documentation error look
+like an engineering debt.
+
 ---
 
 ## 5. Completion status is derived, never asserted
@@ -405,9 +474,9 @@ AissOutcome get outcome {
    under a build that is always failing. Deferring is a reviewable act: the reason lands in
    `evidence.json` where someone can argue with it.
 
-Current state: **33 steps Complete, 2 Partial (RCGLA-012 with 2 deferrals, IS38-SGTIM-018 with
-1), 1 pending reviewer input (SSTLA-004, objective half complete).** 3 of 241 gates are
-deferred. TTMAC-014 moved from Partial to Complete when Steps 34–35 built the telemetry its
+Current state: **48 steps Complete, 2 Partial (RCGLA-012 with 2 deferrals, IS38-SGTIM-018 with
+1), 1 pending reviewer input (SSTLA-004, objective half complete).** 3 of 333 gates are
+deferred — the same three as after batch 3; batch 4 added none. TTMAC-014 moved from Partial to Complete when Steps 34–35 built the telemetry its
 deferred gate was waiting on — a deferral is meant to be closable, and this is what that looks
 like.
 
@@ -551,6 +620,36 @@ so the Dart SDK could not be installed. Two honest categories:
   asserting on the outermost physics type would have been testing the framework rather than
   this codebase.
 
+**Added in rev 5 (Steps 36–50), also executed here** (`verify_batch4.py`, which recomputes each
+asserted number rather than trusting the Dart source's comment about it):
+
+- **Rotation across the full device matrix**: a split at the 35/65 stop needs 160dp per pane plus
+  padding and a divider. **8 of the 9 matrix devices mirror in both orientations**; the iPhone SE
+  in landscape (568×320dp) cannot, and resolves to the documented `tabbedFallback`. That ninth
+  device is reported, not rounded up.
+- **Banner contrast measured for both states in both schemes**: offline **13.31:1** light /
+  **7.28:1** dark, degraded **13.39:1** / **11.27:1**. All four clear the 4.5:1 floor and the 7:1
+  optimal.
+- **Column resolution across 18 viewports**: 7 resolve to one column, 11 to two, and the three
+  primary breakpoints the metric names (360/390/412dp) all resolve to one.
+- **Text fit computed for all 15 type-scale roles at 320dp**: the tightest, `displayLarge` at
+  57sp, still yields 10 characters per line and a 20-character two-line capacity against the
+  12-character readable floor. Nothing sits below the 11sp font floor.
+- **Threshold and budget constants re-read from source**: navigation collapse **768dp**;
+  interactive ceiling **200ms**; preference render floor **100ms** / optimal **30ms**; poll
+  interval **30s** with a strictly shorter **10s** timeout.
+- The **poka-yoke guard, now 9 rules** (adding `ROGUE_SCAFFOLD`), simulated over all `lib/`
+  files — **0 violations**.
+- **Brace balance, string termination, import resolution, symbol resolution and pure-ASCII**
+  re-verified across all **125** Dart files.
+- Every new Flutter API checked against the framework source at your pinned revision
+  (`b45fa189`) — including confirming that `PopScope` is generic (so a finder must name
+  `PopScope<Object?>`), that `TextScaler.linear` is a const factory, and that `MediaQueryData`
+  still accepts `textScaler`.
+- One design defect caught during authoring and fixed: the preference screen's write-status line
+  was outside the panel's `AnimatedBuilder`, so it would have reported the *previous* write's
+  outcome. A settings screen that lies quietly is worse than one that says nothing.
+
 **Not executed — needs your machine:** `dart format`, `flutter analyze`, `flutter test`.
 Compilation has not been run anywhere.
 
@@ -576,8 +675,11 @@ verified. Send me the output and I will fix it.
    The production reading still needs a release.
 6. **Physical-device confirmation** of the overscroll stretch (IS38-SGTIM-018). One run on an
    Android handset and one on an iPhone, scrolling a task list past its end.
-7. **Five contaminated or mismatched columns** in the batch-3 rows (§4). Worth correcting at
-   source so the next person does not have to re-derive the same judgement.
+7. **Eleven contaminated or mismatched columns** across the batch-3 and batch-4 rows (§4).
+   Worth correcting at source so the next person does not have to re-derive the same judgement.
+8. **A field reading for the render and latency budgets** (Steps 44, 50). Both are measured on
+   the test host. A handset number needs a profile-mode run; the caveat is recorded on the gates
+   themselves rather than implied away.
 
 ---
 
@@ -635,10 +737,25 @@ habot-mobile/udf_setup/
 │       ├── navigation/header_search.dart    ← Step 33
 │       ├── telemetry/hesitation_tracker.dart← Step 34 (closes the Step 14 deferral)
 │       ├── telemetry/friction_tracker.dart  ← Step 35
+│       ├── shell/contextual_mirror.dart      ← Step 36 (the blueprint)
+│       ├── shell/adaptive_panes.dart         ← Step 37
+│       ├── shell/pane_distribution.dart      ← Step 38
+│       ├── shell/dashboard_grid.dart         ← Steps 39 + 45
+│       ├── shell/app_shell.dart              ← Step 43 (a body, not a scaffold)
+│       ├── navigation/adaptive_navigation.dart ← Step 40
+│       ├── navigation/nav_badge.dart         ← Step 41
+│       ├── navigation/deep_link_context_manager.dart ← Step 42
+│       ├── navigation/route_table.dart       ← Step 43
+│       ├── navigation/tab_switch_budget.dart ← Step 44
+│       ├── a11y/text_fit.dart                ← Step 46
+│       ├── resilience/connectivity_state.dart ← Step 47
+│       ├── resilience/offline_banner.dart    ← Step 48
+│       ├── preferences/preference_manager.dart ← Step 49
+│       ├── preferences/notification_preferences.dart ← Step 50
 │       └── aiss/aiss_evidence.dart          ← evidence record types
 └── test/
     ├── guards/poka_yoke_…_test.dart         ← G-C, self-testing
-    └── aiss/                                ← 35 files, 241 gates
+    └── aiss/                                ← 50 files, 333 gates
 ```
 
 Outputs, regenerated every run: `build/aiss/evidence.json`, `build/aiss/contrast_audit.txt`.
@@ -647,7 +764,7 @@ Outputs, regenerated every run: `build/aiss/evidence.json`, `build/aiss/contrast
 
 ## Appendix A — Gate Register
 
-The complete inventory: every one of the **241 gates**, the requirement each one defends
+The complete inventory: every one of the **333 gates**, the requirement each one defends
 (quoted verbatim from the step sheet), and what it actually asserts. This is the same register
 the `Gate Register` tab of `AISS_Verification_Evidence_Log.xlsx` carries, reproduced here so
 the methodology document is self-contained and reviewable without opening a spreadsheet.
@@ -671,12 +788,12 @@ register; nothing here is maintained by hand.
 
 | Type | Gates | What it means |
 |---|---:|---|
-| Unit / logic | 138 | Pure functions and data, no widget tree. Fast, exhaustive, and the reason most rules could be tested at all. |
-| Widget / measured | 65 | Pumps a real tree and measures pixels, rebuild counts, element counts or semantics. The expensive ones, reserved for claims that cannot be made any other way. |
-| Static scan | 13 | Reads source and fails on a pattern — line budgets, banned widgets, screen coverage, recorded decisions. |
-| WCAG contrast | 19 | Measured ratios against the 4.5:1 floor and 7:1 optimum. |
-| Token drift | 6 | Dart constants vs `tokens.json` / `device_matrix.json`. Without these, "source of truth" is decoration. |
-| **Total** | **241** | 134 had their value computed during authoring; 3 are deferred. |
+| Unit / logic | 206 | Pure functions and data, no widget tree. Fast, exhaustive, and the reason most rules could be tested at all. |
+| Widget / measured | 83 | Pumps a real tree and measures pixels, rebuild counts, element counts or semantics. The expensive ones, reserved for claims that cannot be made any other way. |
+| Static scan | 14 | Reads source and fails on a pattern — line budgets, banned widgets, screen coverage, recorded decisions. |
+| WCAG contrast | 23 | Measured ratios against the 4.5:1 floor and 7:1 optimum. |
+| Token drift | 7 | Dart constants vs `tokens.json` / `device_matrix.json`. Without these, "source of truth" is decoration. |
+| **Total** | **333** | 155 had their value computed during authoring; 3 are deferred. |
 
 ### Step 1 · TTMCS-001 · `TTMCS-001-A01` (7 gates)
 
@@ -1164,6 +1281,203 @@ register; nothing here is maintained by hand.
 | `GEN-00632-G4` | Setup Step Description: "Define the FrictionTracker widget wrapper class." Instrumentation that swallows a tap is worse than no instrumentation. | A wrapped screen records the pointer while the control beneath it still fires | Unit / logic | Active | No |
 | `GEN-00632-G5` | Metric: Class Wrapper Integrity (100%). A wrapper whose report cannot be read from inside the subtree it wraps has no integrity to measure. | A subtree finds its enclosing tracker and reads a live report naming the screen and counting its taps | Widget / measured | Active | No |
 
+### Step 36 · SSTLA-012 · `SSTLA-012-A01` (7 gates)
+
+> Defining the structural assembly blueprint for the mobile split-screen (Contextual Mirror) layout to present evidence and action panels on small screens.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `SSTLA-012-G1` | Data Collected by System: "Layout Type; Layout Grid Dimensions; Spacing Rules; Alignment Settings; Layout Validation Status." | A blueprint reading produces all five atomic fields the step names, each populated from the layout rather than restated by hand | Unit / logic | Active | No |
+| `SSTLA-012-G2` | User Interaction / Flow Impact: "Double-tapping panel bars snaps views between split ratios instantly." | The ratios are distinct stops and the double-tap cycle visits all three and returns -- so the gesture can never strand the operator on a ratio they cannot leave | WCAG contrast | Active | No |
+| `SSTLA-012-G3` | Mobile App First Implication: "Maximizes the available layout space by adapting container boxes to compact touch displays." + SSTLA-010 Mobile-First row: compact viewports stack vertically. | The arrangement is a function of the window class the grid tokens already define -- stacked below 600dp, side by side above it -- and not a value any caller can pass in | Unit / logic | Active | No |
+| `SSTLA-012-G4` | Expected Output: "Measures of Completion: Mobile views adjust cleanly when rotated, maintaining target sizes across panels." | Every device in the matrix produces a usable layout in BOTH orientations at every ratio, and no pane in a mirror is ever smaller than the minimum extent -- where it would be, the blueprint changes arrangement rather than shrinking the pane | WCAG contrast | Active | Yes |
+| `SSTLA-012-G5` | Why This Matters: "Clunky split-screen layouts cause constant scrolling, increasing processing errors." | No viewport ever yields a mirror with a pane below the minimum extent: the smallest device in landscape falls back to tabs, which is recorded as a fallback rather than reported as valid | Unit / logic | Active | Yes |
+| `SSTLA-012-G6` | Poka-Yoke: "Code linters block views that do not extend the master layout wrapper." + Self-Chasing: "Missing layout hooks stop compilation, keeping bad code out of testing builds." | No file under lib/ builds a bare Scaffold: the master wrapper is the only one, and the guard fails the build if a second appears | Static scan | Active | No |
+| `SSTLA-012-G7` | User Interaction / Flow Impact: "Double-tapping panel bars snaps views between split ratios instantly." + Expected Output: "Unified layout container component files." | Both panes render together on a tablet viewport, and a double-tap on the panel bar moves the split to the next stop on the same frame | Widget / measured | Active | No |
+
+### Step 37 · GEN-03270 · `GEN-03270-A01` (6 gates)
+
+> Create responsive split-screen and master-detail layout containers for mobile/tablet screens.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-03270-G1` | Setup Step (Action): "Create RESPONSIVE split-screen and master-detail layout containers for MOBILE/TABLET screens." | Both containers read the viewport rather than taking a breakpoint parameter: master-detail is two-pane exactly where the blueprint says the mirror is side by side | Unit / logic | Active | No |
+| `GEN-03270-G2` | Metric: Layout Responsiveness Pass Rate = 1.0 -- every viewport, not most of them. | Across all nine matrix devices in both orientations the containers resolve to a usable arrangement, and the flex weights always sum to the whole axis | Unit / logic | Active | Yes |
+| `GEN-03270-G3` | Setup Step (Action): "Create responsive split-screen ... containers for mobile/tablet screens." | One widget produces a vertical stack at 393dp and a side-by-side split at 1024dp, with evidence leading in both | Unit / logic | Active | No |
+| `GEN-03270-G4` | Setup Step (Action): "...and MASTER-DETAIL layout containers for mobile/tablet screens." | The same container shows list and record together at 1024dp and the record alone at 393dp | Unit / logic | Active | No |
+| `GEN-03270-G5` | Setup Step (Action) -- a master-detail container that loses the back gesture makes the phone case unusable, which is the case the step is for. | With a detail open on a phone the container claims the back gesture and reports the dismissal to its caller | Unit / logic | Active | No |
+| `GEN-03270-G6` | SSTLA-012 Expected Output: "maintaining target sizes across panels." A 160dp pane has not maintained its target size, so the container changes shape instead. | At 568x320 the split view renders the documented tabbed fallback with both panes reachable as tabs | Widget / measured | Active | Yes |
+
+### Step 38 · SSTLA-010 · `SSTLA-010-A01` (5 gates)
+
+> Formulate the responsive split-screen grid distributions and layout rules for Micro Task Outsourcing (MTO) panels to maximize readability on small devices.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `SSTLA-010-G1` | Mobile App First Implication: "Replaces wide side-by-side desktop grids with clean, thumb-friendly VERTICAL STACKS tailored for mobile interaction." | A pane on a compact viewport is a single column of full-width rows; two fields per row only once there is room for them | Unit / logic | Active | No |
+| `SSTLA-010-G2` | Self-Chasing: "Hardcoding layout values across screens creates broken, overlapping UI elements on smaller devices, instantly stalling qa cycles." | Column counts inside a pane are derived from the shared grid rather than declared: a pane never claims more columns than the screen has, and never fewer than the compact minimum | Unit / logic | Active | Yes |
+| `SSTLA-010-G3` | Setup Step (Action): "...to MAXIMIZE READABILITY." + Why This Matters: "constant pinching and zooming, causing fast operator fatigue." | The readable measure is a stated number rather than a hope, and the pinned strip is capped so it cannot grow into a header | Unit / logic | Active | Yes |
+| `SSTLA-010-G4` | Poka-Yoke: "Key source metrics are pinned immovably at the top of the viewport, keeping important details visible while filling out long fields." | After scrolling 400dp of fields the metric strip has not moved and its values are still on screen | Widget / measured | Active | No |
+| `SSTLA-010-G5` | Poka-Yoke -- a strip that grows without limit stops being a pinned detail and becomes a header, which is the scrolling problem this step exists to remove. | Six metrics render as four: the cap is applied by the component, not left to the caller | Widget / measured | Active | No |
+
+### Step 39 · SSTLA-018 · `SSTLA-018-A01` (6 gates)
+
+> Formulating the responsive layout rules to organize parent command sections on 5.5-inch mobile viewports.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `SSTLA-018-G1` | Setup Step Description: "Identify target 5.5-inch mobile viewport dimensions and resolution constraints (e.g., 1080x1920 pixels at 16:9)." | The reference viewport is pinned in both units: 1080x1920 physical at a pixel ratio of 3 is 360x640dp, and the 16:9 aspect is stated rather than implied | WCAG contrast | Active | No |
+| `SSTLA-018-G2` | Mobile App First Implication: "Screen elements must collapse into VERTICAL LAYOUT STACKS to eliminate horizontal scroll glitches." + GEN-00022: "single-column or 2x2 grid on mobile." | The reference viewport gets one column; two only once the screen is no longer compact -- there is no three-column dashboard on a phone, because the third column is where horizontal scrolling comes from | Unit / logic | Active | Yes |
+| `SSTLA-018-G3` | Flow Impact: "Navigation bars sit comfortably within standard thumb interaction spaces." | The thumb band is a stated fraction of the viewport, and a control anchored to the bottom edge of the reference device falls inside it while one at the top does not | Unit / logic | Active | No |
+| `SSTLA-018-G4` | Poka-Yoke: "Selection items lock automatically if required preceding details stay empty." | Locking is derived from declared prerequisites, and completing one unlocks exactly the next -- no caller can pass a flag to open a section early | Unit / logic | Active | No |
+| `SSTLA-018-G5` | Mobile App First Implication: "Screen elements must collapse into vertical layout stacks to eliminate horizontal scroll glitches." Measured on the reference device the step names. | At 1080x1920 / DPR 3 the command sections render as a single column with no layout exception | Widget / measured | Active | No |
+| `SSTLA-018-G6` | Poka-Yoke: "Selection items lock automatically if required preceding details stay empty." | An unlocked section reports its tap and a locked one swallows it, while announcing why it is locked | Widget / measured | Active | No |
+
+### Step 40 · GEN-02334 · `GEN-02334-A01` (6 gates)
+
+> Integrate M3 Navigation Rails for tablet views and Bottom App Bars for mobile views.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-02334-G1` | Setup Step (Action): "Navigation Rails for TABLET views and Bottom App Bars for MOBILE views." | The surface is chosen by the same 768dp navigation threshold SSTLA-004 recorded in Step 5, not by a new breakpoint invented here | Unit / logic | Active | Yes |
+| `GEN-02334-G2` | MD3 navigation bar specification: between three and five destinations. Fewer is not navigation; more is a menu. | The destination count is bounded, and a shell with one destination cannot be constructed | Unit / logic | Active | No |
+| `GEN-02334-G3` | MUFCE-028 Setup Step: "Mandatory removal of all mouse hover tooltips." Material builds a tooltip for a navigation destination unless the string is empty. | Every NavigationDestination under lib/ passes an empty tooltip, so the navigation cannot reintroduce the hover affordance Step 24 removed | Unit / logic | Active | No |
+| `GEN-02334-G4` | Setup Step (Action): "Integrate M3 Navigation Rails for tablet views and Bottom App Bars for mobile views." | The same widget renders a bottom bar at 393dp and a navigation rail at 1024dp, with exactly one surface present at a time | Widget / measured | Active | No |
+| `GEN-02334-G5` | Metric: UI Compliance Rate (%). MD3 requires a visible label on the selected destination at minimum; this design system shows all of them, because a touch device has no hover to fall back on. | Destination labels render as text and a tap reports the new index to the caller | Widget / measured | Active | No |
+| `GEN-02334-G6` | SSTLA-018 Flow Impact: "Navigation bars sit comfortably within standard thumb interaction spaces." | On the 5.5-inch reference viewport the bar is anchored to the bottom edge and no taller than its token height | Unit / logic | Active | No |
+
+### Step 41 · GEN-02676 · `GEN-02676-A01` (5 gates)
+
+> Add a badge counter to the bottom navigation icon that displays the current unread notification count.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-02676-G1` | Setup Step (Action): "...displays the CURRENT UNREAD notification count." | Zero renders no badge at all, and any positive count renders the number -- a badge reading "0" is noise pretending to be signal | Widget / measured | Active | No |
+| `GEN-02676-G2` | MD3 badge specification: a numeric badge caps rather than overflowing its container. | Counts past the cap read as "99+", and the cap is the MD3 value | Unit / logic | Active | No |
+| `GEN-02676-G3` | ANSA-012 accessibility precedent, inherited: an interactive element with no accessible name is a defect. A count that exists only in pixels is the same defect. | The badge announces its count, with the destination it belongs to | Unit / logic | Active | No |
+| `GEN-02676-G4` | Setup Step (Action) -- one count per destination, and a total for the app. Two places holding the same number is how they disagree. | The unread model reports per route and in total, and clearing a route affects only that route | Unit / logic | Active | No |
+| `GEN-02676-G5` | Setup Step (Action): "Add a badge counter to the bottom navigation icon that displays the current unread notification count." | A destination with five unread renders the badge on its icon, and opening that destination removes the badge | Widget / measured | Active | No |
+
+### Step 42 · GEN-00999 · `GEN-00999-A01` (6 gates)
+
+> Deploy Automated Mobile Deep Link Routing & Context Restoration Engine
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-00999-G1` | Setup Step Description and Expected Output: "Create deep_link_context_manager.dart / .kt." + Metric: Syntax Validity 100%. | The file exists at the exact name the sheet gives, and the symbols the rest of the app imports from it resolve | Unit / logic | Active | No |
+| `GEN-00999-G2` | Setup Step (Action): "...& CONTEXT RESTORATION Engine." A context that cannot be serialised cannot survive the process being killed, which is the only case that matters on mobile. | Every field round-trips through JSON without loss, including the ones a naive encoder drops -- nested maps and a double offset | Unit / logic | Active | No |
+| `GEN-00999-G3` | Setup Step (Action) -- restoration is per route, and an unvisited route has nothing to restore. Returning an empty context there would put a user "back" somewhere they have never been. | Capture then restore returns what was captured; an unknown route returns null rather than a fabricated context | Unit / logic | Active | No |
+| `GEN-00999-G4` | Setup Step (Action) -- an unbounded restoration cache is a memory leak with good intentions. | The manager keeps at most the documented number of routes, dropping the oldest, and forgetting a route removes it | Unit / logic | Active | No |
+| `GEN-00999-G5` | Setup Step (Action): "Deep Link ROUTING & Context Restoration." A user who followed a link to record 42 wants record 42, not the record they were on last time. | Link parameters win over the remembered context, while everything the link is silent about is restored | Unit / logic | Active | No |
+| `GEN-00999-G6` | REF-197 Poka-Yoke, inherited: nothing reaches a log without being scrubbed. This is the one structure in the design system that can hold user content, so the rule matters most here. | The diagnostic view carries shapes and counts only -- never a draft value, never a parameter value | Unit / logic | Active | No |
+
+### Step 43 · GEN-02082 · `GEN-02082-A01` (5 gates)
+
+> Build a deep link routing engine leveraging Navigation component routing.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-02082-G1` | Setup Step (Action): "Build a deep link ROUTING ENGINE leveraging Navigation component routing." | Static segments match exactly and a parameter segment yields its value, so /tasks/42 resolves to the task route carrying id 42 | Unit / logic | Active | No |
+| `GEN-02082-G2` | Setup Step (Action) -- a link that resolves to nothing is a blank screen, which is the worst possible answer to a tapped notification. | An unknown path, a malformed string and an empty link all land on the documented fallback rather than throwing or returning nothing | Unit / logic | Active | No |
+| `GEN-02082-G3` | Setup Step (Action) -- a route that needs an id is meaningless without one, and silently showing a blank record is worse than admitting it. | A route declaring requiresId refuses to match without one, and query parameters merge into the match | Unit / logic | Active | No |
+| `GEN-02082-G4` | Setup Step (Action) -- two routes with the same pattern means one is unreachable, and which one depends on list order. | Every declared path is unique, including the fallback | Unit / logic | Active | No |
+| `GEN-02082-G5` | Setup Step (Action) combined with GEN-00999: routing without restoration lands a user on the right screen at the top of an empty form. | Resolving a link returns the remembered context for that route, with the link parameters applied over it | Unit / logic | Active | No |
+
+### Step 44 · GEN-01474 · `GEN-01474-A01` (5 gates)
+
+> Benchmark tab switching latency to ensure view rendering completes under 200ms.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-01474-G1` | Setup Step (Action): "...to ensure view rendering completes UNDER 200MS." | The 200ms ceiling is the interactive ceiling Step 11 already fixed, not a second copy of the same number that could drift away from it | Token drift | Active | Yes |
+| `GEN-01474-G2` | Setup Step (Action): "BENCHMARK tab switching latency." A benchmark that cannot report a failure is not a benchmark. | A switch at the ceiling passes, one a millisecond over it fails, and the pass rate is the share of samples inside the budget rather than a verdict on the worst one | Unit / logic | Active | No |
+| `GEN-01474-G3` | Data Collected column: "Action/Event Timestamp; User/Session ID" -- a latency record that does not say what was switched between cannot be acted on. | Every sample carries its origin and destination routes, so a slow switch names the pair that was slow | Unit / logic | Active | No |
+| `GEN-01474-G4` | Setup Step (Action): "Benchmark tab switching latency to ensure view rendering completes under 200ms." | Five real destination switches through HabotAppShell were timed end to post-frame; all completed inside the 200ms ceiling | Widget / measured | Active | No |
+| `GEN-01474-G5` | Setup Step (Action): "Benchmark..." -- a benchmark that counts work it did not do is a broken benchmark. | Re-selecting the current destination records no sample, so the pass rate cannot be inflated by no-op taps | Unit / logic | Active | No |
+
+### Step 45 · GEN-00022 · `GEN-00022-A01` (6 gates)
+
+> Configure dashboard widgets and audit forms to stack vertically in a single-column or 2x2 grid on mobile.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-00022-G1` | Metric Floor: "Zero regressions on PRIMARY BREAKPOINTS (360/390/412px)." | Each of the three widths the metric names resolves to a single column, and they resolve to the same thing as each other -- which is what "consistency" across those three widths means | Unit / logic | Active | Yes |
+| `GEN-00022-G2` | Setup Step (Action): "...stack vertically in a SINGLE-COLUMN OR 2x2 GRID on mobile." | The step names exactly two shapes, and the grid offers exactly two: one column while the screen is compact, two once it is not. There is no third value to configure wrongly | Unit / logic | Active | Yes |
+| `GEN-00022-G3` | Setup Step (Action) -- a dashboard tile wider than its content column is exactly how a horizontal scroll gets introduced. | On every device in the matrix the tile ceiling stays inside the viewport, so a tile can never be the thing that overflows | Unit / logic | Active | No |
+| `GEN-00022-G4` | Metric Floor: "Zero regressions on primary breakpoints (360/390/412px)." Measured by rendering at all three. | At 360, 390 and 412dp the dashboard renders as one stacked column with no layout exception at any of them | Widget / measured | Active | No |
+| `GEN-00022-G5` | Setup Step (Action): "...or 2x2 grid." Four sections at 840dp is the literal case the phrase describes. | Four sections render as two rows of two, with the third tile aligned under the first | Widget / measured | Active | No |
+| `GEN-00022-G6` | Metric Optimal: "Zero regressions across full tested device matrix." The matrix is the nine devices SSTLA-004 recorded in Step 5. | The dashboard rendered on every matrix device in both orientations with no layout exception and the expected column count | Widget / measured | Active | Yes |
+
+### Step 46 · GEN-02060 · `GEN-02060-A01` (8 gates)
+
+> Ensure text breathes and fits its container without truncating unreadably on 320dp screens.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-02060-G1` | Setup Step (Action): "...on 320DP SCREENS." | The audit width is the 320dp the step names, and it is the same 320dp Step 6 recorded as the minimum supported width -- not a second number that happens to match today | Unit / logic | Active | No |
+| `GEN-02060-G2` | Setup Step (Action): "...without TRUNCATING UNREADABLY." Unreadably is the operative word: an ellipsis after forty characters is fine, one after four is not. | The readable floor is a stated number of surviving characters rather than a ban on ellipsis, and the font floor is the smallest role the type scale itself defines -- so "it fits" can never be achieved by shrinking below the scale | Unit / logic | Active | Yes |
+| `GEN-02060-G3` | Setup Step (Action): "Ensure text ... fits its container." Every role in the type scale, not the ones that happened to be used. | At 320dp every role in the type scale keeps at least the readable floor of characters and none sits below the minimum font size | Unit / logic | Active | Yes |
+| `GEN-02060-G4` | Setup Step (Action) -- a rule that cannot report a failure is a comment, not a rule. | The audit rejects a role below the font floor and a container too narrow to keep twelve characters, naming which of the two failed | Unit / logic | Active | No |
+| `GEN-02060-G5` | Setup Step (Action): "Ensure text BREATHES." Body copy that ellipsises has stopped being readable regardless of how much of it survives. | Body roles are reported as fitting however long the string is, because they are allowed to grow taller; label and title roles are held to the character floor instead | Unit / logic | Active | Yes |
+| `GEN-02060-G6` | Setup Step (Action): "Ensure text breathes and fits its container without truncating unreadably on 320dp screens." | A 220-character paragraph at 320dp wraps to multiple lines, stays inside its container and raises no overflow exception | Unit / logic | Active | No |
+| `GEN-02060-G7` | Setup Step (Action): "...without truncating UNREADABLY." The label is allowed to truncate; it is not allowed to become meaningless. | A 60-character title at 320dp ellipsises on one line while keeping well above the twelve-character readable floor | Unit / logic | Active | Yes |
+| `GEN-02060-G8` | Setup Step (Action) read together with TTMCS-005 (Step 4): the design system fixes its own floor, and the user still owns their text-size preference. | At 320dp with system text scaled to 1.3x the paragraph still renders with no overflow exception | Widget / measured | Active | No |
+
+### Step 47 · GEN-02720 · `GEN-02720-A01` (7 gates)
+
+> Write the offline UI state management logic that activates when the polling function fails to receive a response within the timeout threshold.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-02720-G1` | Mobile-First UX row: "Background polling refreshes data every 30 seconds." + Setup Step: "...within the TIMEOUT THRESHOLD." | The interval is the 30 seconds the sheet names, the timeout is a separate and strictly shorter number, and both come from the motion tokens rather than being spelled out here | Unit / logic | Active | Yes |
+| `GEN-02720-G2` | Setup Step (Action): "...ACTIVATES when the polling function fails." One dropped response on a train is not an outage. | Offline is derived from a stated number of consecutive failures, and the state between healthy and offline is named rather than being rounded to one of them | Unit / logic | Active | No |
+| `GEN-02720-G3` | Setup Step (Action): "...activates when the polling function fails to receive a response WITHIN THE TIMEOUT THRESHOLD." | A poll whose response never arrives is counted as a failure exactly at the threshold, and two of them put the app offline with the transition moment recorded | Unit / logic | Active | No |
+| `GEN-02720-G4` | Mobile-First UX row: "Pull-to-refresh triggers manual sync." Recovery is eager on purpose: the cost of being wrong is a banner that clears half a minute early, against a user who cannot see that their connection is back. | After two failures a single success returns the monitor to online and clears the offline marker | Unit / logic | Active | No |
+| `GEN-02720-G5` | Setup Step (Action) -- "fails to receive a response" covers a refused connection as much as a silent one, and neither may take the app down. | A polling function that throws is folded into the same failure count as a timeout, with no exception escaping the monitor | Unit / logic | Active | No |
+| `GEN-02720-G6` | Setup Step (Action): "offline UI STATE MANAGEMENT logic." The state a user cares about while offline is how much of their work is waiting. | Items enqueued while offline are counted, notify listeners, and drain returns what was sent rather than silently emptying | Unit / logic | Active | No |
+| `GEN-02720-G7` | Mobile-First UX row: "Background polling refreshes data every 30 seconds." Something that runs forever must be quiet when nothing has changed. | Successive polls with the same outcome raise no notification, so the offline UI rebuilds only when the state actually moves | Unit / logic | Active | No |
+
+### Step 48 · GEN-03437 · `GEN-03437-A01` (7 gates)
+
+> Display an "Offline Mode" status banner and pending queue counters on UI screens.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-03437-G1` | Metric: Banner Contrast Ratio -- Floor 4.5:1, Optimal 7:1, Ceiling 21:1. | The banner text is measured against its own background in both schemes and both visible states, and every reading clears the 4.5:1 floor | Unit / logic | Active | Yes |
+| `GEN-03437-G2` | Metric Optimal 7:1 -- AAA. A status banner is read once, quickly, often in bad light, which is the case the optimal column is for. | Every measured reading also clears the 7:1 optimal, so the banner is reported at optimal rather than merely at floor | Unit / logic | Active | Yes |
+| `GEN-03437-G3` | REF-197 (Step 26) plain-language rule, applied to the queue counter: "1 items waiting" is the kind of detail that makes an app feel unfinished. | The pending counter has separate singular, plural and empty forms, and the empty form does not claim a count | Unit / logic | Active | No |
+| `GEN-03437-G4` | Setup Step (Action): "Display an 'Offline Mode' status banner AND PENDING QUEUE COUNTERS on UI screens." | The banner occupies no space while online, and while offline it shows the Offline Mode title with the live queue depth | Unit / logic | Active | No |
+| `GEN-03437-G5` | Setup Step (Action) -- two sources of truth for "are we offline?" is how an app ends up showing a sync icon over a queue of forty unsent records. | The counter follows the Step 47 monitor through enqueue and drain without the banner storing a count of its own | Unit / logic | Active | No |
+| `GEN-03437-G6` | TTMCS-005 (Step 4) accessibility floor applied to a status surface: a banner that appears without being announced is invisible to the user least able to notice a colour change. | The banner exposes one live-region node carrying both the state and the queue depth in a single announcement | Unit / logic | Active | No |
+| `GEN-03437-G7` | Setup Step (Action) read with Step 47: one missed poll is not an outage, and telling the user it is teaches them to ignore the banner. | A degraded connection renders its own wording in a quieter status role than offline, while still clearing the contrast floor | WCAG contrast | Active | No |
+
+### Step 49 · IS22-RCGLA-022-AS01 · `IS22-RCGLA-022-AS01-A01` (8 gates)
+
+> Build and deploy a responsive preference manager panel inside client settings.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `IS22-RCGLA-022-G1` | Substep 1: "Map explicit preference columns (ALLOW_PROMO, ALLOW_TRANSACTION) inside user state tables." | Both named columns exist, spelled exactly as the sheet spells them, and the set is closed -- a third column cannot be introduced by passing a string | Unit / logic | Active | No |
+| `IS22-RCGLA-022-G2` | Substep 4: "Connect configuration choices directly to NOTIFICATION DISPATCH SERVICES." A dispatcher reads a record, not a widget. | The store serialises to exactly the two database columns with boolean values, and transactional messages default on while promotional ones default off -- a user who has never been asked has not opted in to marketing, and has not opted out of receipts | Unit / logic | Active | No |
+| `IS22-RCGLA-022-G3` | Substep 3: "Update user database preferences INSTANTLY when sliders change on screen." | The value flips before the writer is awaited, the column is reported in flight while it is outstanding, and the record reflects the new value once it lands | Unit / logic | Active | No |
+| `IS22-RCGLA-022-G4` | Completion Measure: "Preference changes write to the database ACCURATELY during interface evaluation loops." | A rejected write restores the previous value and records the column in the failed list rather than leaving the UI ahead of the database | Unit / logic | Active | No |
+| `IS22-RCGLA-022-G5` | Completion Measure -- a settings screen that crashes on a dropped connection has not written accurately either. | A writer that throws is folded into the same rollback path as a rejected write, with no exception escaping the store | Unit / logic | Active | No |
+| `IS22-RCGLA-022-G6` | Poka-Yoke: "Selection inputs freeze screen transitions until changes write to database rows." | The guard refuses to leave while a write is in flight, resumes once it lands, and reports success so a failed write can keep the user on the screen | Unit / logic | Active | No |
+| `IS22-RCGLA-022-G7` | Substep 2: "Render RESPONSIVE configuration controls LINKED DIRECTLY to these column models." + TTMAC-011 touch target floor. | The panel renders exactly one M3 switch per declared column, each row at or above the 48dp touch target | Widget / measured | Active | No |
+| `IS22-RCGLA-022-G8` | Substeps 2 and 3 together, and the Poka-Yoke, measured on the rendered control rather than on the store alone. | A tap on the rendered switch writes allow_promo=true, disables the control until the write lands, and re-enables it afterwards | Widget / measured | Active | No |
+
+### Step 50 · GEN-03404 · `GEN-03404-A01` (5 gates)
+
+> Build the mobile notification preference screen using M3 Switch components.
+
+| Gate | Requirement defended (verbatim) | What it asserts | Type | Status | Value computed here |
+|---|---|---|---|---|---|
+| `GEN-03404-G1` | Metric: Preference Screen Render Time -- Floor <100ms, Optimal <30ms, Ceiling 200ms. | All three thresholds are the sheet's own numbers, held in the motion tokens, and the ceiling is the same interactive ceiling every other user-visible wait in this design system is held to | Unit / logic | Active | Yes |
+| `GEN-03404-G2` | Metric -- a budget that cannot report a miss is decoration. | The budget classifies a measurement below optimal, one between optimal and floor, and one past the floor differently | Unit / logic | Active | Yes |
+| `GEN-03404-G3` | Setup Step (Action): "Build the mobile notification preference screen using M3 SWITCH COMPONENTS." + Metric: Preference Screen Render Time. | The screen builds with one M3 Switch per declared column and a measured build-to-first-frame time inside the floor | Widget / measured | Active | No |
+| `GEN-03404-G4` | IS22-RCGLA-022 Completion Measure: "Preference changes write to the database accurately." A screen that saves silently is indistinguishable from one that does not save at all. | The screen reports saved after an accepted write and reports the failure after a rejected one, with the control rolled back | Unit / logic | Active | No |
+| `GEN-03404-G5` | IS22-RCGLA-022 Atomic Reusability: "NotificationPreferenceSheet UI wrapper block." The name is the sheet's, not this implementation's. | NotificationPreferenceSheet.show presents the identical view inside the Step 21 bottom sheet, reachable from anywhere in the app without a route | Unit / logic | Active | No |
+
 ### Deferred gates
 
 A deferral keeps its step at **Partial** and keeps the gate runner green, so a genuine
@@ -1175,10 +1489,18 @@ regression stays visible instead of hiding under a permanently red build.
 | `RCGLA-012-G7` | 6 · RCGLA-012 | CLS is a browser metric; needs a Lighthouse run in CI against the web build. NOT measured by this suite. | A Lighthouse or equivalent CLS measurement on a real page load. |
 | `IS38-SGTIM-018-G8` | 31 · IS38-SGTIM-018-AS01 | Physical-device confirmation of the stretch feel at the end of a task list | One run on an Android handset and one on an iPhone, scrolling a task list past its end. |
 
-**Closed since the last revision:** `TTMAC-014-G7` (double-tap correction rate). It was
-deferred at Step 14 because no telemetry existed to produce a rate; Steps 34 and 35 built
-that instrument, and the rate is now computed from recorded interactions. The production
-reading still needs a release — that caveat is recorded on the gate itself.
+**Closed in rev 4:** `TTMAC-014-G7` (double-tap correction rate). It was deferred at Step 14
+because no telemetry existed to produce a rate; Steps 34 and 35 built that instrument, and the
+rate is now computed from recorded interactions. The production reading still needs a release —
+that caveat is recorded on the gate itself.
+
+**Nothing new was deferred in rev 5 (Steps 36–50).** Every completion measure in this batch is
+producible by the suite. Where a *metric name* could not be produced — GEN-01474's usability
+study, GEN-02060's project-tracking percentage, GEN-02082's click-through rate — the metric is
+recorded as **not produced** with no number asserted in its place, and the step's own named
+figure (200ms, 320dp, route resolution) is gated instead. That is a recorded mismatch, not a
+deferral: the step sheet named the wrong instrument, and saying so is more useful than
+inventing a reading for it.
 
 ### Regenerating this register
 

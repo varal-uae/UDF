@@ -236,10 +236,11 @@ void main() {
         final RegExp fixedWidth = RegExp(
           r'\b(?:maxWidth|minWidth|width)\s*:\s*(\d+(?:\.\d+)?)\b',
         );
-        for (final File file in layoutDir
-            .listSync(recursive: true)
-            .whereType<File>()
-            .where((File f) => f.path.endsWith('.dart'))) {
+        for (final File file
+            in layoutDir
+                .listSync(recursive: true)
+                .whereType<File>()
+                .where((File f) => f.path.endsWith('.dart'))) {
           for (final RegExpMatch m in fixedWidth.allMatches(
             file.readAsStringSync(),
           )) {
@@ -282,9 +283,10 @@ void main() {
         expect(tester.takeException(), isNull);
 
         // Nothing may be laid out wider than the viewport.
-        for (final RenderBox box in tester
-            .renderObjectList<RenderBox>(find.byType(Padding))
-            .where((RenderBox b) => b.hasSize)) {
+        for (final RenderBox box
+            in tester
+                .renderObjectList<RenderBox>(find.byType(Padding))
+                .where((RenderBox b) => b.hasSize)) {
           expect(
             box.size.width,
             lessThanOrEqualTo(device.widthDp + 0.5),

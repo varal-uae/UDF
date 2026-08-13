@@ -12,7 +12,6 @@
 /// alerts rather than system code traces."
 library;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../interaction/atomic_button.dart';
@@ -62,10 +61,14 @@ class HabotFailureClassifier {
         text.contains('offline')) {
       return HabotErrorCategory.offline;
     }
-    if (error is TimeoutException || text.contains('timeout') || text.contains('timed out')) {
+    if (error is TimeoutException ||
+        text.contains('timeout') ||
+        text.contains('timed out')) {
       return HabotErrorCategory.timeout;
     }
-    if (text.contains('401') || text.contains('unauthenticated') || text.contains('unauthorized')) {
+    if (text.contains('401') ||
+        text.contains('unauthenticated') ||
+        text.contains('unauthorized')) {
       return HabotErrorCategory.unauthenticated;
     }
     if (text.contains('403') || text.contains('forbidden')) {
@@ -74,10 +77,15 @@ class HabotFailureClassifier {
     if (text.contains('404') || text.contains('not found')) {
       return HabotErrorCategory.notFound;
     }
-    if (text.contains('409') || text.contains('conflict') || text.contains('version mismatch')) {
+    if (text.contains('409') ||
+        text.contains('conflict') ||
+        text.contains('version mismatch')) {
       return HabotErrorCategory.conflict;
     }
-    if (text.contains('500') || text.contains('502') || text.contains('503') || text.contains('server error')) {
+    if (text.contains('500') ||
+        text.contains('502') ||
+        text.contains('503') ||
+        text.contains('server error')) {
       return HabotErrorCategory.serverFailure;
     }
     return HabotErrorCategory.unknown;
@@ -182,7 +190,11 @@ class ErrorRollbackBoundaryState extends State<ErrorRollbackBoundary> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: ErrorPanel(failure: failure, onRetry: _retry, onDismiss: dismiss),
+            child: ErrorPanel(
+              failure: failure,
+              onRetry: _retry,
+              onDismiss: dismiss,
+            ),
           ),
       ],
     );

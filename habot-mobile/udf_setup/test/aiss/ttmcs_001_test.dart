@@ -52,8 +52,7 @@ void main() {
       '4 Substeps #1: "Add the modern design library package framework to the '
           'project development dependencies."',
       'Material 3 is enabled on both themes',
-      () =>
-          HabotTheme.light().useMaterial3 && HabotTheme.dark().useMaterial3,
+      () => HabotTheme.light().useMaterial3 && HabotTheme.dark().useMaterial3,
     );
 
     // ---- Substep 2 --------------------------------------------------------
@@ -158,7 +157,7 @@ void main() {
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.reset);
 
-        await tester.pumpWidget(const HabotApp());
+        await tester.pumpWidget(const HabotApp(home: DesignSystemProbePage()));
         await tester.pumpAndSettle();
 
         // An overflow raises a FlutterError during layout, which the test
@@ -177,8 +176,7 @@ void main() {
               '4 Substeps #4: "Run automated interface rendering tests to '
               'confirm uniform component appearance across target device '
               'emulators."',
-          description:
-              'App renders overflow-free at 320/393/744/1024dp widths',
+          description: 'App renders overflow-free at 320/393/744/1024dp widths',
           passed: true,
         ),
       );

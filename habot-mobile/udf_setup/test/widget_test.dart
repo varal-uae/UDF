@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:udf_setup/app.dart';
 import 'package:udf_setup/design_system/theme/habot_theme_extension.dart';
+import 'package:udf_setup/habot_shell_page.dart';
 
 void main() {
   testWidgets('HabotApp boots with the design system theme applied', (
@@ -18,11 +19,10 @@ void main() {
     await tester.pumpWidget(const HabotApp());
     await tester.pumpAndSettle();
 
-    expect(find.byType(DesignSystemProbePage), findsOneWidget);
+    // Since Steps 36-50 the app opens on its shell rather than on a probe.
+    expect(find.byType(HabotShellPage), findsOneWidget);
 
-    final BuildContext context = tester.element(
-      find.byType(DesignSystemProbePage),
-    );
+    final BuildContext context = tester.element(find.byType(HabotShellPage));
     final ThemeData theme = Theme.of(context);
 
     expect(theme.useMaterial3, isTrue);

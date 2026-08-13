@@ -10,7 +10,6 @@
 /// a black screen. The guard is a monotonic debounce on pop, not a visual one.
 library;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../tokens/motion_tokens.dart';

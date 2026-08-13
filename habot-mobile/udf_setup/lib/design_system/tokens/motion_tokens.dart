@@ -12,7 +12,6 @@
 /// Source of truth: `lib/design_system/tokens/tokens.json` -> "motion".
 library;
 
-import 'package:flutter/animation.dart';
 import 'package:flutter/widgets.dart';
 
 /// Named motion durations. Every animated value in the app references one.
@@ -117,6 +116,29 @@ class HabotMotion {
   /// TTMAC-014 / UFHT-032: two taps on the same target inside this window are
   /// one correction, not two intentions.
   static const Duration doubleTapWindow = Duration(milliseconds: 300);
+
+  // --- Steps 36-50: shell, navigation and connectivity -------------------
+
+  /// GEN-02720 Mobile-First UX row: "Background polling refreshes data every
+  /// 30 seconds."
+  static const Duration pollInterval = Duration(seconds: 30);
+
+  /// A poll still outstanding after this has failed. Deliberately shorter than
+  /// [pollInterval]: a response that arrives after the next poll is due is not
+  /// useful, and waiting for it is what makes an app feel hung rather than
+  /// offline.
+  static const Duration pollTimeout = Duration(seconds: 10);
+
+  /// GEN-02334: the navigation surface swaps between rail and bar when the
+  /// window class changes. A resize is not a user-initiated transition, so it
+  /// gets the fast rung rather than the standard one.
+  static const Duration navigationSurfaceSwap = fast;
+
+  /// GEN-03404 Metric: Preference Screen Render Time -- Floor "< 100ms",
+  /// Optimal "< 30ms". Budgets, not animations, but they are Durations and
+  /// this is the only file allowed to declare one.
+  static const Duration preferenceRenderFloor = Duration(milliseconds: 100);
+  static const Duration preferenceRenderOptimal = Duration(milliseconds: 30);
 }
 
 /// Named easing curves.

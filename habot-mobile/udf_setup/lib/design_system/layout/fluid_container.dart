@@ -39,8 +39,7 @@ class HabotFluidContainer extends StatelessWidget {
 
         // Expanded viewports get a reading-width cap so line length stays
         // comfortable; compact and medium fill the available width.
-        final double maxContentWidth =
-            windowClass == HabotWindowClass.expanded
+        final double maxContentWidth = windowClass == HabotWindowClass.expanded
             ? HabotGrid.breakpointExpanded
             : double.infinity;
 

@@ -86,10 +86,7 @@ void main() {
           totalSteps: 5,
         );
         return progress.fraction == 0.4 &&
-            const HabotStepProgress(
-                  currentStep: 9,
-                  totalSteps: 5,
-                ).fraction ==
+            const HabotStepProgress(currentStep: 9, totalSteps: 5).fraction ==
                 1.0;
       },
     );
@@ -172,9 +169,7 @@ void main() {
           theme: HabotTheme.light(),
           home: const MediaQuery(
             data: MediaQueryData(disableAnimations: true),
-            child: Scaffold(
-              body: Center(child: HabotProgressBar(value: null)),
-            ),
+            child: Scaffold(body: Center(child: HabotProgressBar(value: null))),
           ),
         ),
       );

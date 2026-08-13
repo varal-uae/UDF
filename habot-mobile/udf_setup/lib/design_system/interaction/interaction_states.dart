@@ -111,7 +111,9 @@ class _InteractionStateBuilderState extends State<InteractionStateBuilder> {
         behavior: HitTestBehavior.opaque,
         // Substep 4 equivalent: the tap fires on the raw pointer events with no
         // artificial delay of our own layered on top.
-        onTapDown: interactive ? (TapDownDetails _) => _set(() => _pressed = true) : null,
+        onTapDown: interactive
+            ? (TapDownDetails _) => _set(() => _pressed = true)
+            : null,
         onTapCancel: interactive ? () => _set(() => _pressed = false) : null,
         onTapUp: interactive
             ? (TapUpDetails _) {

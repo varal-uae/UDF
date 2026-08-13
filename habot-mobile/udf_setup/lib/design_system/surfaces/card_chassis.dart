@@ -52,10 +52,7 @@ class HabotCard extends StatelessWidget {
       child: Material(
         color: _surfaceColor(scheme),
         elevation: HabotElevation.dp[elevation]!,
-        shape: RoundedRectangleBorder(
-          borderRadius: shape,
-          side: _side(scheme),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: shape, side: _side(scheme)),
         clipBehavior: Clip.antiAlias,
         child: _CardBody(onPressed: onPressed, child: child),
       ),
@@ -67,7 +64,10 @@ class HabotCard extends StatelessWidget {
       : scheme.surfaceContainerLow;
 
   BorderSide _side(ColorScheme scheme) => hasBorder
-      ? BorderSide(color: scheme.outlineVariant, width: HabotCardSpec.borderWidth)
+      ? BorderSide(
+          color: scheme.outlineVariant,
+          width: HabotCardSpec.borderWidth,
+        )
       : BorderSide.none;
 }
 

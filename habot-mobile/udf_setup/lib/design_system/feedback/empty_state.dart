@@ -106,7 +106,8 @@ class HabotEmptyStates {
 
   /// The same jargon ban REF-197 applies to error copy. An empty state that
   /// says "null result set" is an error message wearing a disguise.
-  static List<String> get forbiddenJargon => HabotErrorTemplates.forbiddenJargon;
+  static List<String> get forbiddenJargon =>
+      HabotErrorTemplates.forbiddenJargon;
 }
 
 /// The empty-state container.

@@ -99,8 +99,7 @@ void main() {
       () =>
           HabotMotion.failureAutoScrollEnabled &&
           HabotMotion.failureAutoScrollDuration > Duration.zero &&
-          HabotMotion.failureAutoScrollDuration <=
-              HabotMotion.failureDuration,
+          HabotMotion.failureAutoScrollDuration <= HabotMotion.failureDuration,
     );
 
     gate(
@@ -186,7 +185,8 @@ void main() {
       expect(
         HabotMotion.durationLadder,
         contains(HabotMotion.failureDuration),
-        reason: 'The failure duration must be a rung of the shared ladder, '
+        reason:
+            'The failure duration must be a rung of the shared ladder, '
             'not a one-off value',
       );
 

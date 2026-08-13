@@ -12,6 +12,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:udf_setup/app.dart';
+import 'package:udf_setup/habot_shell_page.dart';
 import 'package:udf_setup/design_system/a11y/contrast.dart';
 import 'package:udf_setup/design_system/a11y/contrast_audit.dart';
 import 'package:udf_setup/design_system/aiss/aiss_evidence.dart';
@@ -120,8 +121,7 @@ void main() {
           'Optimal 6-8dp padding / 32-48dp row height, Ceiling 12dp.',
       'Shipped dense values sit inside the optimal band, never past the ceiling',
       () {
-        return HabotDensity.denseRowPadding >=
-                HabotDensity.optimalPaddingMin &&
+        return HabotDensity.denseRowPadding >= HabotDensity.optimalPaddingMin &&
             HabotDensity.denseRowPadding <= HabotDensity.optimalPaddingMax &&
             HabotDensity.denseRowPadding >= HabotDensity.floorPadding &&
             HabotDensity.denseRowPadding <= HabotDensity.ceilingPadding &&
@@ -288,18 +288,19 @@ void main() {
       await tester.pumpWidget(HabotApp(controller: controller));
       await tester.pumpAndSettle();
 
-      BuildContext ctx = tester.element(find.byType(DesignSystemProbePage));
+      // Steps 36-50 note: the app now opens on the shell rather than on a
+      // probe screen, so the context under test is the shell page. The
+      // requirement -- a theme switch must not reflow the whole tree -- is
+      // unchanged; only the root widget it is measured on has moved.
+      BuildContext ctx = tester.element(find.byType(HabotShellPage));
       expect(Theme.of(ctx).brightness, Brightness.light);
 
       controller.setMode(ThemeMode.dark);
       await tester.pumpAndSettle();
 
-      ctx = tester.element(find.byType(DesignSystemProbePage));
+      ctx = tester.element(find.byType(HabotShellPage));
       expect(Theme.of(ctx).brightness, Brightness.dark);
-      expect(
-        Theme.of(ctx).colorScheme.surface,
-        HabotColors.dark.surface,
-      );
+      expect(Theme.of(ctx).colorScheme.surface, HabotColors.dark.surface);
 
       gates.add(
         const AissGate(
@@ -348,8 +349,7 @@ void main() {
                 'dense padding ${HabotDensity.denseRowPadding.toStringAsFixed(0)}dp, '
                 'dense row height ${HabotDensity.denseRowHeight.toStringAsFixed(0)}dp',
             floor: '4dp minimum spacing (Material Design accessibility floor)',
-            optimal:
-                '6-8dp padding / 32-48dp row height (dense-table optimum)',
+            optimal: '6-8dp padding / 32-48dp row height (dense-table optimum)',
             ceiling:
                 '12dp (maximum density before readability/touch-target risk)',
           ),

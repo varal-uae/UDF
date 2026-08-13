@@ -29,12 +29,14 @@ class AissReporter {
     // Always echo, so the evidence is visible even where the filesystem is
     // read-only (some CI sandboxes).
     stdout
-      ..writeln('--- AISS EVIDENCE ${evidence.atomicStepReferenceId} '
-          '(${evidence.outcome.label}, '
-          '${evidence.gates.length - evidence.failedGates.length}'
-          '/${evidence.gates.length} gates passed, '
-          '${evidence.deferredGates.length} deferred, '
-          '${evidence.brokenGates.length} broken) ---')
+      ..writeln(
+        '--- AISS EVIDENCE ${evidence.atomicStepReferenceId} '
+        '(${evidence.outcome.label}, '
+        '${evidence.gates.length - evidence.failedGates.length}'
+        '/${evidence.gates.length} gates passed, '
+        '${evidence.deferredGates.length} deferred, '
+        '${evidence.brokenGates.length} broken) ---',
+      )
       ..writeln(json);
 
     try {

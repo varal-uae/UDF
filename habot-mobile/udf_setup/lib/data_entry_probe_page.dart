@@ -21,7 +21,12 @@ import 'design_system/wizard/carousel_stepper.dart';
 import 'design_system/wizard/step_machine.dart';
 
 class DataEntryProbePage extends StatefulWidget {
-  const DataEntryProbePage({super.key});
+  const DataEntryProbePage({this.embedded = false, super.key});
+
+  /// True when the app shell is hosting this as a destination. The shell owns
+  /// the master scaffold in that case, so this builds its content only --
+  /// there is exactly one wrapper on screen either way.
+  final bool embedded;
 
   static const String screenName = 'DataEntryProbePage';
 
@@ -62,10 +67,7 @@ class _DataEntryProbePageState extends State<DataEntryProbePage> {
   void initState() {
     super.initState();
     _gate = HabotFormGate();
-    _machine = WizardStepMachine(
-      steps: DataEntryProbePage.steps,
-      gate: _gate,
-    );
+    _machine = WizardStepMachine(steps: DataEntryProbePage.steps, gate: _gate);
   }
 
   @override
@@ -122,8 +124,9 @@ class _DataEntryProbePageState extends State<DataEntryProbePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
+    if (widget.embedded) {
+      return _body(context);
+    }
     return HabotMasterScaffold(
       screenName: DataEntryProbePage.screenName,
       header: HabotContextualHeader(
@@ -137,35 +140,52 @@ class _DataEntryProbePageState extends State<DataEntryProbePage> {
           ),
         ],
       ),
-      body: ErrorRollbackBoundary(
-        key: _boundary,
-        baseline: _machine.draft,
-        onRollback: _machine.restoreDraft,
-        onRetry: _simulateFailure,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'Steps 11-20: motion, atomic interaction, masking, validation, '
-              'compound fields, rollback and the guided stepper.',
-              style: theme.textTheme.bodyMedium,
+      body: _body(context),
+    );
+  }
+
+  /// The content, without a scaffold, so the app shell (Step 36+) can host
+  /// this as a destination rather than as a pushed page.
+  Widget _body(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return ErrorRollbackBoundary(
+      key: _boundary,
+      baseline: _machine.draft,
+      onRollback: _machine.restoreDraft,
+      onRetry: _simulateFailure,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            'Steps 11-20: motion, atomic interaction, masking, validation, '
+            'compound fields, rollback and the guided stepper.',
+            style: theme.textTheme.bodyMedium,
+          ),
+          const SizedBox(height: HabotSpacing.md),
+          CarouselStepper(machine: _machine, stepBuilder: _stepCard),
+          const SizedBox(height: HabotSpacing.md),
+          AtomicButton(
+            semanticLabel: 'Simulate a server failure',
+            touchPadding: AtomicButton.standardTouchPadding,
+            onPressed: _simulateFailure,
+            child: Text(
+              'Simulate a server failure',
+              style: theme.textTheme.labelLarge,
             ),
-            const SizedBox(height: HabotSpacing.md),
-            CarouselStepper(machine: _machine, stepBuilder: _stepCard),
-            const SizedBox(height: HabotSpacing.md),
-            AtomicButton(
-              semanticLabel: 'Simulate a server failure',
-              touchPadding: AtomicButton.standardTouchPadding,
-              onPressed: _simulateFailure,
-              child: Text(
-                'Simulate a server failure',
-                style: theme.textTheme.labelLarge,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+}
+
+/// The data-entry probe as a shell destination: the same content, hosted by
+/// the app shell's scaffold instead of its own.
+class DataEntryProbeBody extends StatelessWidget {
+  const DataEntryProbeBody({super.key});
+
+  @override
+  Widget build(BuildContext context) =>
+      const DataEntryProbePage(embedded: true);
 }

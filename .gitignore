@@ -47,3 +47,6 @@ pnpm-debug.log*
 
 # UDF: throwaway step archives
 Others/**/_to_delete/
+
+# Agent worktrees (transient)
+.claude/worktrees/

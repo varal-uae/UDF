@@ -308,13 +308,15 @@ void main() {
               'max ${HabotGrid.maxCompactSegments} vertical segments',
           'Spacing Rules':
               'relative column arithmetic only -- no fixed pixel container widths',
-          'Alignment Settings': 'top-centre, wrapping matrix (flex-wrap equivalent)',
+          'Alignment Settings':
+              'top-centre, wrapping matrix (flex-wrap equivalent)',
           'Layout Validation Status':
               'clean at 320 / 360 / 375 / 412dp with zero segment violations',
         },
         measurements: const <AissMeasurement>[
           AissMeasurement(
-            metricName: 'Asset/Resource Location & Access Confirmation (dp band)',
+            metricName:
+                'Asset/Resource Location & Access Confirmation (dp band)',
             observed:
                 'vertical rhythm 8dp -- sits exactly on the Optimal target',
             floor: '4dp',

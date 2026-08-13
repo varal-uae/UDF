@@ -245,9 +245,7 @@ void main() {
 
     testWidgets('[GEN-01452-G7] the chassis applies its content padding '
         'without offering a padding parameter', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        harness(const HabotCard(child: Text('filled'))),
-      );
+      await tester.pumpWidget(harness(const HabotCard(child: Text('filled'))));
       await tester.pumpAndSettle();
 
       final Padding padding = tester.widget<Padding>(

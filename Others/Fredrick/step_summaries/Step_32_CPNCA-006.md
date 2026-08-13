@@ -1,4 +1,4 @@
-# Step 32 of 35 — CPNCA-006
+# Step 32 of 50 — CPNCA-006
 
 **Atomic Step Reference ID:** `CPNCA-006-A01`  
 **Original S. No in the master sheet:** 2468  

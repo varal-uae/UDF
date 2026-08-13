@@ -86,13 +86,12 @@ class HabotTokens extends ThemeExtension<HabotTokens> {
     if (other == null) {
       return this;
     }
-    final Map<HabotElevationLevel, Color> ladder =
-        <HabotElevationLevel, Color>{
-          for (final HabotElevationLevel level in HabotElevationLevel.values)
-            level:
-                Color.lerp(surfaceLadder[level], other.surfaceLadder[level], t) ??
-                surfaceLadder[level]!,
-        };
+    final Map<HabotElevationLevel, Color> ladder = <HabotElevationLevel, Color>{
+      for (final HabotElevationLevel level in HabotElevationLevel.values)
+        level:
+            Color.lerp(surfaceLadder[level], other.surfaceLadder[level], t) ??
+            surfaceLadder[level]!,
+    };
     return HabotTokens(
       brightness: t < 0.5 ? brightness : other.brightness,
       surfaceLadder: ladder,

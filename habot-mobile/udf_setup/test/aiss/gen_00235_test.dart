@@ -114,10 +114,11 @@ void main() {
           'redefined, and no device-conditional snap logic exists',
       () {
         final List<String> offenders = <String>[];
-        for (final File file in Directory('lib')
-            .listSync(recursive: true)
-            .whereType<File>()
-            .where((File f) => f.path.endsWith('.dart'))) {
+        for (final File file
+            in Directory('lib')
+                .listSync(recursive: true)
+                .whereType<File>()
+                .where((File f) => f.path.endsWith('.dart'))) {
           final String path = file.path.replaceAll('\\', '/');
           if (path.endsWith('tokens/surface_tokens.dart')) {
             continue;

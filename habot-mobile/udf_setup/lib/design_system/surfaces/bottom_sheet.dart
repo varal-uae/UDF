@@ -186,7 +186,7 @@ class HabotBottomSheet {
       context: context,
       barrierColor: HabotSheetScrim.color,
       backgroundColor: Colors.transparent,
-      elevation: HabotElevation.dp[HabotSheetSurface.elevation]!,
+      elevation: HabotElevation.dp[HabotSheetSurface.elevation],
       isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: false,
@@ -202,19 +202,14 @@ class HabotBottomSheet {
   }
 
   /// Motion for the sheet route, collapsed to nothing under reduced motion.
-  static AnimationStyle animationStyleFor(BuildContext context) =>
-      AnimationStyle(
-        duration: HabotMotionPolicy.resolve(context, HabotMotion.sheetEnter),
-        reverseDuration: HabotMotionPolicy.resolve(
-          context,
-          HabotMotion.sheetExit,
-        ),
-        curve: HabotMotionPolicy.resolveCurve(context, HabotEasing.sheet),
-        reverseCurve: HabotMotionPolicy.resolveCurve(
-          context,
-          HabotEasing.sheet,
-        ),
-      );
+  static AnimationStyle animationStyleFor(
+    BuildContext context,
+  ) => AnimationStyle(
+    duration: HabotMotionPolicy.resolve(context, HabotMotion.sheetEnter),
+    reverseDuration: HabotMotionPolicy.resolve(context, HabotMotion.sheetExit),
+    curve: HabotMotionPolicy.resolveCurve(context, HabotEasing.sheet),
+    reverseCurve: HabotMotionPolicy.resolveCurve(context, HabotEasing.sheet),
+  );
 }
 
 class _DraggableSheet extends StatelessWidget {

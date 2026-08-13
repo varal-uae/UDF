@@ -205,8 +205,10 @@ void main() {
       await tester.tap(find.text('Try again'));
       await tester.pumpAndSettle();
       expect(retries, 1);
-      expect(key.currentState!.surfaced.single.category,
-          HabotErrorCategory.serverFailure);
+      expect(
+        key.currentState!.surfaced.single.category,
+        HabotErrorCategory.serverFailure,
+      );
       expect(tester.takeException(), isNull);
 
       gates.add(
@@ -224,56 +226,57 @@ void main() {
       );
     });
 
-    testWidgets('[GEN-01363-G6] the snackbar paints the audited error-container '
-        'pair and offers no retry where retrying cannot help', (
-      WidgetTester tester,
-    ) async {
-      final GlobalKey<SnackbarErrorBoundaryState> key =
-          GlobalKey<SnackbarErrorBoundaryState>();
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: HabotTheme.light(),
-          home: Scaffold(
-            body: SnackbarErrorBoundary(
-              key: key,
-              child: const SizedBox.shrink(),
+    testWidgets(
+      '[GEN-01363-G6] the snackbar paints the audited error-container '
+      'pair and offers no retry where retrying cannot help',
+      (WidgetTester tester) async {
+        final GlobalKey<SnackbarErrorBoundaryState> key =
+            GlobalKey<SnackbarErrorBoundaryState>();
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: HabotTheme.light(),
+            home: Scaffold(
+              body: SnackbarErrorBoundary(
+                key: key,
+                child: const SizedBox.shrink(),
+              ),
             ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      key.currentState!.reportFailure(const FormatException('bad field'));
-      await tester.pumpAndSettle();
+        key.currentState!.reportFailure(const FormatException('bad field'));
+        await tester.pumpAndSettle();
 
-      final SnackBar bar = tester.widget<SnackBar>(find.byType(SnackBar));
-      final BuildContext context = tester.element(find.byType(SnackBar));
-      final ColorScheme scheme = Theme.of(context).colorScheme;
+        final SnackBar bar = tester.widget<SnackBar>(find.byType(SnackBar));
+        final BuildContext context = tester.element(find.byType(SnackBar));
+        final ColorScheme scheme = Theme.of(context).colorScheme;
 
-      expect(bar.backgroundColor, scheme.errorContainer);
-      expect(bar.behavior, SnackBarBehavior.floating);
-      expect(bar.duration, HabotMotion.snackbarDisplay);
-      expect(
-        bar.action,
-        isNull,
-        reason: 'A validation failure is not fixed by trying again',
-      );
+        expect(bar.backgroundColor, scheme.errorContainer);
+        expect(bar.behavior, SnackBarBehavior.floating);
+        expect(bar.duration, HabotMotion.snackbarDisplay);
+        expect(
+          bar.action,
+          isNull,
+          reason: 'A validation failure is not fixed by trying again',
+        );
 
-      gates.add(
-        const AissGate(
-          id: 'GEN-01363-G6',
-          requirementSource:
-              'Setup Step (Action): "...M3 error Snackbars." + REF-197 Mobile-'
-              'First UI Decision: "Include an explicit, easy-to-tap retry '
-              'button within error notification areas" -- where retrying is a '
-              'real option.',
-          description:
-              'The rendered snackbar uses the audited error-container colour '
-              'and omits the retry control for a validation failure',
-          passed: true,
-        ),
-      );
-    });
+        gates.add(
+          const AissGate(
+            id: 'GEN-01363-G6',
+            requirementSource:
+                'Setup Step (Action): "...M3 error Snackbars." + REF-197 Mobile-'
+                'First UI Decision: "Include an explicit, easy-to-tap retry '
+                'button within error notification areas" -- where retrying is a '
+                'real option.',
+            description:
+                'The rendered snackbar uses the audited error-container colour '
+                'and omits the retry control for a validation failure',
+            passed: true,
+          ),
+        );
+      },
+    );
 
     testWidgets('[GEN-01363-G7] a second failure replaces the first rather than '
         'queueing behind it', (WidgetTester tester) async {
@@ -293,7 +296,9 @@ void main() {
       await tester.pumpAndSettle();
 
       key.currentState!
-        ..reportFailure(const _ServerFailure('SocketException: Failed host lookup'))
+        ..reportFailure(
+          const _ServerFailure('SocketException: Failed host lookup'),
+        )
         ..reportFailure(const _ServerFailure('HTTP 500 server error'));
       await tester.pumpAndSettle();
 

@@ -1,4 +1,4 @@
-# Step 6 of 35 — RCGLA-012
+# Step 6 of 50 — RCGLA-012
 
 **Atomic Step Reference ID:** `RCGLA-012-A01`  
 **Original S. No in the master sheet:** 345  

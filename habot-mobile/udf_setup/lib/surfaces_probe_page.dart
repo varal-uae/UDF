@@ -15,7 +15,6 @@ import 'design_system/layout/virtualized_list.dart';
 import 'design_system/motion/shared_axis.dart';
 import 'design_system/navigation/contextual_header.dart';
 import 'design_system/navigation/header_search.dart';
-import 'design_system/surfaces/bottom_sheet.dart';
 import 'design_system/surfaces/card_chassis.dart';
 import 'design_system/surfaces/metadata_disclosure.dart';
 import 'design_system/telemetry/friction_tracker.dart';
@@ -24,7 +23,11 @@ import 'design_system/tokens/surface_tokens.dart';
 
 /// Exercises the surfaces built in Steps 21-35.
 class SurfacesProbePage extends StatefulWidget {
-  const SurfacesProbePage({super.key});
+  const SurfacesProbePage({this.embedded = false, super.key});
+
+  /// True when the app shell is hosting this as a destination; the shell owns
+  /// the master scaffold, so this builds its content only.
+  final bool embedded;
 
   /// Screen name registered with the RCGLA-018 layout audit.
   static const String screenName = 'SurfacesProbePage';
@@ -72,13 +75,23 @@ class _SurfacesProbePageState extends State<SurfacesProbePage> {
 
   Future<List<HabotSearchResult>> _searchSource(String query) async {
     return <HabotSearchResult>[
-      HabotSearchResult(id: '1', label: '$query batch 001', category: 'Batches'),
+      HabotSearchResult(
+        id: '1',
+        label: '$query batch 001',
+        category: 'Batches',
+      ),
       HabotSearchResult(id: '2', label: '$query ledger', category: 'Ledgers'),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.embedded) {
+      return FrictionTracker(
+        screenName: SurfacesProbePage.screenName,
+        child: _body(context),
+      );
+    }
     return FrictionTracker(
       screenName: SurfacesProbePage.screenName,
       child: HabotMasterScaffold(
@@ -87,43 +100,45 @@ class _SurfacesProbePageState extends State<SurfacesProbePage> {
         // give the list unbounded height and defeat the whole point.
         scrollable: false,
         header: const HabotContextualHeader(title: 'Surfaces & feedback'),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            HabotHeaderSearchField(controller: _search),
-            const SizedBox(height: HabotSpacing.xs),
-            _ProbeControls(
-              metadata: _metadata,
-              onSheet: _openSheet,
-              onSnackbar: _showSnackbar,
-              onToggleDetail: () =>
-                  setState(() => _detailOpen = !_detailOpen),
-            ),
-            const SizedBox(height: HabotSpacing.xs),
-            HabotSharedAxisSwitcher(
-              stateKey: _detailOpen ? 'detail' : 'summary',
-              axis: HabotSharedAxis.scaled,
-              child: _detailOpen
-                  ? const _DetailPanel()
-                  : const _SummaryPanel(),
-            ),
-            const SizedBox(height: HabotSpacing.xs),
-            Expanded(
-              child: HabotVirtualList<int>(
-                controller: _chunks,
-                itemBuilder: (BuildContext context, int item, int index) =>
-                    SizedBox(
-                      height: HabotDiscovery.searchResultRowHeight,
-                      child: HabotMilestoneNode(
-                        title: 'Task ${item + 1}',
-                        status: HabotStatus.values[item % 5],
-                      ),
-                    ),
-              ),
-            ),
-          ],
-        ),
+        body: _body(context),
       ),
+    );
+  }
+
+  /// The content, without a scaffold, so the shell can host it.
+  Widget _body(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        HabotHeaderSearchField(controller: _search),
+        const SizedBox(height: HabotSpacing.xs),
+        _ProbeControls(
+          metadata: _metadata,
+          onSheet: _openSheet,
+          onSnackbar: _showSnackbar,
+          onToggleDetail: () => setState(() => _detailOpen = !_detailOpen),
+        ),
+        const SizedBox(height: HabotSpacing.xs),
+        HabotSharedAxisSwitcher(
+          stateKey: _detailOpen ? 'detail' : 'summary',
+          axis: HabotSharedAxis.scaled,
+          child: _detailOpen ? const _DetailPanel() : const _SummaryPanel(),
+        ),
+        const SizedBox(height: HabotSpacing.xs),
+        Expanded(
+          child: HabotVirtualList<int>(
+            controller: _chunks,
+            itemBuilder: (BuildContext context, int item, int index) =>
+                SizedBox(
+                  height: HabotDiscovery.searchResultRowHeight,
+                  child: HabotMilestoneNode(
+                    title: 'Task ${item + 1}',
+                    status: HabotStatus.values[item % 5],
+                  ),
+                ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -190,9 +205,8 @@ class _SummaryPanel extends StatelessWidget {
   const _SummaryPanel();
 
   @override
-  Widget build(BuildContext context) => const HabotCard(
-    child: HabotStatusBadge(status: HabotStatus.active),
-  );
+  Widget build(BuildContext context) =>
+      const HabotCard(child: HabotStatusBadge(status: HabotStatus.active));
 }
 
 class _DetailPanel extends StatelessWidget {
@@ -215,4 +229,13 @@ class SocketLikeFailure implements Exception {
   final String message;
   @override
   String toString() => message;
+}
+
+/// The surfaces probe as a shell destination: the same content, hosted by the
+/// app shell's scaffold instead of its own.
+class SurfacesProbeBody extends StatelessWidget {
+  const SurfacesProbeBody({super.key});
+
+  @override
+  Widget build(BuildContext context) => const SurfacesProbePage(embedded: true);
 }

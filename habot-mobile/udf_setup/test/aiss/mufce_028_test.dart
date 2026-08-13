@@ -179,8 +179,7 @@ void main() {
         harness(
           Builder(
             builder: (BuildContext context) => FilledButton(
-              onPressed: () =>
-                  HabotMetadataDisclosure.show(context, _metadata),
+              onPressed: () => HabotMetadataDisclosure.show(context, _metadata),
               child: const Text('disclose'),
             ),
           ),

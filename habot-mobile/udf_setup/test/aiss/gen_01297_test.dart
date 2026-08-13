@@ -243,7 +243,9 @@ void main() {
           ),
         ],
         gates: gates,
-        artefacts: const <String>['lib/design_system/feedback/empty_state.dart'],
+        artefacts: const <String>[
+          'lib/design_system/feedback/empty_state.dart',
+        ],
       ),
     );
   });

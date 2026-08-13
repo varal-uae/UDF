@@ -208,7 +208,8 @@ void main() {
   });
 
   tearDownAll(() {
-    final List<ContrastResult> ladder = ContrastAudit.auditDarkElevationLadder();
+    final List<ContrastResult> ladder =
+        ContrastAudit.auditDarkElevationLadder();
     final double worstRung = ladder
         .map((ContrastResult r) => r.ratio)
         .reduce((double a, double b) => a < b ? a : b);

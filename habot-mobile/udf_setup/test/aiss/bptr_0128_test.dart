@@ -86,8 +86,7 @@ void main() {
       () =>
           HabotDensity.minTouchTarget == 48 &&
           HabotDensity.touchSafetyMargin == 8 &&
-          AtomicButton.standardTouchPadding ==
-              HabotDensity.touchSafetyMargin,
+          AtomicButton.standardTouchPadding == HabotDensity.touchSafetyMargin,
     );
 
     gate(
@@ -149,52 +148,53 @@ void main() {
   });
 
   group('BPTR-0128-A01 :: rendered behaviour', () {
-    testWidgets('[BPTR-0128-G4] a tap fires with no artificial delay of our own', (
-      WidgetTester tester,
-    ) async {
-      int taps = 0;
-      await tester.pumpWidget(
-        _host(
-          AtomicButton(
-            semanticLabel: 'Go',
-            touchPadding: AtomicButton.standardTouchPadding,
-            onPressed: () => taps++,
-            child: const Icon(Icons.arrow_forward),
+    testWidgets(
+      '[BPTR-0128-G4] a tap fires with no artificial delay of our own',
+      (WidgetTester tester) async {
+        int taps = 0;
+        await tester.pumpWidget(
+          _host(
+            AtomicButton(
+              semanticLabel: 'Go',
+              touchPadding: AtomicButton.standardTouchPadding,
+              onPressed: () => taps++,
+              child: const Icon(Icons.arrow_forward),
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(AtomicButton));
-      // A single pump, not pumpAndSettle: if anything queued a delay, the
-      // callback would not have fired yet.
-      await tester.pump();
-      expect(
-        taps,
-        1,
-        reason:
-            'Substep 4 equivalent: the callback must fire on the tap, not '
-            'after a timer',
-      );
+        await tester.tap(find.byType(AtomicButton));
+        // A single pump, not pumpAndSettle: if anything queued a delay, the
+        // callback would not have fired yet.
+        await tester.pump();
+        expect(
+          taps,
+          1,
+          reason:
+              'Substep 4 equivalent: the callback must fire on the tap, not '
+              'after a timer',
+        );
 
-      gates.add(
-        const AissGate(
-          id: 'BPTR-0128-G4',
-          requirementSource:
-              '4 Substeps #4: "Implement performance-tuned passive touch '
-              'listeners directly to eradicate 300ms mobile touch-click delays '
-              'completely."',
-          description:
-              'Tap callback fires within a single frame of the gesture -- no '
-              'delay is introduced by the design system',
-          passed: true,
-          detail:
-              'Flutter translation: the 300ms delay is a mobile-browser '
-              'double-tap-zoom behaviour and does not exist in the Flutter '
-              'gesture arena. The obligation is to add none of our own.',
-        ),
-      );
-    });
+        gates.add(
+          const AissGate(
+            id: 'BPTR-0128-G4',
+            requirementSource:
+                '4 Substeps #4: "Implement performance-tuned passive touch '
+                'listeners directly to eradicate 300ms mobile touch-click delays '
+                'completely."',
+            description:
+                'Tap callback fires within a single frame of the gesture -- no '
+                'delay is introduced by the design system',
+            passed: true,
+            detail:
+                'Flutter translation: the 300ms delay is a mobile-browser '
+                'double-tap-zoom behaviour and does not exist in the Flutter '
+                'gesture arena. The obligation is to add none of our own.',
+          ),
+        );
+      },
+    );
 
     testWidgets('[BPTR-0128-G6] the rendered button clears 48dp and reacts to '
         'pointer state', (WidgetTester tester) async {
@@ -221,8 +221,7 @@ void main() {
       expect(
         box.size.width,
         greaterThanOrEqualTo(
-          HabotDensity.minTouchTarget +
-              (AtomicButton.standardTouchPadding * 2),
+          HabotDensity.minTouchTarget + (AtomicButton.standardTouchPadding * 2),
         ),
       );
       expect(tester.takeException(), isNull);
@@ -239,7 +238,8 @@ void main() {
               'A 10dp glyph renders inside a target that clears 48dp plus the '
               '8dp safety boundary, with zero audit violations',
           passed: true,
-          detail: 'measured ${box.size.width.toStringAsFixed(0)}x'
+          detail:
+              'measured ${box.size.width.toStringAsFixed(0)}x'
               '${box.size.height.toStringAsFixed(0)}dp',
         ),
       );
@@ -258,11 +258,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final SemanticsNode node = tester.getSemantics(
-        find.bySemanticsLabel('Unavailable'),
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Unavailable')),
+        containsSemantics(isButton: true, isEnabled: false),
       );
-      expect(node.hasFlag(SemanticsFlag.isButton), isTrue);
-      expect(node.hasFlag(SemanticsFlag.isEnabled), isFalse);
 
       gates.add(
         const AissGate(
@@ -290,7 +289,8 @@ void main() {
         assignedTeamMember: 'Fredrick',
         dataCollected: <String, String>{
           'Document Title': 'Material Design 3 -- interaction states',
-          'Document URL': 'https://m3.material.io/foundations/interaction/states',
+          'Document URL':
+              'https://m3.material.io/foundations/interaction/states',
           'Last Updated Date': 'MD3 state-layer opacities as published',
           'Accessibility Status':
               'Required semantic label + enabled flag on every instance; '

@@ -82,8 +82,7 @@ class _MetadataBody extends StatelessWidget {
       children: <Widget>[
         Text(metadata.description, style: text.bodyMedium),
         if (metadata.hasFormula) const SizedBox(height: HabotSheet.contentGap),
-        if (metadata.hasFormula)
-          Text(metadata.formula!, style: text.bodySmall),
+        if (metadata.hasFormula) Text(metadata.formula!, style: text.bodySmall),
         if (metadata.source != null)
           const SizedBox(height: HabotSheet.contentGap),
         if (metadata.source != null)

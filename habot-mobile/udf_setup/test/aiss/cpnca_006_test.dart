@@ -121,37 +121,39 @@ void main() {
       );
     });
 
-    test('[CPNCA-006-G2] a burst of load requests collapses into one fetch',
-        () async {
-      final RecordingSource source = RecordingSource(total: 10000);
-      final HabotChunkController<int> controller = HabotChunkController<int>(
-        fetch: source.fetch,
-      );
-      addTearDown(controller.dispose);
+    test(
+      '[CPNCA-006-G2] a burst of load requests collapses into one fetch',
+      () async {
+        final RecordingSource source = RecordingSource(total: 10000);
+        final HabotChunkController<int> controller = HabotChunkController<int>(
+          fetch: source.fetch,
+        );
+        addTearDown(controller.dispose);
 
-      await Future.wait<void>(<Future<void>>[
-        controller.loadMore(),
-        controller.loadMore(),
-        controller.loadMore(),
-      ]);
+        await Future.wait<void>(<Future<void>>[
+          controller.loadMore(),
+          controller.loadMore(),
+          controller.loadMore(),
+        ]);
 
-      expect(controller.fetchCount, 1);
-      expect(controller.loadedCount, HabotDiscovery.chunkSize);
+        expect(controller.fetchCount, 1);
+        expect(controller.loadedCount, HabotDiscovery.chunkSize);
 
-      gates.add(
-        AissGate(
-          id: 'CPNCA-006-G2',
-          requirementSource:
-              '4 Substeps #2 -- partitioning only holds if a fast scroll '
-              'cannot stack overlapping fetches for the same offset.',
-          description:
-              'Three concurrent load requests result in exactly one call to '
-              'the source',
-          passed: true,
-          detail: 'fetchCount ${controller.fetchCount}',
-        ),
-      );
-    });
+        gates.add(
+          AissGate(
+            id: 'CPNCA-006-G2',
+            requirementSource:
+                '4 Substeps #2 -- partitioning only holds if a fast scroll '
+                'cannot stack overlapping fetches for the same offset.',
+            description:
+                'Three concurrent load requests result in exactly one call to '
+                'the source',
+            passed: true,
+            detail: 'fetchCount ${controller.fetchCount}',
+          ),
+        );
+      },
+    );
 
     test('[CPNCA-006-G3] prefetch fires only inside the threshold, and stops '
         'at the end of the data', () async {
@@ -225,9 +227,8 @@ void main() {
               height: 600,
               child: HabotVirtualList<int>(
                 controller: controller,
-                itemBuilder:
-                    (BuildContext context, int item, int index) =>
-                        ProbeRow(index: item),
+                itemBuilder: (BuildContext context, int item, int index) =>
+                    ProbeRow(index: item),
               ),
             ),
           ),
@@ -294,9 +295,8 @@ void main() {
               height: 600,
               child: HabotVirtualList<int>(
                 controller: controller,
-                itemBuilder:
-                    (BuildContext context, int item, int index) =>
-                        ProbeRow(index: item),
+                itemBuilder: (BuildContext context, int item, int index) =>
+                    ProbeRow(index: item),
               ),
             ),
           ),
@@ -307,9 +307,7 @@ void main() {
       // Substep 3: a structural placeholder, not a blank gap.
       expect(find.byType(LinearProgressIndicator), findsOneWidget);
 
-      pending.complete(
-        HabotChunk<int>(items: <int>[1, 2, 3], hasMore: false),
-      );
+      pending.complete(HabotChunk<int>(items: <int>[1, 2, 3], hasMore: false));
       await tester.pumpAndSettle();
 
       expect(find.byType(ProbeRow), findsNWidgets(3));
@@ -346,9 +344,8 @@ void main() {
               child: HabotVirtualList<int>(
                 controller: controller,
                 emptyReason: HabotEmptyReason.nothingYet,
-                itemBuilder:
-                    (BuildContext context, int item, int index) =>
-                        ProbeRow(index: item),
+                itemBuilder: (BuildContext context, int item, int index) =>
+                    ProbeRow(index: item),
               ),
             ),
           ),

@@ -20,6 +20,7 @@ import 'design_system/theme/habot_theme_scope.dart';
 import 'design_system/theme/theme_controller.dart';
 import 'design_system/tokens/grid_tokens.dart';
 import 'design_system/tokens/spacing_tokens.dart';
+import 'habot_shell_page.dart';
 import 'surfaces_probe_page.dart';
 
 /// Root of the Habot mobile client.
@@ -27,10 +28,20 @@ import 'surfaces_probe_page.dart';
 /// Owns exactly one [HabotThemeController] and hands it to [MaterialApp] via
 /// [HabotThemeScope]. No other widget builds a [ThemeData].
 class HabotApp extends StatefulWidget {
-  const HabotApp({this.controller, super.key});
+  const HabotApp({this.controller, this.initialLink, this.home, super.key});
 
   /// Injectable so gates can drive theme state without touching the OS.
   final HabotThemeController? controller;
+
+  /// A deep link to open on launch, as a notification tap supplies
+  /// (GEN-00999 / GEN-02082).
+  final String? initialLink;
+
+  /// Overrides the launch screen. Production always opens on the shell; gates
+  /// inject a probe here so a rendering test roots the real app -- theme scope,
+  /// scroll behaviour and all -- at the screen under test rather than
+  /// re-assembling that wiring by hand.
+  final Widget? home;
 
   @override
   State<HabotApp> createState() => _HabotAppState();
@@ -74,7 +85,11 @@ class _HabotAppState extends State<HabotApp> {
             // IS38-SGTIM-018: the elastic overscroll applies to every list in
             // the app, not to whichever ones remembered to ask for it.
             scrollBehavior: const HabotScrollBehavior(),
-            home: const DesignSystemProbePage(),
+            // Steps 36-50: the app opens on its shell -- destinations, routing
+            // and the offline banner -- rather than on a probe screen. The
+            // probes are still reachable; they are destinations now.
+            home:
+                widget.home ?? HabotShellPage(initialLink: widget.initialLink),
           );
         },
       ),
@@ -155,9 +170,15 @@ class _DesignSystemProbePageState extends State<DesignSystemProbePage> {
         body: HabotFluidContainer(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            Text('Grid decision (SSTLA-004)', style: theme.textTheme.titleMedium),
+            Text(
+              'Grid decision (SSTLA-004)',
+              style: theme.textTheme.titleMedium,
+            ),
             const GridDecisionReadout(),
-            Text('Column matrix (RCGLA-032)', style: theme.textTheme.titleMedium),
+            Text(
+              'Column matrix (RCGLA-032)',
+              style: theme.textTheme.titleMedium,
+            ),
             HabotColumnMatrix(
               children: const <HabotGridSpan>[
                 HabotGridSpan(span: 2, child: _ProbeCard(label: 'span 2')),
@@ -168,7 +189,10 @@ class _DesignSystemProbePageState extends State<DesignSystemProbePage> {
                 ),
               ],
             ),
-            Text('Touch targets (TTMAC-011)', style: theme.textTheme.titleMedium),
+            Text(
+              'Touch targets (TTMAC-011)',
+              style: theme.textTheme.titleMedium,
+            ),
             HabotTouchRow(
               children: <Widget>[
                 HabotTouchTarget(
@@ -191,10 +215,7 @@ class _DesignSystemProbePageState extends State<DesignSystemProbePage> {
             const TextField(
               decoration: InputDecoration(labelText: 'Token-styled input'),
             ),
-            FilledButton(
-              onPressed: () {},
-              child: const Text('Primary action'),
-            ),
+            FilledButton(onPressed: () {}, child: const Text('Primary action')),
             SizedBox(height: width),
           ],
         ),
