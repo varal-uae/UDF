@@ -1,5 +1,5 @@
-/// AISS: GEN-00055-A01 -- "Build the BottomSheet atomic component using MD3
-///   design tokens."
+/// AISS: GEN-00055-A01 -- "Build the BottomSheet atomic component using
+///   MD3 design tokens."
 /// AISS: GEN-00954-A01 -- "Standardize Material Design 3 (MD3) Bottom-Sheet UI
 ///   for Mobile Complex Action Flows" / "Configure backdrop scrim color to 32%
 ///   opacity black."
@@ -102,10 +102,10 @@ class HabotSheetSurface extends StatelessWidget {
       elevation: HabotElevation.dp[elevation]!,
       borderRadius: shape,
       clipBehavior: Clip.antiAlias,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(HabotSheet.contentPadding),
+      child: Padding(
+        padding: const EdgeInsets.all(HabotSheet.contentPadding),
+        child: SafeArea(
+          top: false,
           child: _SheetBody(title: title, actions: actions, child: child),
         ),
       ),

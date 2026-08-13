@@ -124,7 +124,7 @@ void main() {
             continue;
           }
           final String code = file.readAsStringSync();
-          if (RegExp(r'initialChildSize:\s*(?!HabotSheet)').hasMatch(code)) {
+          if (RegExp(r'initialChildSize:\s*(?!HabotSheet)\S').hasMatch(code)) {
             offenders.add(path);
           }
         }
