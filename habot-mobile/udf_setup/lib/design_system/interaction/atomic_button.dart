@@ -60,16 +60,19 @@ class AtomicButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
+      container: true,
       label: semanticLabel,
       button: true,
       enabled: onPressed != null,
-      child: InteractionStateBuilder(
-        onPressed: onPressed,
-        onLongPress: onLongPress,
-        minTarget: HabotDensity.minTouchTarget,
-        touchPadding: touchPadding,
-        builder: (BuildContext context, HabotInteractionState state) =>
-            InteractionStateLayer(state: state, child: child),
+      child: ExcludeSemantics(
+        child: InteractionStateBuilder(
+          onPressed: onPressed,
+          onLongPress: onLongPress,
+          minTarget: HabotDensity.minTouchTarget,
+          touchPadding: touchPadding,
+          builder: (BuildContext context, HabotInteractionState state) =>
+              InteractionStateLayer(state: state, child: child),
+        ),
       ),
     );
   }
