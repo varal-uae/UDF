@@ -259,7 +259,7 @@ void main() {
           'Created By': 'Fredrick',
           'Creation Method': 'AISS step CSIVW-001-A01',
           'Initial Configuration':
-              'AsciiOnly -> PasteHygiene -> Filtering -> LengthLimiting',
+              'PasteHygiene -> AsciiOnly -> Filtering -> LengthLimiting',
           'Object ID': 'lib/design_system/forms/input_mask.dart',
         },
         measurements: <AissMeasurement>[

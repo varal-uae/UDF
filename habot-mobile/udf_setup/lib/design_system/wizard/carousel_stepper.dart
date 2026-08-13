@@ -41,7 +41,10 @@ class CarouselStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: machine,
+      // Rebuild on either the step machine *or* the validation gate: the Next
+      // control's enabled state tracks gate.canAdvance, which changes without
+      // the machine notifying (a field turning valid) -- FIEVR-033-G7.
+      animation: Listenable.merge(<Listenable>[machine, machine.gate]),
       builder: (BuildContext context, Widget? _) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
