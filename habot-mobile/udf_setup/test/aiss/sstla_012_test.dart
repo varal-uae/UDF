@@ -255,9 +255,15 @@ void main() {
       expect(find.text('action pane'), findsOneWidget);
       expect(key.currentState!.ratio, ContextualMirrorSpec.defaultRatio);
 
+      // A double-tap is two taps separated by more than kDoubleTapMinTime
+      // (40ms) and less than kDoubleTapTimeout (300ms); without the gap the two
+      // taps land at the same instant and DoubleTapGestureRecognizer rejects
+      // them, so the cycle never fires. The final pump runs past
+      // kDoubleTapTimeout so the recognizer's residual timer is flushed.
       await tester.tap(find.byKey(HabotSplitView.panelBarKey));
+      await tester.pump(const Duration(milliseconds: 50));
       await tester.tap(find.byKey(HabotSplitView.panelBarKey));
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
 
       expect(key.currentState!.ratio, ContextualMirrorSpec.defaultRatio.next);
       expect(tester.takeException(), isNull);
