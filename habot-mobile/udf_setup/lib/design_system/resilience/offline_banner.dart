@@ -96,23 +96,30 @@ class HabotOfflineBanner extends StatelessWidget {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return Semantics(
       key: bannerKey,
+      container: true,
       liveRegion: true,
       label:
           '${HabotOfflineCopy.titleFor(monitor.state)}. '
           '${HabotOfflineCopy.pendingFor(monitor.pendingCount)}',
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: HabotOfflineBannerPalette.background(scheme, monitor.state),
-          borderRadius: BorderRadius.circular(HabotShape.sm),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(HabotSpacing.sm),
-          child: _BannerContent(
-            state: monitor.state,
-            pendingCount: monitor.pendingCount,
-            foreground: HabotOfflineBannerPalette.foreground(
-              scheme,
-              monitor.state,
+      // The banner announces itself as one live region carrying the state and
+      // the queue depth. The visual Text children would otherwise contribute
+      // their own labels and split that single announcement into three, so
+      // their semantics are excluded and only the composed label above is read.
+      child: ExcludeSemantics(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: HabotOfflineBannerPalette.background(scheme, monitor.state),
+            borderRadius: BorderRadius.circular(HabotShape.sm),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(HabotSpacing.sm),
+            child: _BannerContent(
+              state: monitor.state,
+              pendingCount: monitor.pendingCount,
+              foreground: HabotOfflineBannerPalette.foreground(
+                scheme,
+                monitor.state,
+              ),
             ),
           ),
         ),
