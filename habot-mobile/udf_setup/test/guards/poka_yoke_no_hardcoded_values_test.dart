@@ -16,6 +16,9 @@
 ///   BPTR-0128 Mistake-Proofing: "compiler constraints instantly flag compile
 ///     errors if a developer creates a clickable component without specifying
 ///     explicit touch padding parameters."
+///   MUFCE-028 Setup Step: "Mandatory removal of all mouse hover tooltips and
+///     replacement with touch long-press modal sheets." + 4 Substeps #1:
+///     "Strip all .onHover logic actions from mobile codebase templates."
 ///
 /// This scans every `.dart` file under `lib/` and fails the build on any
 /// violation. The token declaration files are the only sanctioned place a raw
@@ -49,6 +52,20 @@ const String _themeAdapterSite = 'lib/design_system/theme/habot_theme.dart';
 /// Only file allowed to declare a raw Duration or reference a raw Curve.
 /// BPTR-0422 and REF-377 both write their tokens here.
 const String _motionTokenSite = 'lib/design_system/tokens/motion_tokens.dart';
+
+/// MUFCE-028: a requirement about code that must NOT exist.
+///
+/// Both rules below are absolute -- there is no exempt site. A hover tooltip
+/// is unreachable on a touch device, so information that only appears on hover
+/// is, on a phone, information that does not exist. The replacement is
+/// `HabotMetadataDisclosure`, which opens a bottom drawer on long-press and on
+/// a quick tap of the trailing icon.
+///
+/// This is why the header's overflow menu is a sheet rather than a
+/// `PopupMenuButton`: the framework wraps that button in a `Tooltip`
+/// unconditionally, with no API to switch it off.
+final RegExp _tooltipWidget = RegExp(r'\bTooltip\s*\(');
+final RegExp _hoverCallback = RegExp(r'\bonHover\s*:');
 
 /// Colour names that carry no brand meaning and are therefore permitted.
 const Set<String> _allowedMaterialColors = <String>{'transparent'};
@@ -302,7 +319,29 @@ void main() {
           }
         }
 
-        // ---- RULE 4: no standalone theme construction ------------------
+        // ---- RULE 4: no hover affordances (MUFCE-028) ------------------
+        for (final RegExpMatch m in _tooltipWidget.allMatches(code)) {
+          violations.add(
+            _Violation(
+              path,
+              _lineOf(code, m.start),
+              'HOVER_TOOLTIP',
+              'Tooltip(...) -- use HabotMetadataDisclosure.show(...) instead',
+            ),
+          );
+        }
+        for (final RegExpMatch m in _hoverCallback.allMatches(code)) {
+          violations.add(
+            _Violation(
+              path,
+              _lineOf(code, m.start),
+              'HOVER_CALLBACK',
+              'onHover: -- hover is unreachable on touch; bind long-press',
+            ),
+          );
+        }
+
+        // ---- RULE 5: no standalone theme construction ------------------
         if (path != _themeAdapterSite) {
           for (final RegExpMatch m
               in RegExp(r'\bThemeData\s*\(').allMatches(code)) {
@@ -337,6 +376,8 @@ void main() {
       final t = ThemeData();
       const d = Duration(milliseconds: 250);
       const c = Curves.bounceIn;
+      final w = Tooltip(message: m, child: c);
+      final h = InkWell(onHover: (v) {}, child: c);
     ''';
     final String stripped = _stripCommentsAndStrings(planted);
     expect(
@@ -355,6 +396,8 @@ void main() {
       isTrue,
     );
     expect(RegExp(r'\bCurves\.\w+').hasMatch(stripped), isTrue);
+    expect(_tooltipWidget.hasMatch(stripped), isTrue);
+    expect(_hoverCallback.hasMatch(stripped), isTrue);
 
     // And prove it does NOT fire on documentation that merely mentions values.
     const String docOnly = '''

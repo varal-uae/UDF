@@ -22,6 +22,7 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../surfaces/metadata_disclosure.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Wraps any interactive child in a target of at least 48x48 dp.
@@ -35,7 +36,7 @@ class HabotTouchTarget extends StatelessWidget {
     required this.semanticLabel,
     this.onPressed,
     this.onLongPress,
-    this.tooltip,
+    this.detail,
     this.minSize = HabotDensity.minTouchTarget,
     super.key,
   }) : assert(
@@ -55,45 +56,44 @@ class HabotTouchTarget extends StatelessWidget {
 
   /// Substep 4: long-press reveals detail instead of a dense inline text box.
   /// Defaults to [semanticLabel] when a press handler exists.
-  final String? tooltip;
+  ///
+  /// MUFCE-028 replaced the [Tooltip] that used to carry this: a tooltip is a
+  /// hover artefact, invisible on a touch device except through the same
+  /// long-press, and it truncates anything longer than a phrase. The detail
+  /// now opens in a bottom drawer via [HabotMetadataDisclosure], which is the
+  /// only surface in the app allowed to present metadata.
+  final String? detail;
 
   final double minSize;
 
+  /// The metadata a long-press will disclose.
+  HabotMetadata get metadata =>
+      HabotMetadata(title: semanticLabel, description: detail ?? semanticLabel);
+
   @override
   Widget build(BuildContext context) {
-    final String effectiveTooltip = tooltip ?? semanticLabel;
-
-    Widget target = ConstrainedBox(
-      constraints: BoxConstraints(minWidth: minSize, minHeight: minSize),
-      child: Center(
-        widthFactor: 1,
-        heightFactor: 1,
-        child: child,
-      ),
-    );
-
-    target = InkResponse(
+    final Widget target = InkResponse(
       onTap: onPressed,
-      onLongPress: onLongPress,
+      onLongPress: onLongPress ?? () => _disclose(context),
       radius: minSize / 2,
       containedInkWell: false,
-      child: target,
-    );
-
-    // Tooltip already handles long-press on touch platforms, which is exactly
-    // what substep 4 asks for.
-    target = Tooltip(
-      message: effectiveTooltip,
-      triggerMode: TooltipTriggerMode.longPress,
-      child: target,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: minSize, minHeight: minSize),
+        child: Center(widthFactor: 1, heightFactor: 1, child: child),
+      ),
     );
 
     return Semantics(
       label: semanticLabel,
+      hint: detail,
       button: onPressed != null,
       enabled: onPressed != null,
       child: target,
     );
+  }
+
+  void _disclose(BuildContext context) {
+    HabotMetadataDisclosure.show(context, metadata);
   }
 }
 

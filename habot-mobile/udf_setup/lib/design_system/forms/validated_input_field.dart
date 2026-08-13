@@ -14,6 +14,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../interaction/touch_standards.dart';
+import '../telemetry/hesitation_tracker.dart';
 import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -62,8 +63,14 @@ class _ValidatedInputFieldState extends State<ValidatedInputField> {
   late final bool _ownsController;
   late final HabotFieldRule _rule;
 
+  /// UFHT-032: the focus listener the tracker attached, kept so it can be
+  /// detached again. Every field carries one -- that is what makes the
+  /// Event Listener Coverage Rate structural rather than aspirational.
+  VoidCallback? _hesitationListener;
+
   FieldValidationResult _result = const FieldValidationResult.valid();
   bool _touched = false;
+  String _previousValue = '';
 
   @override
   void initState() {
@@ -73,13 +80,28 @@ class _ValidatedInputFieldState extends State<ValidatedInputField> {
     _controller = widget.controller ?? TextEditingController();
     _focus = FocusNode();
     _focus.addListener(_onFocusChange);
+    // UFHT-032 Setup Step Description: "Attach focus event listeners to every
+    // individual input field within the target form." Done here, once, so no
+    // field can exist without one.
+    _hesitationListener = HabotHesitationTracker.instance.attach(
+      widget.fieldName,
+      _focus,
+    );
     widget.gate?.register(widget.fieldName, required: widget.required);
     _result = _rule.validate(_controller.text, required: widget.required);
+    _previousValue = _controller.text;
     widget.gate?.update(widget.fieldName, _result);
   }
 
   @override
   void dispose() {
+    if (_hesitationListener != null) {
+      HabotHesitationTracker.instance.detach(
+        widget.fieldName,
+        _focus,
+        _hesitationListener!,
+      );
+    }
     _focus.removeListener(_onFocusChange);
     _focus.dispose();
     if (_ownsController) {
@@ -99,6 +121,12 @@ class _ValidatedInputFieldState extends State<ValidatedInputField> {
   }
 
   void _onChanged(String value) {
+    // GEN-00632: content removed is a correction. Only the lengths are
+    // compared -- neither value is recorded anywhere.
+    if (value.length < _previousValue.length) {
+      HabotHesitationTracker.instance.recordCorrection(widget.fieldName);
+    }
+    _previousValue = value;
     // Self-Chasing: recheck the second an error is edited, so a warning clears
     // as soon as the value passes rather than waiting for another blur.
     final FieldValidationResult next = _rule.validate(

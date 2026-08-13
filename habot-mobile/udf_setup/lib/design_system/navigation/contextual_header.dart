@@ -17,9 +17,11 @@ library;
 import 'package:flutter/material.dart';
 
 import '../interaction/touch_target.dart';
+import '../surfaces/bottom_sheet.dart';
 import '../tokens/elevation_tokens.dart';
 import '../tokens/grid_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/surface_tokens.dart';
 import 'back_navigation.dart';
 
 /// One action in the header. Actions beyond [HabotContextualHeader.maxVisibleActions]
@@ -210,33 +212,75 @@ class _HabotContextualHeaderState extends State<HabotContextualHeader> {
         for (final HabotHeaderAction action in visible)
           HabotTouchTarget(
             semanticLabel: action.label,
-            tooltip: action.label,
+            detail: action.label,
             onPressed: action.onPressed,
             child: Icon(action.icon),
           ),
         if (overflow.isNotEmpty)
-          PopupMenuButton<HabotHeaderAction>(
-            tooltip: 'More actions',
-            icon: const Icon(Icons.more_vert),
-            onSelected: (HabotHeaderAction action) => action.onPressed(),
-            itemBuilder: (BuildContext context) =>
-                <PopupMenuEntry<HabotHeaderAction>>[
-                  for (final HabotHeaderAction action in overflow)
-                    PopupMenuItem<HabotHeaderAction>(
-                      value: action,
-                      height: HabotDensity.minTouchTarget,
-                      child: Row(
-                        children: <Widget>[
-                          Icon(action.icon),
-                          const SizedBox(width: HabotSpacing.sm),
-                          Text(action.label),
-                        ],
-                      ),
-                    ),
-                ],
+          HabotTouchTarget(
+            semanticLabel: 'More actions',
+            onPressed: () => HeaderOverflowSheet.show(context, overflow),
+            child: const Icon(Icons.more_vert),
           ),
         const SizedBox(width: HabotSpacing.xs),
       ],
+    );
+  }
+}
+
+/// MUFCE-028: the trailing overflow menu, as a bottom drawer.
+///
+/// It used to be a Material popup menu button, which the framework always
+/// wraps in a tooltip -- a hover artefact this step exists to remove, and one
+/// the API gives no way to switch off. A sheet is also the better mobile
+/// surface: the
+/// items land under the thumb rather than at the top corner the finger just
+/// left.
+class HeaderOverflowSheet {
+  const HeaderOverflowSheet._();
+
+  static Future<void> show(
+    BuildContext context,
+    List<HabotHeaderAction> actions,
+  ) {
+    return HabotBottomSheet.show<void>(
+      context: context,
+      title: 'More actions',
+      draggable: false,
+      builder: (BuildContext sheetContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          for (final HabotHeaderAction action in actions)
+            _OverflowRow(action: action),
+        ],
+      ),
+    );
+  }
+}
+
+class _OverflowRow extends StatelessWidget {
+  const _OverflowRow({required this.action});
+
+  final HabotHeaderAction action;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        action.onPressed();
+      },
+      child: SizedBox(
+        height: HabotDensity.minTouchTarget,
+        child: Row(
+          children: <Widget>[
+            Icon(action.icon),
+            const SizedBox(width: HabotSheet.contentGap),
+            Text(action.label, style: Theme.of(context).textTheme.bodyLarge),
+          ],
+        ),
+      ),
     );
   }
 }

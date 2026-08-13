@@ -187,4 +187,15 @@ class HabotColors {
   // --- TTMCS-001: page frame gradient, minimises reading strain ---
   static const Color pageFrameLightStart = Color(0xFFF2F6F9);
   static const Color pageFrameLightEnd = Color(0xFFEEF2F6);
+
+  /// GEN-00954: "Configure backdrop scrim color to 32% opacity black."
+  ///
+  /// Declared fully opaque here and composited at
+  /// [HabotSheet.scrimOpacity] at the point of use, so the opacity is a
+  /// single reviewable token rather than baked into an alpha channel that
+  /// nobody can read off the hex.
+  ///
+  /// The same black scrims both schemes on purpose: a lighter scrim in dark
+  /// mode would not separate the sheet from an already-dark page.
+  static const Color scrim = Color(0xFF000000);
 }

@@ -77,6 +77,46 @@ class HabotMotion {
   /// ANSA-012 Poka-Yoke: window inside which a second back tap is swallowed.
   /// Lives here so every timing constant in the app is in one file.
   static const Duration backTapDebounce = Duration(milliseconds: 500);
+
+  // --- Steps 21-35: surfaces, feedback, discovery, telemetry -------------
+
+  /// GEN-00055 / GEN-00954: the bottom sheet is user-initiated and waited on,
+  /// so its entry sits on the [standard] rung and therefore inside
+  /// [interactiveCeiling]. Nothing the user is waiting for may be slower.
+  static const Duration sheetEnter = standard;
+
+  /// Exit is faster than entry, for the same reason the stepper's is: the
+  /// outgoing surface should clear before attention moves on.
+  static const Duration sheetExit = stepperSlideOut;
+
+  /// GEN-00235: settling onto a snap point after a drag release.
+  static const Duration sheetSnap = fast;
+
+  /// GEN-01363: how long an error snackbar holds the screen. Material's
+  /// guidance is 4s for a message with no action and 6s when the user has to
+  /// decide something -- long enough to read, short enough not to nag.
+  static const Duration snackbarDisplay = Duration(seconds: 4);
+  static const Duration snackbarDisplayWithAction = Duration(seconds: 6);
+
+  /// GEN-00201: MD3 shared-axis transition. A rung of the shared ladder
+  /// ([emphasized]) rather than a one-off value.
+  static const Duration sharedAxis = emphasized;
+
+  /// ANSA-006 substep 2: "brief keypress delay timers to wait for typing
+  /// pauses before running queries."
+  static const Duration searchDebounce = Duration(milliseconds: 300);
+
+  /// ANSA-006 Completion Measure: "matching assets inside dropdown lists under
+  /// 350ms." The debounce is part of that budget, not on top of it.
+  static const Duration searchLatencyBudget = Duration(milliseconds: 350);
+
+  /// UFHT-032: dwell on a field beyond this reads as hesitation rather than
+  /// ordinary typing.
+  static const Duration hesitationDwell = Duration(seconds: 2);
+
+  /// TTMAC-014 / UFHT-032: two taps on the same target inside this window are
+  /// one correction, not two intentions.
+  static const Duration doubleTapWindow = Duration(milliseconds: 300);
 }
 
 /// Named easing curves.
@@ -95,11 +135,24 @@ class HabotEasing {
   /// Default for anything not otherwise specified.
   static const Curve standard = Curves.easeInOut;
 
+  /// GEN-00055: sheets rise fast and settle slowly -- MD3's standard
+  /// accelerate/decelerate shape for a surface entering from an edge.
+  static const Curve sheet = Curves.fastOutSlowIn;
+
+  /// GEN-00201: the two halves of a shared-axis transition. The incoming half
+  /// decelerates in, the outgoing half accelerates away, so they never appear
+  /// to move at the same speed in opposite directions.
+  static const Curve sharedAxisIncoming = Curves.easeOut;
+  static const Curve sharedAxisOutgoing = Curves.easeIn;
+
   static const List<Curve> all = <Curve>[
     failure,
     stepperEnter,
     stepperExit,
     standard,
+    sheet,
+    sharedAxisIncoming,
+    sharedAxisOutgoing,
   ];
 }
 

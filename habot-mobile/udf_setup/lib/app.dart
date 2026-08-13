@@ -12,6 +12,7 @@ import 'data_entry_probe_page.dart';
 import 'design_system/interaction/touch_target.dart';
 import 'design_system/layout/fluid_container.dart';
 import 'design_system/layout/grid_wireframe.dart';
+import 'design_system/layout/habot_scroll_behavior.dart';
 import 'design_system/layout/master_scaffold.dart';
 import 'design_system/navigation/contextual_header.dart';
 import 'design_system/theme/habot_theme.dart';
@@ -19,6 +20,7 @@ import 'design_system/theme/habot_theme_scope.dart';
 import 'design_system/theme/theme_controller.dart';
 import 'design_system/tokens/grid_tokens.dart';
 import 'design_system/tokens/spacing_tokens.dart';
+import 'surfaces_probe_page.dart';
 
 /// Root of the Habot mobile client.
 ///
@@ -69,6 +71,9 @@ class _HabotAppState extends State<HabotApp> {
             theme: HabotTheme.light(),
             darkTheme: HabotTheme.dark(),
             themeMode: _controller.mode,
+            // IS38-SGTIM-018: the elastic overscroll applies to every list in
+            // the app, not to whichever ones remembered to ask for it.
+            scrollBehavior: const HabotScrollBehavior(),
             home: const DesignSystemProbePage(),
           );
         },
@@ -137,9 +142,13 @@ class _DesignSystemProbePageState extends State<DesignSystemProbePage> {
               ),
             ),
             HabotHeaderAction(
-              icon: Icons.accessibility_new,
-              label: 'Accessibility report',
-              onPressed: () {},
+              icon: Icons.layers_outlined,
+              label: 'Surfaces & feedback (Steps 21-35)',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const SurfacesProbePage(),
+                ),
+              ),
             ),
           ],
         ),

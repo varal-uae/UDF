@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 142 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 241 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -32,7 +32,7 @@ Full explanation of what each gate defends and why:
 
 ## Design system
 
-Everything visual comes from `udf_setup/lib/design_system`. Five rules, all machine-enforced:
+Everything visual comes from `udf_setup/lib/design_system`. Six rules, all machine-enforced:
 
 1. **No raw values in `lib/`.** No hex colours, no bare numbers inside `EdgeInsets`,
    `BorderRadius` or `SizedBox`, **no raw `Duration` or `Curves.*`**. Import a token instead.
@@ -43,6 +43,11 @@ Everything visual comes from `udf_setup/lib/design_system`. Five rules, all mach
    from tokens or it does not exist. `RCGLA-018-G4` scans for screens that skip it.
 5. **Every interactive element goes through `AtomicButton` or `HabotTouchTarget`.** Raw
    `IconButton` and `GestureDetector` are banned in `lib/` (`TTMAC-011-G4`).
+6. **No hover affordances.** No tooltip widgets, no `onHover` callbacks anywhere in `lib/`
+   (`MUFCE-028-G1`). Rich metadata goes to a bottom drawer through
+   `HabotMetadataDisclosure` -- long-press, or a quick tap on the trailing icon. A hover
+   tooltip is unreachable on a phone, so information that only appears on hover does not
+   exist there.
 
 ### Layout
 
@@ -89,9 +94,42 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 18 | BPTR-0160 | Compound fields as isolated 48dp components, global regex map | 7 |
 | 19 | REF-197 | Error templates, log scrubber, rollback boundary | 7 |
 | 20 | FIEVR-033 | `WizardStepMachine` + `CarouselStepper` (17 lines) with progress dots | 8 |
+| 21 | GEN-00055 | `HabotBottomSheet` chassis: drag handle, MD3 corners, tokenised padding | 7 |
+| 22 | GEN-00954 | 32% black scrim, one standard sheet presentation, reduced-motion aware | 6 |
+| 23 | GEN-00235 | 60% viewport snap point, verified across all 9 matrix devices | 6 |
+| 24 | MUFCE-028 | Hover removal; `HabotMetadataDisclosure` long-press drawer; overflow sheet | 7 |
+| 25 | GEN-01363 | `HabotErrorSnackbar` bound to the error boundary, scrubbed and retryable | 7 |
+| 26 | GEN-01848 | Determinate progress bar, spinner and step progress; reduced-motion safe | 7 |
+| 27 | GEN-01297 | `HabotEmptyState`: 4 reasons, own illustration and copy each | 6 |
+| 28 | GEN-01275 | `HabotStatusBadge` / `HabotMilestoneNode`, icon + label + colour (SC 1.4.1) | 6 |
+| 29 | GEN-01452 | `HabotCard` chassis: filled / outlined / elevated, never border + shadow | 7 |
+| 30 | GEN-00201 | MD3 shared-axis transitions with a disjoint fade-through | 6 |
+| 31 | IS38-SGTIM-018 | `HabotScrollBehavior`: stretch on Android family, bounce on iOS | 8 |
+| 32 | CPNCA-006 | `HabotVirtualList` + chunking: 10,000 rows, flat element count | 7 |
+| 33 | ANSA-006 | Header search: debounce, punctuation filter, grouped results, history | 7 |
+| 34 | UFHT-032 | Hesitation tracker: focus listeners on every field, value-free events | 7 |
+| 35 | GEN-00632 | `FrictionTracker` wrapper and friction report | 5 |
 
-**142 gates across 20 steps.** 18 steps Complete, RCGLA-012 Partial (2 deferred), TTMAC-014
-Partial (1 deferred), SSTLA-004 awaiting a reviewer score.
+**241 gates across 35 steps.** 33 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), SSTLA-004 awaiting a
+reviewer score.
+
+### Surfaces and feedback
+
+`HabotBottomSheet` is the only modal surface: it owns the 32% scrim, the 60% snap point and
+the motion, so no flow re-decides them. `HabotMetadataDisclosure` is the only route by which
+metadata reaches the screen. `HabotErrorSnackbar` is bound to the REF-197 error boundary, so
+an exception can only reach a user after it has been classified into a plain-language
+template and scrubbed. `HabotEmptyState` distinguishes "no results" from "could not load" --
+telling a user there is nothing when the fetch failed is a lie the type system now prevents.
+
+### Telemetry
+
+`HabotHesitationTracker` attaches a focus listener to every `ValidatedInputField` in
+`initState`, so listener coverage is structural rather than something each form remembers.
+No event carries a field value -- the payload is field name, kind, timestamp and dwell.
+`FrictionTracker` wraps a screen and turns those events into a friction report, including
+the double-tap correction rate that TTMAC-014 (Step 14) was Partial for.
 
 ### Forms
 
@@ -108,8 +146,12 @@ in the sheet describe that rule and it is implemented once.
 2. **Zoom lock** — RCGLA-012 substep 2 asks for `user-scalable=no`, which fails WCAG 2.1
    SC 1.4.4 and is ignored by modern iOS/Android browsers anyway. Deferred; see the comment
    block in `udf_setup/web/index.html` for the one-line override.
-3. **Double-tap-correction telemetry** — TTMAC-014's `<1%` completion measure is a field metric.
-   The geometric precondition is gated; the rate itself needs UFHT-032 (UI Hesitation Tracker),
-   which is zero-dependency and available for the next batch.
+3. **Physical-device feel** — IS38-SGTIM-018's completion measure asks for physical device
+   testing of the overscroll stretch. The widget-level facts are gated; the feel needs a hand
+   and a handset.
+
+Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
+now built (Steps 34-35). The rate is computed from recorded interactions; the production
+reading still needs a release.
 
 See the [workspace README](../README.md) for team conventions.
