@@ -108,6 +108,46 @@ abstract class HabotFormatters {
     return dt.toUtc().toIso8601String();
   }
 
+  /// ISO 8601 date-only UTC — midnight UTC for date-only API fields
+  /// e.g. 2024-12-25T00:00:00.000Z
+  static String isoUtcDateOnly(DateTime dt) {
+    final utc = DateTime.utc(dt.year, dt.month, dt.day);
+    return utc.toIso8601String();
+  }
+
+  /// Parse ISO 8601 UTC string → local [DateTime] for display.
+  /// Returns null if the string is invalid.
+  static DateTime? parseIsoUtc(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    try {
+      return DateTime.parse(value).toLocal();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Parse DD/MM/YYYY typed string → local [DateTime].
+  static DateTime? parseLocalDate(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    final regex = RegExp(r'^(\d{2})/(\d{2})/(\d{4})$');
+    final match = regex.firstMatch(value.trim());
+    if (match == null) return null;
+
+    final day   = int.tryParse(match.group(1)!);
+    final month = int.tryParse(match.group(2)!);
+    final year  = int.tryParse(match.group(3)!);
+    if (day == null || month == null || year == null) return null;
+    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+
+    return DateTime(year, month, day);
+  }
+
+  /// Enforce ISO 8601 UTC output — rejects invalid local dates.
+  static String? enforceIsoUtc(DateTime? local, {bool dateOnly = false}) {
+    if (local == null) return null;
+    return dateOnly ? isoUtcDateOnly(local) : isoUtc(local);
+  }
+
   /// Duration — mm:ss or hh:mm:ss
   /// e.g. 1:23:45 or 23:45
   static String duration(Duration d) {
