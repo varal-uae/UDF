@@ -405,9 +405,7 @@ class DroppedPacketKPICard extends StatelessWidget {
           ],
           if (onViewDetails != null) ...[
             const SizedBox(height: HabotSpacing.sm),
-            Semantics(
-          button: true,
-          child: GestureDetector(
+            GestureDetector(
               onTap: onViewDetails,
               child: Text(
                 'View details',

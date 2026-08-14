@@ -130,7 +130,9 @@ class NetworkTapZone extends StatelessWidget {
       child: Material(
         color:        Colors.transparent,
         borderRadius: BorderRadius.circular(HabotRadius.md),
-        child: InkWell(
+        child: Semantics(
+              button: true,
+              child: InkWell(
           onTap:        enabled ? onTap : null,
           borderRadius: BorderRadius.circular(HabotRadius.md),
           child: Ink(
@@ -288,7 +290,9 @@ class SubnetCard extends StatelessWidget {
           width: selected ? 2 : 1,
         ),
       ),
-      child: InkWell(
+      child: Semantics(
+              button: true,
+              child: InkWell(
         onTap:        onTap,
         borderRadius: BorderRadius.circular(HabotRadius.md),
         child: Padding(
