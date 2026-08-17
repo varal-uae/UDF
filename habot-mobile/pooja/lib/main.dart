@@ -39,6 +39,24 @@ import 'core/ui/responsive_nav_rail_panel.dart';
 import 'core/compliance/private_package_enforcement_panel.dart';
 import 'core/versioning/master_library_lock_panel.dart';
 import 'core/interaction/system_verb_icon_panel.dart';
+import 'core/network/viewport_telemetry_panel.dart';
+import 'core/versioning/mobile_visual_context_isolation_panel.dart';
+import 'core/ui/end_document_metadata_panel.dart';
+import 'core/ui/m3_adaptive_navigation_dashboard_panel.dart';
+import 'core/compliance/location_structural_decomposition_panel.dart';
+import 'core/interaction/ui_hesitation_heatmap_panel.dart';
+import 'core/network/statefulset_checkout_persistence_panel.dart';
+import 'core/network/hard_memory_limit_panel.dart';
+import 'core/compliance/atomic_fee_filter_panel.dart';
+import 'core/compliance/document_mapping_panel.dart';
+import 'core/compliance/system_verb_cta_panel.dart';
+import 'core/compliance/text_mask_handler_panel.dart';
+import 'core/compliance/rapid_backtracking_tracking_panel.dart';
+import 'core/compliance/mobile_video_player_panel.dart';
+import 'core/compliance/reconciliation_readiness_gate_panel.dart';
+import 'core/compliance/user_hesitation_tracker_panel.dart';
+import 'core/compliance/checksum_verification_panel.dart';
+import 'core/compliance/mobile_consent_gate_panel.dart';
 
 void main() {
   runApp(const MainApp());
@@ -70,10 +88,40 @@ class MainApp extends StatelessWidget {
 
 List<StepItem> _buildAppStepDirectory() {
   // Step 1 mock data
-  const rcglaFields = [
-    DataFieldDefinition(fieldId: 'F-101', label: 'Customer Name', dataType: 'String', value: 'Acme Corp', isRequired: true),
-    DataFieldDefinition(fieldId: 'F-102', label: 'Tax Identification', dataType: 'TaxID', value: 'TX-998822', isRequired: true),
-    DataFieldDefinition(fieldId: 'F-103', label: 'Region Code', dataType: 'Enum', value: 'US-EAST-1', isRequired: false),
+  final rcglaFields = [
+    DataFieldDefinition(
+      fieldId: 'F-101',
+      label: 'Customer Name',
+      dataType: 'String',
+      value: 'Acme Corp',
+      isRequired: true,
+      completionStatus: CompletionStatus.good,
+      definitionParameters: {'minLength': 3, 'maxLength': 100, 'format': 'UTF-8'},
+      actionTimestamp: DateTime(2026, 8, 14, 10, 30),
+      userSessionId: 'USR-ADMIN-1001',
+    ),
+    DataFieldDefinition(
+      fieldId: 'F-102',
+      label: 'Tax Identification',
+      dataType: 'TaxID',
+      value: 'TX-998822',
+      isRequired: true,
+      completionStatus: CompletionStatus.good,
+      definitionParameters: {'pattern': r'^[A-Z]{2}-\d{6}$', 'encrypted': true},
+      actionTimestamp: DateTime(2026, 8, 14, 10, 31),
+      userSessionId: 'USR-ADMIN-1001',
+    ),
+    DataFieldDefinition(
+      fieldId: 'F-103',
+      label: 'Region Code',
+      dataType: 'Enum',
+      value: 'US-EAST-1',
+      isRequired: false,
+      completionStatus: CompletionStatus.average,
+      definitionParameters: {'allowedValues': ['US-EAST-1', 'US-WEST-2', 'EU-CENTRAL-1']},
+      actionTimestamp: DateTime(2026, 8, 14, 10, 32),
+      userSessionId: 'USR-ADMIN-1002',
+    ),
   ];
 
   // Step 2 mock data
@@ -86,20 +134,20 @@ List<StepItem> _buildAppStepDirectory() {
 
   // Step 4 mock data
   final offboardingSteps = [
-    const OffboardingStepItem(id: 'S-1', title: 'Revoke AWS IAM Roles', description: 'Remove permissions from production account', targetSystem: 'AWS Account 88219', isCompleted: true),
-    const OffboardingStepItem(id: 'S-2', title: 'Disable GitHub Enterprise SSO', description: 'Revoke org member access', targetSystem: 'GitHub Enterprise', isCompleted: false),
-    const OffboardingStepItem(id: 'S-3', title: 'Archive Slack Conversations', description: 'Export workspace history', targetSystem: 'Slack Workspace', isCompleted: false),
+    OffboardingStepItem(id: 'S-1', title: 'Revoke AWS IAM Roles', description: 'Remove permissions from production account', targetSystem: 'AWS Account 88219', isCompleted: true),
+    OffboardingStepItem(id: 'S-2', title: 'Disable GitHub Enterprise SSO', description: 'Revoke org member access', targetSystem: 'GitHub Enterprise', isCompleted: false),
+    OffboardingStepItem(id: 'S-3', title: 'Archive Slack Conversations', description: 'Export workspace history', targetSystem: 'Slack Workspace', isCompleted: false),
   ];
 
   // Step 5 mock data
-  const splitConfig = AiDraftSplitConfig(
+  final splitConfig = AiDraftSplitConfig(
     aiSuggestionContent: 'Automated AI Summary: Contract renewal terms verified against compliance policy v4.2.',
     humanEditContent: 'Contract renewal terms verified against compliance policy v4.2 with custom security clause.',
     defaultSplitRatio: 0.5,
   );
 
   // Step 7 mock data
-  const isolationItem = IsolationContextItem(
+  final isolationItem = IsolationContextItem(
     targetFieldId: 'CONF-889',
     fieldName: 'API Secret Key',
     croppedAssetUrl: 'https://placeholder.com/crop.png',
@@ -108,19 +156,19 @@ List<StepItem> _buildAppStepDirectory() {
 
   // Step 8 mock data
   final claimsList = [
-    const ApprovalClaimItem(claimId: 'CLM-101', employeeName: 'Sarah Connor', amount: '\$450.00', category: 'Travel & Lodging', receiptThumbnailUrl: 'https://placeholder.com/receipt.png'),
-    const ApprovalClaimItem(claimId: 'CLM-102', employeeName: 'John Doe', amount: '\$1,200.00', category: 'Software Licenses', receiptThumbnailUrl: 'https://placeholder.com/receipt2.png'),
+    ApprovalClaimItem(claimId: 'CLM-101', employeeName: 'Sarah Connor', amount: '\$450.00', category: 'Travel & Lodging', receiptThumbnailUrl: 'https://placeholder.com/receipt.png'),
+    ApprovalClaimItem(claimId: 'CLM-102', employeeName: 'John Doe', amount: '\$1,200.00', category: 'Software Licenses', receiptThumbnailUrl: 'https://placeholder.com/receipt2.png'),
   ];
 
   // Step 9 mock data
-  const calloutConfig = CalloutOverlayConfig(
+  final calloutConfig = CalloutOverlayConfig(
     title: 'Security Compliance Notice',
     message: 'All audit documents must be signed using multi-factor biometric key before archival.',
     type: CalloutType.warning,
   );
 
   // Step 11 mock data
-  const haConfig = HaSyncConfig(
+  final haConfig = HaSyncConfig(
     primaryZoneName: 'us-east1-a',
     secondaryZoneName: 'us-east1-b',
     status: HaZoneStatus.primaryActive,
@@ -129,14 +177,14 @@ List<StepItem> _buildAppStepDirectory() {
   );
 
   // Step 12 mock data
-  const mediaList = [
+  final mediaList = [
     MediaThumbnailItem(id: 'M-1', title: 'hero_banner.jpg', fileSizeBytes: '1.2 MB'),
     MediaThumbnailItem(id: 'M-2', title: 'product_demo.png', fileSizeBytes: '840 KB'),
     MediaThumbnailItem(id: 'M-3', title: 'architecture_diagram.pdf', fileSizeBytes: '3.4 MB'),
   ];
 
   // Step 13 mock data
-  const execData = ExecutiveSummaryData(
+  final execData = ExecutiveSummaryData(
     periodLabel: 'Q3 2026',
     netRevenue: '\$1,420,000.00',
     conversionRate: '4.8%',
@@ -144,13 +192,13 @@ List<StepItem> _buildAppStepDirectory() {
   );
 
   // Step 14 mock data
-  const abVariants = [
+  final abVariants = [
     AbTestVariant(variantId: 'VAR-A', variantName: 'Variant A (Compact)', description: 'Dense single-column layout', conversionRate: 0.048),
     AbTestVariant(variantId: 'VAR-B', variantName: 'Variant B (Fluid)', description: 'Expanded fluid grid layout', conversionRate: 0.062),
   ];
 
   // Step 15 mock data
-  const perfConfig = PerformanceLogConfig(
+  final perfConfig = PerformanceLogConfig(
     zeroTouchConversionRate: '68.4%',
     weeklyVelocityShift: '+12.5%',
   );
@@ -162,12 +210,12 @@ List<StepItem> _buildAppStepDirectory() {
   ];
 
   // Step 17 mock data
-  const bottlenecks = [
+  final bottlenecks = [
     BottleneckEventItem(id: 'B-1', serviceName: 'Telemetry Parsing Engine', description: 'DB Query Latency spike to 450ms', severity: BottleneckSeverity.warning, currentLoadPercentage: 0.82),
   ];
 
   // Step 18 mock data
-  const finopsData = FinOpsCostData(
+  final finopsData = FinOpsCostData(
     dailySpend: '\$1,240.00',
     cumulativeSpend: '\$34,500.00',
     remainingBudget: '\$15,500.00',
@@ -176,7 +224,7 @@ List<StepItem> _buildAppStepDirectory() {
   );
 
   // Step 20 mock data
-  const successRecord = OnboardingSuccessRecord(
+  final successRecord = OnboardingSuccessRecord(
     vendorId: 'VND-99218',
     vendorName: 'Global Enterprise Logistics Ltd',
     verificationHash: '0x88f2991a004c',
@@ -468,6 +516,241 @@ List<StepItem> _buildAppStepDirectory() {
     SystemVerbItem(verbName: 'SETTINGS', actionDescription: 'Configure System Tokens', iconData: Icons.settings_outlined),
   ];
 
+  // Step 33 mock data
+  const viewportTelemetryRecord = ViewportTelemetryRecord(
+    stepExecutionId: 'EXEC-VP-2111',
+    executionStatus: 'Active Ingest Stream',
+    executionTimestamp: '2026-08-13 19:20:00 UTC',
+    stepOutcome: 'Zero Hardware Clipping Bugs Detected',
+    userId: 'USR-ADMIN-2111',
+    discoveryCoverage: 1.0,
+    completionStatus: 'Complete (100%)',
+  );
+
+  // Step 34 mock data
+  const visualContextRecord = VisualContextIsolationRecord(
+    stepExecutionId: 'EXEC-VCI-2254',
+    executionStatus: 'Completed Verified',
+    executionTimestamp: '2026-08-13 19:30:00 UTC',
+    stepOutcome: 'Single Focal Point Context Isolated',
+    userId: 'USR-ADMIN-2254',
+    extractionAccuracy: 0.975,
+    completionStatus: 'Pass (97.5% Accuracy)',
+  );
+
+  // Step 35 mock data
+  const endDocumentMetadataRecord = EndDocumentMetadataRecord(
+    mobilePlatform: 'Android 14',
+    osVersion: 'API 34 (UpsideDownCake)',
+    deviceType: 'Pixel 8 Pro',
+    screenDimensions: '1080 x 2400 dp (480 dpi)',
+    mobileConfiguration: 'High-Density Hardcoded State Schema',
+    completionStatus: 'Good (100%)',
+    actionTimestamp: '2026-08-13 19:35:00 UTC',
+    userSessionId: 'USR-ADMIN-2320',
+    schemaAccuracyRate: 1.0,
+  );
+
+  // Step 36 mock data
+  const uiHesitationRecord = UiHesitationHeatmapRecord(
+    sourceElementId: 'ELEM-CANVAS-01',
+    targetElementId: 'ELEM-HEATMAP-MAPPING',
+    mappingRule: 'Fluid Grid Viewport Boundary Mapping',
+    mappingStatus: 'Active Non-Blocking Stream',
+    mappingValidation: 'WCAG 2.1 AA Compliant',
+    completionStatus: 'Good (WCAG AA 48dp)',
+    actionTimestamp: '2026-08-13 19:50:00 UTC',
+    userSessionId: 'USR-ADMIN-2342',
+    touchTargetComplianceScore: 48.0,
+  );
+
+  // Step 37 mock data
+  const adaptiveNavRecord = AdaptiveNavigationRecord(
+    mobilePlatform: 'Android 14',
+    osVersion: 'API 34',
+    deviceType: 'Pixel 8 Pro / Emulator',
+    screenDimensions: '1080 x 2400 dp (<600dp Responsive)',
+    mobileConfiguration: 'M3 Adaptive Scaffold Navigation',
+    completionStatus: 'Pass (≥48dp)',
+    actionTimestamp: '2026-08-13 19:40:00 UTC',
+    userSessionId: 'USR-ADMIN-2353',
+    touchTargetSizeDp: 48.0,
+  );
+
+  // Step 38 mock data
+  const locationDecompositionRecord = LocationDecompositionRecord(
+    mobilePlatform: 'Android 14',
+    osVersion: 'API 34 (UpsideDownCake)',
+    deviceType: 'Pixel 8 Pro',
+    screenDimensions: '1080 x 2400 dp (480 dpi)',
+    mobileConfiguration: 'Vertical Stack 16px Gutter Layout',
+    completionStatus: 'Good (100%)',
+    actionTimestamp: '2026-08-13 19:45:00 UTC',
+    userSessionId: 'USR-ADMIN-2397',
+    qualityScore: 0.99,
+  );
+
+  // Step 39 mock data
+  const statefulSetRecord = StatefulSetPersistenceRecord(
+    stepExecutionId: 'EXEC-STSET-2441',
+    executionStatus: 'StatefulSet Manifest Constructed',
+    executionTimestamp: '2026-08-13 20:00:00 UTC',
+    stepOutcome: 'Checkout State Persisted Continuously',
+    userId: 'USR-ADMIN-2441',
+    completionStatus: 'Good (100%)',
+    md3TokenCompliance: 'Full MD3 Token System + Automated Visual Testing',
+  );
+
+  // Step 40 mock data
+  const hardMemoryRecord = HardMemoryLimitRecord(
+    layoutType: 'Responsive Dense Matrix',
+    layoutGridDimensions: '800px Max Width | Fluid Grid',
+    spacingRules: 'M3 AppSpacingTokens 16dp',
+    alignmentSettings: 'Center Stretched Single Column',
+    layoutValidationStatus: 'OOM Protection Active',
+    completionStatus: 'Good (100%)',
+    actionTimestamp: '2026-08-13 20:05:00 UTC',
+    userSessionId: 'USR-ADMIN-2452',
+    md3TokenCompliance: 'Full MD3 Token System + Visual Testing',
+  );
+
+  // Step 41 mock data
+  const atomicFeeFilterRecord = AtomicFeeFilterRecord(
+    layoutType: 'Responsive Grid Viewport',
+    layoutGridDimensions: '12-Column Responsive Layout',
+    spacingRules: '4dp Floor / 12dp Ceiling (Ample Breathing Room)',
+    alignmentSettings: 'Left-Aligned Actions & Structured Fields',
+    layoutValidationStatus: 'Valid',
+    completionStatus: 'Pass (≥7:1)',
+    actionTimestamp: '2026-08-15 15:00:00 UTC',
+    userSessionId: 'USR-ADMIN-2463',
+    contrastStandard: 'WCAG 2.2 SC 1.4.3 (AA) / SC 1.4.6 (AAA)',
+    contrastRatio: 7.0,
+  );
+
+  // Step 42 mock data
+  const step42DocMappingRecord = Step42DocMappingRecord(
+    documentTitle: 'Master Architecture Data Contract & Lineage Mapping',
+    documentUrl: 'https://docs.habot.io/architecture/vpvmp-006-14-backward-mapping',
+    lastUpdatedDate: '2026-08-15',
+    accessibilityStatus: 'WCAG 2.2 AAA Compliant',
+    documentAccessLog: 'LOG-AUDIT-2474-ACCESS-GRANTED',
+    completionStatus: 'Pass (100%)',
+    actionTimestamp: '2026-08-15 15:15:00 UTC',
+    userSessionId: 'USR-ADMIN-2474',
+    qaPassRate: 1.0,
+    hasParentParameters: 'Valid Parent Params Bound',
+    isReleaseFrozen: false,
+  );
+
+  // Step 43 mock data
+  const step43CtaVerbRecord = CtaVerbConstraintRecord(
+    accessType: 'WRITE_EXECUTE',
+    userRole: 'OperationsLead',
+    permissionLevel: 'LEVEL_12_OPS_ADMIN',
+    accessLog: 'LOG-CTA-LIMIT-ENFORCED-2485',
+    accessTimestamp: '2026-08-15 15:25:00 UTC',
+    completionStatus: 'Complete',
+    actionTimestamp: '2026-08-15 15:25:00 UTC',
+    userSessionId: 'USR-ADMIN-2485',
+    discoveryCompleteness: 1.0,
+    maxCharacterLimit: 14,
+    maxWordLimit: 2,
+  );
+
+  // Step 44 mock data
+  const step44TextMaskRecord = TextMaskRecord(
+    stepExecutionId: 'EXEC-MASK-2496',
+    executionStatus: 'Mask Handler System Active',
+    executionTimestamp: '2026-08-15 15:45:00 UTC',
+    stepOutcome: 'Input Characters Filtered in Real Time',
+    userId: 'USR-ADMIN-2496',
+    completionStatus: 'Complete',
+    actionTimestamp: '2026-08-15 15:45:00 UTC',
+    userSessionId: 'USR-ADMIN-2496',
+    identificationAccuracy: 100.0,
+  );
+
+  // Step 45 mock data
+  const step45BacktrackingRecord = BacktrackingRecord(
+    stepExecutionId: 'EXEC-BACKTRACK-2529',
+    executionStatus: 'Rapid Backtracking Telemetry Active',
+    executionTimestamp: '2026-08-15 15:50:00 UTC',
+    stepOutcome: 'UI Interactions Batched & Dispatched Cleanly',
+    userId: 'USR-ADMIN-2529',
+    completionStatus: 'Good (100%)',
+    actionTimestamp: '2026-08-15 15:50:00 UTC',
+    userSessionId: 'USR-ADMIN-2529',
+    qualityScore: 100.0,
+  );
+
+  // Step 46 mock data
+  const step46VideoRecord = MobileVideoRecord(
+    layoutType: 'M3 ElevatedCard Media Container',
+    layoutGridDimensions: '360x220 Mobile Stream Viewport',
+    spacingRules: 'AppSpacingTokens.paddingLg',
+    alignmentSettings: 'Centered Dynamic Touch Target Bounds',
+    layoutValidationStatus: 'M3 Accessibility Guidelines Compliant',
+    completionStatus: 'Good (Scale: Good/Average/Poor)',
+    actionTimestamp: '2026-08-15 15:55:00 UTC',
+    userSessionId: 'USR-ADMIN-2606',
+    touchTargetSizeDp: 48.0,
+  );
+
+  // Step 47 mock data
+  const step47ReconciliationRecord = ReconciliationRecord(
+    stepExecutionId: 'EXEC-RECON-2628',
+    executionStatus: 'Final Readiness Gate Active',
+    executionTimestamp: '2026-08-15 16:00:00 UTC',
+    stepOutcome: 'Disabled Prop Applied to Non-Zero Difference',
+    userId: 'USR-ADMIN-2628',
+    completionStatus: 'Good',
+    actionTimestamp: '2026-08-15 16:00:00 UTC',
+    userSessionId: 'USR-ADMIN-2628',
+    m3ConformityPercentage: 100.0,
+    reconciliationDifference: 0.0,
+  );
+
+  // Step 48 mock data
+  const step48HesitationRecord = HesitationRecord(
+    configurationParameter: 'non_blocking_input_listeners',
+    currentSetting: 'ACTIVE_ASYNC_MICROTASK',
+    previousSetting: 'SYNCHRONOUS_LEGACY',
+    changeLog: 'Migrated focus and typing pause event dispatchers to microtask queue.',
+    configurationTimestamp: '2026-08-15 16:05:00 UTC',
+    completionStatus: 'Complete',
+    actionTimestamp: '2026-08-15 16:05:00 UTC',
+    userSessionId: 'USR-ADMIN-2771',
+    taskCompletenessRatio: 1.0,
+  );
+
+  // Step 49 mock data
+  const step49ChecksumRecord = ChecksumRecord(
+    layoutType: 'M3 Dynamic Digital Signature Card',
+    layoutGridDimensions: '360x280 Monospace Diagnostic Accordion',
+    spacingRules: 'AppSpacingTokens.paddingLg',
+    alignmentSettings: 'Prominent Verification Badge & Monospace Hash Display',
+    layoutValidationStatus: 'ITIL v4 Service Level Management Compliant',
+    completionStatus: 'Pass',
+    actionTimestamp: '2026-08-15 16:10:00 UTC',
+    userSessionId: 'USR-ADMIN-2782',
+    checksumVerificationRatio: 1.0,
+    digitalSignatureHash: 'SHA256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+  );
+
+  // Step 50 mock data
+  const step50ConsentRecord = ConsentBuildRecord(
+    buildStatus: 'SUCCESS',
+    buildTimestamp: '2026-08-15 16:15:00 UTC',
+    buildArtifactsPath: 'build/app/outputs/flutter-apk/app-release.apk',
+    buildLogs: 'BUILD_SUCCESS_FULL_50_STEP_AUDIT_VERIFIED',
+    buildDuration: '4m 12s',
+    completionStatus: 'Good',
+    actionTimestamp: '2026-08-15 16:15:00 UTC',
+    userSessionId: 'USR-ADMIN-2793',
+    pokaYokeComplianceRatio: 1.0,
+  );
+
   return [
     StepItem(
       stepNumber: 1,
@@ -476,7 +759,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Compact material data grid for high-density enterprise record editing.',
       category: StepCategory.dataAndForms,
       icon: Icons.table_chart,
-      builder: (_) => const M3DenseTable(fields: rcglaFields),
+      builder: (_) => M3DenseTable(fields: rcglaFields),
     ),
     StepItem(
       stepNumber: 2,
@@ -502,7 +785,7 @@ List<StepItem> _buildAppStepDirectory() {
               const Text('Header Action Bar Sync Preview:'),
               AppSpacingTokens.vGapSm,
               OfflineSyncIndicator(
-                syncState: const SyncStateDefinition(
+                syncState: SyncStateDefinition(
                   status: SyncStatus.online,
                   pendingQueueCount: 0,
                   lastSyncedTimestamp: 'Just Now',
@@ -535,7 +818,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Side-by-side comparison of AI generated drafts vs human edited content.',
       category: StepCategory.aiAndAutomation,
       icon: Icons.difference_outlined,
-      builder: (_) => const AiHumanSplitViewport(config: splitConfig),
+      builder: (_) => AiHumanSplitViewport(config: splitConfig),
     ),
     StepItem(
       stepNumber: 6,
@@ -563,7 +846,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Secured text field sandbox with confidential document extraction context.',
       category: StepCategory.infrastructure,
       icon: Icons.shield_outlined,
-      builder: (_) => const ContextIsolationPanel(item: isolationItem),
+      builder: (_) => ContextIsolationPanel(item: isolationItem),
     ),
     StepItem(
       stepNumber: 8,
@@ -584,7 +867,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Prominent contextual alert card with custom severity highlights.',
       category: StepCategory.dataAndForms,
       icon: Icons.info_outline,
-      builder: (_) => const FloatingCalloutOverlay(config: calloutConfig),
+      builder: (_) => FloatingCalloutOverlay(config: calloutConfig),
     ),
     StepItem(
       stepNumber: 10,
@@ -594,7 +877,7 @@ List<StepItem> _buildAppStepDirectory() {
       category: StepCategory.realTimeSync,
       icon: Icons.stream,
       builder: (context) => SseStatusIndicator(
-        sseStatus: const SseConnectionStatus(
+        sseStatus: SseConnectionStatus(
           state: SseState.connected,
           serverEndpoint: 'https://api.habot.internal/events/stream',
           eventCountReceived: 240,
@@ -609,11 +892,11 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Low-fidelity auth signup layout paired with active multi-zone sync bar.',
       category: StepCategory.realTimeSync,
       icon: Icons.cloud_sync_outlined,
-      builder: (_) => const Column(
+      builder: (_) => Column(
         children: [
           MultiZoneSyncBar(config: haConfig),
           AppSpacingTokens.vGapLg,
-          AuthSignUpWireframe(),
+          const AuthSignUpWireframe(),
         ],
       ),
     ),
@@ -633,7 +916,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'High-level financial KPIs, revenue cards, and period metrics.',
       category: StepCategory.analyticsKpi,
       icon: Icons.bar_chart_rounded,
-      builder: (_) => const ExecutivePerformanceDashboard(data: execData),
+      builder: (_) => ExecutivePerformanceDashboard(data: execData),
     ),
     StepItem(
       stepNumber: 14,
@@ -642,7 +925,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Interactive variant toggle card displaying conversion rates.',
       category: StepCategory.analyticsKpi,
       icon: Icons.alt_route,
-      builder: (_) => const AbTestingCardSwitch(variants: abVariants),
+      builder: (_) => AbTestingCardSwitch(variants: abVariants),
     ),
     StepItem(
       stepNumber: 15,
@@ -651,7 +934,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Streamlined metric card highlighting zero-touch conversion trends.',
       category: StepCategory.analyticsKpi,
       icon: Icons.trending_up,
-      builder: (_) => const CleanKpiPerformanceCard(config: perfConfig),
+      builder: (_) => CleanKpiPerformanceCard(config: perfConfig),
     ),
     StepItem(
       stepNumber: 16,
@@ -669,7 +952,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Infrastructure health monitor flagging DB query spikes and bottleneck services.',
       category: StepCategory.infrastructure,
       icon: Icons.warning_amber_rounded,
-      builder: (_) => const BottleneckHighlightDashboard(events: bottlenecks),
+      builder: (_) => BottleneckHighlightDashboard(events: bottlenecks),
     ),
     StepItem(
       stepNumber: 18,
@@ -678,7 +961,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Cloud spend tracking dashboard with daily spend, remaining budget, and burn trends.',
       category: StepCategory.infrastructure,
       icon: Icons.account_balance_wallet_outlined,
-      builder: (_) => const FinOpsBudgetDashboard(data: finopsData),
+      builder: (_) => FinOpsBudgetDashboard(data: finopsData),
     ),
     StepItem(
       stepNumber: 19,
@@ -687,7 +970,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Adaptive text input triggering numeric keypad for SSN/currency fields.',
       category: StepCategory.dataAndForms,
       icon: Icons.keyboard_outlined,
-      builder: (_) => const Card(
+      builder: (_) => Card(
         child: Padding(
           padding: AppSpacingTokens.paddingMd,
           child: SmartKeyboardField(
@@ -704,7 +987,7 @@ List<StepItem> _buildAppStepDirectory() {
       description: 'Elevated vendor onboarding completion card with security hash verification.',
       category: StepCategory.dataAndForms,
       icon: Icons.verified_user_outlined,
-      builder: (_) => const Md3ElevatedSuccessCard(record: successRecord),
+      builder: (_) => Md3ElevatedSuccessCard(record: successRecord),
     ),
     StepItem(
       stepNumber: 21,
@@ -828,6 +1111,168 @@ List<StepItem> _buildAppStepDirectory() {
         record: systemVerbIconRecord,
         verbs: systemVerbsList,
       ),
+    ),
+    StepItem(
+      stepNumber: 33,
+      stepCode: 'SSTLA-007',
+      title: 'Mobile Device Screen Dimension & Viewport Telemetry Adapter',
+      description: 'Captures real-time hardware display attributes and packages them into a BigQuery telemetry ingest schema.',
+      category: StepCategory.infrastructure,
+      icon: Icons.aspect_ratio,
+      builder: (_) => const ViewportTelemetryPanel(record: viewportTelemetryRecord),
+    ),
+    StepItem(
+      stepNumber: 34,
+      stepCode: 'MCIIM-014-07',
+      title: 'Isolate Mobile Visual Context Focus Region',
+      description: 'Displays only the cropped focus region inside primary viewport using M3 Surface tonal elevation & 16dp margins.',
+      category: StepCategory.aiAndAutomation,
+      icon: Icons.crop_free,
+      builder: (_) => const MobileVisualContextIsolationPanel(record: visualContextRecord),
+    ),
+    StepItem(
+      stepNumber: 35,
+      stepCode: 'ETMDI-001-10',
+      title: 'Hard-Code EndDocument Metadata & Single-Field Router',
+      description: 'Hard-codes EndDocument state schema and restricts mobile viewport routing to one isolated field snapshot at a time.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.data_object,
+      builder: (_) => const EndDocumentMetadataPanel(record: endDocumentMetadataRecord),
+    ),
+    StepItem(
+      stepNumber: 36,
+      stepCode: 'UFHT-025-11',
+      title: 'UI Hesitation Heatmap Analyzer (Mobile Gestures)',
+      description: 'Silently logs gesture coordinates and hesitation duration via non-blocking async streams with WCAG 2.1 AA 48dp target compliance.',
+      category: StepCategory.realTimeSync,
+      icon: Icons.touch_app_outlined,
+      builder: (_) => const UiHesitationHeatmapPanel(record: uiHesitationRecord),
+    ),
+    StepItem(
+      stepNumber: 37,
+      stepCode: 'ANSA-020-12',
+      title: 'Deploy M3 Adaptive Navigation for Dashboards',
+      description: 'Dynamically shifts layout navigation between M3 BottomNavigationBar (<600dp) and NavigationRail (>=600dp) with 48dp touch targets.',
+      category: StepCategory.infrastructure,
+      icon: Icons.navigation_outlined,
+      builder: (_) => const M3AdaptiveNavigationDashboardPanel(record: adaptiveNavRecord),
+    ),
+    StepItem(
+      stepNumber: 38,
+      stepCode: 'CBSV-004-14',
+      title: 'Structural Decomposition on Location Data',
+      description: 'Enforces strict vertical component stack layout, 16px gutter gaps, and native integer numeric zip code pickers.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.account_tree_outlined,
+      builder: (_) => const LocationStructuralDecompositionPanel(record: locationDecompositionRecord),
+    ),
+    StepItem(
+      stepNumber: 39,
+      stepCode: 'HSCPE-015',
+      title: 'StatefulSet Resource Manifest Construction & Checkout Persistence',
+      description: 'Constructs StatefulSet manifests (apps/v1) and persists Checkout State continuously during server recycles via MD3 Snackbars.',
+      category: StepCategory.realTimeSync,
+      icon: Icons.layers_outlined,
+      builder: (_) => const StatefulSetCheckoutPersistencePanel(record: statefulSetRecord),
+    ),
+    StepItem(
+      stepNumber: 40,
+      stepCode: 'HSCPE-017',
+      title: 'Hard Memory Request/Limit & OOM Protection Panel',
+      description: 'Presents scannable container memory utilization matrices, OOM kill protection, and silent re-auth ModalBottomSheets.',
+      category: StepCategory.infrastructure,
+      icon: Icons.memory,
+      builder: (_) => const HardMemoryLimitPanel(record: hardMemoryRecord),
+    ),
+    StepItem(
+      stepNumber: 41,
+      stepCode: 'PELCE-007-20',
+      title: 'Atomic Action Filter: Flat-Rate Platform Fee Deduction',
+      description: 'Performs flat-rate platform fee deductions with transparent operational math breakdowns & WCAG contrast compliance auditing.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.filter_alt_outlined,
+      builder: (_) => const AtomicFeeFilterPanel(record: atomicFeeFilterRecord),
+    ),
+    StepItem(
+      stepNumber: 42,
+      stepCode: 'VPVMP-006-14',
+      title: 'Document Backward Data Mapping from Success Anchors',
+      description: 'Documents data properties mapping backward from success anchors with Poka-Yoke parent checks & Self-Chasing release freeze guard.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.account_tree_outlined,
+      builder: (_) => const Step42DocumentMappingPanel(record: step42DocMappingRecord),
+    ),
+    StepItem(
+      stepNumber: 43,
+      stepCode: 'IS32-CSIVW-019-AS01',
+      title: 'Enforce System-Verb CTA Character Limits',
+      description: 'Enforces CTA button character and word limits with live Poka-Yoke warning pulse animations & Flexbox nowrap previews.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.touch_app_outlined,
+      builder: (_) => const Step43SystemVerbCtaPanel(record: step43CtaVerbRecord),
+    ),
+    StepItem(
+      stepNumber: 44,
+      stepCode: 'REF-016',
+      title: 'Integrated Character-Level Text Formatting Mask Handler',
+      description: 'Intercepts data entry input streams to enforce regex masks (phone, tax ID, currency) with Poka-Yoke character dropping & 56px touch targets.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.password_outlined,
+      builder: (_) => const Step44TextMaskHandlerPanel(record: step44TextMaskRecord),
+    ),
+    StepItem(
+      stepNumber: 45,
+      stepCode: 'FLADE-006-02',
+      title: 'Implement Rapid Backtracking Tracking on Mobile Forms',
+      description: 'Tracks rapid character deletions and hardware back-press navigation with debounced telemetry overlays & ISO 9001 quality scores.',
+      category: StepCategory.interaction,
+      icon: Icons.undo_outlined,
+      builder: (_) => const Step45RapidBacktrackingPanel(record: step45BacktrackingRecord),
+    ),
+    StepItem(
+      stepNumber: 46,
+      stepCode: 'MTVPE-009-05',
+      title: 'Configure Mobile MTOI Training Embedded Videos',
+      description: 'Configures embedded MTOI training video players inside M3 ElevatedCards with 48dp/56dp touch targets & WCAG 2.1 AA accessibility compliance.',
+      category: StepCategory.mediaAndLayout,
+      icon: Icons.video_library_outlined,
+      builder: (_) => const Step46MobileVideoPlayerPanel(record: step46VideoRecord),
+    ),
+    StepItem(
+      stepNumber: 47,
+      stepCode: 'RRCVG-006',
+      title: 'Design Reconciliation Test: Final Readiness Gate',
+      description: 'Applies disabled state & explanatory tooltips to Material CTA buttons whenever reconciliation variance is non-zero, enforcing M3 design system conformity.',
+      category: StepCategory.auditAndGovernance,
+      icon: Icons.gavel_outlined,
+      builder: (_) => const Step47ReconciliationReadinessPanel(record: step47ReconciliationRecord),
+    ),
+    StepItem(
+      stepNumber: 48,
+      stepCode: 'HC-INF-0302',
+      title: 'Build Interactive Event Listeners for User Hesitation and Friction Metrics',
+      description: 'Dispatches non-blocking async input listeners on microtask queues to measure focus dwell time & typing pauses with ISO 9001 quality conformance.',
+      category: StepCategory.interaction,
+      icon: Icons.timer_outlined,
+      builder: (_) => const Step48UserHesitationTrackerPanel(record: step48HesitationRecord),
+    ),
+    StepItem(
+      stepNumber: 49,
+      stepCode: 'VPVMP-008',
+      title: 'Programmatic Data Checksum Verification & Digital Signature Layouts',
+      description: 'Enforces strict programmatic checksum checks over computing logic states with digital signature layouts & vertical expansion diagnostic logs.',
+      category: StepCategory.securityAndData,
+      icon: Icons.verified_user_outlined,
+      builder: (_) => const Step49ChecksumVerificationPanel(record: step49ChecksumRecord),
+    ),
+    StepItem(
+      stepNumber: 50,
+      stepCode: 'CCPME-012',
+      title: 'Contextual Mobile Consent Gates & Poka-Yoke Control',
+      description: 'Enforces un-ignorable mobile consent gates where "Share Data" CTA remains permanently grayed out until user scrolls to bottom and clicks checkbox.',
+      category: StepCategory.auditAndGovernance,
+      icon: Icons.rule_outlined,
+      builder: (_) => const Step50MobileConsentGatePanel(record: step50ConsentRecord),
     ),
   ];
 }

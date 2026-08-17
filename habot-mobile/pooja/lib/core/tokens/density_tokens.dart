@@ -5,6 +5,12 @@ abstract class AppDensityTokens {
   /// Minimum touch target size required for accessibility (48x48dp).
   static const double minTouchTargetSize = 48.0;
 
+  /// Density spacing floor threshold (4.0dp).
+  static const double densityFloor = 4.0;
+
+  /// Density spacing ceiling threshold (12.0dp).
+  static const double densityCeiling = 12.0;
+
   /// Minimum spacing threshold between interactive components (4.0dp).
   static const double minComponentSpacing = 4.0;
 

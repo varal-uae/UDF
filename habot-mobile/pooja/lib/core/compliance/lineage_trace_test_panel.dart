@@ -303,14 +303,20 @@ class _LineageTraceTestPanelState extends State<LineageTraceTestPanel> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 4,
                     children: [
-                      Text(
-                        'Lineage Anomaly Score: ${_anomalyScore.toStringAsFixed(1)}',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: _anomalyScore > 0 ? AppColorPalette.lightError : AppColorPalette.success,
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 240),
+                        child: Text(
+                          'Lineage Anomaly Score: ${_anomalyScore.toStringAsFixed(1)}',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: _anomalyScore > 0 ? AppColorPalette.lightError : AppColorPalette.success,
+                          ),
                         ),
                       ),
                       Chip(

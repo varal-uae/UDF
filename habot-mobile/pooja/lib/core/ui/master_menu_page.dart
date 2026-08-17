@@ -264,14 +264,17 @@ class _MasterMenuPageState extends State<MasterMenuPage> {
                                             ),
                                           ),
                                           AppSpacingTokens.hGapSm,
-                                          Text(
-                                            step.stepCode,
-                                            style: theme.textTheme.labelSmall?.copyWith(
-                                              color: colorScheme.secondary,
-                                              fontWeight: FontWeight.w600,
+                                          Expanded(
+                                            child: Text(
+                                              step.stepCode,
+                                              style: theme.textTheme.labelSmall?.copyWith(
+                                                color: colorScheme.secondary,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          const Spacer(),
+                                          AppSpacingTokens.hGapSm,
                                           Icon(step.icon, color: colorScheme.primary),
                                         ],
                                       ),

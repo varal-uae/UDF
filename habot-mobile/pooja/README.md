@@ -19,22 +19,27 @@ lib/
     │   ├── db_linter_entity_panel.dart     ← Step 24: CBSV-005-10 (DB Identifier _ID Linter)
     │   ├── design_compliance_validator_panel.dart ← Step 26: MUFCE-018 (DevOps Compliance Linter)
     │   ├── lineage_trace_test_panel.dart   ← Step 27: EDEBS-015-10 (Lineage Trace & Release Gate)
+    │   ├── location_structural_decomposition_panel.dart ← Step 38: CBSV-004-14 (Location Structural Decomposition)
     │   ├── mathematical_vendor_success_panel.dart ← Step 25: EDEBS-008-15 (Mathematical Vendor Proof Engine)
     │   └── private_package_enforcement_panel.dart ← Step 30: FEBFL-005 (Private Pub Package Import)
     ├── interaction/
     │   ├── ab_testing_card_switch.dart     ← Step 14: AEETE-001 (Byte-Level A/B Testing Switcher)
     │   ├── contextual_fab.dart            ← Step 6:  SGTIM-019 (Adaptive Circular Contextual FAB)
     │   ├── swipe_approval_matrix.dart     ← Step 8:  IRBCA-055 (Swipeable Managerial Approval Queue)
-    │   └── system_verb_icon_panel.dart    ← Step 32: DLQDP-015-13 (System-Verb Icon Mapping Matrix)
+    │   ├── system_verb_icon_panel.dart    ← Step 32: DLQDP-015-13 (System-Verb Icon Mapping Matrix)
+    │   └── ui_hesitation_heatmap_panel.dart ← Step 36: UFHT-025-11 (UI Hesitation Heatmap Analyzer)
     ├── models/
     │   └── step_item.dart                 ← Shared StepItem model & StepCategory definitions
     ├── network/
     │   ├── bigquery_telemetry_monitor.dart ← Step 16: TECH-ENG-015 (BigQuery Telemetry Logger)
     │   ├── bottleneck_highlight_dashboard.dart ← Step 17: TECH-ENG-034 (Infrastructure Bottleneck Tool)
     │   ├── finops_budget_dashboard.dart    ← Step 18: TECH-ENG-046 (GCP FinOps Budget Dashboard)
+    │   ├── hard_memory_limit_panel.dart    ← Step 40: HSCPE-017 (Hard Memory Limit & OOM Protection)
     │   ├── multi_zone_sync_bar.dart        ← Step 11: HAZFE-001 (Multi-Zone HA Sync & Sign-Up)
     │   ├── offline_sync_indicator.dart     ← Step 3:  BPTR-0498 (Offline Sync Queue Indicator)
-    │   └── sse_status_indicator.dart      ← Step 10: 168 (Server-Sent Events Connection Hook)
+    │   ├── sse_status_indicator.dart      ← Step 10: 168 (Server-Sent Events Connection Hook)
+    │   ├── statefulset_checkout_persistence_panel.dart ← Step 39: HSCPE-015 (StatefulSet Checkout Persistence)
+    │   └── viewport_telemetry_panel.dart  ← Step 33: SSTLA-007 (Viewport Ingest Adapter Schema)
     ├── theme/
     │   ├── app_theme.dart                 ← Material Design 3 ThemeData Builder
     │   └── app_theme_wrapper.dart         ← Dynamic Theme Controller & InheritedWidget
@@ -51,8 +56,10 @@ lib/
     │   ├── brand_cta_mapping_panel.dart    ← Step 21: SCTAS-002 (Brand #2E86C1 CTA Mapping)
     │   ├── clean_kpi_performance_card.dart ← Step 15: MUFCE-024 (Clean KPI Performance Card)
     │   ├── end_document_layout.dart        ← Step 2:  EDEBS-032 (Anchor End Document UI Layout)
+    │   ├── end_document_metadata_panel.dart ← Step 35: ETMDI-001-10 (EndDocument Metadata Client State Schema)
     │   ├── executive_performance_dashboard.dart ← Step 13: LSAV-001 (Executive Performance Summary)
     │   ├── floating_callout_overlay.dart   ← Step 9:  LSAV-024 (Floating Core Callout Overlay)
+    │   ├── m3_adaptive_navigation_dashboard_panel.dart ← Step 36: ANSA-020-12 (M3 Adaptive Navigation Dashboard)
     │   ├── m3_dense_table.dart             ← Step 1:  RCGLA-014 (M3 Dense Data Table)
     │   ├── m3_fluid_media_grid.dart        ← Step 12: MUFCE-001 (Campaign Imagery Fluid Grid)
     │   ├── master_menu_page.dart           ← Step Directory Master Menu Page
@@ -64,7 +71,8 @@ lib/
     │   └── step_detail_page.dart           ← Step Detail Page Viewport Shell
     └── versioning/
         ├── context_isolation_panel.dart    ← Step 7:  SSELC-002 (Visual Context Isolation Panel)
-        └── master_library_lock_panel.dart  ← Step 31: EDBAA-015-09 (Master Component Library Lock)
+        ├── master_library_lock_panel.dart  ← Step 31: EDBAA-015-09 (Master Component Library Lock)
+        └── mobile_visual_context_isolation_panel.dart ← Step 34: MCIIM-014-07 (Isolate Mobile Visual Context)
 ```
 
 ---
@@ -105,6 +113,14 @@ lib/
 | **Step 30** | `FEBFL-005` | Private Flutter Pub Package Import Enforcement | `compliance` | `lib/core/compliance/private_package_enforcement_panel.dart` |
 | **Step 31** | `EDBAA-015-09` | Package & Lock Master Component Library Panel | `versioning` | `lib/core/versioning/master_library_lock_panel.dart` |
 | **Step 32** | `DLQDP-015-13` | System-Verb Icon Mapping Matrix Panel | `interaction` | `lib/core/interaction/system_verb_icon_panel.dart` |
+| **Step 33** | `SSTLA-007` | Mobile Device Screen Dimension & Viewport Ingest Adapter | `network` | `lib/core/network/viewport_telemetry_panel.dart` |
+| **Step 34** | `MCIIM-014-07` | Isolate Mobile Visual Context Focus Region Panel | `versioning` | `lib/core/versioning/mobile_visual_context_isolation_panel.dart` |
+| **Step 35** | `ETMDI-001-10` | Hard-code EndDocument Metadata & Single-Field Router | `ui` | `lib/core/ui/end_document_metadata_panel.dart` |
+| **Step 36** | `UFHT-025-11` | UI Hesitation Heatmap Analyzer (Mobile Gestures) | `interaction` | `lib/core/interaction/ui_hesitation_heatmap_panel.dart` |
+| **Step 37** | `ANSA-020-12` | Deploy M3 Adaptive Navigation for Dashboards Panel | `ui` | `lib/core/ui/m3_adaptive_navigation_dashboard_panel.dart` |
+| **Step 38** | `CBSV-004-14` | Structural Decomposition on Compound Location Data | `compliance` | `lib/core/compliance/location_structural_decomposition_panel.dart` |
+| **Step 39** | `HSCPE-015` | StatefulSet Resource Manifest Construction & Persistence | `network` | `lib/core/network/statefulset_checkout_persistence_panel.dart` |
+| **Step 40** | `HSCPE-017` | Hard Memory Request/Limit Specification (OOM Protection) | `network` | `lib/core/network/hard_memory_limit_panel.dart` |
 
 ---
 

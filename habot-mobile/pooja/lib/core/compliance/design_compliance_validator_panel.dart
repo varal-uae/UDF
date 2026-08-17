@@ -292,18 +292,22 @@ Container(
             AppSpacingTokens.vGapLg,
 
             // Live DesignComplianceLinterEngine Validator Simulator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                Expanded(
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 280),
                   child: Text(
                     'DevOps CI/CD Design Compliance Linter Simulator',
                     style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Wrap(
                   spacing: 6,
+                  runSpacing: 6,
                   children: [
                     OutlinedButton(
                       onPressed: () => _loadSample(_sampleCompliantCode),
@@ -313,7 +317,7 @@ Container(
                     OutlinedButton(
                       onPressed: () => _loadSample(_sampleNonCompliantCode),
                       style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
-                      child: const Text('Load Non-Compliant Sample'),
+                      child: const Text('Load Violation Sample'),
                     ),
                   ],
                 ),
