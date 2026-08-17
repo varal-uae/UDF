@@ -1,264 +1,312 @@
-// BPTR-0237-A01 — Design Token Definitions
+// BPTR-0237-A01 + TTMCS-013-A01 — Design Token Definitions
 // Single source of truth for all Habot design tokens in Flutter.
-// All values are populated from tokens.json (Figma export).
+// Source: HABOT Design System Reference Guide (AS-160826)
 // DO NOT hardcode any values outside this file.
 // Reference: @habot/design-tokens-mobile | HC-FE-0001
 
 // ─── COLOR TOKENS ────────────────────────────────────────────────────────────
 
 abstract class HabotColorTokens {
-  // — Light Mode —
-  static const lightPrimary              = _empty;
-  static const lightOnPrimary            = _empty;
-  static const lightPrimaryContainer     = _empty;
-  static const lightOnPrimaryContainer   = _empty;
 
-  static const lightSecondary            = _empty;
-  static const lightOnSecondary          = _empty;
-  static const lightSecondaryContainer   = _empty;
-  static const lightOnSecondaryContainer = _empty;
+  // ── Status Colors — fully defined from HABOT Design System Reference Guide ──
 
-  static const lightTertiary             = _empty;
-  static const lightOnTertiary           = _empty;
-  static const lightTertiaryContainer    = _empty;
-  static const lightOnTertiaryContainer  = _empty;
+  // Success
+  static const int successContainer   = 0xFFC6E8D9;
+  static const int success            = 0xFF21B373;
+  static const int successDark        = 0xFF086C44;
+  static const int onSuccess          = 0xFFFFFFFF;
 
-  static const lightError                = _empty;
-  static const lightOnError              = _empty;
-  static const lightErrorContainer       = _empty;
-  static const lightOnErrorContainer     = _empty;
+  // Error
+  static const int errorContainer     = 0xFFF9DEDC;
+  static const int error              = 0xFFE31B23;
+  static const int errorDark          = 0xFF8B0811;
+  static const int onError            = 0xFFFFFFFF;
 
-  static const lightSurface                  = _empty;
-  static const lightOnSurface               = _empty;
-  static const lightSurfaceVariant          = _empty;
-  static const lightOnSurfaceVariant        = _empty;
-  static const lightSurfaceContainerLowest  = _empty;
-  static const lightSurfaceContainerLow     = _empty;
-  static const lightSurfaceContainer        = _empty;
-  static const lightSurfaceContainerHigh    = _empty;
-  static const lightSurfaceContainerHighest = _empty;
+  // Warning
+  static const int warningContainer   = 0xFFFFE0B2;
+  static const int warning            = 0xFFFF9800;
+  static const int warningDark        = 0xFFE65100;
+  static const int onWarning          = 0xFF000000;
 
-  static const lightOutline        = _empty;
-  static const lightOutlineVariant = _empty;
-  static const lightScrim          = _empty;
-  static const lightShadow         = _empty;
+  // Info
+  static const int infoContainer      = 0xFFD1E7F7;
+  static const int info               = 0xFF1976D2;
+  static const int infoDark           = 0xFF0D47A1;
+  static const int onInfo             = 0xFFFFFFFF;
 
-  static const lightInverseSurface   = _empty;
-  static const lightInverseOnSurface = _empty;
-  static const lightInversePrimary   = _empty;
+  // ── Neutral Surfaces — defined from HABOT Design System Reference Guide ──
+  static const int surfacePrimary     = 0xFFFFFBFE;
+  static const int surfaceVariant     = 0xFF49454E;
+  static const int outline            = 0xFF79747E;
+  static const int background         = 0xFFFFFBFE;
 
-  // — Dark Mode —
-  static const darkPrimary              = _empty;
-  static const darkOnPrimary            = _empty;
-  static const darkPrimaryContainer     = _empty;
-  static const darkOnPrimaryContainer   = _empty;
+  // ── MD3 Role Colors — pending Figma seed colors ──────────────────────────
+  // Light Mode
+  static const int lightPrimary              = _pending;
+  static const int lightOnPrimary            = 0xFFFFFFFF;
+  static const int lightPrimaryContainer     = _pending;
+  static const int lightOnPrimaryContainer   = _pending;
 
-  static const darkSecondary            = _empty;
-  static const darkOnSecondary          = _empty;
-  static const darkSecondaryContainer   = _empty;
-  static const darkOnSecondaryContainer = _empty;
+  static const int lightSecondary            = _pending;
+  static const int lightOnSecondary          = 0xFFFFFFFF;
+  static const int lightSecondaryContainer   = _pending;
+  static const int lightOnSecondaryContainer = _pending;
 
-  static const darkTertiary             = _empty;
-  static const darkOnTertiary           = _empty;
-  static const darkTertiaryContainer    = _empty;
-  static const darkOnTertiaryContainer  = _empty;
+  static const int lightTertiary             = _pending;
+  static const int lightOnTertiary           = 0xFFFFFFFF;
+  static const int lightTertiaryContainer    = _pending;
+  static const int lightOnTertiaryContainer  = _pending;
 
-  static const darkError                = _empty;
-  static const darkOnError              = _empty;
-  static const darkErrorContainer       = _empty;
-  static const darkOnErrorContainer     = _empty;
+  static const int lightSurface                  = 0xFFFFFBFE;
+  static const int lightOnSurface               = _pending;
+  static const int lightSurfaceVariant          = 0xFF49454E;
+  static const int lightOnSurfaceVariant        = _pending;
+  static const int lightSurfaceContainerLowest  = _pending;
+  static const int lightSurfaceContainerLow     = _pending;
+  static const int lightSurfaceContainer        = _pending;
+  static const int lightSurfaceContainerHigh    = _pending;
+  static const int lightSurfaceContainerHighest = _pending;
 
-  static const darkSurface                  = _empty;
-  static const darkOnSurface               = _empty;
-  static const darkSurfaceVariant          = _empty;
-  static const darkOnSurfaceVariant        = _empty;
-  static const darkSurfaceContainerLowest  = _empty;
-  static const darkSurfaceContainerLow     = _empty;
-  static const darkSurfaceContainer        = _empty;
-  static const darkSurfaceContainerHigh    = _empty;
-  static const darkSurfaceContainerHighest = _empty;
+  static const int lightOutline        = 0xFF79747E;
+  static const int lightOutlineVariant = _pending;
+  static const int lightScrim          = _pending;
+  static const int lightShadow         = _pending;
 
-  static const darkOutline        = _empty;
-  static const darkOutlineVariant = _empty;
-  static const darkScrim          = _empty;
-  static const darkShadow         = _empty;
+  static const int lightInverseSurface   = _pending;
+  static const int lightInverseOnSurface = _pending;
+  static const int lightInversePrimary   = _pending;
 
-  static const darkInverseSurface   = _empty;
-  static const darkInverseOnSurface = _empty;
-  static const darkInversePrimary   = _empty;
+  // Dark Mode
+  static const int darkPrimary              = _pending;
+  static const int darkOnPrimary            = _pending;
+  static const int darkPrimaryContainer     = _pending;
+  static const int darkOnPrimaryContainer   = _pending;
 
-  // — Jurisdiction Accents —
-  static const dubaiAccentPrimary     = _empty;
-  static const dubaiAccentSecondary   = _empty;
-  static const dubaiOnAccentPrimary   = _empty;
-  static const dubaiOnAccentSecondary = _empty;
+  static const int darkSecondary            = _pending;
+  static const int darkOnSecondary          = _pending;
+  static const int darkSecondaryContainer   = _pending;
+  static const int darkOnSecondaryContainer = _pending;
 
-  static const indiaAccentPrimary     = _empty;
-  static const indiaAccentSecondary   = _empty;
-  static const indiaOnAccentPrimary   = _empty;
-  static const indiaOnAccentSecondary = _empty;
+  static const int darkTertiary             = _pending;
+  static const int darkOnTertiary           = _pending;
+  static const int darkTertiaryContainer    = _pending;
+  static const int darkOnTertiaryContainer  = _pending;
 
-  // — Warning Colors —
-  // TTMCS-013-A01: unified warning color variables
-  static const int lightWarning            = _empty;
-  static const int lightOnWarning          = _empty;
-  static const int lightWarningContainer   = _empty;
-  static const int lightOnWarningContainer = _empty;
+  static const int darkSurface                  = _pending;
+  static const int darkOnSurface               = _pending;
+  static const int darkSurfaceVariant          = _pending;
+  static const int darkOnSurfaceVariant        = _pending;
+  static const int darkSurfaceContainerLowest  = _pending;
+  static const int darkSurfaceContainerLow     = _pending;
+  static const int darkSurfaceContainer        = _pending;
+  static const int darkSurfaceContainerHigh    = _pending;
+  static const int darkSurfaceContainerHighest = _pending;
 
-  static const int darkWarning             = _empty;
-  static const int darkOnWarning           = _empty;
-  static const int darkWarningContainer    = _empty;
-  static const int darkOnWarningContainer  = _empty;
+  static const int darkOutline        = _pending;
+  static const int darkOutlineVariant = _pending;
+  static const int darkScrim          = _pending;
+  static const int darkShadow         = _pending;
 
-  // — Neutral Colors —
-  // TTMCS-013-A01: unified neutral color variables
-  static const int lightNeutral            = _empty;
-  static const int lightOnNeutral          = _empty;
-  static const int lightNeutralContainer   = _empty;
-  static const int lightOnNeutralContainer = _empty;
+  static const int darkInverseSurface   = _pending;
+  static const int darkInverseOnSurface = _pending;
+  static const int darkInversePrimary   = _pending;
 
-  static const int darkNeutral             = _empty;
-  static const int darkOnNeutral           = _empty;
-  static const int darkNeutralContainer    = _empty;
-  static const int darkOnNeutralContainer  = _empty;
+  // ── Jurisdiction Accents — pending brand/legal sign-off ──────────────────
+  static const int dubaiAccentPrimary     = _pending;
+  static const int dubaiAccentSecondary   = _pending;
+  static const int dubaiOnAccentPrimary   = _pending;
+  static const int dubaiOnAccentSecondary = _pending;
 
-  // — Success Colors —
-  static const int lightSuccess            = _empty;
-  static const int lightOnSuccess          = _empty;
-  static const int lightSuccessContainer   = _empty;
-  static const int lightOnSuccessContainer = _empty;
+  static const int indiaAccentPrimary     = _pending;
+  static const int indiaAccentSecondary   = _pending;
+  static const int indiaOnAccentPrimary   = _pending;
+  static const int indiaOnAccentSecondary = _pending;
 
-  static const int darkSuccess             = _empty;
-  static const int darkOnSuccess           = _empty;
-  static const int darkSuccessContainer    = _empty;
-  static const int darkOnSuccessContainer  = _empty;
+  // ── AI Confidence Colors ─────────────────────────────────────────────────
+  // Three-tier AI confidence colour coding — HABOT Design System Ch.5.8
+  static const int aiConfidenceHigh   = 0xFF21B373; // ≥90% — auto-approve
+  static const int aiConfidenceMedium = 0xFFFF9800; // 70–90% — proceed with caution
+  static const int aiConfidenceLow    = 0xFFE31B23; // <70% — human review required
 
-  // Sentinel — replace with actual 0xFFRRGGBB value from tokens.json
-  static const int _empty = 0x00000000;
+  // Sentinel — replace 0x00000000 with actual value when Figma seed is received
+  static const int _pending = 0x00000000;
 }
 
-// ─── SPACING TOKENS — 8pt BASE GRID — TTMCS-013-A01 ─────────────────────────
-// Strict 8pt base grid. All values must be multiples of 8.
-// Used for: card borders, item padding, text gaps, form spacing.
-// NO hardcoded numeric values allowed outside this class.
+// ─── SPACING TOKENS — 8pt BASE GRID ─────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.2.2
+// Six approved spacing sizes — all values in dp.
+// Extra small=4 · Small=8 · Medium=16 · Large=24 · Extra large=32 · 2XL=48
 
 abstract class HabotSpacing {
-  // — Base scale —
-  static const double xs  = 0; // 4pt  (half-step, use sparingly)
-  static const double sm  = 0; // 8pt
-  static const double md  = 0; // 16pt
-  static const double lg  = 0; // 24pt
-  static const double xl  = 0; // 32pt
-  static const double x2l = 0; // 48pt
-  static const double x3l = 0; // 64pt
+  static const double xs  = 4.0;
+  static const double sm  = 8.0;
+  static const double md  = 16.0;
+  static const double lg  = 24.0;
+  static const double xl  = 32.0;
+  static const double x2l = 48.0;
+  static const double x3l = 64.0;
 
-  // — Semantic aliases — card, item, text gap, form —
-  static const double cardPadding        = md;  // internal card padding
-  static const double cardBorderWidth    = 0;   // card border stroke width
-  static const double itemPadding        = sm;  // list item internal padding
-  static const double itemGap            = sm;  // gap between list items
-  static const double textGapTight       = xs;  // gap between label + value
-  static const double textGapNormal      = sm;  // gap between body paragraphs
-  static const double textGapLoose       = md;  // gap between sections
-  static const double formFieldGap       = md;  // vertical gap between form fields
-  static const double formSectionGap     = xl;  // gap between form sections
-  static const double screenPaddingH     = md;  // horizontal screen edge padding
-  static const double screenPaddingV     = lg;  // vertical screen edge padding
+  // Semantic aliases
+  static const double cardPadding        = md;
+  static const double cardBorderWidth    = 1.0;
+  static const double itemPadding        = sm;
+  static const double itemGap            = sm;
+  static const double textGapTight       = xs;
+  static const double textGapNormal      = sm;
+  static const double textGapLoose       = md;
+  static const double formFieldGap       = md;
+  static const double formSectionGap     = xl;
+  static const double screenPaddingH     = md;
+  static const double screenPaddingV     = lg;
 
-  // — Touch boundary tokens — WCAG 2.5.5 AAA —
-  static const double touchTargetMin     = 0;   // 48pt minimum touch target
-  static const double touchTargetOptimal = 0;   // 56pt optimal touch target
+  // Touch boundary tokens — WCAG 2.2 SC 2.5.8
+  static const double touchTargetMin     = 44.0; // WCAG floor
+  static const double touchTargetOptimal = 48.0; // iOS/MD3 standard
+  static const double touchTargetSpacious = 56.0; // key actions
+
+  // Page margins per breakpoint
+  static const double mobileMargin  = 16.0;
+  static const double tabletMargin  = 24.0;
+  static const double desktopMargin = 32.0;
+
+  // Grid gutters per breakpoint
+  static const double mobileGutter  = 8.0;
+  static const double tabletGutter  = 16.0;
+  static const double desktopGutter = 24.0;
 }
 
 // ─── RADIUS TOKENS ───────────────────────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.2.5
 
 abstract class HabotRadius {
-  static const double none = 0;
-  static const double xs   = 0; // 2dp
-  static const double sm   = 0; // 4dp
-  static const double md   = 0; // 8dp
-  static const double lg   = 0; // 16dp
-  static const double xl   = 0; // 28dp
-  static const double full = 0; // 999dp
+  static const double none = 0.0;    // Square, sharp corners
+  static const double xs   = 4.0;   // Slight softening
+  static const double sm   = 8.0;   // Chips, small buttons
+  static const double md   = 12.0;  // Cards, text input fields
+  static const double lg   = 16.0;  // Bottom sheets, large modals
+  static const double xl   = 24.0;  // Extra-large feature components
+  static const double full = 999.0; // Pill-shaped and circular elements
 }
 
 // ─── ELEVATION TOKENS ────────────────────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.2.4
 
 abstract class HabotElevation {
-  static const double level0 = 0;
-  static const double level1 = 0;
-  static const double level2 = 0;
-  static const double level3 = 0;
-  static const double level4 = 0;
-  static const double level5 = 0;
+  static const double level0 = 0.0;  // Flat — resting on page
+  static const double level1 = 1.0;  // Slightly raised — cards, resting buttons
+  static const double level2 = 3.0;  // Noticeably raised — elements about to open modal
+  static const double level3 = 6.0;  // Clearly floating — primary modal windows
+  static const double level4 = 8.0;  // Strongly floating — important overlays
+  static const double level5 = 12.0; // Highest — urgent attention content
 }
 
 // ─── TYPOGRAPHY TOKENS ───────────────────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.2.3 & Ch.4
+// Primary: Poppins / Inter. Fallback: San Francisco, Segoe UI, sans-serif.
+// Weights: Regular (400), Medium (500), Bold (700).
 
 abstract class HabotFontFamily {
-  static const String display  = ''; // Poppins
-  static const String headline = ''; // Poppins
-  static const String title    = ''; // Poppins / Inter
-  static const String body     = ''; // Inter
-  static const String label    = ''; // Inter
+  static const String display  = 'Poppins';
+  static const String headline = 'Poppins';
+  static const String title    = 'Poppins';
+  static const String body     = 'Inter';
+  static const String label    = 'Inter';
+  static const String monospace = 'monospace'; // account numbers, IDs, codes
 }
 
 abstract class HabotFontSize {
-  static const double displayLarge   = 0; // 57sp
-  static const double displayMedium  = 0; // 45sp
-  static const double displaySmall   = 0; // 36sp
-  static const double headlineLarge  = 0; // 32sp
-  static const double headlineMedium = 0; // 28sp
-  static const double headlineSmall  = 0; // 24sp
-  static const double titleLarge     = 0; // 22sp
-  static const double titleMedium    = 0; // 16sp
-  static const double titleSmall     = 0; // 14sp
-  static const double bodyLarge      = 0; // 16sp
-  static const double bodyMedium     = 0; // 14sp
-  static const double bodySmall      = 0; // 12sp
-  static const double labelLarge     = 0; // 14sp
-  static const double labelMedium    = 0; // 12sp
-  static const double labelSmall     = 0; // 11sp
+  // Display — hero titles on landing/splash
+  static const double displayLarge   = 57.0;
+  static const double displayMedium  = 45.0;
+  static const double displaySmall   = 36.0;
+
+  // Headline — major/minor section titles
+  static const double headlineLarge  = 32.0;
+  static const double headlineMedium = 28.0;
+  static const double headlineSmall  = 24.0;
+
+  // Title — card titles, modal headers, form section labels
+  static const double titleLarge     = 22.0;
+  static const double titleMedium    = 16.0;
+  static const double titleSmall     = 14.0;
+
+  // Body — everyday reading text, helper text, timestamps
+  static const double bodyLarge      = 16.0;
+  static const double bodyMedium     = 14.0;
+  static const double bodySmall      = 12.0;
+
+  // Label — button text, chips/tags, small badges
+  static const double labelLarge     = 14.0;
+  static const double labelMedium    = 12.0;
+  static const double labelSmall     = 11.0;
+
+  // Monospace — account numbers, transaction IDs, codes
+  static const double monoDefault    = 14.0;
 }
 
 abstract class HabotFontWeight {
-  static const int regular  = 0; // 400
-  static const int medium   = 0; // 500
-  static const int semiBold = 0; // 600
+  static const int regular  = 400; // everyday reading text
+  static const int medium   = 500; // titles and labels
+  static const int bold     = 700; // strong emphasis
 }
 
 // ─── Z-INDEX LAYERING SCALE — BPTR-0377-A01 ─────────────────────────────────
-// Fixed 5-level elevation scale. Hard-coded constants prevent arbitrary numbers.
-// Shakti Alert is always the topmost layer — never obscured by any other element.
-// Reference: Material Design elevation · Layout & Elevation Tokens
 
 abstract class HabotZIndex {
-  /// Level 1 — Base content: body, lists, cards, data tables.
-  static const int base          = 0;
-
-  /// Level 2 — Sticky headers: app bars, pinned column headers, tab bars.
-  static const int stickyHeader  = 10;
-
-  /// Level 3 — Overlays: dropdowns, tooltips, menus, bottom sheets, drawers.
-  static const int overlay       = 20;
-
-  /// Level 4 — Modals: dialogs, full-screen takeovers, side sheets.
-  static const int modal         = 30;
-
-  /// Level 5 — Shakti Alert: critical system alerts, force-upgrade banners.
-  /// Always renders on top of everything. Must never be obscured.
-  static const int shaktiAlert   = 40;
+  static const int base         = 0;
+  static const int stickyHeader = 10;
+  static const int overlay      = 20;
+  static const int modal        = 30;
+  static const int shaktiAlert  = 40;
 }
 
 // ─── VIEWPORT SCALE TOKENS ───────────────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.9
 
 abstract class HabotViewportScale {
-  /// Applied to all font sizes on mobile (< 600dp)
-  static const double mobile  = 0.0; // 1.0x
+  static const double mobile  = 1.0;  // 360px+ — 4 columns
+  static const double tablet  = 1.05; // 600px+ — 8 columns
+  static const double desktop = 1.1;  // 1200px+ — 12 columns
+}
 
-  /// Applied to all font sizes on tablet (600–1024dp)
-  static const double tablet  = 0.0; // 1.05x
+// ─── GRID BREAKPOINTS ────────────────────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.3
 
-  /// Applied to all font sizes on desktop (> 1024dp)
-  static const double desktop = 0.0; // 1.1x
+abstract class HabotBreakpoint {
+  static const double mobile      = 360.0;
+  static const double tablet      = 600.0;
+  static const double tabletLarge = 840.0;
+  static const double desktop     = 1200.0;
+}
+
+// ─── MOTION TOKENS ───────────────────────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.8
+
+abstract class HabotMotion {
+  // Durations in milliseconds
+  static const int durationShort1  = 50;
+  static const int durationShort2  = 100;
+  static const int durationShort3  = 150;
+  static const int durationShort4  = 200;
+  static const int durationMedium1 = 250;
+  static const int durationMedium2 = 300;
+  static const int durationLong1   = 350;
+  static const int durationLong2   = 400;
+
+  // Press scale for cards/buttons
+  static const double pressScale    = 0.98;
+  static const int    pressDuration = 150;
+
+  // Stepper blocked opacity
+  static const double blockedOpacity  = 0.4;
+  static const double disabledOpacity = 0.38;
+}
+
+// ─── AI CONFIDENCE THRESHOLDS ────────────────────────────────────────────────
+// Source: HABOT Design System Reference Guide Ch.5.8
+
+abstract class HabotAiConfidence {
+  static const double high   = 0.90; // ≥90% — auto-approve enabled
+  static const double medium = 0.70; // 70–90% — proceed with caution
+  static const double low    = 0.00; // <70% — human review required
 }

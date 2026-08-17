@@ -1,42 +1,62 @@
 // TTMCS-014-A01 — Liquid Glass Theme Config
 // Master theme registry file: habot_design_tokens/themes/liquid_glass_config
+// Source: HABOT Design System Reference Guide (AS-160826)
 // Reference: HC-DE-0274, HC-INF-0294
-// Domain: UI/UX Design System Design
 //
-// All values are EMPTY — pending WCAG 4.5:1 contrast verification
-// and design sign-off from the UI/UX Design System team.
-//
-// DO NOT hardcode any values outside this file.
-// CI linter (lint_design_tokens.js) will block merges with raw hex overrides.
+// Status colors, neutral surfaces, and typography fully populated.
+// MD3 primary/secondary brand colors pending Figma seed.
+// WCAG contrast verification required before merging brand colors.
+
+import '../design_tokens.dart';
 
 // ─── BRAND COLOR TOKENS ───────────────────────────────────────────────────────
 
 abstract class LiquidGlassColors {
 
-  // — Primary CTA — Habot Blue —
-  // Spec: #2E86C1 — pending WCAG contrast verification
-  static const int actionPrimary       = 0x00000000; // TODO: #2E86C1
-  static const int actionOnPrimary     = 0x00000000; // TODO: contrast pair
-  static const int actionPrimaryHover  = 0x00000000; // TODO: tonal variant
-  static const int actionPrimaryFocus  = 0x00000000; // TODO: focus ring color
+  // — Status colors — fully defined from design system doc —
+  static const int success          = HabotColorTokens.success;         // #21B373
+  static const int successContainer = HabotColorTokens.successContainer; // #C6E8D9
+  static const int onSuccess        = HabotColorTokens.onSuccess;        // #FFFFFF
 
-  // — Positive / Validation / Completion — Subtle Green —
-  // Spec: #2ECC71 — pending WCAG contrast verification
-  static const int stateSuccess        = 0x00000000; // TODO: #2ECC71
-  static const int stateOnSuccess      = 0x00000000; // TODO: contrast pair
-  static const int stateSuccessSubtle  = 0x00000000; // TODO: tonal container
+  static const int error            = HabotColorTokens.error;            // #E31B23
+  static const int errorContainer   = HabotColorTokens.errorContainer;   // #F9DEDC
+  static const int onError          = HabotColorTokens.onError;          // #FFFFFF
 
-  // — Background Containers —
-  // Spec: white (#FFFFFF) or neutral off-white (#F4F7F9) only
-  static const int backgroundPrimary   = 0x00000000; // TODO: #FFFFFF
-  static const int backgroundSecondary = 0x00000000; // TODO: #F4F7F9
-  static const int backgroundOnPrimary = 0x00000000; // TODO: contrast pair
+  static const int warning          = HabotColorTokens.warning;          // #FF9800
+  static const int warningContainer = HabotColorTokens.warningContainer;  // #FFE0B2
+  static const int onWarning        = HabotColorTokens.onWarning;        // #000000
 
-  // — Surface overlays — Liquid Glass effect —
-  static const int glassSurface        = 0x00000000; // TODO: semi-transparent white
-  static const int glassBorder         = 0x00000000; // TODO: subtle border tint
-  static const int glassBlur           = 0x00000000; // TODO: backdrop blur color
-  static const int glassShadow         = 0x00000000; // TODO: drop shadow color
+  static const int info             = HabotColorTokens.info;             // #1976D2
+  static const int infoContainer    = HabotColorTokens.infoContainer;    // #D1E7F7
+  static const int onInfo           = HabotColorTokens.onInfo;           // #FFFFFF
+
+  // — Neutral surfaces — defined —
+  static const int surface          = HabotColorTokens.surfacePrimary;   // #FFFBFE
+  static const int surfaceVariant   = HabotColorTokens.surfaceVariant;   // #49454E
+  static const int outlineColor     = HabotColorTokens.outline;          // #79747E
+  static const int background       = HabotColorTokens.background;       // #FFFBFE
+
+  // — Primary CTA — pending Figma seed + WCAG verification —
+  static const int actionPrimary       = 0x00000000;
+  static const int actionOnPrimary     = 0xFFFFFFFF; // always white on primary
+  static const int actionPrimaryHover  = 0x00000000;
+  static const int actionPrimaryFocus  = 0x00000000;
+
+  // — Success state (Subtle Green) — pending WCAG verification —
+  static const int stateSuccess        = 0x00000000;
+  static const int stateOnSuccess      = 0xFFFFFFFF;
+  static const int stateSuccessSubtle  = 0x00000000;
+
+  // — Backgrounds — pending WCAG verification —
+  static const int backgroundPrimary   = 0x00000000; // #FFFFFF target
+  static const int backgroundSecondary = 0x00000000; // #F4F7F9 target
+  static const int backgroundOnPrimary = 0x00000000;
+
+  // — Glass surface overlays —
+  static const int glassSurface        = 0x00000000;
+  static const int glassBorder         = 0x00000000;
+  static const int glassBlur           = 0x00000000;
+  static const int glassShadow         = 0x00000000;
 }
 
 // ─── TYPOGRAPHY SCALE CAPS ────────────────────────────────────────────────────
