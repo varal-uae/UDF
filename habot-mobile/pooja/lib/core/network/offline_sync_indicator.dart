@@ -152,8 +152,8 @@ class _OfflineSyncIndicatorState extends State<OfflineSyncIndicator> with Single
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Row(
-          children: const [
+        title: const Row(
+          children: [
             Icon(Icons.warning_amber_rounded, color: Colors.orange),
             SizedBox(width: 8),
             Text('Poka-Yoke Cache Lock Alert'),

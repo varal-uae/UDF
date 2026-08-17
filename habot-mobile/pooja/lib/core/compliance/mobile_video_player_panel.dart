@@ -42,7 +42,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Step MTVPE-009-05: Mobile Video Audit Record Data Model.
@@ -125,7 +124,7 @@ class Step46MobileVideoPlayerPanel extends StatefulWidget {
 class _Step46MobileVideoPlayerPanelState extends State<Step46MobileVideoPlayerPanel> {
   bool _isPlaying = false;
   double _touchTargetSizeDp = 48.0;
-  double _playbackPositionSeconds = 14.0;
+  final double _playbackPositionSeconds = 14.0;
   final double _videoTotalDurationSeconds = 120.0;
 
   @override
@@ -269,7 +268,7 @@ class _Step46MobileVideoPlayerPanelState extends State<Step46MobileVideoPlayerPa
                                 child: Image.network(
                                   'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80',
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, _, __) => const Center(
+                                  errorBuilder: (context, error, stackTrace) => const Center(
                                     child: Icon(Icons.movie, size: 64, color: Colors.white24),
                                   ),
                                 ),
@@ -340,9 +339,9 @@ class _Step46MobileVideoPlayerPanelState extends State<Step46MobileVideoPlayerPa
                                         '00:${_playbackPositionSeconds.toInt().toString().padLeft(2, '0')}',
                                         style: const TextStyle(color: Colors.white, fontSize: 10),
                                       ),
-                                      Text(
+                                      const Text(
                                         '02:00',
-                                        style: const TextStyle(color: Colors.white, fontSize: 10),
+                                        style: TextStyle(color: Colors.white, fontSize: 10),
                                       ),
                                     ],
                                   ),
@@ -359,11 +358,11 @@ class _Step46MobileVideoPlayerPanelState extends State<Step46MobileVideoPlayerPa
                       Container(
                         padding: AppSpacingTokens.paddingSm,
                         decoration: BoxDecoration(
-                          color: _touchTargetSizeDp >= 48.0
-                              ? colorScheme.primaryContainer
-                              : (_touchTargetSizeDp >= 44.0
-                                  ? AppColorPalette.surfaceContainerHighest
-                                  : colorScheme.errorContainer),
+                              color: _touchTargetSizeDp >= 48.0
+                                  ? colorScheme.primaryContainer
+                                  : (_touchTargetSizeDp >= 44.0
+                                      ? colorScheme.surfaceContainerHighest
+                                      : colorScheme.errorContainer),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(

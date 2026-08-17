@@ -160,7 +160,7 @@ class _Step42DocumentMappingPanelState extends State<Step42DocumentMappingPanel>
   final PageController _pageController = PageController(viewportFraction: 0.88);
   int _activeStepIndex = 0;
 
-  List<DocumentMappingItem> _mappingSteps = [
+  final List<DocumentMappingItem> _mappingSteps = [
     const DocumentMappingItem(
       stepId: 'STEP-42-A',
       stepTitle: 'Final Success Anchor Definition',

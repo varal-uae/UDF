@@ -244,7 +244,7 @@ class _Step48UserHesitationTrackerPanelState extends State<Step48UserHesitationT
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.success.withOpacity(0.15),
+                              color: AppColorPalette.success.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Row(

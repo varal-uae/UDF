@@ -11,17 +11,27 @@ All step modules are consolidated into single, self-contained Dart files inside 
 ```
 lib/
 ├── main.dart                                  # Interactive component directory & theme launcher
-└── core/                                      # Self-Contained Core Modules (32/32 Steps)
+└── core/                                      # Self-Contained Core Modules (50/50 Steps)
     ├── accessibility/
     │   ├── smart_keyboard_field.dart       ← Step 19: NSKFI-015 (Mobile Virtual Keyboard Interceptor)
     │   └── status_badge_system_panel.dart  ← Step 23: IS29-SCTAS-007 (High-Contrast Status Badges)
     ├── compliance/
+    │   ├── atomic_fee_filter_panel.dart     ← Step 41: PELCE-007-20 (Atomic Action Fee Filter)
+    │   ├── checksum_verification_panel.dart ← Step 49: VPVMP-008 (Programmatic Checksum & Digital Signatures)
     │   ├── db_linter_entity_panel.dart     ← Step 24: CBSV-005-10 (DB Identifier _ID Linter)
     │   ├── design_compliance_validator_panel.dart ← Step 26: MUFCE-018 (DevOps Compliance Linter)
+    │   ├── document_mapping_panel.dart     ← Step 42: VPVMP-006-14 (Backward Data Mapping & Anchor Checks)
     │   ├── lineage_trace_test_panel.dart   ← Step 27: EDEBS-015-10 (Lineage Trace & Release Gate)
     │   ├── location_structural_decomposition_panel.dart ← Step 38: CBSV-004-14 (Location Structural Decomposition)
     │   ├── mathematical_vendor_success_panel.dart ← Step 25: EDEBS-008-15 (Mathematical Vendor Proof Engine)
-    │   └── private_package_enforcement_panel.dart ← Step 30: FEBFL-005 (Private Pub Package Import)
+    │   ├── mobile_consent_gate_panel.dart  ← Step 50: CCPME-012 (Contextual Mobile Consent Gates)
+    │   ├── mobile_video_player_panel.dart  ← Step 46: MTVPE-009-05 (Mobile MTOI Video Player)
+    │   ├── private_package_enforcement_panel.dart ← Step 30: FEBFL-005 (Private Pub Package Import)
+    │   ├── rapid_backtracking_tracking_panel.dart ← Step 45: FLADE-006-02 (Rapid Deletion & Backtracking Tracker)
+    │   ├── reconciliation_readiness_gate_panel.dart ← Step 47: RRCVG-006 (Final Reconciliation Readiness Gate)
+    │   ├── system_verb_cta_panel.dart      ← Step 43: IS32-CSIVW-019-AS01 (System-Verb CTA Character Limits)
+    │   ├── text_mask_handler_panel.dart    ← Step 44: REF-016 (Integrated Text Formatting Mask Handler)
+    │   └── user_hesitation_tracker_panel.dart ← Step 48: HC-INF-0302 (User Hesitation & Friction Metrics)
     ├── interaction/
     │   ├── ab_testing_card_switch.dart     ← Step 14: AEETE-001 (Byte-Level A/B Testing Switcher)
     │   ├── contextual_fab.dart            ← Step 6:  SGTIM-019 (Adaptive Circular Contextual FAB)
@@ -121,6 +131,16 @@ lib/
 | **Step 38** | `CBSV-004-14` | Structural Decomposition on Compound Location Data | `compliance` | `lib/core/compliance/location_structural_decomposition_panel.dart` |
 | **Step 39** | `HSCPE-015` | StatefulSet Resource Manifest Construction & Persistence | `network` | `lib/core/network/statefulset_checkout_persistence_panel.dart` |
 | **Step 40** | `HSCPE-017` | Hard Memory Request/Limit Specification (OOM Protection) | `network` | `lib/core/network/hard_memory_limit_panel.dart` |
+| **Step 41** | `PELCE-007-20` | Atomic Action Filter: Flat-Rate Platform Fee Deduction | `compliance` | `lib/core/compliance/atomic_fee_filter_panel.dart` |
+| **Step 42** | `VPVMP-006-14` | Document Backward Data Mapping from Success Anchors | `compliance` | `lib/core/compliance/document_mapping_panel.dart` |
+| **Step 43** | `IS32-CSIVW-019-AS01` | Enforce System-Verb CTA Character Limits | `compliance` | `lib/core/compliance/system_verb_cta_panel.dart` |
+| **Step 44** | `REF-016` | Integrated Character-Level Text Formatting Mask Handler | `compliance` | `lib/core/compliance/text_mask_handler_panel.dart` |
+| **Step 45** | `FLADE-006-02` | Implement Rapid Backtracking Tracking on Mobile Forms | `compliance` | `lib/core/compliance/rapid_backtracking_tracking_panel.dart` |
+| **Step 46** | `MTVPE-009-05` | Configure Mobile MTOI Training Embedded Videos | `compliance` | `lib/core/compliance/mobile_video_player_panel.dart` |
+| **Step 47** | `RRCVG-006` | Design Reconciliation Test: Final Readiness Gate | `compliance` | `lib/core/compliance/reconciliation_readiness_gate_panel.dart` |
+| **Step 48** | `HC-INF-0302` | Build Interactive Event Listeners for User Hesitation and Friction Metrics | `compliance` | `lib/core/compliance/user_hesitation_tracker_panel.dart` |
+| **Step 49** | `VPVMP-008` | Programmatic Data Checksum Verification & Digital Signature Layouts | `compliance` | `lib/core/compliance/checksum_verification_panel.dart` |
+| **Step 50** | `CCPME-012` | Contextual Mobile Consent Gates & Poka-Yoke Control | `compliance` | `lib/core/compliance/mobile_consent_gate_panel.dart` |
 
 ---
 

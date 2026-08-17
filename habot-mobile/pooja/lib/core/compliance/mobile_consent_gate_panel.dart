@@ -267,7 +267,7 @@ class _Step50MobileConsentGatePanelState extends State<Step50MobileConsentGatePa
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: _hasScrolledToBottom
-                                  ? AppColorPalette.primaryContainer
+                                  ? colorScheme.primaryContainer
                                   : colorScheme.errorContainer,
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -330,7 +330,7 @@ class _Step50MobileConsentGatePanelState extends State<Step50MobileConsentGatePa
                                 Container(
                                   padding: AppSpacingTokens.paddingSm,
                                   decoration: BoxDecoration(
-                                    color: AppColorPalette.success.withOpacity(0.15),
+                                    color: AppColorPalette.success.withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: const Row(

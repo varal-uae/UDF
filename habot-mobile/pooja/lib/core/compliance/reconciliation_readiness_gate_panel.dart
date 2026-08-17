@@ -42,7 +42,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Step RRCVG-006: Reconciliation Audit Record Data Model.
@@ -121,16 +120,15 @@ abstract class DesignSystemConformityValidator {
 class Step47ReconciliationReadinessPanel extends StatefulWidget {
   final ReconciliationRecord record;
 
-  const Step47ReconciliationReadinessPanel({
-    super.key,
-    required this.record,
-  });
+  const Step47ReconciliationReadinessPanel({super.key, required this.record});
 
   @override
-  State<Step47ReconciliationReadinessPanel> createState() => _Step47ReconciliationReadinessPanelState();
+  State<Step47ReconciliationReadinessPanel> createState() =>
+      _Step47ReconciliationReadinessPanelState();
 }
 
-class _Step47ReconciliationReadinessPanelState extends State<Step47ReconciliationReadinessPanel> {
+class _Step47ReconciliationReadinessPanelState
+    extends State<Step47ReconciliationReadinessPanel> {
   double _reconciliationDifference = 0.0;
   bool _isSubmitted = false;
 
@@ -151,10 +149,16 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final isDisabled = PokaYokeReconciliationGuard.isButtonDisabled(_reconciliationDifference);
-    final tooltipReason = PokaYokeReconciliationGuard.getDisabledTooltipReason(_reconciliationDifference);
+    final isDisabled = PokaYokeReconciliationGuard.isButtonDisabled(
+      _reconciliationDifference,
+    );
+    final tooltipReason = PokaYokeReconciliationGuard.getDisabledTooltipReason(
+      _reconciliationDifference,
+    );
 
-    final conformityStatus = DesignSystemConformityValidator.evaluate(widget.record.m3ConformityPercentage);
+    final conformityStatus = DesignSystemConformityValidator.evaluate(
+      widget.record.m3ConformityPercentage,
+    );
     final isPass = conformityStatus == Step47ConformityStatus.good;
 
     return SingleChildScrollView(
@@ -176,7 +180,11 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.gavel_outlined, color: colorScheme.primary, size: 28),
+                          Icon(
+                            Icons.gavel_outlined,
+                            color: colorScheme.primary,
+                            size: 28,
+                          ),
                           AppSpacingTokens.hGapMd,
                           Expanded(
                             child: Text(
@@ -188,7 +196,10 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(12),
@@ -206,7 +217,9 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                       AppSpacingTokens.vGapSm,
                       Text(
                         'Apply the disabled prop to the Material Button if the reconciliation difference is non-zero.',
-                        style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -225,26 +238,35 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                     children: [
                       Text(
                         'Reconciliation Readiness Gate (Poka-Yoke Non-Zero Guard)',
-                        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       AppSpacingTokens.vGapSm,
                       Row(
                         children: [
-                          const Text('Adjust Variance: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                          const Text(
+                            'Adjust Variance: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           Expanded(
                             child: Slider(
                               value: _reconciliationDifference,
                               min: 0.0,
                               max: 50.0,
                               divisions: 50,
-                              label: '\$${_reconciliationDifference.toStringAsFixed(2)}',
+                              label:
+                                  '\$${_reconciliationDifference.toStringAsFixed(2)}',
                               onChanged: (val) => setState(() {
                                 _reconciliationDifference = val;
                                 _isSubmitted = false;
                               }),
                             ),
                           ),
-                          Text('\$${_reconciliationDifference.toStringAsFixed(2)}', style: theme.textTheme.labelMedium),
+                          Text(
+                            '\$${_reconciliationDifference.toStringAsFixed(2)}',
+                            style: theme.textTheme.labelMedium,
+                          ),
                         ],
                       ),
                       AppSpacingTokens.vGapSm,
@@ -261,7 +283,9 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                                 : colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isDisabled ? colorScheme.outlineVariant : colorScheme.primary,
+                              color: isDisabled
+                                  ? colorScheme.outlineVariant
+                                  : colorScheme.primary,
                             ),
                           ),
                           child: Column(
@@ -270,18 +294,24 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                               Row(
                                 children: [
                                   Icon(
-                                    isDisabled ? Icons.block : Icons.check_circle_outline,
-                                    color: isDisabled ? colorScheme.error : colorScheme.primary,
+                                    isDisabled
+                                        ? Icons.block
+                                        : Icons.check_circle_outline,
+                                    color: isDisabled
+                                        ? colorScheme.error
+                                        : colorScheme.primary,
                                   ),
                                   AppSpacingTokens.hGapSm,
                                   Expanded(
                                     child: Text(
                                       isDisabled
-                                        ? 'Gate Status: BLOCKED (Non-zero variance detected)'
-                                        : 'Gate Status: READY (Zero variance confirmed)',
+                                          ? 'Gate Status: BLOCKED (Non-zero variance detected)'
+                                          : 'Gate Status: READY (Zero variance confirmed)',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: isDisabled ? colorScheme.error : colorScheme.primary,
+                                        color: isDisabled
+                                            ? colorScheme.error
+                                            : colorScheme.primary,
                                       ),
                                     ),
                                   ),
@@ -290,23 +320,36 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                               AppSpacingTokens.vGapSm,
                               Text(
                                 tooltipReason,
-                                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
                               ),
                               AppSpacingTokens.vGapMd,
 
                               // Material Button with `disabled` prop equivalent
                               ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: isDisabled ? colorScheme.outlineVariant : colorScheme.primary,
-                                  foregroundColor: isDisabled ? colorScheme.onSurfaceVariant : colorScheme.onPrimary,
-                                  minimumSize: const Size(160, 48), // 48dp height
+                                  backgroundColor: isDisabled
+                                      ? colorScheme.outlineVariant
+                                      : colorScheme.primary,
+                                  foregroundColor: isDisabled
+                                      ? colorScheme.onSurfaceVariant
+                                      : colorScheme.onPrimary,
+                                  minimumSize: const Size(
+                                    160,
+                                    48,
+                                  ), // 48dp height
                                 ),
-                                onPressed: isDisabled ? null : _handleFinalSignOff,
+                                onPressed: isDisabled
+                                    ? null
+                                    : _handleFinalSignOff,
                                 icon: const Icon(Icons.verified),
                                 label: Text(
                                   _isSubmitted
                                       ? 'GATE SIGN-OFF COMPLETE'
-                                      : (isDisabled ? 'SIGN-OFF DISABLED' : 'EXECUTE FINAL SIGN-OFF'),
+                                      : (isDisabled
+                                            ? 'SIGN-OFF DISABLED'
+                                            : 'EXECUTE FINAL SIGN-OFF'),
                                 ),
                               ),
                             ],
@@ -330,12 +373,17 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.palette_outlined, color: colorScheme.primary),
+                          Icon(
+                            Icons.palette_outlined,
+                            color: colorScheme.primary,
+                          ),
                           AppSpacingTokens.hGapMd,
                           Expanded(
                             child: Text(
                               'UI/UX Design System Conformity (Material 3): ${widget.record.m3ConformityPercentage.toStringAsFixed(0)}% — ${conformityStatus.label}',
-                              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
@@ -350,7 +398,9 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                       AppSpacingTokens.vGapSm,
                       Text(
                         'Floor: <70% | Optimal: 90–100% | Ceiling: 100% (Standard: Google Material Design 3 Guidelines / Nielsen Norman Group)',
-                        style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -369,7 +419,9 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                     children: [
                       Text(
                         'Data Collected by System',
-                        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       AppSpacingTokens.vGapSm,
                       SingleChildScrollView(
@@ -386,16 +438,20 @@ class _Step47ReconciliationReadinessPanelState extends State<Step47Reconciliatio
                             DataColumn(label: Text('Governance Owner')),
                           ],
                           rows: [
-                            DataRow(cells: [
-                              DataCell(Text(widget.record.stepExecutionId)),
-                              DataCell(Text(widget.record.executionStatus)),
-                              DataCell(Text(widget.record.executionTimestamp)),
-                              DataCell(Text(widget.record.stepOutcome)),
-                              DataCell(Text(widget.record.userId)),
-                              DataCell(Text(conformityStatus.label)),
-                              DataCell(Text(widget.record.userSessionId)),
-                              DataCell(Text(widget.record.governanceOwner)),
-                            ]),
+                            DataRow(
+                              cells: [
+                                DataCell(Text(widget.record.stepExecutionId)),
+                                DataCell(Text(widget.record.executionStatus)),
+                                DataCell(
+                                  Text(widget.record.executionTimestamp),
+                                ),
+                                DataCell(Text(widget.record.stepOutcome)),
+                                DataCell(Text(widget.record.userId)),
+                                DataCell(Text(conformityStatus.label)),
+                                DataCell(Text(widget.record.userSessionId)),
+                                DataCell(Text(widget.record.governanceOwner)),
+                              ],
+                            ),
                           ],
                         ),
                       ),

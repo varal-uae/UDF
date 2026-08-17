@@ -45,7 +45,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Step FLADE-006-02: Rapid Backtracking Record Data Model.
@@ -335,7 +334,7 @@ class _Step45RapidBacktrackingPanelState extends State<Step45RapidBacktrackingPa
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: AppColorPalette.primaryContainer,
+                                    color: colorScheme.primaryContainer,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(

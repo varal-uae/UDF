@@ -147,8 +147,8 @@ class _EndDocumentLayoutState extends State<EndDocumentLayout> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Row(
-          children: const [
+        title: const Row(
+          children: [
             Icon(Icons.verified_user_outlined, color: Colors.blue),
             SizedBox(width: 8),
             Text('Poka-Yoke Sign-off Verification'),
@@ -174,14 +174,14 @@ class _EndDocumentLayoutState extends State<EndDocumentLayout> {
                   color: Colors.blue.withAlpha(20),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('API Contract:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+                    Text('API Contract:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
                     Text('${EndDocumentDefinition.httpMethod} ${EndDocumentDefinition.apiEndpoint}',
-                        style: const TextStyle(fontSize: 10, fontFamily: 'monospace')),
+                        style: TextStyle(fontSize: 10, fontFamily: 'monospace')),
                     Text('Auth: ${EndDocumentDefinition.authHeaderType}',
-                        style: const TextStyle(fontSize: 10, fontFamily: 'monospace')),
+                        style: TextStyle(fontSize: 10, fontFamily: 'monospace')),
                   ],
                 ),
               ),
@@ -215,8 +215,8 @@ class _EndDocumentLayoutState extends State<EndDocumentLayout> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Row(
-          children: const [
+        title: const Row(
+          children: [
             Icon(Icons.shield_outlined, color: Colors.orange),
             SizedBox(width: 8),
             Text('RBAC Authorization Escalation'),
