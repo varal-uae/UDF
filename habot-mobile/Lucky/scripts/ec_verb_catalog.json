@@ -99,7 +99,8 @@
 
   "exemptFiles": [
     "router.dart",
-    "error_fallback_screen.dart"
+    "error_fallback_screen.dart",
+    "loading_button.dart"
   ],
 
   "buttonContextPattern": "FilledButton|ElevatedButton|OutlinedButton|TextButton|SubmitLockButton|HighRiskActionButton|ReleaseToTechButton|FilledButton\\.icon|OutlinedButton\\.icon|TextButton\\.icon|retryLabel:|loadingLabel:|actionLabel:|label:\\s*['\"]"

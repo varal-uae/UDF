@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/validated_form.dart';
 import '../../../../core/utils/debounced_form_field.dart';
 import '../../../../core/utils/auth_abandon_telemetry.dart';
-import '../../../../core/components/ec_cta_button.dart';
+import '../../../../core/components/loading_button.dart';
 
 // ARCPE-001 — Login Screen.
 // Spec requirements covered:
@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading  = false;
   bool _obscure    = true;
   bool _hasAborted = false;
+  ServiceTrackingContext? _serviceContext;
 
   // Track filled fields for abandon telemetry
   final Set<String> _filledFields = {};
@@ -57,17 +58,47 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _serviceContext = const ServiceTrackingContext(
+        stateLabel: 'Connecting...',
+        icon: Icons.sync,
+      );
+    });
 
     try {
-      // ⏳ Replace with real auth call:
-      // await HabotHttpClient.instance.post('/auth/login', data: {...});
-      await Future.delayed(const Duration(seconds: 1)); // stub
+      // ⏳ Simulate dynamic service tracking states
+      await Future.delayed(const Duration(milliseconds: 600));
+      if (!mounted) return;
+      setState(() {
+        _serviceContext = const ServiceTrackingContext(
+          stateLabel: 'Authenticating...',
+          icon: Icons.vpn_key,
+        );
+      });
+
+      await Future.delayed(const Duration(milliseconds: 600));
+      if (!mounted) return;
+      setState(() {
+        _serviceContext = const ServiceTrackingContext(
+          stateLabel: 'Authorizing...',
+          icon: Icons.lock_open,
+        );
+      });
+
+      await Future.delayed(const Duration(milliseconds: 600));
 
       _hasAborted = true; // successful — don't fire abandon event
       widget.onLoginSuccess?.call();
     } catch (e) {
       if (mounted) {
+        setState(() {
+          _serviceContext = const ServiceTrackingContext(
+            stateLabel: 'Failed',
+            icon: Icons.error,
+            isError: true,
+          );
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content:  const Text('Login failed. Please try again.'),
@@ -77,7 +108,12 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _serviceContext = null;
+        });
+      }
     }
   }
 
@@ -188,12 +224,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Submit — locked until both fields valid
+                            // Submit — locked until both fields valid, loaded with dynamic tracking status
                             ListenableBuilder(
                               listenable: _registry,
-                              builder: (_, __) => EcCtaButton(
+                              builder: (_, __) => LoadingButton(
                                 label:     'Submit',
+                                icon:      Icons.login,
                                 isLoading: _isLoading,
+                                serviceContext: _serviceContext,
                                 onPressed: _registry.isAllValid && !_isLoading
                                     ? _onSubmit
                                     : null,
