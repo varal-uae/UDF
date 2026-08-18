@@ -183,7 +183,9 @@ class _BadgeContent extends StatelessWidget {
         const SizedBox(width: HabotFeedback.badgeHorizontalPadding),
         Text(
           spec.label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall?.copyWith(color: color),
         ),
       ],
     );

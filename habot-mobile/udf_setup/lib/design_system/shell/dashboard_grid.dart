@@ -169,11 +169,6 @@ class _SectionTile extends StatelessWidget {
           : section.title,
       button: !locked,
       enabled: !locked,
-      // The tile is one semantic element: its label above is authoritative, so
-      // the inner title/count text must not merge in and duplicate it. Without
-      // this the locked node reads "Release, locked...\nRelease", which is not
-      // the label a screen reader (or the gate) expects.
-      excludeSemantics: true,
       child: Opacity(
         opacity: locked ? HabotStateLayer.disabledContentOpacity : 1,
         child: IgnorePointer(

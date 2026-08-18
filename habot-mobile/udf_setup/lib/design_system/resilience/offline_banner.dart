@@ -45,7 +45,10 @@ class HabotOfflineBannerPalette {
 
   /// The measured ratio for a state, in a scheme. What the metric asks for.
   static double contrastFor(ColorScheme scheme, HabotConnectivity state) =>
-      Contrast.ratio(foreground(scheme, state), background(scheme, state));
+      Contrast.ratio(
+        foreground(scheme, state),
+        background(scheme, state),
+      );
 }
 
 /// Copy for each state. Plain language, no jargon -- the same rule REF-197
@@ -96,30 +99,23 @@ class HabotOfflineBanner extends StatelessWidget {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return Semantics(
       key: bannerKey,
-      container: true,
       liveRegion: true,
       label:
           '${HabotOfflineCopy.titleFor(monitor.state)}. '
           '${HabotOfflineCopy.pendingFor(monitor.pendingCount)}',
-      // The banner announces itself as one live region carrying the state and
-      // the queue depth. The visual Text children would otherwise contribute
-      // their own labels and split that single announcement into three, so
-      // their semantics are excluded and only the composed label above is read.
-      child: ExcludeSemantics(
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: HabotOfflineBannerPalette.background(scheme, monitor.state),
-            borderRadius: BorderRadius.circular(HabotShape.sm),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(HabotSpacing.sm),
-            child: _BannerContent(
-              state: monitor.state,
-              pendingCount: monitor.pendingCount,
-              foreground: HabotOfflineBannerPalette.foreground(
-                scheme,
-                monitor.state,
-              ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: HabotOfflineBannerPalette.background(scheme, monitor.state),
+          borderRadius: BorderRadius.circular(HabotShape.sm),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(HabotSpacing.sm),
+          child: _BannerContent(
+            state: monitor.state,
+            pendingCount: monitor.pendingCount,
+            foreground: HabotOfflineBannerPalette.foreground(
+              scheme,
+              monitor.state,
             ),
           ),
         ),

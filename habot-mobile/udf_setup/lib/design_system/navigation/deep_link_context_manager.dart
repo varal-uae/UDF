@@ -76,7 +76,8 @@ class HabotDeepLinkContext {
         params: Map<String, String>.from(
           (json['params'] as Map<Object?, Object?>? ?? <Object?, Object?>{})
               .map(
-                (Object? k, Object? v) => MapEntry<String, String>('$k', '$v'),
+                (Object? k, Object? v) =>
+                    MapEntry<String, String>('$k', '$v'),
               ),
         ),
         scrollOffset: (json['scroll_offset'] as num? ?? 0).toDouble(),

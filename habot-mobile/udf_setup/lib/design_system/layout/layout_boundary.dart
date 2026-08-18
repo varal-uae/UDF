@@ -11,6 +11,7 @@
 ///                production user never sees a broken layout
 library;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../tokens/grid_tokens.dart';

@@ -54,9 +54,7 @@ void main() {
 
   Widget harness(Widget child) => MaterialApp(
     theme: HabotTheme.light(),
-    home: Scaffold(
-      body: Align(alignment: Alignment.bottomCenter, child: child),
-    ),
+    home: Scaffold(body: Align(alignment: Alignment.bottomCenter, child: child)),
   );
 
   group('GEN-00055-A01 :: BottomSheet atomic component', () {
@@ -287,8 +285,7 @@ void main() {
               'contentPadding ${HabotSheet.contentPadding}dp, '
               'elevation level ${HabotSheet.elevationLevel}',
           'Completion Status': 'Derived from gate outcomes',
-          'Library Location Path':
-              'lib/design_system/surfaces/bottom_sheet.dart',
+          'Library Location Path': 'lib/design_system/surfaces/bottom_sheet.dart',
         },
         measurements: const <AissMeasurement>[
           AissMeasurement(

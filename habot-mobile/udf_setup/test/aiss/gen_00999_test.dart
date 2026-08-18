@@ -116,11 +116,7 @@ void main() {
           'oldest, and forgetting a route removes it',
       () {
         final DeepLinkContextManager manager = DeepLinkContextManager();
-        for (
-          int i = 0;
-          i < DeepLinkContextManager.maxRememberedRoutes + 5;
-          i++
-        ) {
+        for (int i = 0; i < DeepLinkContextManager.maxRememberedRoutes + 5; i++) {
           manager.capture(HabotDeepLinkContext(route: '/route$i'));
         }
         final bool capped =

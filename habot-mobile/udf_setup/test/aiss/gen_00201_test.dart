@@ -109,7 +109,10 @@ void main() {
             body: ValueListenableBuilder<String>(
               valueListenable: state,
               builder: (BuildContext context, String value, Widget? _) =>
-                  HabotSharedAxisSwitcher(stateKey: value, child: Text(value)),
+                  HabotSharedAxisSwitcher(
+                    stateKey: value,
+                    child: Text(value),
+                  ),
             ),
           ),
         ),
@@ -218,14 +221,10 @@ void main() {
 
       // Horizontal and vertical displace along different axes; scaled does not
       // translate at all.
-      expect(
-        offsets[HabotSharedAxis.horizontal]!.dx,
-        isNot(offsets[HabotSharedAxis.vertical]!.dx),
-      );
-      expect(
-        offsets[HabotSharedAxis.vertical]!.dy,
-        isNot(offsets[HabotSharedAxis.horizontal]!.dy),
-      );
+      expect(offsets[HabotSharedAxis.horizontal]!.dx,
+          isNot(offsets[HabotSharedAxis.vertical]!.dx));
+      expect(offsets[HabotSharedAxis.vertical]!.dy,
+          isNot(offsets[HabotSharedAxis.horizontal]!.dy));
 
       gates.add(
         const AissGate(

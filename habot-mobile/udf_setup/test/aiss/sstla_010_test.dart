@@ -74,15 +74,7 @@ void main() {
           'than declared: a pane never claims more columns than the screen has, '
           'and never fewer than the compact minimum',
       () {
-        for (final double width in <double>[
-          320,
-          360,
-          412,
-          600,
-          744,
-          1024,
-          1280,
-        ]) {
+        for (final double width in <double>[320, 360, 412, 600, 744, 1024, 1280]) {
           final int paneColumns = HabotPaneDistribution.columnsFor(width);
           final int screenColumns = HabotGrid.columnsFor(width);
           if (paneColumns > screenColumns) {
@@ -129,8 +121,7 @@ void main() {
               ],
               child: Column(
                 children: <Widget>[
-                  for (int i = 0; i < 40; i++)
-                    SizedBox(height: 48, child: Text('field $i')),
+                  for (int i = 0; i < 40; i++) SizedBox(height: 48, child: Text('field $i')),
                 ],
               ),
             ),
@@ -153,8 +144,7 @@ void main() {
       expect(
         after,
         before,
-        reason:
-            'Poka-yoke: the strip is pinned immovably, so scrolling the '
+        reason: 'Poka-yoke: the strip is pinned immovably, so scrolling the '
             'fields must not move it',
       );
       expect(find.text('B-2026-08'), findsOneWidget);

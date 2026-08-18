@@ -17,6 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:udf_setup/design_system/aiss/aiss_evidence.dart';
 import 'package:udf_setup/design_system/interaction/atomic_button.dart';
 import 'package:udf_setup/design_system/interaction/touch_standards.dart';
+import 'package:udf_setup/design_system/interaction/touch_target.dart';
 import 'package:udf_setup/design_system/layout/device_profiles.dart';
 import 'package:udf_setup/design_system/telemetry/hesitation_tracker.dart';
 import 'package:udf_setup/design_system/theme/habot_theme.dart';
@@ -291,7 +292,8 @@ void main() {
           'Access Rights': 'UDF team read/write',
           'Commit History': 'n/a -- see git log after commit',
           'Repository Version': 'design system 0.1.0',
-          'Clone Status': 'Present locally at lib/design_system/interaction/',
+          'Clone Status':
+              'Present locally at lib/design_system/interaction/',
         },
         measurements: const <AissMeasurement>[
           AissMeasurement(

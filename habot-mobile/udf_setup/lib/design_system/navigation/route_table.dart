@@ -102,7 +102,11 @@ class HabotRouter {
       if (route.requiresId && (merged['id'] ?? '').isEmpty) {
         continue;
       }
-      return HabotRouteMatch(route: route, params: merged, isFallback: false);
+      return HabotRouteMatch(
+        route: route,
+        params: merged,
+        isFallback: false,
+      );
     }
     return _fallbackMatch();
   }
@@ -118,7 +122,8 @@ class HabotRouter {
   }
 
   /// Records where the user is, so the next link to this route can restore it.
-  void capture(HabotDeepLinkContext context) => contextManager.capture(context);
+  void capture(HabotDeepLinkContext context) =>
+      contextManager.capture(context);
 
   HabotRouteMatch _fallbackMatch() => HabotRouteMatch(
     route: fallback,

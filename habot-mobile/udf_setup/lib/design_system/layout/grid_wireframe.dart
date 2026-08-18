@@ -80,10 +80,7 @@ class _GridWireframePainter extends CustomPainter {
 
     double x = HabotGrid.outerMargin;
     for (int i = 0; i < columns; i++) {
-      canvas.drawRect(
-        Rect.fromLTWH(x, 0, columnWidth, size.height),
-        columnPaint,
-      );
+      canvas.drawRect(Rect.fromLTWH(x, 0, columnWidth, size.height), columnPaint);
       x += columnWidth + HabotGrid.gutter;
     }
 

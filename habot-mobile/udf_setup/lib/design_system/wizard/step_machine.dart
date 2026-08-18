@@ -37,7 +37,7 @@ enum StepBlockReason { none, atFirstStep, atLastStep, validationFailed }
 /// rule that you cannot go forward with errors behind you.
 class WizardStepMachine extends ChangeNotifier {
   WizardStepMachine({required this.steps, required this.gate})
-    : assert(steps.isNotEmpty, 'A wizard needs at least one step.');
+    : assert(steps.length > 0, 'A wizard needs at least one step.');
 
   final List<WizardStep> steps;
   final HabotFormGate gate;
@@ -59,7 +59,8 @@ class WizardStepMachine extends ChangeNotifier {
   Map<String, String> get draft => Map<String, String>.unmodifiable(_draft);
 
   /// 0.0 .. 1.0 across the wizard. Used by the progress dot row.
-  double get progress => steps.length == 1 ? 1.0 : _index / (steps.length - 1);
+  double get progress =>
+      steps.length == 1 ? 1.0 : _index / (steps.length - 1);
 
   void saveDraftValue(String field, String value) {
     _draft[field] = value;

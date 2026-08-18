@@ -46,7 +46,8 @@ class HabotChunk<T> {
   /// False when the source has nothing left. The list stops asking.
   final bool hasMore;
 
-  static HabotChunk<T> end<T>() => HabotChunk<T>(items: <T>[], hasMore: false);
+  static HabotChunk<T> end<T>() =>
+      HabotChunk<T>(items: <T>[], hasMore: false);
 }
 
 /// Fetches the chunk starting at [offset], at most [limit] records.

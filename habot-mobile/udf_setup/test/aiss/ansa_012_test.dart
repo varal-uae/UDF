@@ -85,7 +85,9 @@ void main() {
       'Header is flat at rest and lifts once content scrolls past the threshold',
       () =>
           HeaderElevationPolicy.levelFor(0) == HabotElevationLevel.level0 &&
-          HeaderElevationPolicy.levelFor(HeaderElevationPolicy.liftThreshold) ==
+          HeaderElevationPolicy.levelFor(
+                HeaderElevationPolicy.liftThreshold,
+              ) ==
               HabotElevationLevel.level0 &&
           HeaderElevationPolicy.levelFor(
                 HeaderElevationPolicy.liftThreshold + 1,
@@ -160,7 +162,7 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(const HabotApp(home: DesignSystemProbePage()));
+      await tester.pumpWidget(const HabotApp());
       await tester.pumpAndSettle();
 
       final RenderBox bar = tester.renderObject<RenderBox>(
@@ -201,7 +203,10 @@ void main() {
         MaterialApp(
           theme: HabotTheme.light(),
           home: Scaffold(
-            appBar: HabotContextualHeader(title: 'Root', backNavigator: nav),
+            appBar: HabotContextualHeader(
+              title: 'Root',
+              backNavigator: nav,
+            ),
             body: const SizedBox.shrink(),
           ),
         ),

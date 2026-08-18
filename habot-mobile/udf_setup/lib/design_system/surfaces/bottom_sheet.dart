@@ -1,5 +1,5 @@
-/// AISS: GEN-00055-A01 -- "Build the BottomSheet atomic component using
-///   MD3 design tokens."
+/// AISS: GEN-00055-A01 -- "Build the BottomSheet atomic component using MD3
+///   design tokens."
 /// AISS: GEN-00954-A01 -- "Standardize Material Design 3 (MD3) Bottom-Sheet UI
 ///   for Mobile Complex Action Flows" / "Configure backdrop scrim color to 32%
 ///   opacity black."
@@ -102,10 +102,10 @@ class HabotSheetSurface extends StatelessWidget {
       elevation: HabotElevation.dp[elevation]!,
       borderRadius: shape,
       clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(HabotSheet.contentPadding),
-        child: SafeArea(
-          top: false,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.all(HabotSheet.contentPadding),
           child: _SheetBody(title: title, actions: actions, child: child),
         ),
       ),
@@ -186,7 +186,7 @@ class HabotBottomSheet {
       context: context,
       barrierColor: HabotSheetScrim.color,
       backgroundColor: Colors.transparent,
-      elevation: HabotElevation.dp[HabotSheetSurface.elevation],
+      elevation: HabotElevation.dp[HabotSheetSurface.elevation]!,
       isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: false,
@@ -202,14 +202,19 @@ class HabotBottomSheet {
   }
 
   /// Motion for the sheet route, collapsed to nothing under reduced motion.
-  static AnimationStyle animationStyleFor(
-    BuildContext context,
-  ) => AnimationStyle(
-    duration: HabotMotionPolicy.resolve(context, HabotMotion.sheetEnter),
-    reverseDuration: HabotMotionPolicy.resolve(context, HabotMotion.sheetExit),
-    curve: HabotMotionPolicy.resolveCurve(context, HabotEasing.sheet),
-    reverseCurve: HabotMotionPolicy.resolveCurve(context, HabotEasing.sheet),
-  );
+  static AnimationStyle animationStyleFor(BuildContext context) =>
+      AnimationStyle(
+        duration: HabotMotionPolicy.resolve(context, HabotMotion.sheetEnter),
+        reverseDuration: HabotMotionPolicy.resolve(
+          context,
+          HabotMotion.sheetExit,
+        ),
+        curve: HabotMotionPolicy.resolveCurve(context, HabotEasing.sheet),
+        reverseCurve: HabotMotionPolicy.resolveCurve(
+          context,
+          HabotEasing.sheet,
+        ),
+      );
 }
 
 class _DraggableSheet extends StatelessWidget {

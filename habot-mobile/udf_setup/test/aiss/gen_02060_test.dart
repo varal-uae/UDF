@@ -57,7 +57,10 @@ void main() {
   Widget at320(Widget child) => MaterialApp(
     theme: HabotTheme.light(),
     home: Scaffold(
-      body: SizedBox(width: HabotTextFit.auditWidthDp, child: child),
+      body: SizedBox(
+        width: HabotTextFit.auditWidthDp,
+        child: child,
+      ),
     ),
   );
 
@@ -178,7 +181,10 @@ void main() {
 
       await tester.pumpWidget(
         at320(
-          const HabotFittingText(_longBody, token: HabotTypography.bodyMedium),
+          const HabotFittingText(
+            _longBody,
+            token: HabotTypography.bodyMedium,
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -227,7 +233,10 @@ void main() {
 
       await tester.pumpWidget(
         at320(
-          const HabotFittingText(_longLabel, token: HabotTypography.titleSmall),
+          const HabotFittingText(
+            _longLabel,
+            token: HabotTypography.titleSmall,
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -293,8 +302,7 @@ void main() {
       expect(
         tester.takeException(),
         isNull,
-        reason:
-            'A user who has enlarged their system text must not be shown '
+        reason: 'A user who has enlarged their system text must not be shown '
             'an overflow stripe',
       );
       expect(find.text(_longBody), findsOneWidget);

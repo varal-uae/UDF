@@ -185,7 +185,8 @@ void main() {
           height: 851,
         );
         return seLandscape.arrangement == HabotMirrorArrangement.tabbed &&
-            seLandscape.status == HabotLayoutValidationStatus.tabbedFallback &&
+            seLandscape.status ==
+                HabotLayoutValidationStatus.tabbedFallback &&
             !seLandscape.isMirror &&
             seLandscape.isUsable &&
             pixelPortrait.isMirror &&
@@ -206,11 +207,10 @@ void main() {
       () {
         final RegExp rogue = RegExp(r'(?<!Habot)(?<!Master)\bScaffold\s*\(');
         final List<String> offenders = <String>[];
-        for (final File file
-            in Directory('lib')
-                .listSync(recursive: true)
-                .whereType<File>()
-                .where((File f) => f.path.endsWith('.dart'))) {
+        for (final File file in Directory('lib')
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where((File f) => f.path.endsWith('.dart'))) {
           final String path = file.path.replaceAll('\\', '/');
           if (path.endsWith('layout/master_scaffold.dart')) {
             continue;
@@ -255,15 +255,9 @@ void main() {
       expect(find.text('action pane'), findsOneWidget);
       expect(key.currentState!.ratio, ContextualMirrorSpec.defaultRatio);
 
-      // A double-tap is two taps separated by more than kDoubleTapMinTime
-      // (40ms) and less than kDoubleTapTimeout (300ms); without the gap the two
-      // taps land at the same instant and DoubleTapGestureRecognizer rejects
-      // them, so the cycle never fires. The final pump runs past
-      // kDoubleTapTimeout so the recognizer's residual timer is flushed.
       await tester.tap(find.byKey(HabotSplitView.panelBarKey));
-      await tester.pump(const Duration(milliseconds: 50));
       await tester.tap(find.byKey(HabotSplitView.panelBarKey));
-      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump();
 
       expect(key.currentState!.ratio, ContextualMirrorSpec.defaultRatio.next);
       expect(tester.takeException(), isNull);

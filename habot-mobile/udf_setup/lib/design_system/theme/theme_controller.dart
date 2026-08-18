@@ -9,6 +9,8 @@
 /// contract, native transport.
 library;
 
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

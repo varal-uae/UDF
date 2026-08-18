@@ -34,7 +34,10 @@ class HabotLogScrubber {
     // package: / dart: / file: URIs.
     ScrubRule(RegExp(r'\b(?:package|dart|file):[\w./\-]+'), 'uri'),
     // Absolute file paths (POSIX and Windows).
-    ScrubRule(RegExp(r'(?:[A-Za-z]:)?[\\/](?:[\w.\-]+[\\/])+[\w.\-]+'), 'path'),
+    ScrubRule(
+      RegExp(r'(?:[A-Za-z]:)?[\\/](?:[\w.\-]+[\\/])+[\w.\-]+'),
+      'path',
+    ),
     // IPv4 addresses, with optional port.
     ScrubRule(RegExp(r'\b\d{1,3}(?:\.\d{1,3}){3}(?::\d{1,5})?\b'), 'ip'),
     // Email addresses.

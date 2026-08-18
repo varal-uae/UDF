@@ -16,6 +16,14 @@ import 'package:flutter/material.dart';
 import '../tokens/elevation_tokens.dart';
 import '../tokens/surface_tokens.dart';
 
+// `HabotCardVariant` is this component's own vocabulary -- a caller cannot use
+// `HabotCard` without naming one -- so it travels with the component rather
+// than forcing every call site to also import the token file it happens to be
+// declared in. Caught by the strict-import check while building Step 58: two
+// files were already relying on it reaching them transitively, which Dart does
+// not do.
+export '../tokens/surface_tokens.dart' show HabotCardVariant;
+
 /// The card chassis.
 class HabotCard extends StatelessWidget {
   const HabotCard({
@@ -52,7 +60,10 @@ class HabotCard extends StatelessWidget {
       child: Material(
         color: _surfaceColor(scheme),
         elevation: HabotElevation.dp[elevation]!,
-        shape: RoundedRectangleBorder(borderRadius: shape, side: _side(scheme)),
+        shape: RoundedRectangleBorder(
+          borderRadius: shape,
+          side: _side(scheme),
+        ),
         clipBehavior: Clip.antiAlias,
         child: _CardBody(onPressed: onPressed, child: child),
       ),
@@ -64,10 +75,7 @@ class HabotCard extends StatelessWidget {
       : scheme.surfaceContainerLow;
 
   BorderSide _side(ColorScheme scheme) => hasBorder
-      ? BorderSide(
-          color: scheme.outlineVariant,
-          width: HabotCardSpec.borderWidth,
-        )
+      ? BorderSide(color: scheme.outlineVariant, width: HabotCardSpec.borderWidth)
       : BorderSide.none;
 }
 

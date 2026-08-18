@@ -80,7 +80,8 @@ class HabotAppShell extends StatefulWidget {
 }
 
 class HabotAppShellState extends State<HabotAppShell> {
-  late final HabotUnreadCounts _unread = widget.unread ?? HabotUnreadCounts();
+  late final HabotUnreadCounts _unread =
+      widget.unread ?? HabotUnreadCounts();
   late final HabotTabSwitchBudget _budget =
       widget.budget ?? HabotTabSwitchBudget();
   int _index = 0;
@@ -233,14 +234,8 @@ class HabotShellRoutes {
     settings,
   ];
 
-  /// Where an unrecognised link lands: the root path, resolved to the overview
-  /// content by the shell, which defaults to that destination when a link names
-  /// no declared screen -- so an unrecognised link still lands on the overview
-  /// rather than nowhere. Kept as its own route with a distinct '/' path rather
-  /// than an alias of [overview]: a fallback that reuses a declared route's
-  /// pattern is a duplicate path, and a duplicate pattern leaves one of the two
-  /// routes unreachable depending on list order.
-  static const HabotRoute fallback = HabotRoute(path: '/', title: 'Overview');
+  /// An unrecognised link lands on the overview rather than nowhere.
+  static const HabotRoute fallback = overview;
 
   static HabotRouter router({DeepLinkContextManager? contextManager}) =>
       HabotRouter(

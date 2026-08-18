@@ -31,24 +31,13 @@ class TouchStandards {
   /// The decision above, as a testable constant.
   static const bool hitBoxMayExceedVisibleOutline = true;
 
-  /// Reference dense-glyph size. This is the 18dp Material dense icon used for
-  /// inline affordances and as the padding-maths worked example (TTMAC-014-G1:
-  /// an 18dp glyph needs 15dp a side to reach the 48dp floor). It is a raw
-  /// glyph size, deliberately *not* part of the on-grid action scale below --
-  /// 18 does not sit on the 4dp sub-baseline, and 48 - 2*15 is only satisfied
-  /// by exactly 18.
+  /// Substep 2: default dimensions for icon actions.
   static const double iconDense = 18;
-
-  /// Substep 2: default dimensions for icon actions. The [HabotIconSize] scale
-  /// must stay on the 4dp sub-baseline so protective padding always resolves it
-  /// to the touch floor (TTMAC-014-G3). Its smallest step is therefore 20dp,
-  /// not the off-grid 18dp reference above.
-  static const double iconActionSmall = 20;
   static const double iconStandard = 24;
   static const double iconLarge = 32;
 
   static const Map<HabotIconSize, double> iconSizes = <HabotIconSize, double>{
-    HabotIconSize.dense: iconActionSmall,
+    HabotIconSize.dense: iconDense,
     HabotIconSize.standard: iconStandard,
     HabotIconSize.large: iconLarge,
   };

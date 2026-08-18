@@ -177,11 +177,12 @@ class _HabotContextualHeaderState extends State<HabotContextualHeader> {
     final double width = MediaQuery.sizeOf(context).width;
     final int visibleSlots = HabotContextualHeader.maxVisibleActionsFor(width);
 
-    final List<HabotHeaderAction> ordered =
-        <HabotHeaderAction>[...widget.actions]..sort(
-          (HabotHeaderAction a, HabotHeaderAction b) =>
-              b.priority.compareTo(a.priority),
-        );
+    final List<HabotHeaderAction> ordered = <HabotHeaderAction>[
+      ...widget.actions,
+    ]..sort(
+      (HabotHeaderAction a, HabotHeaderAction b) =>
+          b.priority.compareTo(a.priority),
+    );
     final List<HabotHeaderAction> visible = ordered.take(visibleSlots).toList();
     final List<HabotHeaderAction> overflow = ordered
         .skip(visibleSlots)

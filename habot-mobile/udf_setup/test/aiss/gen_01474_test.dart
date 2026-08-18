@@ -108,8 +108,8 @@ void main() {
         budget.record(
           from: '/b',
           to: '/c',
-          duration:
-              HabotTabSwitchBudget.ceiling + const Duration(milliseconds: 1),
+          duration: HabotTabSwitchBudget.ceiling +
+              const Duration(milliseconds: 1),
         );
         return !budget.allWithinBudget &&
             budget.passRate == 50 &&
@@ -242,8 +242,7 @@ void main() {
       expect(
         budget.samples,
         isEmpty,
-        reason:
-            'A no-op selection would otherwise pad the benchmark with '
+        reason: 'A no-op selection would otherwise pad the benchmark with '
             'zero-length samples and lift the pass rate for free',
       );
 

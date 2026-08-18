@@ -60,10 +60,7 @@ void main() {
       'Counts past the cap read as "99+", and the cap is the MD3 value',
       () =>
           HabotNavBadge.maxCount == 99 &&
-          const HabotNavBadge(
-                count: 99,
-                child: Icon(Icons.inbox),
-              ).displayText ==
+          const HabotNavBadge(count: 99, child: Icon(Icons.inbox)).displayText ==
               '99' &&
           const HabotNavBadge(
                 count: 100,

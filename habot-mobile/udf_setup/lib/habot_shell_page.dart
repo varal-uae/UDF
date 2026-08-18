@@ -14,9 +14,22 @@ import 'package:flutter/material.dart';
 import 'data_entry_probe_page.dart';
 import 'design_system/navigation/adaptive_navigation.dart';
 import 'design_system/navigation/route_table.dart';
+import 'design_system/notifications/alert_panel.dart';
+import 'design_system/notifications/delivery_router.dart';
+import 'design_system/notifications/in_app_banner.dart';
+import 'design_system/notifications/notification_center.dart';
+import 'design_system/notifications/notification_payload.dart';
+import 'design_system/notifications/notification_preference_join.dart';
 import 'design_system/resilience/connectivity_state.dart';
 import 'design_system/shell/app_shell.dart';
-import 'design_system/shell/dashboard_grid.dart';
+import 'design_system/charts/habot_charts.dart';
+import 'design_system/dashboard/dashboard_controller.dart';
+import 'design_system/dashboard/filter_model.dart';
+import 'design_system/dashboard/filter_sheet.dart';
+import 'design_system/dashboard/kpi_card.dart';
+import 'design_system/dashboard/kpi_grid.dart';
+import 'design_system/dashboard/sli_health_view.dart';
+import 'design_system/dashboard/summary_strip.dart';
 import 'design_system/shell/pane_distribution.dart';
 import 'design_system/layout/master_scaffold.dart';
 import 'design_system/navigation/contextual_header.dart';
@@ -48,6 +61,22 @@ class _HabotShellPageState extends State<HabotShellPage> {
     poll: _poll,
   );
   final HabotRouter _router = HabotShellRoutes.router();
+
+  /// Steps 69-80. Owned here rather than per-screen: an alert panel that is
+  /// "global" (FLADE-011-10) and a notification centre that is "universal"
+  /// (GEN-02455) cannot be per-destination state.
+  final HabotAlertPanelController _alerts = HabotAlertPanelController();
+  final HabotBannerController _banners = HabotBannerController();
+  final HabotNotificationCenter _centre = HabotNotificationCenter();
+  late final HabotPushTokenRegistry _tokens = HabotPushTokenRegistry(
+    refresh: () async => 'demo-token',
+  );
+  late final HabotNotificationPreferenceManager _notificationPreferences =
+      HabotNotificationPreferenceManager(
+        store: _preferences,
+        registry: _tokens,
+      );
+
   String _title = 'Overview';
 
   /// Stand-in for the real backend. The shell is gated on how it behaves when
@@ -61,9 +90,34 @@ class _HabotShellPageState extends State<HabotShellPage> {
 
   @override
   void dispose() {
+    _notificationPreferences.dispose();
+    _centre.dispose();
+    _banners.dispose();
+    _alerts.dispose();
+    _tokens.dispose();
     _monitor.dispose();
     _preferences.dispose();
     super.dispose();
+  }
+
+  /// Every notification the shell shows passes the Step 80 join first. There
+  /// is no second path, which is what makes the preference screen mean
+  /// something.
+  void _present(HabotBannerMessage message) {
+    if (!_notificationPreferences.admit(
+      id: message.id,
+      kind: message.kind,
+    )) {
+      return;
+    }
+    _banners.present(message);
+    _centre.receive(
+      id: message.id,
+      kind: message.kind,
+      title: message.title,
+      body: message.body,
+      route: '/settings',
+    );
   }
 
   @override
@@ -72,13 +126,19 @@ class _HabotShellPageState extends State<HabotShellPage> {
       screenName: HabotShellPage.screenName,
       scrollable: false,
       header: HabotContextualHeader(title: _title, showBack: false),
-      body: HabotAppShell(
-        router: _router,
-        monitor: _monitor,
-        initialLink: widget.initialLink,
-        onDestinationChanged: (HabotShellDestination d) =>
-            setState(() => _title = d.destination.label),
-        destinations: _destinations(context),
+      // Step 73: the alert layer wraps the whole body. While a critical alert
+      // is up nothing beneath it responds -- by construction, not by each
+      // screen remembering to check.
+      body: HabotAlertPanelLayer(
+        controller: _alerts,
+        child: HabotAppShell(
+          router: _router,
+          monitor: _monitor,
+          initialLink: widget.initialLink,
+          onDestinationChanged: (HabotShellDestination d) =>
+              setState(() => _title = d.destination.label),
+          destinations: _destinations(context),
+        ),
       ),
     );
   }
@@ -119,51 +179,189 @@ class _HabotShellPageState extends State<HabotShellPage> {
             icon: Icons.settings_outlined,
             selectedIcon: Icons.settings,
           ),
-          builder: (BuildContext context) =>
-              NotificationPreferenceView(store: _preferences),
+          builder: (BuildContext context) => _SettingsContent(
+            preferences: _preferences,
+            centre: _centre,
+            banners: _banners,
+            alerts: _alerts,
+            onPresent: _present,
+          ),
         ),
       ];
 }
 
-/// GEN-00022 / SSTLA-018: the dashboard, stacking to one column on a phone and
-/// a 2x2 grid once there is room.
-class _OverviewContent extends StatelessWidget {
+/// Steps 51-65: the dashboard, with real content instead of placeholder text.
+///
+/// The summary strip is pinned outside the scroll view (Step 62), the KPI
+/// cards stack on the rule Step 45 already gated (Step 54), tapping a card
+/// applies its filter (Step 65), and the filter sheet is the Step 21 bottom
+/// sheet rather than a second one (Step 63).
+class _OverviewContent extends StatefulWidget {
   const _OverviewContent();
 
   @override
-  Widget build(BuildContext context) {
-    return HabotCommandGrid(
-      completed: const <String>{'intake'},
-      sections: <HabotCommandSection>[
-        HabotCommandSection(
-          id: 'intake',
-          title: 'Intake',
-          child: Text('12 waiting', style: _value(context)),
-        ),
-        HabotCommandSection(
-          id: 'review',
-          title: 'Review',
-          requires: const <String>{'intake'},
-          child: Text('4 waiting', style: _value(context)),
-        ),
-        HabotCommandSection(
-          id: 'release',
-          title: 'Release',
-          requires: const <String>{'review'},
-          child: Text('locked', style: _value(context)),
-        ),
-        HabotCommandSection(
-          id: 'archive',
-          title: 'Archive',
-          requires: const <String>{'release'},
-          child: Text('locked', style: _value(context)),
-        ),
+  State<_OverviewContent> createState() => _OverviewContentState();
+}
+
+class _OverviewContentState extends State<_OverviewContent> {
+  static const String _facet = 'category';
+
+  late final HabotDashboardController _controller =
+      HabotDashboardController(facetKey: _facet);
+
+  static const List<HabotKpi> _kpis = <HabotKpi>[
+    HabotKpi(
+      id: 'intake',
+      label: 'Records in intake',
+      value: 148,
+      category: HabotMetricCategory.volume,
+      filterKey: 'intake',
+    ),
+    HabotKpi(
+      id: 'accuracy',
+      label: 'First-pass accuracy',
+      value: 96.4,
+      previousValue: 94.1,
+      category: HabotMetricCategory.rate,
+      filterKey: 'accuracy',
+    ),
+    HabotKpi(
+      id: 'latency',
+      label: 'Median review time',
+      value: 412,
+      previousValue: 360,
+      category: HabotMetricCategory.latency,
+      filterKey: 'latency',
+    ),
+    HabotKpi(
+      id: 'flagged',
+      label: 'Flagged for exception',
+      value: 3,
+      previousValue: 1,
+      category: HabotMetricCategory.fault,
+      filterKey: 'flagged',
+    ),
+  ];
+
+  static final List<HabotFilterFacet> _facets = <HabotFilterFacet>[
+    HabotFilterFacet(
+      key: _facet,
+      label: 'Metric category',
+      options: <HabotFilterOption>[
+        for (final HabotKpi kpi in _kpis)
+          HabotFilterOption(value: kpi.filterKey!, label: kpi.label),
       ],
-    );
+    ),
+  ];
+
+  static final HabotChartSeries _trend = HabotChartSeries.fromSparse(
+    label: 'First-pass accuracy',
+    sparse: const <int, double>{
+      0: 91,
+      1: 92.5,
+      2: 93,
+      4: 94.1,
+      5: 95.2,
+      6: 96.4,
+    },
+    length: 7,
+  );
+
+  static final List<HabotSli> _slis = <HabotSli>[
+    HabotSli(
+      id: 'submit',
+      name: 'Submit round trip',
+      objectiveMs: 300,
+      history: HabotChartSeries.fromSparse(
+        label: 'submit',
+        sparse: const <int, double>{0: 280, 1: 291, 2: 305, 3: 288, 4: 274},
+        length: 5,
+      ),
+    ),
+    HabotSli(
+      id: 'search',
+      name: 'Search results',
+      objectiveMs: 350,
+      history: HabotChartSeries.fromSparse(
+        label: 'search',
+        sparse: const <int, double>{0: 402, 1: 418, 2: 441, 3: 470, 4: 512},
+        length: 5,
+      ),
+    ),
+  ];
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
-  TextStyle? _value(BuildContext context) =>
-      Theme.of(context).textTheme.titleMedium;
+  Future<void> _openFilters() async {
+    final HabotFilterSelection? applied = await HabotFilterSheet.show(
+      context: context,
+      facets: _facets,
+      selection: _controller.selection,
+    );
+    if (applied != null) {
+      _controller.applyFromSheet(applied);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (BuildContext context, Widget? _) {
+        final List<HabotKpi> visible = _controller.selection
+            .apply<HabotKpi>(_kpis, (HabotKpi k, String _) => k.filterKey ?? '');
+        return HabotDashboardSection(
+          kpis: _kpis,
+          scrollingContent: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      _controller.selection.isEmpty
+                          ? 'All metrics'
+                          : '${visible.length} of ${_kpis.length} metrics',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: _openFilters,
+                    icon: const Icon(Icons.filter_list),
+                    label: const Text('Filter'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: HabotSpacing.xs),
+              HabotKpiGrid(
+                kpis: visible,
+                onKpiTapped: _controller.applyFromKpi,
+              ),
+              const SizedBox(height: HabotSpacing.md),
+              Text(
+                'First-pass accuracy, last 7 days',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: HabotSpacing.xs),
+              HabotInteractiveChart(series: _trend),
+              const SizedBox(height: HabotSpacing.md),
+              Text(
+                'Service level indicators',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: HabotSpacing.xs),
+              HabotSliHealthView(indicators: _slis),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 /// SSTLA-012 / SSTLA-010: the Contextual Mirror with its pinned metrics.
@@ -201,4 +399,94 @@ class _ComponentsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const SurfacesProbeBody();
+}
+
+/// Steps 66-80, reachable: the preference screen from Step 50, the in-app
+/// banner slot from Step 69, and the notification centre from Step 75.
+class _SettingsContent extends StatelessWidget {
+  const _SettingsContent({
+    required this.preferences,
+    required this.centre,
+    required this.banners,
+    required this.alerts,
+    required this.onPresent,
+  });
+
+  final PreferenceStore preferences;
+  final HabotNotificationCenter centre;
+  final HabotBannerController banners;
+  final HabotAlertPanelController alerts;
+  final void Function(HabotBannerMessage message) onPresent;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          HabotInAppBanner(controller: banners),
+          const SizedBox(height: HabotSpacing.xs),
+          NotificationPreferenceView(store: preferences),
+          const SizedBox(height: HabotSpacing.md),
+          Text(
+            'Notifications',
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          const SizedBox(height: HabotSpacing.xs),
+          Row(
+            children: <Widget>[
+              // Both routed through the Step 80 join, so switching "Offers and
+              // product news" off in the panel above actually silences the
+              // first one. That is the whole point of the join.
+              TextButton(
+                onPressed: () => onPresent(
+                  HabotBannerMessage(
+                    id: 'demo-${DateTime.now().microsecondsSinceEpoch}',
+                    kind: HabotNotificationKind.informational,
+                    title: 'Product news',
+                    body: 'A new dashboard filter is available.',
+                  ),
+                ),
+                child: const Text('Send promo'),
+              ),
+              TextButton(
+                onPressed: () => alerts.raise(
+                  const HabotSystemAlert(
+                    id: 'demo-breach',
+                    severity: HabotAlertSeverity.critical,
+                    headline: 'Manual override in effect',
+                    detail: 'A P1 architectural breach is being investigated.',
+                  ),
+                ),
+                child: const Text('Raise P1'),
+              ),
+            ],
+          ),
+          AnimatedBuilder(
+            animation: centre,
+            builder: (BuildContext context, Widget? _) => Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  centre.entries.isEmpty
+                      ? 'Nothing here yet.'
+                      : '${centre.unreadCount} unread of '
+                            '${centre.entries.length}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                for (final HabotNotificationEntry entry in centre.entries)
+                  ListTile(
+                    title: Text(entry.title),
+                    subtitle: Text(entry.body),
+                    onTap: () => centre.markRead(entry.id),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -171,7 +171,8 @@ void main() {
           requirementSource:
               '4 Substeps #4: "Save SUCCESSFUL lookup keyword values locally." '
               'A history of searches that found nothing is a list of dead ends.',
-          description: 'A zero-result query leaves the local history untouched',
+          description:
+              'A zero-result query leaves the local history untouched',
           passed: true,
         ),
       );
@@ -192,7 +193,9 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: HabotTheme.light(),
-          home: Scaffold(body: HabotHeaderSearchField(controller: controller)),
+          home: Scaffold(
+            body: HabotHeaderSearchField(controller: controller),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -278,12 +281,12 @@ void main() {
       expect(find.text('Ledgers'), findsOneWidget);
       expect(find.text('Batch 001'), findsOneWidget);
 
-      final double fieldBottom = tester
-          .getBottomLeft(find.byType(TextField))
-          .dy;
-      final double panelTop = tester
-          .getTopLeft(find.byType(HabotSearchResultsPanel))
-          .dy;
+      final double fieldBottom = tester.getBottomLeft(
+        find.byType(TextField),
+      ).dy;
+      final double panelTop = tester.getTopLeft(
+        find.byType(HabotSearchResultsPanel),
+      ).dy;
       expect(
         panelTop,
         greaterThanOrEqualTo(fieldBottom),
@@ -327,12 +330,13 @@ void main() {
                 HabotHeaderSearchField(controller: controller),
                 AnimatedBuilder(
                   animation: controller,
-                  builder: (BuildContext context, Widget? _) => Expanded(
-                    child: HabotSearchResultsPanel(
-                      controller: controller,
-                      onSelected: (HabotSearchResult _) {},
-                    ),
-                  ),
+                  builder: (BuildContext context, Widget? _) =>
+                      Expanded(
+                        child: HabotSearchResultsPanel(
+                          controller: controller,
+                          onSelected: (HabotSearchResult _) {},
+                        ),
+                      ),
                 ),
               ],
             ),
@@ -347,7 +351,10 @@ void main() {
 
       expect(find.byType(HabotEmptyState), findsOneWidget);
       expect(find.text('No matches'), findsOneWidget);
-      expect(controller.lastLatency, lessThan(HabotMotion.searchLatencyBudget));
+      expect(
+        controller.lastLatency,
+        lessThan(HabotMotion.searchLatencyBudget),
+      );
 
       gates.add(
         AissGate(

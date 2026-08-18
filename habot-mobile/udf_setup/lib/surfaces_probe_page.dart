@@ -15,6 +15,7 @@ import 'design_system/layout/virtualized_list.dart';
 import 'design_system/motion/shared_axis.dart';
 import 'design_system/navigation/contextual_header.dart';
 import 'design_system/navigation/header_search.dart';
+import 'design_system/surfaces/bottom_sheet.dart';
 import 'design_system/surfaces/card_chassis.dart';
 import 'design_system/surfaces/metadata_disclosure.dart';
 import 'design_system/telemetry/friction_tracker.dart';
@@ -75,11 +76,7 @@ class _SurfacesProbePageState extends State<SurfacesProbePage> {
 
   Future<List<HabotSearchResult>> _searchSource(String query) async {
     return <HabotSearchResult>[
-      HabotSearchResult(
-        id: '1',
-        label: '$query batch 001',
-        category: 'Batches',
-      ),
+      HabotSearchResult(id: '1', label: '$query batch 001', category: 'Batches'),
       HabotSearchResult(id: '2', label: '$query ledger', category: 'Ledgers'),
     ];
   }
@@ -126,18 +123,18 @@ class _SurfacesProbePageState extends State<SurfacesProbePage> {
         ),
         const SizedBox(height: HabotSpacing.xs),
         Expanded(
-          child: HabotVirtualList<int>(
-            controller: _chunks,
-            itemBuilder: (BuildContext context, int item, int index) =>
-                SizedBox(
-                  height: HabotDiscovery.searchResultRowHeight,
-                  child: HabotMilestoneNode(
-                    title: 'Task ${item + 1}',
-                    status: HabotStatus.values[item % 5],
-                  ),
-                ),
-          ),
-        ),
+              child: HabotVirtualList<int>(
+                controller: _chunks,
+                itemBuilder: (BuildContext context, int item, int index) =>
+                    SizedBox(
+                      height: HabotDiscovery.searchResultRowHeight,
+                      child: HabotMilestoneNode(
+                        title: 'Task ${item + 1}',
+                        status: HabotStatus.values[item % 5],
+                      ),
+                    ),
+              ),
+            ),
       ],
     );
   }
@@ -205,8 +202,9 @@ class _SummaryPanel extends StatelessWidget {
   const _SummaryPanel();
 
   @override
-  Widget build(BuildContext context) =>
-      const HabotCard(child: HabotStatusBadge(status: HabotStatus.active));
+  Widget build(BuildContext context) => const HabotCard(
+    child: HabotStatusBadge(status: HabotStatus.active),
+  );
 }
 
 class _DetailPanel extends StatelessWidget {
@@ -237,5 +235,6 @@ class SurfacesProbeBody extends StatelessWidget {
   const SurfacesProbeBody({super.key});
 
   @override
-  Widget build(BuildContext context) => const SurfacesProbePage(embedded: true);
+  Widget build(BuildContext context) =>
+      const SurfacesProbePage(embedded: true);
 }

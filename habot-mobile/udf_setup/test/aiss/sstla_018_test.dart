@@ -100,7 +100,8 @@ void main() {
               HabotDashboardGrid.singleColumn &&
           HabotDashboardGrid.columnsFor(600) ==
               HabotDashboardGrid.quadColumns &&
-          HabotDashboardGrid.columnsFor(1280) == HabotDashboardGrid.quadColumns,
+          HabotDashboardGrid.columnsFor(1280) ==
+              HabotDashboardGrid.quadColumns,
     );
 
     gate(
@@ -138,10 +139,10 @@ void main() {
             nothingDone.unlocked.single.id == 'intake' &&
             intakeDone.unlocked.length == 2 &&
             HabotCommandGrid.isLocked(_sections[2], <String>{'intake'}) &&
-            !HabotCommandGrid.isLocked(_sections[2], <String>{
-              'intake',
-              'review',
-            });
+            !HabotCommandGrid.isLocked(
+              _sections[2],
+              <String>{'intake', 'review'},
+            );
       },
     );
   });

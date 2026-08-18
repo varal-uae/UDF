@@ -67,7 +67,10 @@ class _DataEntryProbePageState extends State<DataEntryProbePage> {
   void initState() {
     super.initState();
     _gate = HabotFormGate();
-    _machine = WizardStepMachine(steps: DataEntryProbePage.steps, gate: _gate);
+    _machine = WizardStepMachine(
+      steps: DataEntryProbePage.steps,
+      gate: _gate,
+    );
   }
 
   @override
@@ -186,6 +189,5 @@ class DataEntryProbeBody extends StatelessWidget {
   const DataEntryProbeBody({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-      const DataEntryProbePage(embedded: true);
+  Widget build(BuildContext context) => const DataEntryProbePage(embedded: true);
 }

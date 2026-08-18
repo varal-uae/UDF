@@ -56,7 +56,9 @@ void main() {
   Widget screen(PreferenceStore s) => MaterialApp(
     theme: HabotTheme.light(),
     home: Scaffold(
-      body: SingleChildScrollView(child: NotificationPreferenceView(store: s)),
+      body: SingleChildScrollView(
+        child: NotificationPreferenceView(store: s),
+      ),
     ),
   );
 
@@ -77,8 +79,7 @@ void main() {
               const Duration(milliseconds: 200) &&
           HabotPreferenceRenderBudget.ceiling ==
               HabotMotion.interactiveCeiling &&
-          HabotPreferenceRenderBudget.floor ==
-              HabotMotion.preferenceRenderFloor &&
+          HabotPreferenceRenderBudget.floor == HabotMotion.preferenceRenderFloor &&
           HabotPreferenceRenderBudget.optimal ==
               HabotMotion.preferenceRenderOptimal,
     );

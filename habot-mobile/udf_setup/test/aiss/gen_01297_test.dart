@@ -181,16 +181,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(FilledButton), findsNothing);
-      // Measure the empty-state's own readable-width container. Scoped to
-      // HabotEmptyState because an unscoped ConstrainedBox finder resolves to
-      // MaterialApp's full-screen Overlay/ModalBarrier box, not this one.
       final RenderBox box = tester.renderObject<RenderBox>(
-        find
-            .descendant(
-              of: find.byType(HabotEmptyState),
-              matching: find.byType(ConstrainedBox),
-            )
-            .first,
+        find.byType(ConstrainedBox).first,
       );
       expect(
         box.size.width,
@@ -251,9 +243,7 @@ void main() {
           ),
         ],
         gates: gates,
-        artefacts: const <String>[
-          'lib/design_system/feedback/empty_state.dart',
-        ],
+        artefacts: const <String>['lib/design_system/feedback/empty_state.dart'],
       ),
     );
   });

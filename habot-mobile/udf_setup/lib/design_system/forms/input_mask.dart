@@ -62,22 +62,15 @@ class HabotMask {
 
   static RegExp patternFor(HabotMaskKind kind) => patterns[kind]!;
 
-  /// The formatter stack for [kind]. Order matters: paste hygiene first (it
-  /// must see the *original* value to detect a paste and to reject or trim it),
-  /// then drop non-ASCII, then filter the character set, then cap the length.
-  ///
-  /// Paste hygiene has to run before [AsciiOnlyFormatter]: the framework feeds
-  /// each formatter the running value, so a pass-through formatter ahead of it
-  /// (ASCII text is left untouched) would erase the old/new delta the paste
-  /// detector depends on, letting an over-cap paste slip through to silent
-  /// truncation and leaving trailing whitespace untrimmed.
+  /// The formatter stack for [kind]. Order matters: sanitise first, then
+  /// filter the character set, then cap the length.
   static List<TextInputFormatter> formattersFor(
     HabotMaskKind kind, {
     int maxLength = defaultMaxLength,
   }) {
     return <TextInputFormatter>[
-      PasteHygieneFormatter(maxLength: maxLength),
       const AsciiOnlyFormatter(),
+      PasteHygieneFormatter(maxLength: maxLength),
       FilteringTextInputFormatter.allow(patternFor(kind)),
       LengthLimitingTextInputFormatter(maxLength),
     ];

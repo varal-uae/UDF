@@ -93,14 +93,12 @@ typedef HabotPreferenceWriter =
 
 /// Substeps 1 and 3: the column model, and the instant write.
 class PreferenceStore extends ChangeNotifier {
-  PreferenceStore({
-    required this.writer,
-    Map<HabotPreferenceColumn, bool>? initial,
-  }) : _values = <HabotPreferenceColumn, bool>{
-         for (final HabotPreferenceColumn column
-             in HabotPreferenceColumn.values)
-           column: initial?[column] ?? column.defaultValue,
-       };
+  PreferenceStore({required this.writer, Map<HabotPreferenceColumn, bool>? initial})
+    : _values = <HabotPreferenceColumn, bool>{
+        for (final HabotPreferenceColumn column
+            in HabotPreferenceColumn.values)
+          column: initial?[column] ?? column.defaultValue,
+      };
 
   final HabotPreferenceWriter writer;
   final Map<HabotPreferenceColumn, bool> _values;

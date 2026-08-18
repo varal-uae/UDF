@@ -247,9 +247,7 @@ void main() {
           ),
         ],
         gates: gates,
-        artefacts: const <String>[
-          'lib/design_system/feedback/status_badge.dart',
-        ],
+        artefacts: const <String>['lib/design_system/feedback/status_badge.dart'],
       ),
     );
   });

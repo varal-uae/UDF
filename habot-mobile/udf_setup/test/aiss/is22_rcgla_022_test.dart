@@ -131,8 +131,7 @@ void main() {
       expect(
         store.valueOf(HabotPreferenceColumn.allowPromo),
         isTrue,
-        reason:
-            'Substep 3 says INSTANTLY; a control that waits on a round '
+        reason: 'Substep 3 says INSTANTLY; a control that waits on a round '
             'trip reads as broken',
       );
       expect(store.isWriting, isTrue);
@@ -184,8 +183,7 @@ void main() {
       expect(
         store.valueOf(HabotPreferenceColumn.allowTransaction),
         isTrue,
-        reason:
-            'Completion Measure: preference changes write ACCURATELY. A '
+        reason: 'Completion Measure: preference changes write ACCURATELY. A '
             'switch left in a position the database never accepted is the '
             'inaccuracy the measure is about',
       );
@@ -260,8 +258,7 @@ void main() {
       expect(
         guard.mayLeave,
         isFalse,
-        reason:
-            'Poka-Yoke: "Selection inputs freeze screen transitions until '
+        reason: 'Poka-Yoke: "Selection inputs freeze screen transitions until '
             'changes write to database rows."',
       );
 
@@ -272,7 +269,11 @@ void main() {
       });
 
       await Future<void>.delayed(Duration.zero);
-      expect(left, isFalse, reason: 'The transition is waiting, not abandoned');
+      expect(
+        left,
+        isFalse,
+        reason: 'The transition is waiting, not abandoned',
+      );
 
       pending.complete(HabotPreferenceWriteResult.written);
       await write;
@@ -314,7 +315,8 @@ void main() {
         find.byType(SwitchListTile),
         findsNWidgets(HabotPreferenceColumn.values.length),
       );
-      for (final HabotPreferenceColumn column in HabotPreferenceColumn.values) {
+      for (final HabotPreferenceColumn column
+          in HabotPreferenceColumn.values) {
         expect(find.text(column.label), findsOneWidget);
         final Size size = tester.getSize(
           find.ancestor(
@@ -331,8 +333,7 @@ void main() {
       expect(
         HabotPreferencePanel.rowMinHeight,
         HabotDensity.minTouchTarget,
-        reason:
-            'TTMAC-011 (Step 12) fixed this number; settings rows are not '
+        reason: 'TTMAC-011 (Step 12) fixed this number; settings rows are not '
             'an exception to it',
       );
       expect(tester.takeException(), isNull);
@@ -388,8 +389,7 @@ void main() {
       expect(
         tile.onChanged,
         isNull,
-        reason:
-            'and cannot be flipped again until the write lands, so a '
+        reason: 'and cannot be flipped again until the write lands, so a '
             'double tap cannot race the database',
       );
 
@@ -455,8 +455,7 @@ void main() {
                 'rendered panel; $writesLanded accepted and reflected in the '
                 'record, the rest rejected or thrown and rolled back with the '
                 'column named. No write left the UI ahead of the database.',
-            floor:
-                'every accepted write reflected, every rejected one rolled '
+            floor: 'every accepted write reflected, every rejected one rolled '
                 'back',
             optimal: 'as floor',
             ceiling: 'as floor',

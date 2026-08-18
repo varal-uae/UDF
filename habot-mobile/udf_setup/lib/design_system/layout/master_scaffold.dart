@@ -77,7 +77,9 @@ class HabotMasterScaffold extends StatelessWidget {
         child: SafeArea(
           child: HabotLayoutBoundary(
             debugOrigin: screenName,
-            child: scrollable ? SingleChildScrollView(child: content) : content,
+            child: scrollable
+                ? SingleChildScrollView(child: content)
+                : content,
           ),
         ),
       ),

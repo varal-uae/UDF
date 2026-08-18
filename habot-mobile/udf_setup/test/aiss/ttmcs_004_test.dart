@@ -121,7 +121,8 @@ void main() {
           'Optimal 6-8dp padding / 32-48dp row height, Ceiling 12dp.',
       'Shipped dense values sit inside the optimal band, never past the ceiling',
       () {
-        return HabotDensity.denseRowPadding >= HabotDensity.optimalPaddingMin &&
+        return HabotDensity.denseRowPadding >=
+                HabotDensity.optimalPaddingMin &&
             HabotDensity.denseRowPadding <= HabotDensity.optimalPaddingMax &&
             HabotDensity.denseRowPadding >= HabotDensity.floorPadding &&
             HabotDensity.denseRowPadding <= HabotDensity.ceilingPadding &&
@@ -300,7 +301,10 @@ void main() {
 
       ctx = tester.element(find.byType(HabotShellPage));
       expect(Theme.of(ctx).brightness, Brightness.dark);
-      expect(Theme.of(ctx).colorScheme.surface, HabotColors.dark.surface);
+      expect(
+        Theme.of(ctx).colorScheme.surface,
+        HabotColors.dark.surface,
+      );
 
       gates.add(
         const AissGate(
@@ -349,7 +353,8 @@ void main() {
                 'dense padding ${HabotDensity.denseRowPadding.toStringAsFixed(0)}dp, '
                 'dense row height ${HabotDensity.denseRowHeight.toStringAsFixed(0)}dp',
             floor: '4dp minimum spacing (Material Design accessibility floor)',
-            optimal: '6-8dp padding / 32-48dp row height (dense-table optimum)',
+            optimal:
+                '6-8dp padding / 32-48dp row height (dense-table optimum)',
             ceiling:
                 '12dp (maximum density before readability/touch-target risk)',
           ),

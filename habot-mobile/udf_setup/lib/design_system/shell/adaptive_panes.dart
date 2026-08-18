@@ -94,15 +94,9 @@ class _MirrorBody extends StatelessWidget {
       case HabotMirrorArrangement.tabbed:
         return _TabbedPanes(owner: owner);
       case HabotMirrorArrangement.stacked:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _panes(Axis.vertical),
-        );
+        return Column(children: _panes(Axis.vertical));
       case HabotMirrorArrangement.sideBySide:
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _panes(Axis.horizontal),
-        );
+        return Row(children: _panes(Axis.horizontal));
     }
   }
 

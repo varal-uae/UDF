@@ -177,9 +177,7 @@ void main() {
 
       // The error sits BELOW the input, not above or beside it.
       final Offset fieldCentre = tester.getCenter(emailField);
-      final Offset errorCentre = tester.getCenter(
-        find.byType(InlineFieldError),
-      );
+      final Offset errorCentre = tester.getCenter(find.byType(InlineFieldError));
       expect(
         errorCentre.dy,
         greaterThan(fieldCentre.dy),
@@ -212,7 +210,9 @@ void main() {
     ) async {
       // Substep 4: "Run automated user boundary input tests to confirm clear
       // error block display."
-      final HabotFieldRule amount = HabotFieldRules.of(HabotCde.currencyAmount);
+      final HabotFieldRule amount = HabotFieldRules.of(
+        HabotCde.currencyAmount,
+      );
       final HabotFieldRule pct = HabotFieldRules.of(HabotCde.percentage);
       final HabotFieldRule time = HabotFieldRules.of(HabotCde.timeOfDay);
 

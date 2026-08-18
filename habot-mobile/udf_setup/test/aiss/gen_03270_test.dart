@@ -127,9 +127,7 @@ void main() {
       tester.view.physicalSize = const Size(393, 851);
       await tester.pumpWidget(split());
       await tester.pumpAndSettle();
-      final Offset phoneEvidence = tester.getTopLeft(
-        find.text('evidence pane'),
-      );
+      final Offset phoneEvidence = tester.getTopLeft(find.text('evidence pane'));
       final Offset phoneAction = tester.getTopLeft(find.text('action pane'));
       expect(
         phoneAction.dy,
@@ -183,8 +181,7 @@ void main() {
       expect(
         find.text('the list'),
         findsNothing,
-        reason:
-            'On a phone the detail replaces the list rather than sharing '
+        reason: 'On a phone the detail replaces the list rather than sharing '
             'the screen with it',
       );
       expect(find.text('the record'), findsOneWidget);
@@ -224,8 +221,7 @@ void main() {
       expect(
         scope.canPop,
         isFalse,
-        reason:
-            'While a detail is open the back gesture belongs to the '
+        reason: 'While a detail is open the back gesture belongs to the '
             'container, not to the route',
       );
       scope.onPopInvokedWithResult?.call(false, null);

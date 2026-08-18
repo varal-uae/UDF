@@ -151,7 +151,8 @@ class HabotMirrorLayout {
 
   /// Usable, whether or not it is a mirror. The rotation measure is about
   /// this, not about [isValid].
-  bool get isUsable => status != HabotLayoutValidationStatus.belowMinimumWidth;
+  bool get isUsable =>
+      status != HabotLayoutValidationStatus.belowMinimumWidth;
 
   bool get isMirror => arrangement != HabotMirrorArrangement.tabbed;
 

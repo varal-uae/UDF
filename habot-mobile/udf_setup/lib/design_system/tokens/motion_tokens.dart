@@ -12,6 +12,7 @@
 /// Source of truth: `lib/design_system/tokens/tokens.json` -> "motion".
 library;
 
+import 'package:flutter/animation.dart';
 import 'package:flutter/widgets.dart';
 
 /// Named motion durations. Every animated value in the app references one.
@@ -139,6 +140,47 @@ class HabotMotion {
   /// this is the only file allowed to declare one.
   static const Duration preferenceRenderFloor = Duration(milliseconds: 100);
   static const Duration preferenceRenderOptimal = Duration(milliseconds: 30);
+
+  /// GEN-04803 (Step 61): one shimmer sweep across a loading skeleton.
+  /// Long enough to read as a sweep rather than a flicker, short enough that a
+  /// skeleton visible for one cycle still looks alive. A rung of the ladder --
+  /// four times [slow] -- rather than a number chosen by eye.
+  static const Duration skeletonSweep = Duration(milliseconds: 1400);
+
+  // --- Steps 66-68: notification dispatch and delivery --------------------
+
+  /// GEN-00692 substep 2: "a 60-second acceptance timer ('Clock') for
+  /// dispatched job offers." The number is the sheet's, not a choice.
+  static const Duration dispatchAcceptanceWindow = Duration(seconds: 60);
+
+  /// GEN-00692 Completion Measure: "Push notification delivery latency
+  /// <= 1.5s."
+  static const Duration dispatchDeliveryBudget = Duration(milliseconds: 1500);
+
+  /// GEN-00692 Completion Measure: "Acceptance screen load time <= 300ms."
+  static const Duration dispatchScreenBudget = Duration(milliseconds: 300);
+
+  /// GEN-00692 Completion Measure: "Average job response time <= 30s." Half
+  /// the acceptance window -- a 60s clock whose average response is 55s is a
+  /// clock nobody is really reading.
+  static const Duration dispatchResponseBudget = Duration(seconds: 30);
+
+  /// GEN-00692 Self-Chasing: three consecutive timeouts pause automatic
+  /// dispatch "for 2 hours".
+  static const Duration dispatchPause = Duration(hours: 2);
+
+  /// GEN-00699 Metric: Client Handler Speed. Floor "<= 10 ms", optimal
+  /// "<= 2 ms", ceiling "20 ms". Two milliseconds is not enough to touch
+  /// storage or render a widget, which is why the receiver only parses and
+  /// enqueues.
+  static const Duration messageHandlerFloor = Duration(milliseconds: 10);
+  static const Duration messageHandlerOptimal = Duration(milliseconds: 2);
+  static const Duration messageHandlerCeiling = Duration(milliseconds: 20);
+
+  /// GEN-00335 Ceiling: "10 seconds (staleness ceiling before alerting)". An
+  /// event older than this when it arrives is not current news, so the client
+  /// records it without raising the blocking panel.
+  static const Duration violationStalenessCeiling = Duration(seconds: 10);
 }
 
 /// Named easing curves.

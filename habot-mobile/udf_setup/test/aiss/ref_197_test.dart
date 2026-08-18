@@ -136,10 +136,9 @@ void main() {
       'Classification maps real failure shapes to the right template, and an '
           'unrecognised error still lands on a human sentence',
       () {
-        HabotErrorCategory c(Object e) => HabotFailureClassifier.classify(e);
-        return c(
-                  const SocketLikeError('SocketException: Failed host lookup'),
-                ) ==
+        HabotErrorCategory c(Object e) =>
+            HabotFailureClassifier.classify(e);
+        return c(const SocketLikeError('SocketException: Failed host lookup')) ==
                 HabotErrorCategory.offline &&
             c(const TimeoutException('after 30s')) ==
                 HabotErrorCategory.timeout &&
@@ -153,7 +152,8 @@ void main() {
                 HabotErrorCategory.conflict &&
             c(const SocketLikeError('HTTP 500 server error')) ==
                 HabotErrorCategory.serverFailure &&
-            c(const FormatException('bad')) == HabotErrorCategory.validation &&
+            c(const FormatException('bad')) ==
+                HabotErrorCategory.validation &&
             // Anything unrecognised still resolves to a template.
             c(const SocketLikeError('quantum flux')) ==
                 HabotErrorCategory.unknown &&
@@ -206,14 +206,19 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      key.currentState!.reportFailure(const SocketLikeError(_rawServerTrace));
+      key.currentState!.reportFailure(
+        const SocketLikeError(_rawServerTrace),
+      );
       await tester.pumpAndSettle();
 
       // Substep 4: the form was rolled back to its verified baseline.
       expect(restored, baseline);
 
       // The user sees the template, not the trace.
-      expect(find.text('Something went wrong on our side'), findsOneWidget);
+      expect(
+        find.text('Something went wrong on our side'),
+        findsOneWidget,
+      );
       expect(find.textContaining('SELECT'), findsNothing);
       expect(find.textContaining('10.4.2.117'), findsNothing);
       expect(find.textContaining('package:'), findsNothing);
@@ -258,7 +263,9 @@ void main() {
           home: Scaffold(
             body: ErrorRollbackBoundary(
               key: key,
-              child: ListView(children: const <Widget>[Text('a'), Text('b')]),
+              child: ListView(
+                children: const <Widget>[Text('a'), Text('b')],
+              ),
             ),
           ),
         ),
@@ -300,8 +307,7 @@ void main() {
       AissEvidence(
         globalReferenceId: 'REF-197',
         atomicStepReferenceId: 'REF-197-A01',
-        setupStepAction:
-            'Developing the Safe Error-Handling UI Rollback Handler',
+        setupStepAction: 'Developing the Safe Error-Handling UI Rollback Handler',
         implementationOrder: 19,
         assignedTeamMember: 'Fredrick',
         dataCollected: <String, String>{

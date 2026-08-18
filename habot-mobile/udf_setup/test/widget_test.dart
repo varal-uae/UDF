@@ -22,7 +22,9 @@ void main() {
     // Since Steps 36-50 the app opens on its shell rather than on a probe.
     expect(find.byType(HabotShellPage), findsOneWidget);
 
-    final BuildContext context = tester.element(find.byType(HabotShellPage));
+    final BuildContext context = tester.element(
+      find.byType(HabotShellPage),
+    );
     final ThemeData theme = Theme.of(context);
 
     expect(theme.useMaterial3, isTrue);

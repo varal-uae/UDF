@@ -26,7 +26,6 @@ import 'package:flutter/material.dart';
 import '../surfaces/card_chassis.dart';
 import '../tokens/grid_tokens.dart';
 import '../tokens/spacing_tokens.dart';
-import '../tokens/surface_tokens.dart';
 import 'contextual_mirror.dart';
 
 /// Column distribution inside a pane, per window class.

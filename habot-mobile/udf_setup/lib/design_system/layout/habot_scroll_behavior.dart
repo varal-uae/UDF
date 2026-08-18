@@ -15,10 +15,9 @@
 ///
 /// Decision to be Made Before Setup Step: "How does the list feel when the user
 /// reaches the end of their task queue?"
-///   Recorded answer: elastic. The list stretches and settles when it reaches
-///   the end: never a rigid halt, and never a glow. A glow is an Android 11
-///   artefact that MD3 replaced, and a rigid halt reads as a broken scroll
-///   rather than an end.
+///   Recorded answer: elastic. The list stretches and settles. It never halts
+///   rigidly, and it never glows -- a glow is an Android 11 artefact that MD3
+///   replaced, and a rigid halt reads as a broken scroll rather than an end.
 library;
 
 import 'package:flutter/material.dart';
@@ -59,7 +58,7 @@ class HabotScrollBehavior extends MaterialScrollBehavior {
     if (stretchesOn(getPlatform(context))) {
       return StretchingOverscrollIndicator(
         axisDirection: details.direction,
-        clipBehavior: details.decorationClipBehavior ?? Clip.hardEdge,
+        clipBehavior: details.clipBehavior ?? Clip.hardEdge,
         child: child,
       );
     }
@@ -71,9 +70,7 @@ class HabotScrollBehavior extends MaterialScrollBehavior {
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) {
     if (bouncePlatforms.contains(getPlatform(context))) {
-      return const BouncingScrollPhysics(
-        parent: RangeMaintainingScrollPhysics(),
-      );
+      return const BouncingScrollPhysics(parent: RangeMaintainingScrollPhysics());
     }
     // Substep 3: bounds are clamped, so the stretch is a visual effect over a
     // scroll that has genuinely stopped -- content never scrolls past its end.

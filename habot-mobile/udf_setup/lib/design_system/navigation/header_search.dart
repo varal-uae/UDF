@@ -98,8 +98,7 @@ class HeaderSearchController extends ChangeNotifier {
 
   String get query => _query;
   bool get isRunning => _running;
-  List<HabotSearchResult> get results =>
-      List<HabotSearchResult>.unmodifiable(_results);
+  List<HabotSearchResult> get results => List<HabotSearchResult>.unmodifiable(_results);
 
   /// Substep 4: successful lookups, most recent first, capped and de-duplicated.
   List<String> get recent => List<String>.unmodifiable(_recent);
@@ -297,9 +296,8 @@ class _ResultGroups extends StatelessWidget {
     MapEntry<String, List<HabotSearchResult>> group,
   ) => <Widget>[
     Text(group.key, style: Theme.of(context).textTheme.labelMedium),
-    for (final HabotSearchResult result in group.value.take(
-      HabotDiscovery.maxVisibleResults,
-    ))
+    for (final HabotSearchResult result
+        in group.value.take(HabotDiscovery.maxVisibleResults))
       _ResultRow(result: result, onSelected: onSelected),
   ];
 }

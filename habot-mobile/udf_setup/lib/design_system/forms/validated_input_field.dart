@@ -1,4 +1,4 @@
-/// AISS: IS12-CSIVW-011-AS01-A01 -- "`<ValidatedInputField>`", the self-formatting
+/// AISS: IS12-CSIVW-011-AS01-A01 -- "<ValidatedInputField>", the self-formatting
 /// smart data entry text input the step's Atomic Reusability column names.
 /// AISS: CSIVW-001-A01 -- the StandardTextInputMask element.
 /// AISS: IS02-CSIVW-005-AS01-A01 -- inline error layouts bound to blur events.

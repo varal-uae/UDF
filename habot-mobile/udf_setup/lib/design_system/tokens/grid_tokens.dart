@@ -98,7 +98,8 @@ class HabotGrid {
   /// the gutters between columns. Never returns a negative value.
   static double columnWidth(double width) {
     final int columns = columnsFor(width);
-    final double usable = width - (outerMargin * 2) - (gutter * (columns - 1));
+    final double usable =
+        width - (outerMargin * 2) - (gutter * (columns - 1));
     final double result = usable / columns;
     return result < 0 ? 0 : result;
   }

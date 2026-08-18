@@ -212,9 +212,9 @@ void main() {
         'listener without the form asking', (WidgetTester tester) async {
       final HabotHesitationTracker tracker = HabotHesitationTracker();
       HabotHesitationTracker.useInstance(tracker);
-      addTearDown(
-        () => HabotHesitationTracker.useInstance(HabotHesitationTracker()),
-      );
+      addTearDown(() => HabotHesitationTracker.useInstance(
+            HabotHesitationTracker(),
+          ));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -284,9 +284,9 @@ void main() {
     ) async {
       final HabotHesitationTracker tracker = HabotHesitationTracker();
       HabotHesitationTracker.useInstance(tracker);
-      addTearDown(
-        () => HabotHesitationTracker.useInstance(HabotHesitationTracker()),
-      );
+      addTearDown(() => HabotHesitationTracker.useInstance(
+            HabotHesitationTracker(),
+          ));
 
       await tester.pumpWidget(
         MaterialApp(

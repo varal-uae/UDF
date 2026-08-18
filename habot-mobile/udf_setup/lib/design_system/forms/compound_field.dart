@@ -45,82 +45,26 @@ class HabotCompoundFields {
   const HabotCompoundFields._();
 
   static const List<CompoundPart> addressBlock = <CompoundPart>[
-    CompoundPart(
-      name: 'address.line1',
-      label: 'Street address',
-      cde: HabotCde.addressLine,
-      flex: 3,
-    ),
-    CompoundPart(
-      name: 'address.line2',
-      label: 'Apartment, suite',
-      cde: HabotCde.addressLine,
-      required: false,
-      flex: 3,
-    ),
-    CompoundPart(
-      name: 'address.city',
-      label: 'City',
-      cde: HabotCde.personName,
-      flex: 2,
-    ),
-    CompoundPart(
-      name: 'address.postal',
-      label: 'Postal code',
-      cde: HabotCde.postalCode,
-      flex: 1,
-    ),
+    CompoundPart(name: 'address.line1', label: 'Street address', cde: HabotCde.addressLine, flex: 3),
+    CompoundPart(name: 'address.line2', label: 'Apartment, suite', cde: HabotCde.addressLine, required: false, flex: 3),
+    CompoundPart(name: 'address.city', label: 'City', cde: HabotCde.personName, flex: 2),
+    CompoundPart(name: 'address.postal', label: 'Postal code', cde: HabotCde.postalCode, flex: 1),
   ];
 
   static const List<CompoundPart> dateTimeBlock = <CompoundPart>[
-    CompoundPart(
-      name: 'when.date',
-      label: 'Date',
-      cde: HabotCde.dateIso,
-      flex: 2,
-    ),
-    CompoundPart(
-      name: 'when.time',
-      label: 'Time',
-      cde: HabotCde.timeOfDay,
-      flex: 1,
-    ),
+    CompoundPart(name: 'when.date', label: 'Date', cde: HabotCde.dateIso, flex: 2),
+    CompoundPart(name: 'when.time', label: 'Time', cde: HabotCde.timeOfDay, flex: 1),
   ];
 
   static const List<CompoundPart> contactBlock = <CompoundPart>[
-    CompoundPart(
-      name: 'contact.name',
-      label: 'Full name',
-      cde: HabotCde.personName,
-      flex: 2,
-    ),
-    CompoundPart(
-      name: 'contact.phone',
-      label: 'Phone',
-      cde: HabotCde.phoneNumber,
-      flex: 1,
-    ),
-    CompoundPart(
-      name: 'contact.email',
-      label: 'Email',
-      cde: HabotCde.emailAddress,
-      flex: 2,
-    ),
+    CompoundPart(name: 'contact.name', label: 'Full name', cde: HabotCde.personName, flex: 2),
+    CompoundPart(name: 'contact.phone', label: 'Phone', cde: HabotCde.phoneNumber, flex: 1),
+    CompoundPart(name: 'contact.email', label: 'Email', cde: HabotCde.emailAddress, flex: 2),
   ];
 
   static const List<CompoundPart> amountBlock = <CompoundPart>[
-    CompoundPart(
-      name: 'amount.value',
-      label: 'Amount',
-      cde: HabotCde.currencyAmount,
-      flex: 2,
-    ),
-    CompoundPart(
-      name: 'amount.quantity',
-      label: 'Quantity',
-      cde: HabotCde.quantity,
-      flex: 1,
-    ),
+    CompoundPart(name: 'amount.value', label: 'Amount', cde: HabotCde.currencyAmount, flex: 2),
+    CompoundPart(name: 'amount.quantity', label: 'Quantity', cde: HabotCde.quantity, flex: 1),
   ];
 
   static const Map<String, List<CompoundPart>> all =

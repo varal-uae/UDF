@@ -207,7 +207,8 @@ void main() {
       gates.add(
         AissGate(
           id: 'IS38-SGTIM-018-G7',
-          requirementSource: '4 Substeps #3: "Test scrolling bounds."',
+          requirementSource:
+              '4 Substeps #3: "Test scrolling bounds."',
           description:
               'At the end of the list a further drag leaves the scroll offset '
               'pinned to the maximum extent under clamping physics',

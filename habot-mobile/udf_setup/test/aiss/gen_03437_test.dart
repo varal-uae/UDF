@@ -96,7 +96,7 @@ void main() {
               state,
             );
             measured['${scheme.key}/${state.name}'] = ratio;
-            all = all && ratio >= WcagThresholds.textFloor;
+            all = all && ratio >= Contrast.textFloor;
           }
         }
         return all;
@@ -122,7 +122,7 @@ void main() {
             all =
                 all &&
                 HabotOfflineBannerPalette.contrastFor(scheme, state) >=
-                    WcagThresholds.textOptimal;
+                    Contrast.textOptimal;
           }
         }
         return all;
@@ -168,7 +168,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(HabotOfflineBanner.bannerKey), findsOneWidget);
       expect(find.text(HabotOfflineCopy.offlineTitle), findsOneWidget);
-      expect(find.byKey(HabotOfflineBanner.pendingCounterKey), findsOneWidget);
+      expect(
+        find.byKey(HabotOfflineBanner.pendingCounterKey),
+        findsOneWidget,
+      );
       expect(find.text('3 changes are waiting to send.'), findsOneWidget);
       expect(tester.takeException(), isNull);
 
@@ -236,7 +239,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.bySemanticsLabel('Offline Mode. 2 changes are waiting to send.'),
+        find.bySemanticsLabel(
+          'Offline Mode. 2 changes are waiting to send.',
+        ),
         findsOneWidget,
       );
       handle.dispose();

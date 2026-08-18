@@ -17,7 +17,6 @@ library;
 
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:udf_setup/design_system/aiss/aiss_evidence.dart';
 import 'package:udf_setup/design_system/resilience/connectivity_state.dart';
@@ -119,8 +118,7 @@ void main() {
       expect(
         monitor.offlineSince,
         isNotNull,
-        reason:
-            'The moment the app went offline is recorded, so a banner can '
+        reason: 'The moment the app went offline is recorded, so a banner can '
             'say how long rather than just that',
       );
 
@@ -142,79 +140,72 @@ void main() {
       );
     });
 
-    test(
-      '[GEN-02720-G4] one successful poll is enough to come back online',
-      () async {
-        bool answers = false;
-        final HabotConnectivityMonitor monitor = HabotConnectivityMonitor(
-          poll: () async => answers,
-        );
-        addTearDown(monitor.dispose);
+    test('[GEN-02720-G4] one successful poll is enough to come back online', () async {
+      bool answers = false;
+      final HabotConnectivityMonitor monitor = HabotConnectivityMonitor(
+        poll: () async => answers,
+      );
+      addTearDown(monitor.dispose);
 
-        await monitor.pollOnce();
-        await monitor.pollOnce();
-        expect(monitor.state, HabotConnectivity.offline);
-        final DateTime? wentOffline = monitor.offlineSince;
-        expect(wentOffline, isNotNull);
+      await monitor.pollOnce();
+      await monitor.pollOnce();
+      expect(monitor.state, HabotConnectivity.offline);
+      final DateTime? wentOffline = monitor.offlineSince;
+      expect(wentOffline, isNotNull);
 
-        answers = true;
-        await monitor.pollOnce();
+      answers = true;
+      await monitor.pollOnce();
 
-        expect(monitor.state, HabotConnectivity.online);
-        expect(monitor.consecutiveFailures, 0);
-        expect(
-          monitor.offlineSince,
-          isNull,
-          reason:
-              'Recovery clears the marker; a stale one would make the banner '
-              'report an outage that has ended',
-        );
+      expect(monitor.state, HabotConnectivity.online);
+      expect(monitor.consecutiveFailures, 0);
+      expect(
+        monitor.offlineSince,
+        isNull,
+        reason: 'Recovery clears the marker; a stale one would make the banner '
+            'report an outage that has ended',
+      );
 
-        gates.add(
-          const AissGate(
-            id: 'GEN-02720-G4',
-            requirementSource:
-                'Mobile-First UX row: "Pull-to-refresh triggers manual sync." '
-                'Recovery is eager on purpose: the cost of being wrong is a '
-                'banner that clears half a minute early, against a user who '
-                'cannot see that their connection is back.',
-            description:
-                'After two failures a single success returns the monitor to '
-                'online and clears the offline marker',
-            passed: true,
-          ),
-        );
-      },
-    );
+      gates.add(
+        const AissGate(
+          id: 'GEN-02720-G4',
+          requirementSource:
+              'Mobile-First UX row: "Pull-to-refresh triggers manual sync." '
+              'Recovery is eager on purpose: the cost of being wrong is a '
+              'banner that clears half a minute early, against a user who '
+              'cannot see that their connection is back.',
+          description:
+              'After two failures a single success returns the monitor to '
+              'online and clears the offline marker',
+          passed: true,
+        ),
+      );
+    });
 
-    test(
-      '[GEN-02720-G5] a poll that throws is a failure, not a crash',
-      () async {
-        final HabotConnectivityMonitor monitor = HabotConnectivityMonitor(
-          poll: () async => throw const SocketishFailure(),
-        );
-        addTearDown(monitor.dispose);
+    test('[GEN-02720-G5] a poll that throws is a failure, not a crash', () async {
+      final HabotConnectivityMonitor monitor = HabotConnectivityMonitor(
+        poll: () async => throw const SocketishFailure(),
+      );
+      addTearDown(monitor.dispose);
 
-        await monitor.pollOnce();
-        await monitor.pollOnce();
+      await monitor.pollOnce();
+      await monitor.pollOnce();
 
-        expect(monitor.state, HabotConnectivity.offline);
+      expect(monitor.state, HabotConnectivity.offline);
 
-        gates.add(
-          const AissGate(
-            id: 'GEN-02720-G5',
-            requirementSource:
-                'Setup Step (Action) -- "fails to receive a response" covers a '
-                'refused connection as much as a silent one, and neither may '
-                'take the app down.',
-            description:
-                'A polling function that throws is folded into the same failure '
-                'count as a timeout, with no exception escaping the monitor',
-            passed: true,
-          ),
-        );
-      },
-    );
+      gates.add(
+        const AissGate(
+          id: 'GEN-02720-G5',
+          requirementSource:
+              'Setup Step (Action) -- "fails to receive a response" covers a '
+              'refused connection as much as a silent one, and neither may '
+              'take the app down.',
+          description:
+              'A polling function that throws is folded into the same failure '
+              'count as a timeout, with no exception escaping the monitor',
+          passed: true,
+        ),
+      );
+    });
 
     test('[GEN-02720-G6] work attempted while offline is queued and reported, '
         'and draining says what was sent', () async {
@@ -240,8 +231,7 @@ void main() {
       expect(
         notifications,
         greaterThan(0),
-        reason:
-            'A queue nothing can observe is a queue nobody can be told '
+        reason: 'A queue nothing can observe is a queue nobody can be told '
             'about',
       );
 
@@ -278,8 +268,7 @@ void main() {
       expect(
         notifications,
         0,
-        reason:
-            'Three healthy polls are not three pieces of news; a banner '
+        reason: 'Three healthy polls are not three pieces of news; a banner '
             'rebuilt every 30 seconds for nothing is a battery cost',
       );
 

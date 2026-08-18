@@ -11,6 +11,7 @@ library;
 
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:udf_setup/app.dart';
 import 'package:udf_setup/habot_shell_page.dart';
@@ -35,14 +36,15 @@ List<_ScreenRef> _discoverScreens() {
   final RegExp declaration = RegExp(
     r'class\s+(\w*(?:Page|Screen))\s+extends\s+(?:StatelessWidget|StatefulWidget)',
   );
-  for (final File file
-      in Directory('lib')
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where((File f) => f.path.endsWith('.dart'))) {
+  for (final File file in Directory('lib')
+      .listSync(recursive: true)
+      .whereType<File>()
+      .where((File f) => f.path.endsWith('.dart'))) {
     final String source = file.readAsStringSync();
     for (final RegExpMatch m in declaration.allMatches(source)) {
-      screens.add(_ScreenRef(file.path.replaceAll('\\', '/'), m.group(1)!));
+      screens.add(
+        _ScreenRef(file.path.replaceAll('\\', '/'), m.group(1)!),
+      );
     }
   }
   return screens;
@@ -100,9 +102,7 @@ void main() {
         final String source = File(
           'lib/design_system/layout/master_scaffold.dart',
         ).readAsStringSync();
-        auditTrail.add(
-          'verified slot surface: body/header/footer/floatingAction',
-        );
+        auditTrail.add('verified slot surface: body/header/footer/floatingAction');
         return source.contains('required this.body') &&
             source.contains('this.header') &&
             source.contains('this.footer') &&
@@ -131,9 +131,7 @@ void main() {
           return false;
         }
         final String params = source.substring(start, end).toLowerCase();
-        auditTrail.add(
-          'inspected constructor parameter list for escape hatches',
-        );
+        auditTrail.add('inspected constructor parameter list for escape hatches');
         const List<String> forbidden = <String>[
           'padding',
           'margin',

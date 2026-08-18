@@ -84,7 +84,8 @@ void main() {
               HabotNavigationSurface.bottomBar &&
           HabotNavigationPolicy.surfaceFor(HabotGrid.navigationCollapse) ==
               HabotNavigationSurface.rail &&
-          HabotNavigationPolicy.surfaceFor(1280) == HabotNavigationSurface.rail,
+          HabotNavigationPolicy.surfaceFor(1280) ==
+              HabotNavigationSurface.rail,
     );
 
     gate(
@@ -109,15 +110,12 @@ void main() {
       'Every NavigationDestination under lib/ passes an empty tooltip, so the '
           'navigation cannot reintroduce the hover affordance Step 24 removed',
       () {
-        for (final File file
-            in Directory('lib')
-                .listSync(recursive: true)
-                .whereType<File>()
-                .where((File f) => f.path.endsWith('.dart'))) {
+        for (final File file in Directory('lib')
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where((File f) => f.path.endsWith('.dart'))) {
           final String code = file.readAsStringSync();
-          final int destinations = 'NavigationDestination('
-              .allMatches(code)
-              .length;
+          final int destinations = 'NavigationDestination('.allMatches(code).length;
           if (destinations == 0) {
             continue;
           }

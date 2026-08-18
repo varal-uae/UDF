@@ -26,22 +26,8 @@ import 'aiss_reporter.dart';
 
 /// Files permitted to build a raw interactive primitive. Everything else must
 /// go through HabotTouchTarget so the 48dp floor cannot be bypassed.
-/// The sanctioned interaction module. Every primitive under it -- the touch
-/// target itself, the state-layer feedback engine -- is allowed to touch raw
-/// gesture APIs; that is what "sanctioned" means. The gate description names the
-/// module, so the exemption is the module, not a hand-maintained file list.
-const String _sanctionedInteractionDir = 'lib/design_system/interaction/';
-
-/// Reviewed exceptions *outside* that module -- secondary gestures, not primary
-/// tap targets, each with an accessible alternative and each mandated by
-/// another gate:
-///  - the panel divider's double-tap to cycle the split ratio (SSTLA-012-G7);
-///    a thin divider cannot be a 48dp target and carries button semantics.
-///  - long-press on a metadata label, redundant with the adjacent
-///    HabotTouchTarget that does the same on tap (MUFCE-028-G4).
 const Set<String> _rawInteractionAllowList = <String>{
-  'lib/design_system/shell/adaptive_panes.dart',
-  'lib/design_system/surfaces/metadata_disclosure.dart',
+  'lib/design_system/interaction/touch_target.dart',
 };
 
 void main() {
@@ -129,14 +115,12 @@ void main() {
           'the sanctioned interaction module',
       () {
         final RegExp raw = RegExp(r'\b(IconButton|GestureDetector)\s*\(');
-        for (final File file
-            in Directory('lib')
-                .listSync(recursive: true)
-                .whereType<File>()
-                .where((File f) => f.path.endsWith('.dart'))) {
+        for (final File file in Directory('lib')
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where((File f) => f.path.endsWith('.dart'))) {
           final String path = file.path.replaceAll('\\', '/');
-          if (path.startsWith(_sanctionedInteractionDir) ||
-              _rawInteractionAllowList.contains(path)) {
+          if (_rawInteractionAllowList.contains(path)) {
             continue;
           }
           if (raw.hasMatch(file.readAsStringSync())) {
@@ -162,7 +146,7 @@ void main() {
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.reset);
 
-        await tester.pumpWidget(const HabotApp(home: DesignSystemProbePage()));
+        await tester.pumpWidget(const HabotApp());
         await tester.pumpAndSettle();
 
         final Iterable<RenderBox> targets = tester
@@ -252,7 +236,10 @@ void main() {
 
       final List<Rect> rects = tester
           .renderObjectList<RenderBox>(find.byType(HabotTouchTarget))
-          .map((RenderBox b) => b.localToGlobal(Offset.zero) & b.size)
+          .map(
+            (RenderBox b) =>
+                b.localToGlobal(Offset.zero) & b.size,
+          )
           .toList();
 
       expect(rects, hasLength(2));
@@ -288,7 +275,7 @@ void main() {
             body: Center(
               child: HabotTouchTarget(
                 semanticLabel: 'Tiny toggle',
-                detail: 'Toggles the tiny thing',
+                tooltip: 'Toggles the tiny thing',
                 onPressed: () {},
                 child: const Icon(Icons.circle, size: 12),
               ),
