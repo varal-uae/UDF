@@ -3,6 +3,7 @@
 // Displays zero-balance flashes and high-contrast Material 3 validation alert styles.
 
 import 'package:flutter/material.dart';
+import '../theme/design_tokens.dart';
 
 /// Renders system tracing logs and triggers mathematical zero-balance alerts.
 class StructuralTraceView extends StatefulWidget {
@@ -35,7 +36,7 @@ class _StructuralTraceViewState extends State<StructuralTraceView> {
   }
 
   void _triggerZeroBalanceFlash() {
-    setState(() => _flashColor = const Color(0xFFC6E8D9)); // Light green success container flash
+    setState(() => _flashColor = const Color(HabotColorTokens.successContainer)); // Light green success container flash
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {
         setState(() => _flashColor = null);

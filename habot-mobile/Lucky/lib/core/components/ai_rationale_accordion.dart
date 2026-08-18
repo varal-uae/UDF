@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../theme/design_tokens.dart';
+
 /// Trust score bands matching DCDF classification rules.
 enum TrustBand { high, medium, low }
 
@@ -46,11 +48,11 @@ class _AiRationaleAccordionState extends State<AiRationaleAccordion> {
   Color _resolveBadgeColor(ColorScheme cs) {
     switch (_trustBand) {
       case TrustBand.high:
-        return const Color(0xFF21B373); // M3 Success Color
+        return const Color(HabotColorTokens.aiConfidenceHigh);
       case TrustBand.medium:
-        return const Color(0xFFFF9800); // M3 Warning Color
+        return const Color(HabotColorTokens.aiConfidenceMedium);
       case TrustBand.low:
-        return const Color(0xFFE31B23); // M3 Error Color
+        return const Color(HabotColorTokens.aiConfidenceLow);
     }
   }
 
