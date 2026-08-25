@@ -181,6 +181,30 @@ class HabotMotion {
   /// event older than this when it arrives is not current news, so the client
   /// records it without raising the blocking panel.
   static const Duration violationStalenessCeiling = Duration(seconds: 10);
+
+  // --- Steps 93-95: MTO task timing, reallocation and SLA -----------------
+
+  /// GEN-00843 Setup Step Description: "auto-reallocation logic RE-ASSIGNING
+  /// TASKS IF UNCOMPLETED WITHIN 5 MINUTES", and its metric row repeats the
+  /// same number as floor, optimal and ceiling. The sheet's number, not a
+  /// choice.
+  static const Duration mtoReallocationWindow = Duration(minutes: 5);
+
+  /// MCIIM-021 Self-Chasing: "workers will fail the 15-MINUTE TIMER because
+  /// they cannot read the image." The only SLA target the sheet names for a
+  /// task, taken from the row that anchors the batch.
+  static const Duration mtoSlaTarget = Duration(minutes: 15);
+
+  /// The warning point: three quarters of the SLA, which is where an operator
+  /// can still do something about it. Derived rather than declared, so moving
+  /// the target moves the warning with it.
+  static const Duration mtoSlaWarning = Duration(minutes: 11, seconds: 15);
+
+  /// GEN-03866 Metric: Interaction Timer Resolution Drift -- floor "<10 ms",
+  /// optimal "<1 ms", ceiling "50 ms". Bands, not durations to animate with.
+  static const Duration mtoTimerDriftFloor = Duration(milliseconds: 10);
+  static const Duration mtoTimerDriftOptimal = Duration(milliseconds: 1);
+  static const Duration mtoTimerDriftCeiling = Duration(milliseconds: 50);
 }
 
 /// Named easing curves.

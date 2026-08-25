@@ -35,6 +35,13 @@ import 'design_system/layout/master_scaffold.dart';
 import 'design_system/navigation/contextual_header.dart';
 import 'design_system/preferences/notification_preferences.dart';
 import 'design_system/preferences/preference_manager.dart';
+import 'design_system/forms/field_validation.dart';
+import 'design_system/mto/byt_isolation.dart';
+import 'design_system/mto/interaction_timer.dart';
+import 'design_system/mto/task_queue.dart';
+import 'design_system/mto/task_screen.dart';
+import 'design_system/mto/worker_task_card.dart';
+import 'design_system/notifications/alert_priority.dart';
 import 'design_system/shell/adaptive_panes.dart';
 import 'design_system/tokens/spacing_tokens.dart';
 import 'surfaces_probe_page.dart';
@@ -77,6 +84,14 @@ class _HabotShellPageState extends State<HabotShellPage> {
         registry: _tokens,
       );
 
+  /// Steps 81-95. The queue is shell-owned for the same reason the alert panel
+  /// is: a task allocated on one destination is still allocated on another.
+  final HabotTaskQueue _queue = HabotTaskQueue();
+  late final HabotEscalationEngine _escalations = HabotEscalationEngine(
+    panel: _alerts,
+    preferences: _notificationPreferences,
+  );
+
   String _title = 'Overview';
 
   /// Stand-in for the real backend. The shell is gated on how it behaves when
@@ -90,6 +105,7 @@ class _HabotShellPageState extends State<HabotShellPage> {
 
   @override
   void dispose() {
+    _queue.dispose();
     _notificationPreferences.dispose();
     _centre.dispose();
     _banners.dispose();
@@ -171,6 +187,16 @@ class _HabotShellPageState extends State<HabotShellPage> {
             selectedIcon: Icons.widgets,
           ),
           builder: (BuildContext context) => const _ComponentsContent(),
+        ),
+        HabotShellDestination(
+          destination: const HabotDestination(
+            route: '/work',
+            label: 'Work',
+            icon: Icons.assignment_outlined,
+            selectedIcon: Icons.assignment,
+          ),
+          builder: (BuildContext context) =>
+              _WorkContent(queue: _queue, escalations: _escalations),
         ),
         HabotShellDestination(
           destination: const HabotDestination(
@@ -389,6 +415,154 @@ class _TasksContent extends StatelessWidget {
         ),
       ),
       action: const DataEntryProbeBody(),
+    );
+  }
+}
+
+/// Steps 81-95: the MTO worker queue.
+///
+/// The list is a summary; the crop itself only ever renders inside the task
+/// chassis, on a pushed route. That is deliberate -- a list of thumbnails
+/// would put nine crops on one screen and undo Step 81.
+class _WorkContent extends StatefulWidget {
+  const _WorkContent({required this.queue, required this.escalations});
+
+  final HabotTaskQueue queue;
+  final HabotEscalationEngine escalations;
+
+  @override
+  State<_WorkContent> createState() => _WorkContentState();
+}
+
+class _WorkContentState extends State<_WorkContent> {
+  final Map<String, HabotInteractionTimer> _timers =
+      <String, HabotInteractionTimer>{};
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.queue.tasks.isEmpty) {
+      _seed();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final HabotInteractionTimer timer in _timers.values) {
+      timer.dispose();
+    }
+    super.dispose();
+  }
+
+  /// Demo deliveries. Every one goes through the Step 81 contract, so a crop
+  /// the backend has not stamped never reaches this list.
+  void _seed() {
+    const List<List<String>> seeds = <List<String>>[
+      <String>['byt-1', 'Read the invoice total', 'digits and a decimal point'],
+      <String>['byt-2', 'Read the issue date', 'YYYY-MM-DD'],
+      <String>['byt-3', 'Read the account number', 'digits only'],
+    ];
+    final DateTime now = DateTime.now();
+    for (int i = 0; i < seeds.length; i++) {
+      const HabotBoundingBox box = HabotBoundingBox(
+        left: 120,
+        top: 240,
+        width: 640,
+        height: 180,
+        sourceWidth: 2480,
+        sourceHeight: 3508,
+      );
+      final HabotByt? byt = HabotByt.fromDelivery(
+        id: seeds[i][0],
+        box: box,
+        snippet: Uri.parse(
+          'https://assets.habot.internal/crops/${seeds[i][0]}.png'
+          '?crop=${HabotCropContract.signatureFor(box)}',
+        ),
+        prompt: seeds[i][1],
+        expectedFormat: seeds[i][2],
+      );
+      if (byt == null) {
+        continue;
+      }
+      widget.queue.enqueue(
+        HabotMtoTask(
+          byt: byt,
+          priority: HabotAlertPriority.values[i % 3],
+          queuedAt: now.subtract(Duration(minutes: i * 3)),
+        ),
+      );
+    }
+  }
+
+  void _open(BuildContext context, HabotMtoTask task) {
+    final HabotInteractionTimer timer = _timers.putIfAbsent(
+      task.id,
+      () => HabotInteractionTimer(taskId: task.id),
+    )..start();
+    widget.queue.allocate('me');
+    // Opening a task is also when the shell notices anything else has gone
+    // past its SLA. Step 95's engine raises through the Step 73 panel.
+    widget.escalations.sweep(widget.queue, DateTime.now());
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => HabotTaskScreen(
+          byt: task.byt,
+          cde: HabotCde.quantity,
+          imageBuilder: _demoSnippet,
+          onSubmit: (String answer) {
+            timer.stop();
+            widget.queue.complete(task.id);
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+  }
+
+  /// The demo has no asset service, so the evidence pane renders a stand-in
+  /// at the crop's own aspect ratio rather than a broken image.
+  Widget _demoSnippet(BuildContext context, HabotByt byt) => ColoredBox(
+    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+    child: SizedBox(
+      width: byt.box.width,
+      height: byt.box.height,
+      child: Center(
+        child: Text(
+          'Cropped evidence for ${byt.id}',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: widget.queue,
+      builder: (BuildContext context, Widget? _) {
+        final List<HabotMtoTask> ranked = widget.queue.ranked();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              '${widget.queue.waitingCount} waiting - '
+              '${widget.queue.inProgressCount} in progress',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: HabotSpacing.xs),
+            for (final HabotMtoTask task in ranked)
+              Padding(
+                padding: const EdgeInsets.only(bottom: HabotSpacing.xs),
+                child: HabotWorkerTaskCard(
+                  task: task,
+                  timer: _timers[task.id],
+                  onOpen: () => _open(context, task),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

@@ -12,7 +12,7 @@
 #   G-B  analyze    -- flutter analyze, zero issues (warnings are errors)
 #   G-C  poka-yoke  -- no hardcoded colours / spacing / rogue ThemeData in lib/
 #   G-D  AISS gates -- one assertion per substep of every implemented step
-#                   (503 gates across Steps 1-80; new gate files are picked up
+#                   (558 gates across Steps 1-95; new gate files are picked up
 #                    automatically -- the runner globs test/, it has no list)
 #   G-E  evidence   -- merge per-step evidence, fail if any step is not Complete
 #

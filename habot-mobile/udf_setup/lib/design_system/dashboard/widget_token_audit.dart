@@ -130,12 +130,20 @@ class HabotWidgetTokenAudit {
   );
 
   /// Runs the audit over [root] (the Flutter project directory).
-  static HabotTokenAuditResult run({String root = '.'}) {
+  ///
+  /// [directories] defaults to the dashboard and chart layers this step owns.
+  /// SSELC-016 (Step 87) passes the MTO layer instead, so its own Design
+  /// System Token Adoption Rate is measured over its own files rather than
+  /// widening -- or diluting -- the number LSAV-027 reports.
+  static HabotTokenAuditResult run({
+    String root = '.',
+    List<String>? directories,
+  }) {
     int styled = 0;
     int fromToken = 0;
     final List<String> offenders = <String>[];
 
-    for (final String dir in auditedDirectories) {
+    for (final String dir in directories ?? auditedDirectories) {
       final Directory directory = Directory('$root/$dir');
       if (!directory.existsSync()) {
         continue;
