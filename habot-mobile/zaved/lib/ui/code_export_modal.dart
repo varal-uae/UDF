@@ -70,16 +70,17 @@ class _CodeExportModalDialogState extends State<CodeExportModalDialog>
 
   void _copyToClipboard(String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
+    final colorScheme = Theme.of(context).colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white),
+            Icon(Icons.check_circle, color: colorScheme.onPrimary),
             const SizedBox(width: 8.0),
             Expanded(child: Text('$label copied to clipboard!')),
           ],
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: colorScheme.primary,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),
@@ -241,7 +242,7 @@ class _CodeExportModalDialogState extends State<CodeExportModalDialog>
 
   Widget _buildSourceCodeView(ThemeData theme, bool isDark) {
     return Container(
-      color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF5F5F5),
+      color: theme.colorScheme.surfaceContainerHighest,
       padding: const EdgeInsets.all(16.0),
       child: Stack(
         children: [
@@ -252,7 +253,7 @@ class _CodeExportModalDialogState extends State<CodeExportModalDialog>
               style: TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 13.0,
-                color: isDark ? const Color(0xFFD4D4D4) : const Color(0xFF24292E),
+                color: theme.colorScheme.onSurface,
                 height: 1.4,
               ),
             ),
@@ -317,10 +318,7 @@ class _CodeExportModalDialogState extends State<CodeExportModalDialog>
             '    sdk: flutter\n\n'
             '// main.dart ThemeData\n'
             'MaterialApp(\n'
-            '  theme: ThemeData(\n'
-            '    useMaterial3: true,\n'
-            '    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),\n'
-            '  ),\n'
+            '  theme: AppTheme.lightTheme,\n'
             ');',
           ),
           const SizedBox(height: 20.0),
@@ -422,7 +420,7 @@ class _CodeExportModalDialogState extends State<CodeExportModalDialog>
       width: double.infinity,
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF0F0F0),
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
@@ -431,7 +429,7 @@ class _CodeExportModalDialogState extends State<CodeExportModalDialog>
         style: TextStyle(
           fontFamily: 'monospace',
           fontSize: 12.0,
-          color: isDark ? const Color(0xFFD4D4D4) : const Color(0xFF333333),
+          color: theme.colorScheme.onSurface,
         ),
       ),
     );

@@ -15,6 +15,8 @@ class SecurityConfig {
     required this.complianceScore,
   });
 
+  bool get isRotationLocked => keyRotationPolicy.contains('Never');
+
   SecurityConfig copyWith({
     bool? isVpcScEnforced,
     String? keyRotationPolicy,
@@ -158,17 +160,17 @@ class _EnterpriseCmekSecurityConsoleState
             });
           },
           labelType: NavigationRailLabelType.selected,
-          destinations: const [
+          destinations: [
             NavigationRailDestination(
-              icon: Icon(Icons.security),
-              selectedIcon: Icon(Icons.security, color: Colors.deepPurple),
-              label: Text('Console'),
+              icon: const Icon(Icons.security),
+              selectedIcon: Icon(Icons.security, color: theme.colorScheme.primary),
+              label: const Text('Console'),
             ),
-            NavigationRailDestination(
+            const NavigationRailDestination(
               icon: Icon(Icons.vpn_key),
               label: Text('CMEK Keys'),
             ),
-            NavigationRailDestination(
+            const NavigationRailDestination(
               icon: Icon(Icons.shield),
               label: Text('VPC-SC'),
             ),
@@ -253,8 +255,8 @@ class _EnterpriseCmekSecurityConsoleState
   /// Pass/Fail Metric Banner evaluating complianceScore
   Widget _buildPassFailBanner(ThemeData theme) {
     final isPass = _config.complianceScore >= 95.0;
-    final bannerBg = isPass ? Colors.green.shade100 : Colors.red.shade100;
-    final bannerColor = isPass ? Colors.green.shade900 : Colors.red.shade900;
+    final bannerBg = isPass ? theme.colorScheme.primaryContainer : theme.colorScheme.errorContainer;
+    final bannerColor = isPass ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onErrorContainer;
     final iconData = isPass ? Icons.verified_user : Icons.gpp_bad;
 
     return Card(
@@ -263,7 +265,7 @@ class _EnterpriseCmekSecurityConsoleState
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
         side: BorderSide(
-          color: isPass ? Colors.green : Colors.red,
+          color: isPass ? theme.colorScheme.primary : theme.colorScheme.error,
           width: 1.5,
         ),
       ),
@@ -278,25 +280,28 @@ class _EnterpriseCmekSecurityConsoleState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'NotebookLM Enterprise Compliance Status',
+                    isPass
+                        ? 'ENTERPRISE CMEK COMPLIANCE: PASSED'
+                        : 'ENTERPRISE CMEK COMPLIANCE: VIOLATION DETECTED',
                     style: theme.textTheme.labelMedium?.copyWith(
-                      color: bannerColor.withValues(alpha: 0.8),
+                      color: bannerColor,
                       fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
                     ),
                   ),
-                  const SizedBox(height: 4.0),
+                  const SizedBox(height: 2.0),
                   Text(
                     isPass
-                        ? 'PASS: 100% Compliant'
-                        : 'FAIL: ISO/IEC 27001 A.10 Violation',
+                        ? 'All NIST SP 800-57 & VPC-SC policies enforced.'
+                        : 'Action required: Automatic key rotation policy modified or VPC perimeter breach.',
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: bannerColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 2.0),
+                  const SizedBox(height: 4.0),
                   Text(
-                    'Current Compliance Rating: ${_config.complianceScore.toStringAsFixed(1)}%',
+                    'Current Score: ${_config.complianceScore.toStringAsFixed(1)}% | Rotation Lock: ${_config.isRotationLocked ? "ENFORCED" : "FAILED"}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: bannerColor,
                     ),
@@ -308,8 +313,8 @@ class _EnterpriseCmekSecurityConsoleState
             if (isPass)
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade700,
-                  foregroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.error,
+                  foregroundColor: theme.colorScheme.onError,
                 ),
                 onPressed: _testAutoRotateViolation,
                 icon: const Icon(Icons.sync_problem, size: 18.0),
@@ -318,8 +323,8 @@ class _EnterpriseCmekSecurityConsoleState
             else
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red.shade900,
-                  side: BorderSide(color: Colors.red.shade900),
+                  foregroundColor: theme.colorScheme.error,
+                  side: BorderSide(color: theme.colorScheme.error),
                 ),
                 onPressed: _resetCompliance,
                 icon: const Icon(Icons.restore),
@@ -369,23 +374,23 @@ class _EnterpriseCmekSecurityConsoleState
                   'Key Rotation Policy',
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                subtitle: const Column(
+                subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 4.0),
+                    const SizedBox(height: 4.0),
                     Text(
                       'Never (Manual Rotation)',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+                        color: theme.colorScheme.outline,
                       ),
                     ),
-                    SizedBox(height: 4.0),
+                    const SizedBox(height: 4.0),
                     Row(
                       children: [
-                        Icon(Icons.lock, size: 14.0, color: Colors.grey),
-                        SizedBox(width: 4.0),
-                        Expanded(
+                        Icon(Icons.lock, size: 14.0, color: theme.colorScheme.outline),
+                        const SizedBox(width: 4.0),
+                        const Expanded(
                           child: Text(
                             'Enforced by NotebookLM Enterprise configuration (NIST SP 800-57)',
                             style: TextStyle(
@@ -439,7 +444,7 @@ class _EnterpriseCmekSecurityConsoleState
                 _config.isVpcScEnforced
                     ? Icons.check_circle
                     : Icons.cancel_outlined,
-                color: _config.isVpcScEnforced ? Colors.green : Colors.red,
+                color: _config.isVpcScEnforced ? theme.colorScheme.primary : theme.colorScheme.error,
               ),
             ),
           ],
@@ -476,7 +481,7 @@ class _EnterpriseCmekSecurityConsoleState
             LinearProgressIndicator(
               value: _config.complianceScore / 100.0,
               backgroundColor: theme.colorScheme.surfaceContainerHighest,
-              color: _config.complianceScore >= 95.0 ? Colors.green : Colors.red,
+              color: _config.complianceScore >= 95.0 ? theme.colorScheme.primary : theme.colorScheme.error,
               minHeight: 8.0,
               borderRadius: BorderRadius.circular(4.0),
             ),

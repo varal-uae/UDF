@@ -55,16 +55,17 @@ class _DesignSystemMergeDashboardState
   CompletionStatus _completionStatus = CompletionStatus.notComplete;
 
   void _handleExecuteMerge() {
+    final colorScheme = Theme.of(context).colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
-            Icon(Icons.merge, color: Colors.white),
-            SizedBox(width: 8.0),
-            Text('SUCCESS: Repository merged into main branch!'),
+            Icon(Icons.merge, color: colorScheme.onPrimary),
+            const SizedBox(width: 8.0),
+            const Text('SUCCESS: Repository merged into main branch!'),
           ],
         ),
-        backgroundColor: Colors.deepPurple.shade800,
+        backgroundColor: colorScheme.primary,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -412,7 +413,7 @@ class _DesignSystemMergeDashboardState
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
                 color: isUnlocked
-                    ? Colors.green.shade100
+                    ? theme.colorScheme.primaryContainer
                     : theme.colorScheme.errorContainer,
                 borderRadius: BorderRadius.circular(12.0),
               ),
@@ -421,7 +422,7 @@ class _DesignSystemMergeDashboardState
                   Icon(
                     isUnlocked ? Icons.check_circle : Icons.lock_clock,
                     color: isUnlocked
-                        ? Colors.green.shade900
+                        ? theme.colorScheme.onPrimaryContainer
                         : theme.colorScheme.onErrorContainer,
                   ),
                   const SizedBox(width: 10.0),
@@ -434,7 +435,7 @@ class _DesignSystemMergeDashboardState
                         fontSize: 12.0,
                         fontWeight: FontWeight.bold,
                         color: isUnlocked
-                            ? Colors.green.shade900
+                            ? theme.colorScheme.onPrimaryContainer
                             : theme.colorScheme.onErrorContainer,
                       ),
                     ),

@@ -131,31 +131,34 @@ class _LoadingSubmitButtonFormState extends State<LoadingSubmitButtonForm> {
       }
 
       if (!mounted) return;
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Form Submission Completed Successfully!'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Form Submission Completed Successfully!'),
+          backgroundColor: colorScheme.primary,
         ),
       );
     } on TimeoutException {
       if (!mounted) return;
+      final colorScheme = Theme.of(context).colorScheme;
       // 3. Deadlock Breaker: TimeoutException caught -> automatically reset isLoading = false
       // and display local error toast, preventing infinite loading freeze.
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
+        SnackBar(
+          content: const Text(
             'DEADLOCK BREAKER TRIGGERED: Request timed out after 15s boundary. Form unlocked.',
           ),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 4),
+          backgroundColor: colorScheme.error,
+          duration: const Duration(seconds: 4),
         ),
       );
     } catch (e) {
       if (!mounted) return;
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Submission Error: ${e.toString()}'),
-          backgroundColor: Colors.orange,
+          backgroundColor: colorScheme.tertiary,
         ),
       );
     } finally {

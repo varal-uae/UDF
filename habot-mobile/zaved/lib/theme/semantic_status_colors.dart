@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_design_tokens.dart';
 
 /// SemanticStatusColors ThemeExtension for DCYN Binary Semantic Color Gate system.
 class SemanticStatusColors extends ThemeExtension<SemanticStatusColors> {
@@ -12,14 +13,14 @@ class SemanticStatusColors extends ThemeExtension<SemanticStatusColors> {
 
   /// High-contrast Light Theme instance
   static const light = SemanticStatusColors(
-    success: Color(0xFF0E9F6E), // High-contrast green
-    error: Color(0xFFE02424),   // Intense red
+    success: AppDesignTokens.semanticSuccessLight, // High-contrast green
+    error: AppDesignTokens.semanticErrorLight,   // Intense red
   );
 
   /// Target Adaptation Dark Theme instance
   static const dark = SemanticStatusColors(
-    success: Color(0xFF31C48D), // Adapted dark mode green
-    error: Color(0xFFF87171),   // Adapted dark mode red
+    success: AppDesignTokens.semanticSuccessDark, // Adapted dark mode green
+    error: AppDesignTokens.semanticErrorDark,   // Adapted dark mode red
   );
 
   @override

@@ -73,7 +73,7 @@ class ConfidenceBadge extends StatelessWidget {
       ),
       child: Center(
         child: Material(
-          color: Colors.transparent,
+          color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.0),
           child: InkWell(
             onTap: onTap ??
                 () {

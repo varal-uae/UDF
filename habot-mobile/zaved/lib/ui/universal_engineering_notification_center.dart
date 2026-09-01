@@ -14,14 +14,24 @@ enum AlertType {
 
 /// Enum for Infrastructure Alert Severities
 enum AlertSeverity {
-  critical('Critical', Icons.error, Colors.red),
-  warning('Warning', Icons.warning_amber_rounded, Colors.amber),
-  info('Info', Icons.info_outline, Colors.blue);
+  critical('Critical', Icons.error),
+  warning('Warning', Icons.warning_amber_rounded),
+  info('Info', Icons.info_outline);
 
-  const AlertSeverity(this.displayName, this.icon, this.baseColor);
+  const AlertSeverity(this.displayName, this.icon);
   final String displayName;
   final IconData icon;
-  final Color baseColor;
+
+  Color getColor(ThemeData theme) {
+    switch (this) {
+      case AlertSeverity.critical:
+        return theme.colorScheme.error;
+      case AlertSeverity.warning:
+        return theme.colorScheme.tertiary;
+      case AlertSeverity.info:
+        return theme.colorScheme.primary;
+    }
+  }
 }
 
 /// Model representing an Infrastructure Alert for TECH-ENG-023
@@ -279,11 +289,11 @@ class _UniversalEngineeringNotificationCenterState
                       border: Border.all(
                         color: isSelected
                             ? theme.colorScheme.primary
-                            : Colors.transparent,
+                            : theme.colorScheme.surface.withValues(alpha: 0.0),
                       ),
                     ),
                     child: ListTile(
-                      leading: _buildSeverityIcon(alert.severity),
+                      leading: _buildSeverityIcon(alert.severity, theme),
                       title: Text(
                         alert.type.displayName,
                         style: const TextStyle(fontWeight: FontWeight.bold),
@@ -332,9 +342,9 @@ class _UniversalEngineeringNotificationCenterState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Chip(
-                                avatar: _buildSeverityIcon(_selectedAlert!.severity),
+                                avatar: _buildSeverityIcon(_selectedAlert!.severity, theme),
                                 label: Text(_selectedAlert!.severity.displayName),
-                                backgroundColor: _selectedAlert!.severity.baseColor
+                                backgroundColor: _selectedAlert!.severity.getColor(theme)
                                     .withValues(alpha: 0.15),
                               ),
                               Text(
@@ -445,12 +455,12 @@ class _UniversalEngineeringNotificationCenterState
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
               side: BorderSide(
-                color: alert.severity.baseColor.withValues(alpha: 0.3),
+                color: alert.severity.getColor(theme).withValues(alpha: 0.3),
               ),
             ),
             child: ListTile(
               contentPadding: const EdgeInsets.all(12.0),
-              leading: _buildSeverityIcon(alert.severity),
+              leading: _buildSeverityIcon(alert.severity, theme),
               title: Text(
                 alert.type.displayName,
                 style: const TextStyle(fontWeight: FontWeight.bold),
@@ -475,11 +485,11 @@ class _UniversalEngineeringNotificationCenterState
                   alert.severity.displayName,
                   style: TextStyle(
                     fontSize: 11.0,
-                    color: alert.severity.baseColor,
+                    color: alert.severity.getColor(theme),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                backgroundColor: alert.severity.baseColor.withValues(alpha: 0.15),
+                backgroundColor: alert.severity.getColor(theme).withValues(alpha: 0.15),
               ),
             ),
           ),
@@ -488,10 +498,11 @@ class _UniversalEngineeringNotificationCenterState
     );
   }
 
-  Widget _buildSeverityIcon(AlertSeverity severity) {
+  Widget _buildSeverityIcon(AlertSeverity severity, ThemeData theme) {
+    final color = severity.getColor(theme);
     return CircleAvatar(
-      backgroundColor: severity.baseColor.withValues(alpha: 0.2),
-      child: Icon(severity.icon, color: severity.baseColor),
+      backgroundColor: color.withValues(alpha: 0.2),
+      child: Icon(severity.icon, color: color),
     );
   }
 }

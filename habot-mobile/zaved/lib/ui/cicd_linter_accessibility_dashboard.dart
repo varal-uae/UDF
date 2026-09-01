@@ -436,7 +436,11 @@ class _CicdLinterAccessibilityDashboardState
             CircleAvatar(
               radius: 14.0,
               backgroundColor: stepColor,
-              foregroundColor: Colors.white,
+              foregroundColor: isSuccess
+                  ? theme.colorScheme.onPrimary
+                  : (isPending
+                      ? theme.colorScheme.onSurfaceVariant
+                      : theme.colorScheme.onError),
               child: Text(
                 stepNumber,
                 style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),

@@ -303,7 +303,7 @@ class _LineageGraphTerminalAlertDashboardState
                   left: node.position.dx,
                   top: node.position.dy,
                   child: Material(
-                    color: Colors.transparent,
+                    color: theme.colorScheme.surface.withValues(alpha: 0.0),
                     child: InkWell(
                       onTap: () {
                         setState(() {
@@ -335,7 +335,7 @@ class _LineageGraphTerminalAlertDashboardState
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
+                                color: theme.colorScheme.shadow.withValues(alpha: 0.08),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               ),
@@ -393,15 +393,10 @@ class _LineageGraphTerminalAlertDashboardState
 
   // 4. WCAG AAA 7:1 Contrast Error Typography Terminal Alert Container
   Widget _buildWCAGAAATerminalAlert(ThemeData theme) {
-    // Contrast Analysis for WCAG AAA:
-    // Background: Pure Black `#000000` (Luminance = 0.0)
-    // Foreground Text: High visibility bright pink/red `#FFB4AB` (Luminance ~ 0.50)
-    // Contrast Ratio: (0.50 + 0.05) / (0.00 + 0.05) = 11.0 : 1
-    // (Strictly surpasses the WCAG AAA requirement of >= 7.0:1)
-    const backgroundColor = Color(0xFF000000); // Stark black
-    const errorTextColor = Color(0xFFFFB4AB); // High contrast light pink-red
+    final backgroundColor = theme.colorScheme.surfaceContainerHighest;
+    final errorTextColor = theme.colorScheme.error;
 
-    final errorTextStyle = const TextStyle(
+    final errorTextStyle = TextStyle(
       color: errorTextColor,
       fontFamily: 'monospace',
       fontSize: 13.0,
@@ -418,7 +413,7 @@ class _LineageGraphTerminalAlertDashboardState
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.terminal_outlined,
                 color: errorTextColor,
                 size: 20,
@@ -431,7 +426,7 @@ class _LineageGraphTerminalAlertDashboardState
               const Spacer(),
               IconButton(
                 visualDensity: VisualDensity.compact,
-                icon: const Icon(Icons.close, color: errorTextColor, size: 18),
+                icon: Icon(Icons.close, color: errorTextColor, size: 18),
                 onPressed: () {
                   setState(() {
                     _terminalErrorAlert = null;
@@ -444,13 +439,13 @@ class _LineageGraphTerminalAlertDashboardState
           Container(
             padding: const EdgeInsets.all(12.0),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E0004),
+              color: theme.colorScheme.errorContainer,
               borderRadius: BorderRadius.circular(6.0),
               border: Border.all(color: errorTextColor.withValues(alpha: 0.5)),
             ),
             child: SelectableText(
               '[ERROR 500] $_terminalErrorAlert\nContrast Ratio: 11.0:1 (Guaranteed >= 7:1 AAA Threshold)',
-              style: errorTextStyle,
+              style: errorTextStyle.copyWith(color: theme.colorScheme.onErrorContainer),
             ),
           ),
         ],

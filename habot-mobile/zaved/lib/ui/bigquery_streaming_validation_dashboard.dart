@@ -351,8 +351,10 @@ class _BigQueryStreamingValidationDashboardState
                             ),
                             child: Text(
                               isPass ? 'PASS' : 'FAIL',
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: isPass
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onError,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13.0,
                               ),

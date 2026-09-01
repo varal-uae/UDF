@@ -35,18 +35,19 @@ class _BoardSignatoryAccessConstraintState
       }
     });
 
+    final colorScheme = Theme.of(context).colorScheme;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white),
+            Icon(Icons.check_circle, color: colorScheme.onPrimary),
             const SizedBox(width: 8.0),
             Text(
               'Resolution Approved! Vote Count: $_approvalCount / $_requiredCount',
             ),
           ],
         ),
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: colorScheme.primary,
         behavior: SnackBarBehavior.floating,
       ),
     );

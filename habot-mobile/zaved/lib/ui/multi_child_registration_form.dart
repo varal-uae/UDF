@@ -88,7 +88,7 @@ class _MultiChildRegistrationFormState
           content: Text(
             'Multi-Child Registration Submitted Successfully for ${_children.length} child(ren)!',
           ),
-          backgroundColor: Colors.green,
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
       );
     }
@@ -321,9 +321,9 @@ class _MultiChildRegistrationFormState
                                         ),
                                         if (_children.length > 1)
                                           IconButton(
-                                            icon: const Icon(
+                                            icon: Icon(
                                                 Icons.remove_circle_outline,
-                                                color: Colors.red),
+                                                color: Theme.of(context).colorScheme.error),
                                             onPressed: () {
                                               setState(() {
                                                 _children.removeAt(index);

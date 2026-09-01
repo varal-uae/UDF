@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_design_tokens.dart';
 
 class PaymentStatusTheme extends ThemeExtension<PaymentStatusTheme> {
   const PaymentStatusTheme({
@@ -13,12 +14,12 @@ class PaymentStatusTheme extends ThemeExtension<PaymentStatusTheme> {
   final Color successContainer;
   final Color onSuccessContainer;
 
-  /// M3 Light Theme implementation of PaymentStatusTheme
+  /// M3 Light Theme implementation of PaymentStatusTheme (SCTAS-013)
   static const light = PaymentStatusTheme(
-    errorContainer: Color(0xFFFDE8E8),
-    onErrorContainer: Color(0xFF9B1C1C),
-    successContainer: Color(0xFFDEF7EC),
-    onSuccessContainer: Color(0xFF03543F),
+    errorContainer: AppDesignTokens.paymentStatusErrorContainer,
+    onErrorContainer: AppDesignTokens.paymentStatusOnErrorContainer,
+    successContainer: AppDesignTokens.paymentStatusSuccessContainer,
+    onSuccessContainer: AppDesignTokens.paymentStatusOnSuccessContainer,
   );
 
   @override
