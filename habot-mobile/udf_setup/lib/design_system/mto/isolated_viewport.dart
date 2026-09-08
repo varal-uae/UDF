@@ -43,6 +43,7 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../a11y/image_semantics.dart';
 import '../layout/device_profiles.dart';
 import '../shell/contextual_mirror.dart';
 import '../tokens/shape_tokens.dart';
@@ -113,9 +114,14 @@ class HabotIsolatedViewport extends StatelessWidget {
     );
   }
 
+  /// AISS Step 100 (GEN-02764): this was a raw Image.network with no
+  /// alternative text, so the reference snippet -- the whole subject of the
+  /// screen -- announced as nothing at all. It is informational by definition,
+  /// so it goes through HabotImage, which requires a usable description.
   static Widget _networkSnippet(BuildContext context, HabotByt byt) =>
-      Image.network(
-        byt.snippet.toString(),
+      HabotImage(
+        image: NetworkImage(byt.snippet.toString()),
+        alt: 'Reference snippet for the item under review',
         width: byt.box.width,
         height: byt.box.height,
         fit: BoxFit.contain,

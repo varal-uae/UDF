@@ -115,7 +115,16 @@ class _HabotSkeletonState extends State<HabotSkeleton>
   @override
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    return ExcludeSemantics(
+    // AISS Step 97 (GEN-04242) A11Y_SEMANTICS_EXCLUDED_AT_ROOT: this returned
+    // ExcludeSemantics at its root, so a screen reader was told NOTHING while
+    // the screen was loading -- neither the placeholder nor the fact that
+    // anything was happening. The shimmer itself is still excluded (it is
+    // decoration); what is added is the announcement that a load is in
+    // progress, as a live region so it is spoken when it appears.
+    return Semantics(
+      label: 'Loading',
+      liveRegion: true,
+      excludeSemantics: true,
       child: SizedBox(
         key: HabotSkeleton.skeletonKey,
         width: widget.width,

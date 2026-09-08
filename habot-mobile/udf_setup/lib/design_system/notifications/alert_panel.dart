@@ -384,7 +384,15 @@ class HabotWarningOverlay extends StatelessWidget {
                       key: dismissKey,
                       onPressed: onDismiss,
                       tooltip: '',
-                      icon: const Icon(Icons.close),
+                      // AISS Step 99 (GEN-04572): on an IconButton the
+                      // tooltip is also the accessible name, so the Step 24
+                      // hover strip left this control announcing as "button"
+                      // and nothing else. semanticLabel restores the name
+                      // without restoring the hover affordance.
+                      icon: const Icon(
+                        Icons.close,
+                        semanticLabel: 'Dismiss alert',
+                      ),
                     ),
                   ),
                 ],

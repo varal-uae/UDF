@@ -311,7 +311,13 @@ class _BannerBody extends StatelessWidget {
                   iconSize: HabotSpacing.md,
                   color: foreground,
                   tooltip: '',
-                  icon: const Icon(Icons.close),
+                  // AISS Step 99 (GEN-04572): see alert_panel.dart -- the
+                  // Step 24 tooltip strip removed this control's accessible
+                  // name along with its hover affordance.
+                  icon: const Icon(
+                    Icons.close,
+                    semanticLabel: 'Dismiss message',
+                  ),
                 ),
               ],
             ),

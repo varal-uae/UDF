@@ -38,6 +38,10 @@ const Set<String> _colourDeclarationSites = <String>{
   // The dark elevation ladder is a colour declaration too: its literals are
   // WCAG-audited and re-derived by TTMCS-005-G2.
   'lib/design_system/tokens/elevation_tokens.dart',
+  // AISS Step 105 (GEN-00368): the high-contrast schemes are a third colour
+  // declaration of the same shape, audited by the same Step 4 engine at the
+  // AAA floor rather than the AA one.
+  'lib/design_system/tokens/high_contrast_tokens.dart',
 };
 
 const Set<String> _metricDeclarationSites = <String>{
