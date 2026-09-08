@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 816 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 944 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -212,10 +212,30 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 133 | GEN-05309 | The flag dispatcher specification, written as code so it cannot drift | 7 |
 | 134 | GEN-04638 | Local feature flags, synchronous; every Step 133 criterion gated | 7 |
 | 135 | GEN-02544 | Variation mapping; an unaudited variant cannot be registered | 7 |
+| 136 | ANSA-012-A02 | Responsive-grid conformance measured; the header module is Step 9's | 6 |
+| 137 | REF-377-A02 | One global stepper transition; the row's 0.3s example breaches a gate | 6 |
+| 138 | GEN-04957 | Localisation objective reviewed: Urdu is RTL, Welsh runs 30% longer | 7 |
+| 139 | GEN-03470 | Locale formatters, no intl; 22 golden cases, Polish comma and space | 7 |
+| 140 | GEN-00379 | cac_aed_value as exact minor units; 2 shown, 4 stored, 6 the ceiling | 7 |
+| 141 | GEN-00412 | calculate_aed_conversion(); a zero rate is refused, not applied | 6 |
+| 142 | GEN-00621 | Currency mask on the active locale's separator, not on "." | 7 |
+| 143 | GEN-04583 | Instant language switch; below 100% coverage a language is withheld | 7 |
+| 144 | GEN-05430 | Language toggle as a header action; two labels rejected for expansion | 7 |
+| 145 | GEN-04968 | Language telemetry through the outbox; install-scoped, never a person | 7 |
+| 146 | GEN-04759 | Single-action objective reviewed; ViewPager -> PageView, RTL traced | 7 |
+| 147 | GEN-02533 | Form splitter; one decision per step, compound blocks stay whole | 6 |
+| 148 | GEN-02500 | One Byt, one field; errors caught where they were made | 6 |
+| 149 | GEN-01087 | Next stays enabled and says why; back is never refused | 6 |
+| 150 | GEN-01396 | Swipe intent resolved from direction; refusals are not silent | 6 |
+| 151 | GEN-00269 | Focus traversal walked end to end; zero manual scrolls | 6 |
+| 152 | GEN-01584 | Progress node centred, never under a finger, never when visible | 6 |
+| 153 | GEN-02588 | Per-field autosave with revisions; a failed save keeps the value | 6 |
+| 154 | GEN-04825 | FAB hides on keyboard, enforced by the new ROGUE_FAB guard rule | 6 |
+| 155 | GEN-04506 | Success haptic, fired synchronously; four moments, five kept silent | 6 |
 
-**816 gates across 135 steps.** 132 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**944 gates across 155 steps.** 152 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
-displayLarge at 200% on a 320dp screen), SSTLA-004 awaiting a reviewer score. Batches 4-9 added
+displayLarge at 200% on a 320dp screen), SSTLA-004 awaiting a reviewer score. Batches 4-10 added
 one deferral between them.
 
 ### MTO worker screens
@@ -309,6 +329,36 @@ with nothing behind it. Feature flags evaluate synchronously from memory, becaus
 inside `build()` is a layout that shifts under a finger already moving; the specification for
 them is code, and every acceptance criterion in it is checked against the implementation by a
 gate, so the two cannot drift.
+
+### Localisation
+
+Steps 138-145 build the framework and the English catalogue; the Welsh, Urdu, Punjabi and
+Polish catalogues are a translation deliverable and are deliberately not invented in code. A
+language below 100% coverage is not offered at all -- the sheet permits 95%, and one English
+sentence in the middle of Welsh reads as a broken app rather than as 95% of a good one, while
+per-string fallback would hide the gap from the coverage metric itself. Direction travels with
+the language, so selecting Urdu mirrors the layout rather than only swapping strings.
+Formatting is separate from translation and just as easy to get wrong: Polish writes
+`12 345,50` where English writes `12,345.50`, and the amount field accepts whichever separator
+the active language uses. Money is exact throughout -- an integer of minor units with a declared
+scale, four places stored and two shown.
+
+The expansion audit at Step 144 rejected two source strings before they shipped: "Notification
+preferences" overflows the 28-character header cap in Welsh and Polish and now reads
+"Notifications", and "Save and continue" wraps in every offered language against a
+12-character button budget.
+
+### The single-question form flow
+
+Steps 146-155 turn a long form into one question per screen. Fields declared as one decision at
+Step 44 stay together -- an address is four fields and one decision, and four screens for it is
+worse than the page it replaced. The forward control stays enabled and refuses with a reason
+rather than greying out, because a disabled button explains nothing and some screen readers skip
+it entirely; back is never refused, so nobody is trapped on a step they cannot satisfy. Swipe
+direction is resolved from the writing direction in one method, which is what stops the wizard
+advancing backwards in Urdu. Every field saves when it settles, locally first and queued second,
+carrying a revision so a correction beats the typo it replaced -- and a failed save keeps the
+value rather than clearing a dirty flag over an answer that then exists nowhere.
 
 ### Open decisions
 
