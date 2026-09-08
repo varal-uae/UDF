@@ -255,6 +255,47 @@ class HabotMotion {
   /// measured over.
   static const Duration rateLimitWindow = Duration(seconds: 1);
 
+  // --- Steps 136-155: the stepper transition, localisation and the
+  //     single-question form flow ---------------------------------------
+
+  /// Step 137 REF-377-A02: "Set the GLOBAL transition variable for stepper
+  /// animations (e.g., 0.3s ease-in-out)."
+  ///
+  /// THE ROW'S EXAMPLE IS NOT TAKEN, AND THE REASON IS RECORDED. 0.3s would
+  /// breach two things this project has already committed to: FIEVR-033's
+  /// completion measure ("forms glide across steps cleanly in under 200ms")
+  /// and [interactiveCeiling], which encodes it. REF-377-A01 set the pair at
+  /// 200ms in and 160ms out. This is the single global name the row asks for,
+  /// bound to the entry side of that pair rather than a third number.
+  static const Duration stepperTransition = stepperSlideIn;
+
+  /// Step 152 GEN-01584. The row's metric is "Real-Time Status Update
+  /// Latency" -- floor <30s, optimal <5s, ceiling <60s. Those are the bounds
+  /// the row states; the centring itself is an animation, and is measured
+  /// against [stepperTransition] rather than against seconds. See the gate.
+  static const Duration statusUpdateOptimal = Duration(seconds: 5);
+  static const Duration statusUpdateFloor = Duration(seconds: 30);
+  static const Duration statusUpdateCeiling = Duration(seconds: 60);
+
+  /// Steps 147 and 153. The row metric on both is "API Response Latency (ms)"
+  /// -- floor 0, optimal 100-300, ceiling 500. A form split into single
+  /// questions saves at every step, so this is the budget for one such save.
+  static const Duration formStepCommitOptimalMin = Duration(milliseconds: 100);
+  static const Duration formStepCommitOptimalMax = Duration(milliseconds: 300);
+  static const Duration formStepCommitCeiling = Duration(milliseconds: 500);
+
+  /// Step 145 GEN-04968. Language-selection telemetry: the row's floor is
+  /// <=5 min end-to-end delivery, its optimal <=1 min, and beyond
+  /// [telemetryStale] the analytics are considered stale rather than late.
+  static const Duration telemetryDeliveryFloor = Duration(minutes: 5);
+  static const Duration telemetryDeliveryOptimal = Duration(minutes: 1);
+  static const Duration telemetryStale = Duration(minutes: 15);
+
+  /// Step 155 GEN-04506. Micro-interaction response latency: floor <100ms,
+  /// optimal <50ms, ceiling one frame at 60fps.
+  static const Duration hapticLatencyFloor = Duration(milliseconds: 100);
+  static const Duration hapticLatencyOptimal = Duration(milliseconds: 50);
+  static const Duration hapticFrameBudget = Duration(milliseconds: 16);
 }
 
 /// Named easing curves.
@@ -272,6 +313,18 @@ class HabotEasing {
 
   /// Default for anything not otherwise specified.
   static const Curve standard = Curves.easeInOut;
+
+  /// Step 137 REF-377-A02, the easing half of the global stepper transition
+  /// variable. The row says "ease-in-out"; [stepperEnter] is MD3's emphasised
+  /// ease-in-out, which is that shape with the curve MD3 specifies rather
+  /// than a second, flatter one.
+  static const Curve stepperTransition = stepperEnter;
+
+  /// Step 137. The curve used when the OS has asked for reduced motion.
+  /// Named here because this file is the only declaration site for a Curve,
+  /// and HabotStepperTransition needs to resolve the preference without a
+  /// BuildContext.
+  static const Curve reducedMotion = Curves.linear;
 
   /// GEN-00055: sheets rise fast and settle slowly -- MD3's standard
   /// accelerate/decelerate shape for a surface entering from an edge.

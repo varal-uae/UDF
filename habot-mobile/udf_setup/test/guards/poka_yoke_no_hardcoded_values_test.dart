@@ -83,6 +83,18 @@ final RegExp _hoverCallback = RegExp(r'\bonHover\s*:');
 const String _scaffoldSite = 'lib/design_system/layout/master_scaffold.dart';
 final RegExp _rogueScaffold = RegExp(r'(?<!Habot)(?<!Master)\bScaffold\s*\(');
 
+/// AISS Step 154 (GEN-04825): the FAB must hide when the keyboard opens, and
+/// the row's OPTIMAL asks for "automated enforcement (no silent bypass)".
+///
+/// A widget that hides itself covers the failure mode; the next screen written
+/// with a raw FloatingActionButton silently does not, and nothing notices.
+/// This rule is the enforcement half: only HabotKeyboardAwareFab may construct
+/// one, so a FAB that could be tapped through the keyboard fails the build
+/// rather than a review.
+const String _fabSite =
+    'lib/design_system/interaction/keyboard_aware_fab.dart';
+final RegExp _rogueFab = RegExp(r'\bFloatingActionButton\s*\(');
+
 /// Colour names that carry no brand meaning and are therefore permitted.
 const Set<String> _allowedMaterialColors = <String>{'transparent'};
 
@@ -378,7 +390,23 @@ void main() {
           }
         }
 
-        // ---- RULE 6: no standalone theme construction ------------------
+        // ---- RULE 6: the FAB is keyboard-aware or it does not exist ----
+        if (path != _fabSite) {
+          for (final RegExpMatch m in _rogueFab.allMatches(code)) {
+            violations.add(
+              _Violation(
+                path,
+                _lineOf(code, m.start),
+                'ROGUE_FAB',
+                'FloatingActionButton(...) may only be built in $_fabSite -- '
+                    'use HabotKeyboardAwareFab, which cannot be tapped '
+                    'through an open keyboard',
+              ),
+            );
+          }
+        }
+
+        // ---- RULE 7: no standalone theme construction ------------------
         if (path != _themeAdapterSite) {
           for (final RegExpMatch m
               in RegExp(r'\bThemeData\s*\(').allMatches(code)) {
