@@ -178,7 +178,9 @@ class Ansa001A11PipelineService {
     );
 
     // EC:4 — Register as immutable versioned positioning enforcement rule
-    assert(rule.immutableInd, 'EC-ANSA-001-A11-004: Must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-ANSA-001-A11-004: Must be immutable');
+    }
 
     // EC:5 — Bind to NavigationBar component
     final bound = _manager.bindToNavigationBar(rule);

@@ -134,8 +134,11 @@ class Arcpe00915ApiContractBackwardCompatibility {
   // EC:4 — Register compiled rule set as immutable entry in
   //         api_contract_version_registry with immutable_IND=TRUE.
   static ApiContractVersionEntry registerRule(ApiContractVersionEntry entry) {
-    assert(!entry.breakingChangeInd,
-      'EC-ARCPE009-15-003: breakingChangeInd=TRUE — upgrade blocked');
+    // Fail-closed contract gate — must hold in release too.
+    if (entry.breakingChangeInd) {
+      throw StateError(
+        'EC-ARCPE009-15-003: breakingChangeInd=TRUE — upgrade blocked');
+    }
     return entry.copyWith(
       immutableInd: true,
       executionStatus: ExecutionStatus.running,

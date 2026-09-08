@@ -206,7 +206,9 @@ class Aeete034PipelineService {
     final rule = _manager.compileRule('RULE-AEETE-034-${fields['execution_id']}');
 
     // EC:4 — Register as immutable versioned pipeline control rule
-    assert(rule.immutableInd, 'EC-AEETE-034-004: Rule must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-AEETE-034-004: Rule must be immutable');
+    }
 
     // EC:5 — Bind --strict flag to YAML
     final boundYaml = _manager.bindStrictFlagToYaml(yamlContent, rule);

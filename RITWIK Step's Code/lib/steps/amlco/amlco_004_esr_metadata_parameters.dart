@@ -173,7 +173,9 @@ class Amlco004PipelineService {
     );
 
     // EC:4 — Register as immutable versioned compliance control
-    assert(param.immutableInd, 'EC-AMLCO-004-004: Must be immutable');
+    if (!param.immutableInd) {
+      throw StateError('EC-AMLCO-004-004: Must be immutable');
+    }
 
     // EC:5 — Bind to TLS gateway
     final bound = _manager.bindToTlsGateway(param);

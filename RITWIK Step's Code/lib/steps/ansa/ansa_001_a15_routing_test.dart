@@ -173,7 +173,9 @@ class Ansa001A15PipelineService {
     );
 
     // EC:4 — Register as immutable versioned routing verification configuration
-    assert(rule.immutableInd, 'EC-ANSA-001-A15-004: Must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-ANSA-001-A15-004: Must be immutable');
+    }
 
     // EC:5 — Bind each routing test rule to its NavigationBar item
     for (final item in navItemExpectations) {

@@ -183,7 +183,9 @@ class Ansa001A16PipelineService {
     );
 
     // EC:4 — Register as immutable versioned badge verification configuration
-    assert(rule.immutableInd, 'EC-ANSA-001-A16-004: Must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-ANSA-001-A16-004: Must be immutable');
+    }
 
     // EC:5 — Bind each badge test rule to its badge indicator
     for (final s in badgeScenarios) {

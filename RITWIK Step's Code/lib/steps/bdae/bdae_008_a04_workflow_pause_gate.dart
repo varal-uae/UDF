@@ -181,10 +181,15 @@ class Bdae008A04WorkflowPauseGate {
   static SecondaryValidationActionEntry registerRule(
     SecondaryValidationActionEntry entry,
   ) {
-    assert(entry.secretRefIsValid,
-      'EC-BDAE008A04-003: totpSecretRef must start with "projects/" (GCP Secret Manager path)');
-    assert(!entry.totpSecretRef.startsWith('RAW:'),
-      'EC-BDAE008A04-003: raw TOTP secrets are forbidden — use Secret Manager path');
+    // Fail-closed security gate — must hold in release too (asserts are stripped there).
+    if (!entry.secretRefIsValid) {
+      throw StateError(
+        'EC-BDAE008A04-003: totpSecretRef must start with "projects/" (GCP Secret Manager path)');
+    }
+    if (entry.totpSecretRef.startsWith('RAW:')) {
+      throw StateError(
+        'EC-BDAE008A04-003: raw TOTP secrets are forbidden — use Secret Manager path');
+    }
     return entry.copyWith(
       immutableInd:    true,
       executionStatus: ExecutionStatus.running,

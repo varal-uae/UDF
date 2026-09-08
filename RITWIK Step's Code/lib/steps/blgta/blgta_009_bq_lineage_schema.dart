@@ -201,10 +201,13 @@ class Blgta009BqLineageSchema {
   // EC:4 — Register compiled BQ schema rule set as immutable in
   //         bq_lineage_schema_registry with immutable_IND=TRUE.
   static BqLineageSchemaEntry registerRule(BqLineageSchemaEntry entry) {
-    assert(entry.dcdfColumnsCount == BqLineageSchemaEntry.kRequiredDcdfColumns,
-      'EC-BLGTA009-003: dcdfColumnsCount != 5');
-    assert(entry.tlsVersion == BqLineageSchemaEntry.kRequiredTlsVersion,
-      'EC-BLGTA009-003: tlsVersion != 1.3');
+    // Fail-closed gate — must hold in release too (asserts are stripped there).
+    if (entry.dcdfColumnsCount != BqLineageSchemaEntry.kRequiredDcdfColumns) {
+      throw StateError('EC-BLGTA009-003: dcdfColumnsCount != 5');
+    }
+    if (entry.tlsVersion != BqLineageSchemaEntry.kRequiredTlsVersion) {
+      throw StateError('EC-BLGTA009-003: tlsVersion != 1.3');
+    }
     return entry.copyWith(
       immutableInd:    true,
       executionStatus: ExecutionStatus.running,

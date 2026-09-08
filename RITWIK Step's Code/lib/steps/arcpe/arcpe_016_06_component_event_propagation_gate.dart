@@ -134,10 +134,14 @@ class Arcpe01606ComponentEventPropagationGate {
   // EC:4 — Register compiled propagation rule set as immutable entry
   //         in event_propagation_registry with immutable_IND=TRUE.
   static EventPropagationEntry registerRule(EventPropagationEntry entry) {
-    assert(entry.propagationBoundaryInd,
-      'EC-ARCPE016-06-003: propagationBoundaryInd=FALSE — uncontrolled bubbling blocked');
-    assert(entry.bubbleDepthLimit <= 3,
-      'EC-ARCPE016-06-003: bubbleDepthLimit > 3');
+    // Fail-closed gate — must hold in release too.
+    if (!entry.propagationBoundaryInd) {
+      throw StateError(
+        'EC-ARCPE016-06-003: propagationBoundaryInd=FALSE — uncontrolled bubbling blocked');
+    }
+    if (entry.bubbleDepthLimit > 3) {
+      throw StateError('EC-ARCPE016-06-003: bubbleDepthLimit > 3');
+    }
     return entry.copyWith(
       immutableInd: true,
       executionStatus: ExecutionStatus.running,

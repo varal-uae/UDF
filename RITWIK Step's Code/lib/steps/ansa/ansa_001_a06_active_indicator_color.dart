@@ -198,7 +198,9 @@ class Ansa001A06PipelineService {
     );
 
     // EC:4 — Register as immutable versioned color enforcement rule
-    assert(rule.immutableInd, 'EC-ANSA-001-A06-004: Must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-ANSA-001-A06-004: Must be immutable');
+    }
 
     // EC:5–6 — Bind and validate all indicator slots
     final results = _manager.validateAllSlots(

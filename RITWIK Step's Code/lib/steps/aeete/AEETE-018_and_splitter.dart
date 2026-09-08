@@ -70,8 +70,8 @@ class SplitterValidationResult {
   });
 
   String get conformanceOutput =>
-      conformanceRate >= 0.98 ? 'Optimal' :
-      conformanceRate >= 0.92 ? 'Floor'   : 'Fail';
+      conformanceRate >= 0.98 ? 'Complete' :
+      conformanceRate >= 0.92 ? 'Partial'  : 'Not Complete';
 }
 
 /// AEETE-018: Regex-driven AND splitting hook.

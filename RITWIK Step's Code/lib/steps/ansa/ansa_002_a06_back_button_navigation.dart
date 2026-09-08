@@ -213,7 +213,9 @@ class Ansa002A06PipelineService {
     );
 
     // EC:4 — Register as immutable versioned navigation handler configuration
-    assert(rule.immutableInd, 'EC-ANSA-002-A06-004: Must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-ANSA-002-A06-004: Must be immutable');
+    }
 
     // EC:5 — Bind back button handler to each form screen
     for (final screen in formScreens) {

@@ -208,7 +208,9 @@ class Ansa001A02PipelineService {
     }
 
     // EC:4 — Register as immutable versioned bottom navigation configuration
-    assert(rule.immutableInd, 'EC-ANSA-001-A02-004: Rule must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-ANSA-001-A02-004: Rule must be immutable');
+    }
 
     // EC:5 — Bind items to NavigationBar slots
     final bound = _manager.bindItemsToSlots(items: extracted, rule: rule);

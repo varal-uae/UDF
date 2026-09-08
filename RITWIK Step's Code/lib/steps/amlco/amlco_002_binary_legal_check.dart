@@ -200,7 +200,9 @@ class Amlco002PipelineService {
     );
 
     // EC:4 — Register as immutable versioned security control
-    assert(rule.immutableInd, 'EC-AMLCO-002-004: Must be immutable');
+    if (!rule.immutableInd) {
+      throw StateError('EC-AMLCO-002-004: Must be immutable');
+    }
 
     // EC:5 — Bind to API Gateway ingress filter
     final bound = _manager.bindToIngressFilter(rule);

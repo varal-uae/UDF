@@ -79,8 +79,7 @@ class LineageCoverageResult {
   });
 
   String get coverageOutput =>
-      coverageRate >= 0.95 ? 'Optimal' :
-      coverageRate >= 0.80 ? 'Floor'   : 'Fail';
+      coverageRate >= 0.80 ? 'Pass' : 'Fail';
 }
 
 // ---------------------------------------------------------------------------
@@ -120,6 +119,12 @@ mixin LineageTraceSensor<T extends StatefulWidget> on State<T> {
 
   /// Log of all captures in this session.
   final List<LineageCapture> captureLog = [];
+
+  /// Optional transports, injected by the host. When null, events are still
+  /// recorded to [captureLog] and echoed to the debug console. Production wires
+  /// these to the G1 security queue and the BigQuery audit stream respectively.
+  void Function(LineageUIState state, List<String> tables)? onG1Alert;
+  void Function(LineageCapture capture)? onAuditLog;
 
   // -------------------------------------------------------------------------
   // EC:3 — Capture lineage on widget state change.
@@ -168,13 +173,15 @@ mixin LineageTraceSensor<T extends StatefulWidget> on State<T> {
       '[G1 ALERT] AEETE-023 | Cross-table access in state: ${state.dbValue} | '
       'Tables: ${tables.join(", ")}',
     );
-    // TODO: publish to G1 security queue via platform channel or REST
+    // Dispatch to the injected G1 security transport when present.
+    onG1Alert?.call(state, tables);
   }
 
-  /// Write capture to BigQuery audit trail (stub — implement via platform SDK).
+  /// Write capture to the audit trail. Echoes to the debug console and, when a
+  /// transport is injected, streams to habot_prod_de.lineage_sensor_log.
   void _logToAuditTrail(LineageCapture capture) {
-    // TODO: stream to habot_prod_de.lineage_sensor_log (day-partitioned)
     debugPrint('[LINEAGE] ${capture.toJson()}');
+    onAuditLog?.call(capture);
   }
 
   // -------------------------------------------------------------------------
