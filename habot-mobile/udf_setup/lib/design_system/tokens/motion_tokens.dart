@@ -205,6 +205,56 @@ class HabotMotion {
   static const Duration mtoTimerDriftFloor = Duration(milliseconds: 10);
   static const Duration mtoTimerDriftOptimal = Duration(milliseconds: 1);
   static const Duration mtoTimerDriftCeiling = Duration(milliseconds: 50);
+  // ===================================================================
+  // AISS Steps 116-135 -- the data layer and the live connection.
+  //
+  // Not motion tokens in the animation sense. They live here because
+  // test/guards/poka_yoke_no_hardcoded_values_test.dart treats this file as
+  // the SINGLE declaration site for every raw Duration in the project and
+  // fails the build on one written anywhere else. A second file would mean
+  // exempting it from the rule or weakening the rule -- both worse than one
+  // file whose name is slightly too narrow.
+  // ===================================================================
+
+  /// Step 121 GEN-02731. The first reconnection retry window; doubles from
+  /// here, capped at [pollInterval].
+  static const Duration reconnectBase = Duration(milliseconds: 500);
+
+  /// Step 127 GEN-04550. How often a heartbeat ping goes out -- long enough
+  /// not to hold the radio awake, short enough to notice a dead NAT mapping
+  /// inside a minute.
+  static const Duration heartbeatInterval = Duration(seconds: 15);
+
+  /// Step 127. How long a pong may take before the beat counts as missed.
+  static const Duration heartbeatTimeout = Duration(seconds: 5);
+
+  /// Step 127, the row floor (< 2s): slower than this is degraded but alive.
+  static const Duration heartbeatSlowThreshold = Duration(seconds: 2);
+
+  /// Step 124 GEN-05397, the sheet's number verbatim: heavy background
+  /// synchronisation pauses when round-trip time exceeds this.
+  static const Duration rttHeavySyncThreshold = Duration(milliseconds: 1000);
+
+  /// Step 128 GEN-02599. How long the socket stays open after backgrounding
+  /// before it detaches. A user glancing at a notification and coming
+  /// straight back should not pay a full reconnect.
+  static const Duration socketGracePeriod = Duration(seconds: 30);
+
+  /// Step 129 GEN-02555, the row floor: data older than this is Delayed and
+  /// must be labelled with its age.
+  static const Duration dashboardFreshnessBudget = Duration(minutes: 5);
+
+  /// Step 129, the row optimal: under this is Real-time.
+  static const Duration dashboardFreshnessOptimal = Duration(minutes: 1);
+
+  /// Step 130 GEN-04737. How long a submit may hold a control locked before
+  /// it is released regardless -- the "unlock upon response OR TIMEOUT" half.
+  static const Duration submitLockTimeout = Duration(seconds: 10);
+
+  /// Step 131 GEN-00190. The window the ten-requests-per-second ceiling is
+  /// measured over.
+  static const Duration rateLimitWindow = Duration(seconds: 1);
+
 }
 
 /// Named easing curves.

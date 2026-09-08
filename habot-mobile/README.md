@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 333 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 816 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -127,10 +127,118 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 48 | GEN-03437 | Offline banner + queue counter; contrast measured 7.28-13.39:1 | 7 |
 | 49 | IS22-RCGLA-022 | Preference manager: optimistic write, rollback, transition guard | 8 |
 | 50 | GEN-03404 | Notification preference screen and its reusable sheet wrapper | 5 |
+| 51 | LSAV-025 | Chart geometry blueprint: locked ratios, derived strokes, no clipping | 9 |
+| 52 | GEN-02654 | M3 KPI card at 360dp; category decides direction, unit and delta | 7 |
+| 53 | LSAV-027 | Design-token adherence measured at 100% of 123 styled properties | 7 |
+| 54 | GEN-00168 | KPI stacking delegated to the Step 45 rule, not restated | 4 |
+| 55 | GEN-02929 | Confidence intervals in bodySmall; never a range without its CI | 6 |
+| 56 | GEN-01330 | `@habot/charts/mobile-spend` boundary; accuracy 1.0000 over 324 checks | 7 |
+| 57 | GEN-02026 | Round-number axis ticks; tap overlay, never a hover tooltip | 7 |
+| 58 | GEN-03039 | SLI sparklines and drift against each indicator's own objective | 6 |
+| 59 | SCTSS-019 | Expiry timelines; dates immutable by type, locks derived | 7 |
+| 60 | SPRLC-011 | Leaderboard masking; rank from score alone, ties share a rank | 7 |
+| 61 | GEN-04803 | M3 shimmer skeletons; layout shift measured at 0dp | 6 |
+| 62 | GEN-02709 | Summary strip outside the scroll view, full height on frame one | 5 |
+| 63 | GEN-01441 | Filter sheet -- IS `HabotBottomSheet`, proved by source scan | 5 |
+| 64 | GEN-02984 | Filter chips: secondary container + unconditional trailing check | 6 |
+| 65 | GEN-04880 | Tap a KPI card to filter; 100% over 200 driven triggers | 7 |
+| 66 | GEN-00692 | Dispatch alert engine: 60s clock, Accept disabled the instant it is taken | 8 |
+| 67 | GEN-04561 | Payload contract; a payload whose route does not resolve cannot be built | 5 |
+| 68 | GEN-00699 | `onMessageReceived`: parse, dedupe, enqueue; urgent messages never evicted | 6 |
+| 69 | GEN-04374 | In-app banner, one at a time by precedence, connectivity outranking all | 6 |
+| 70 | PNSAD-026 | Floating snackbar placement measured at 100.00% on the rendered rect | 4 |
+| 71 | HSFVS-012 | DCYN failures through the Step 25 snackbar; exactly one `SnackBar(` in lib/ | 5 |
+| 72 | EDBAA-001 | Liveness-handshake toast; diagnostic logged, never rendered | 4 |
+| 73 | FLADE-011-10 | Critical panel; `AbsorbPointer` makes un-ignorable structural | 5 |
+| 74 | ARCPE-009-02 | Warning overlay; touch band IS the Step 10 token, asserted equal | 4 |
+| 75 | GEN-02455 | Notification centre; retention decided by kind, unread never lost | 5 |
+| 76 | PNSAD-021 | Delivery routing and the push-token registry; unresolvable targets dropped | 5 |
+| 77 | GEN-03017 | One-tap approval: two taps, one send, one decision | 4 |
+| 78 | HC-BOG-0018 | P1-P4 sorting; record cause required by type, older P1 sorts first | 4 |
+| 79 | GEN-00335 | Pub/Sub violation binding; order kept, redelivery deduped, errors survived | 4 |
+| 80 | PNSAD-010 | The preference join -- nothing reaches a surface without passing it | 5 |
+| 81 | MCIIM-021 | Byt-level cropping; a task type with nowhere to put a document URL | 5 |
+| 82 | MCIIM-009-09 | Crop constraints as a closed set; compliance 1.0 over the matrix | 4 |
+| 83 | GEN-00213 | Bounding box to container: pure, grid-sourced, pane-bounded | 3 |
+| 84 | GEN-00280 | Full 4-column width; 0 regressions over 18 viewports (fits, never clips) | 3 |
+| 85 | MCIIM-008 | The evidence pane IS HabotSplitRatio.balanced; frame clips, no shadow | 4 |
+| 86 | GEN-00112 | Readability suite: 18/18 pass, no panning required | 3 |
+| 87 | SSELC-016 | One split container in lib/; the chassis configures it | 4 |
+| 88 | GEN-00610 | Peripheral element count 0, counted on a real rendered task screen | 3 |
+| 89 | GEN-04042 | Unwrapped task content is refused, recorded and shown as a notice | 3 |
+| 90 | ERMWD-031-01 | DLQ payload to task or recorded defect; never a blank card | 4 |
+| 91 | GEN-03580 | One crop, one input, one submit; focus efficiency 1.0 | 4 |
+| 92 | GEN-02896 | Worker card = Step 29 chassis, elevated, Step 78 priority badge | 3 |
+| 93 | GEN-03866 | Worked vs elapsed time; 0.000ms accumulation drift | 4 |
+| 94 | GEN-00843 | 5-minute reclaim from tokens; ranking identical to Step 78's | 4 |
+| 95 | GEN-03591 | 15-minute SLA, escalate exactly once, through the Step 73 panel | 4 |
+| 96 | GEN-02621 | WCAG 2.2 AA audit engine; 12 criteria, findings that name the file | 6 |
+| 97 | GEN-04242 | Accessibility rules as executable guards, run in the same pipeline | 6 |
+| 98 | GEN-02775 | Findings, remediations and pipeline config generated from the audit | 6 |
+| 99 | GEN-04572 | Consequence hints on complex controls; announced, not hovered | 6 |
+| 100 | GEN-02764 | Alt text required, decorative marked; no raw Image under lib/ | 6 |
+| 101 | GEN-01826 | Focus trap owns both sides; a dialog you cannot swipe out of is a defect | 6 |
+| 102 | GEN-04363 | Text scaling to 200%, clamped once; 1 deferred (displayLarge at 320dp) | 7 |
+| 103 | GEN-04462 | Type scale audited per role group; the two M3 twins recorded as sanctioned | 6 |
+| 104 | GEN-02279 | Progressive disclosure; the summary is complete without expanding | 5 |
+| 105 | GEN-00368 | High-contrast schemes at the AAA floor; every pair >= 9.91:1 | 6 |
+| 106 | ETMDI-020-05 | Rollback error UI: what was undone, what to do, one way back | 6 |
+| 107 | GEN-01352 | OS dynamic colour mapped through the audit, never applied raw | 6 |
+| 108 | GEN-00090 | Tap accuracy over thumb zones; 12 misses of 108, all top corners | 6 |
+| 109 | GEN-00179 | Recovery action placed in the natural-reach arc, measured | 6 |
+| 110 | GEN-01793 | Keyboard type per field requirement; a phone field cannot get text | 6 |
+| 111 | GEN-00146 | Disconnect, type, reconnect: the typed data survives all three | 6 |
+| 112 | GEN-03327 | Repository interfaces; durable locally before the network is involved | 6 |
+| 113 | GEN-04484 | DAOs with revisions and tombstones; a deletion is a record | 8 |
+| 114 | GEN-04119 | SDUI layout JSON in encrypted local storage, keyed per install | 6 |
+| 115 | GEN-04429 | Mutation wrappers; state updates immutable by type, not by convention | 7 |
+| 116 | GEN-02093 | Atomic commit: a unit of work lands whole or not at all | 7 |
+| 117 | GEN-02819 | Durable outbox with dedupe at enqueue, dead letters and revival | 7 |
+| 118 | GEN-04064 | Delta application; stale deltas rejected, local work never overwritten | 6 |
+| 119 | GEN-04418 | Lifecycle observer; every registered holder released on background | 6 |
+| 120 | GEN-00247 | Stream paused on background; the clocks it feeds pause with it | 6 |
+| 121 | GEN-02731 | Reconnect with full-jitter backoff; capped, and it never gives up | 6 |
+| 122 | GEN-03635 | Idempotent dispatch by key; an unknown outcome is not a success | 7 |
+| 123 | GEN-05276 | Sync sweep over a snapshot of the queue; five named stop reasons | 7 |
+| 124 | GEN-05397 | Heavy sync pauses above 1000ms RTT; interactive calls preserved | 7 |
+| 125 | GEN-03105 | Offline chip 28dp painted, 48dp hit area; honest about the queue | 7 |
+| 126 | GEN-02256 | wss only, host allow-list, token required, subprotocol re-checked | 7 |
+| 127 | GEN-04550 | Heartbeat with four liveness bands; a late pong is not a live socket | 7 |
+| 128 | GEN-02599 | Socket lifecycle: foreground, grace, detached; no unbacked socket | 7 |
+| 129 | GEN-02555 | Dashboard freshness stated qualitatively; a stale figure says so | 6 |
+| 130 | GEN-04737 | Submit guard: 20 taps, 1 call; every lock unlocks, timeout included | 7 |
+| 131 | GEN-00190 | Rate limit at 10/s in one shared bucket; the 300ms debounce is Step 33's | 7 |
+| 132 | GEN-01496 | Favourites: add, remove, map-to-collection; the BigQuery half is the server's | 7 |
+| 133 | GEN-05309 | The flag dispatcher specification, written as code so it cannot drift | 7 |
+| 134 | GEN-04638 | Local feature flags, synchronous; every Step 133 criterion gated | 7 |
+| 135 | GEN-02544 | Variation mapping; an unaudited variant cannot be registered | 7 |
 
-**333 gates across 50 steps.** 48 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
-CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), SSTLA-004 awaiting a
-reviewer score. Batch 4 added no deferrals.
+**816 gates across 135 steps.** 132 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
+displayLarge at 200% on a 320dp screen), SSTLA-004 awaiting a reviewer score. Batches 4-9 added
+one deferral between them.
+
+### MTO worker screens
+
+A worker sees a crop, never a document. `HabotByt` has no field, parameter or factory through
+which a source-document URL could travel, and the only way to build one refuses any asset the
+cropping service has not stamped for that exact bounding box -- so "the worker cannot see the
+whole document under any circumstance" is a property of the type rather than a rule someone
+follows. The task chassis has no header, footer or floating-action slot, so a task screen scores
+zero peripheral elements by construction; content rendered outside it records a violation and
+shows a notice instead of the task. The queue reclaims anything held longer than five minutes and
+ranks with the same comparator the alert panel uses.
+
+### Notifications and alerts
+
+`HabotErrorSnackbar` is still the *only* `SnackBar` construction in `lib/` -- Steps 70-72 bind
+three sheet rows to it rather than adding surfaces, and two gates fail if a second one ever
+appears. The critical alert panel wraps the app body in an `AbsorbPointer`, so "un-ignorable"
+is structural rather than promised, and there is no parameter through which a screen can opt
+out. Every notification the shell presents passes `HabotNotificationPreferenceManager.admit`
+first, which is what makes the Step 50 preference screen mean anything -- with two deliberate
+exceptions, `critical` and `dispatch`, recorded in the source so the decision can be argued
+with.
 
 ### Surfaces and feedback
 
@@ -159,6 +267,16 @@ consult the Step 36 blueprint, which is what stops "responsive" from meaning "ea
 decides for itself". Before Step 43 every screen in this codebase was reachable only from a
 probe page.
 
+### The dashboard
+
+Steps 51-65 gave the overview real content. KPI cards (`HabotKpiCard`) stack on the rule Step 45
+already gated, charts come from one package boundary (`@habot/charts/mobile-spend`), skeletons
+reserve the exact size their content will take so the data arriving moves nothing, and tapping a
+KPI card applies its filter through `HabotDashboardController`. The filter sheet is
+`HabotBottomSheet` -- not a second modal surface. `HabotWidgetTokenAudit` measures how much of
+the layer's styling came from a token and names anything that did not: currently **100% of 123
+styled properties**.
+
 ### Forms
 
 Every text input is a `ValidatedInputField` bound to a `HabotCde` (Critical Data Element). The
@@ -166,6 +284,31 @@ CDE carries its own mask, regex, keyboard type, placeholder and plain-language e
 so a phone field cannot end up with a text keyboard, and an error message cannot be missing.
 `HabotFormGate` is the single authority on whether a form may be submitted; four separate steps
 in the sheet describe that rule and it is implemented once.
+
+### Accessibility
+
+Steps 96-105 turned WCAG 2.2 AA from a review into a build step. `HabotWcagAudit` evaluates
+twelve criteria and names the file behind every finding, and the criteria that can be checked
+statically are also poka-yoke guards, so an unnamed `IconButton`, a raw `Image`, a suppressed
+`TextScaler` or a literal touch size fails the build rather than a later audit. Text scaling is
+applied once, by `HabotTextScaleScope`, and clamped to the audited range; the one case that
+genuinely fails at 200% -- `displayLarge` on a 320dp screen -- is recorded as a deferred gate
+rather than hidden by narrowing the audit.
+
+### Offline, sockets and flags
+
+Steps 111-135 are one layer read end to end: a repository writes locally before the network is
+involved, a durable outbox dedupes at enqueue and keeps dead letters, an idempotent dispatcher
+makes a retry after a reconnect harmless, and a sync loop drains a snapshot of the queue with a
+named reason for every stop. Above 1000ms round-trip the governor pauses heavy background sync
+and lets interactive calls through; the whole client stays under ten requests a second from one
+shared bucket, so a sweep and a tap draw on the same budget. Sockets are `wss` only against an
+exact host allow-list, heartbeat treats a late pong as a dead socket rather than a live one, and
+backgrounding moves through an explicit grace phase -- there is no code path that holds a socket
+with nothing behind it. Feature flags evaluate synchronously from memory, because a flag awaited
+inside `build()` is a layout that shifts under a finger already moving; the specification for
+them is code, and every acceptance criterion in it is checked against the implementation by a
+gate, so the two cannot drift.
 
 ### Open decisions
 
@@ -182,8 +325,10 @@ in the sheet describe that rule and it is implemented once.
    the wrong instrument, one Completion Measures cell is empty, and one row estimates a
    settings panel with database writes at "5 Minutes". None are gated; all are recorded in the
    gate file and the evidence. Worth correcting at source.
-5. **Field readings for the latency budgets** (Steps 44, 50). Both are measured on the test
-   host. A handset number needs a profile-mode run; the caveat is on the gates themselves.
+5. **Field readings for the latency budgets** (Steps 44, 50, 62, 63). All are measured on the
+   test host. A handset number needs a profile-mode run; the caveat is on the gates themselves.
+6. **A Lighthouse run for CLS** (RCGLA-012). Step 61 builds what prevents layout shift and
+   measures it at 0dp app-side, but the browser-reported figure still needs a real page load.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
