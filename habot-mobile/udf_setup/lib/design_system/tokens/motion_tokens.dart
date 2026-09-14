@@ -357,6 +357,24 @@ class HabotMotion {
   /// morning still lands where the link pointed; beyond that the context
   /// belongs to a session they have forgotten and restoring it is confusing.
   static const Duration deepLinkParkLifetime = Duration(hours: 24);
+
+  // --- Step 194 GEN-04726: when a progress indicator may appear, and how
+  //     long it must stay once it has ---
+
+  /// How long work must run before a progress indicator is drawn at all.
+  ///
+  /// Under a few hundred milliseconds a person experiences the app as
+  /// responding immediately. A spinner that appears and vanishes inside that
+  /// window converts something they would not have noticed into a flash they
+  /// read as a rendering glitch, so short work shows nothing.
+  static const Duration loadingIndicatorDelay = Duration(milliseconds: 300);
+
+  /// Once an indicator has appeared, the shortest time it stays.
+  ///
+  /// Longer than [loadingIndicatorDelay] on purpose: an indicator that
+  /// appears and is removed two frames later is the same flash in reverse.
+  static const Duration loadingIndicatorMinimumVisible =
+      Duration(milliseconds: 500);
 }
 
 /// Named easing curves.

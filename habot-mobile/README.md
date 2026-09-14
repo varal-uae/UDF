@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,096 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,237 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -252,11 +252,33 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 173 | GEN-00134 | The client half of the spec, so the two can be joined | 8 |
 | 174 | GEN-00291 | Two roles holding one hex -- the defect nothing else here catches | 8 |
 | 175 | GEN-01132 | Known catalogue terms in clear; the user's own words as a hash | 8 |
+| 176 | GEN-03182 | The token package manifest; what it costs at first frame, not `npm init` | 5 |
+| 177 | GEN-00033 | Canonical MD3 names for every token; brand extensions declared | 7 |
+| 178 | GEN-04528 | Declared equals delivered -- the drift no existing check looks at | 6 |
+| 179 | GEN-03514 | The rule catalogue as data, deliberately without the patterns | 7 |
+| 180 | GEN-03602 | Already active since Step 4; now measurable, with an exemption budget | 7 |
+| 181 | GEN-04275 | **Fail.** Five of eight; the palette, the type face and NPM block it | 10 |
+| 182 | GEN-00599 | **Not Complete.** Inter is not vendored; renaming would be a regression | 8 |
+| 183 | GEN-01661 | 96.97% on the 4dp grid, and the 6dp offender is named | 7 |
+| 184 | GEN-01043 | The ceiling nobody enforced, on the short side only | 7 |
+| 185 | GEN-01683 | Separation is a pair; the denominator is adjacency | 7 |
+| 186 | GEN-02753 | Material You admitted only if it clears the same contrast bar | 7 |
+| 187 | GEN-02852 | **Partial.** Durations port; the emphasised curve does not | 7 |
+| 188 | GEN-03899 | "The left button" is a direction, not a side | 7 |
+| 189 | GEN-04715 | Instant on entry, eased on exit; colour is never the only carrier | 7 |
+| 190 | GEN-04913 | MD3 has no success role; never painted over an uncommitted write | 7 |
+| 191 | GEN-05111 | A rung, not a colour -- and the nav-label pair nothing audited | 7 |
+| 192 | GEN-03503 | Three bottoms; the bar rises with the keyboard where the FAB hides | 7 |
+| 193 | GEN-04814 | Bottom-trailing, not bottom-right; handedness stated, not solved | 7 |
+| 194 | GEN-04726 | A global isLoading is the defect; counted scope, no flash | 7 |
+| 195 | GEN-02885 | Deciding what earns a modal; one at a time, never a bare OK | 7 |
 
-**1,096 gates across 175 steps.** 170 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**1,237 gates across 195 steps.** 186 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
-GEN-00291 Partial (the palette is provisional), SSTLA-004 awaiting a reviewer score.
+GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
+GEN-00599 **Not Complete** (Inter is not vendored), GEN-04275 **Fail** (the tokenisation
+milestone, deliberately -- see Open decisions), SSTLA-004 awaiting a reviewer score.
 
 ### MTO worker screens
 
@@ -402,6 +424,31 @@ and Poor against RAIL. And a performance trace is kept only if the app was in th
 the *whole* window: checking at capture time passes the case everyone tests and keeps exactly the
 traces that carry suspended seconds in their elapsed time.
 
+### The token pipeline
+
+Steps 176-195 build the pipeline around the Step 174 validator, and a fair amount of the work is
+finding out how much of it was already true and never measured. The poka-yoke guard has failed the
+build on an untokenised value since Step 4; what did not exist was any way to ask how many
+exemptions it carries or whether that number went up, so the exemption count is now a declared
+budget and an addition shows up as a diff. The 4dp grid was asserted at Step 2 and never measured;
+measuring it puts the token set at 96.97% and names the one value that is off it -- a 6dp padding
+bound that nobody noticed because it is a real Material density figure and looks like it belongs.
+
+Two findings are defects nothing else here would have caught. A colour role declared in
+`HabotColorScheme` but missed in the theme's override list resolves to a tonal value derived from
+the seed: valid Material, not obviously wrong, and never audited, because the Step 4 contrast
+engine reads the token declaration rather than the built theme. And the navigation shell renders
+`onSurfaceVariant` on `surfaceContainer`, which is the pair every navigation label in the product
+uses and which no pair in `ContrastAudit` covers -- measured here at 8.22:1 and 9.35:1, so the gap
+was a hole in the gate rather than a defect in the palette.
+
+Three rows asked for things that would have been wrong to do literally. "The left button" and
+"bottom-right" are both positions, and in Urdu they name the other control -- the third and fourth
+time this has come up after Step 150's swipe direction and Step 167's frozen column. And
+`isLoading = true` is the defect rather than the requirement: one boolean cannot hold two
+concurrent operations, and the symptom is reported as "the spinner disappears too early", which
+sends people looking somewhere else entirely.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -431,6 +478,26 @@ traces that carry suspended seconds in their elapsed time.
 9. **The OpenAPI document itself** (Step 173). Authored and served by whoever owns the endpoints;
    a copy here would be a second source of truth and would drift within a release. What this repo
    declares is the set of endpoints the app calls, so the two can be joined.
+10. **The tokenisation milestone is Fail** (Step 181), and deliberately. It is a binary governance
+    gate with no partial credit; five of its eight criteria hold and three do not -- the palette is
+    still `PROVISIONAL`, the body type face is Roboto where the spec asks for Inter, and "NPM Token
+    Integration" has no meaning in a Flutter app. A sign-off that passed because the work leading
+    to it was substantial would not be a gate.
+11. **Inter is not vendored** (Step 182). The spec asks for it; the tokens are bound to Roboto.
+    Renaming the family without shipping the font produces a per-device platform fallback and
+    silently invalidates Step 102's text-fit audit, Step 138's expansion factor, Step 144's button
+    budget and Step 167's column widths. Four preconditions are recorded on the binding.
+12. **No `success` colour role** (Step 190). MD3 does not specify one. `tertiary` carries it today
+    because `tertiary` happens to be unused, which is a coincidence rather than a design; a proper
+    role set is requested through the Step 177 brand-extension mechanism and needs the palette
+    signed off first.
+13. **The poka-yoke scanner still holds its own patterns** (Step 179). The catalogue deliberately
+    does not duplicate them -- two copies, only one executed, is drift by construction -- so the
+    gate asserts the two id sets match until the scanner is migrated to consume the catalogue the
+    way `a11y_rules_test.dart` already consumes `HabotA11yRules`.
+14. **`onSurfaceVariant` on `surfaceContainer` belongs in `ContrastAudit`** (Step 191). Measured
+    and passing at AAA, but that gate is what every earlier step's evidence rests on, so the pair
+    is raised rather than added through a styling row.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
