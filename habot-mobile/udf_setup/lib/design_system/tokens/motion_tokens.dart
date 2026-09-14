@@ -409,6 +409,18 @@ class HabotMotion {
   /// The only one of that row's three bounds expressible as a duration -- the
   /// floor and ceiling are in BUSINESS days, which a Duration cannot hold.
   static const Duration disputeCycleOptimal = Duration(hours: 48);
+
+  // ---------------------------------------------------------------------
+  // Step 235 (GEN-05441): the declared performance SLAs.
+  // ---------------------------------------------------------------------
+
+  /// Server response time at the 95th percentile.
+  ///
+  /// The only one of that row's three figures this repository did not already
+  /// hold -- FCP maps onto [coldStartBudget] and TTI onto [interactiveOn3g],
+  /// both to the millisecond. It is a SERVER property: the client can measure
+  /// it and cannot meet it.
+  static const Duration apiLatencySla = Duration(milliseconds: 200);
 }
 
 /// Named easing curves.

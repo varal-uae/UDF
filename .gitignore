@@ -50,3 +50,6 @@ Others/**/_to_delete/
 
 # Agent worktrees (transient)
 .claude/worktrees/
+
+# Scratch from remote transfers (cannot be unlinked from the bridge mount)
+habot-mobile/udf_setup/_to_delete/
