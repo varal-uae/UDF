@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,520 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,660 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -312,8 +312,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 233 | GEN-03338 | No worklets, and 16,667us was a 60Hz figure nobody wrote down | 7 |
 | 234 | GEN-04108 | The crash reporter is the one thing that must not be deferred | 7 |
 | 235 | GEN-05441 | **Partial.** Two of three budgets have been in force since Step 165 | 7 |
+| 236 | GEN-00066 | Thirteen field rules and no compliance fields | 7 |
+| 237 | USMBL-013 | Three of the five modes already existed under other names | 7 |
+| 238 | GEN-02290 | **Fail.** Three fields have a mask that eats their own separator | 7 |
+| 239 | GEN-02185 | A formatter may move separators and never digits | 7 |
+| 240 | GEN-04009 | Every field is bound; two of five rule kinds are regexes | 7 |
+| 241 | GEN-03558 | **Fail.** Standardising on a broken component | 7 |
+| 242 | GEN-01947 | The logic is already stored; a manifest, not a copy | 7 |
+| 243 | GEN-03393 | Structure gets 5 of 10; only mod-97 gets all ten | 7 |
+| 244 | GEN-03281 | A form is not an identifier, and this is not a US app | 7 |
+| 245 | GEN-03360 | A space is populated; seven of eight vectors prove it | 7 |
+| 246 | GEN-04020 | Three DOM names, three mechanisms, four moments | 7 |
+| 247 | FLADE-006-03 | Counts, never captures; refused on three of six fields | 7 |
+| 248 | HC-CMP-0054 | **Partial.** The disrupted sort order is refused outright | 7 |
+| 249 | GEN-05298 | **Partial.** Coverage needs a toolchain this host lacks | 7 |
+| 250 | GEN-02071 | **Low.** A suggestion the field prevents you from following | 7 |
+| 251 | PELCE-039-11 | On a timeout the client does not know if it went through | 7 |
+| 252 | GEN-03569 | A double refuses a correct split of seventy fils | 7 |
+| 253 | GEN-02117 | "Impenetrable client-side" is refused; OWASP says so | 7 |
+| 254 | GEN-01992 | Strict True as a sealed result with no third case | 7 |
+| 255 | IRBCA-034-09 | Which updates may be optimistic, and which may not | 7 |
 
-**1,520 gates across 235 steps.** 222 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**1,660 gates across 255 steps.** 237 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
 GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
@@ -321,7 +341,10 @@ GEN-00599 **Not Complete** (Inter is not vendored), GEN-04275 **Fail** (the toke
 milestone, deliberately -- see Open decisions), GEN-01242 Partial (1 deferred: the log scrubber
 has no PAN rule), GEN-04187 Partial (habot-web cannot be inspected from here), GEN-01771
 **Not Complete** (a portrait lock would fail WCAG 1.3.4), GEN-05441 Partial (no owner sign-off
-is obtainable from a build host), SSTLA-004 awaiting a reviewer score.
+is obtainable from a build host), GEN-02290 **Fail** and GEN-03558 **Fail** and GEN-02071 **Low**
+(one defect, three metrics -- see below; a correction is built and not yet wired in), HC-CMP-0054
+Partial (two of three friction devices refused), GEN-05298 Partial (code coverage needs a
+toolchain), SSTLA-004 awaiting a reviewer score.
 
 ### MTO worker screens
 
@@ -585,6 +608,57 @@ double-tap zoom -- which `touch-action: manipulation` does, removing the gesture
 delay while leaving pinch zoom intact. The meta tag is assembled from the directive list rather
 than written out, so a refusal cannot be re-added by editing a string.
 
+
+### Form input, validation and the submit gate
+
+Steps 236-255 are the validation layer, and the first thing they did was find that it already
+exists: `HabotMask`, `HabotFieldRules`, `HabotFormGate`, `HabotValidationStateColor` and
+`HabotSubmitGuard` between them already carry masks, patterns, touched-state, error cues and submit
+locking. So this batch is a census, three genuine gaps, and one real defect measured three
+different ways.
+
+**The defect.** Three of the thirteen declared field rules carry a mask that filters out a
+character their own pattern requires. `dateIso` needs a hyphen and is masked `decimal`; `dateUs`
+needs a slash and `timeOfDay` needs a colon, and both are masked `numeric`. `ValidatedInputField`
+wires `rule.formatters`, which is `HabotMask.formattersFor(rule.mask)`, so those three fields
+cannot be typed into a state their own validator accepts — the separator is swallowed as the person
+types it. The error message on `dateUs` says "Enter a date as MM/DD/YYYY" and the field deletes the
+slash. Three rows' metrics detect it independently: mask/pattern agreement at 0.769 against a floor
+of 0.95 (Step 238), cross-surface standardisation at 0.867 against 0.99 (Step 241), and error
+recovery at 76.9 against 90 (Step 250). A correction is built and gated —
+`HabotMaskBinding.correctedFormattersFor`, derived from each field's own declared pattern rather
+than from a second table, so it adds no duplicate rule — and it takes all three measurements to
+their ceiling. It is not wired in: that is a one-line change in BPTR-0160's gated file and this
+host has no toolchain to re-run those gates.
+
+**Three rows are about arithmetic a regular expression cannot do.** An IBAN's check digits are
+mod-97 over the rearranged value, so a pattern can say what an IBAN looks like and only arithmetic
+can say whether it is one: over ten vectors, structure alone classifies five, adding the country
+registry and its length reaches eight, and mod-97 reaches ten. The two it adds are the two errors
+people actually make — a transposed pair of digits and one mistyped digit. Step 252 is the mirror
+image: `0.7 - (0.1 + 0.2 + 0.4)` is `-1.1e-16` in binary floating point, so a gate written in
+doubles *refuses a correct split* and there is nothing the person can type to fix it. The failure
+mode of a client-side balance check is rejecting good data, not accepting bad, and Step 140's exact
+type is what prevents it.
+
+**Two refusals, and they are the same ruling.** Step 248 asks for a "glaring red badge and
+disrupted sort order to create visual friction". The sort-order disruption is refused outright: a
+list's order is a promise, and the cost of breaking it lands hardest on a person navigating by
+position. The badge is refused as specified — colour alone fails SC 1.4.1 — and reinstated with the
+four cues the error state already carries. What is built is a deliberate pause, scoped to actions
+that cannot be undone, which is the one place where the row's ">5 sec dwell" optimal is a good
+number rather than a symptom. Step 249 asks for a "delayed progress bar" by name and gets the same
+answer: a progress indicator slowed on purpose lies about system state.
+
+**Two steps found things about other people's data.** Step 244's row asks for Form I-9 and US Tax
+ID formats — a form is not an identifier, and this is an application whose money CDE is
+`cac_aed_value`. Step 236 had already recorded that the phone rule's placeholder is a Kenyan
+dialling code, so the repository was carrying two jurisdictions before this row added a third.
+Every identifier rule now names its own. And Step 251 found the one backend failure where the
+client does not know what happened: on a timeout the request may have been received, processed and
+committed with only the response lost, so retrying a payment there charges a parent twice. The
+retry rule is now a function of two things — what failed, and whether the call was safe to repeat.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -675,6 +749,24 @@ than written out, so a refusal cannot be re-added by editing a string.
     has loaded for the life of the list, and it is the one retained memory source with no
     declared bound. Raised rather than changed: eviction is Step 63's decision, and a chunk
     evicted while the user is scrolling back through it is a worse bug than the memory it saves.
+
+24. **The corrected mask binding is not wired in** (Steps 238, 241, 250). Three declared fields
+    carry a mask that filters out a character their own pattern requires, so they cannot be typed
+    into a state their validator accepts. `HabotMaskBinding.correctedFormattersFor` fixes it and is
+    gated. Adopting it means changing one line in `ValidatedInputField`, which is BPTR-0160's file
+    and carries its own gates, and no host in this track has a Dart toolchain to re-run them. The
+    correction is ready; somebody with a toolchain should make the edit and run the suite.
+25. **Two of the thirteen field rules are jurisdictional and neither says so** (Steps 236, 244).
+    `dateUs` is a US date ordering that no surface uses, and the phone rule's placeholder is a
+    Kenyan dialling code, in an application whose money is AED. One of them is wrong, or the
+    application is multi-market and neither should be a constant in a field rule.
+26. **The error templates say every category is retryable** (Step 251). Templates are keyed by
+    error category and retryability depends on the situation, so a 200 with a failure in its body
+    — which maps onto `unknown` — offers a retry button that reproduces the failure exactly.
+    Whether `retryable` belongs on a template at all is a decision, not a patch.
+27. **The reconciliation assumes one currency** (Step 253). Two numerically equal amounts in
+    different currencies balance and are wrong, and the subtraction cannot see it. Sound while
+    every amount is AED; written down now rather than discovered by the first multi-currency order.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production

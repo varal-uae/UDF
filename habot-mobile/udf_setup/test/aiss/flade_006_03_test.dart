@@ -1,5 +1,5 @@
 /// AISS GATE -- Step 247 of 255
-/// Global Reference ID:       FLADE-006
+/// Global Reference ID:       FLADE-006-03
 /// Atomic Steps Reference ID: FLADE-006-03
 /// Setup Step (Action): (EMPTY on this row -- COLUMN NOTE, RECORDED)
 /// Atomic Step: "Attach keystroke monitoring event listeners to form input
@@ -170,7 +170,7 @@ void main() {
         .toStringAsFixed(2);
     AissReporter.record(
       AissEvidence(
-        globalReferenceId: 'FLADE-006',
+        globalReferenceId: 'FLADE-006-03',
         atomicStepReferenceId: 'FLADE-006-03',
         setupStepAction:
             'COLUMN NOTE: this row carries no Setup Step, no Expected Output '
