@@ -296,6 +296,67 @@ class HabotMotion {
   static const Duration hapticLatencyFloor = Duration(milliseconds: 100);
   static const Duration hapticLatencyOptimal = Duration(milliseconds: 50);
   static const Duration hapticFrameBudget = Duration(milliseconds: 16);
+
+  // --- Steps 156-175: the instrumentation layer -------------------------
+
+  /// Step 162 GEN-01021. Health-probe ingestion: the row's floor is one
+  /// second and its ceiling three. "Instant" is its optimal, which is not a
+  /// number a client can hold, so [probeIngestionOptimal] is the smallest
+  /// interval this app can actually observe -- one frame.
+  static const Duration probeIngestionOptimal = Duration(milliseconds: 16);
+  static const Duration probeIngestionFloor = Duration(seconds: 1);
+  static const Duration probeIngestionCeiling = Duration(seconds: 3);
+
+  /// Step 164 GEN-04253, the RAIL model verbatim: 100ms reads as
+  /// instantaneous, 300ms is a perceptible delay, and attention is lost at a
+  /// second.
+  static const Duration railInstant = Duration(milliseconds: 100);
+  static const Duration railPerceptible = Duration(milliseconds: 300);
+  static const Duration railAttentionLoss = Duration(milliseconds: 1000);
+
+  /// Step 164's other half: "page interactivity load times (target < 2s on
+  /// 3G)". A different budget from the RAIL one and not interchangeable with
+  /// it -- RAIL is about a response to a tap, this is about a page arriving.
+  static const Duration interactiveOn3g = Duration(seconds: 2);
+
+  /// Step 165 GEN-03171, the figure the row names: cold start below 1.2s.
+  static const Duration coldStartBudget = Duration(milliseconds: 1200);
+
+  /// Step 167 GEN-00754. One frame at 60fps, to the microsecond. Sixteen
+  /// milliseconds is the rounded figure; a scroll budgeted at 16ms rather
+  /// than 16.667ms loses a frame roughly every two seconds.
+  static const Duration smoothFrameBudget = Duration(microseconds: 16667);
+
+  /// Step 169 GEN-00888. Pulling an attribution token out of a notification
+  /// payload at launch, on the path that blocks first paint.
+  static const Duration tokenExtractionOptimal = Duration(milliseconds: 2);
+  static const Duration tokenExtractionFloor = Duration(milliseconds: 10);
+  static const Duration tokenExtractionCeiling = Duration(milliseconds: 20);
+
+  /// Step 170 GEN-00522. How long a failed deep-link resolution may take to
+  /// land the user somewhere real.
+  static const Duration fallbackRedirectOptimal = Duration(milliseconds: 100);
+  static const Duration fallbackRedirectFloor = Duration(milliseconds: 500);
+  static const Duration fallbackRedirectCeiling = Duration(milliseconds: 1000);
+
+  /// Step 172 GEN-01187. Mean time to detect a watched change -- a price drop
+  /// or a new slot -- before the notification is worth sending at all.
+  static const Duration watchDetectOptimal = Duration(minutes: 2);
+  static const Duration watchDetectFloor = Duration(minutes: 15);
+  static const Duration watchDetectCeiling = Duration(minutes: 30);
+
+  /// Steps 163 and 175. Dashboard refresh latency: the row's optimal is five
+  /// minutes, its floor an hour, and beyond a day the panel is history rather
+  /// than a dashboard.
+  static const Duration dashboardRefreshOptimal = Duration(minutes: 5);
+  static const Duration dashboardRefreshFloor = Duration(hours: 1);
+  static const Duration dashboardRefreshCeiling = Duration(hours: 24);
+
+  /// Step 171 GEN-01010. How long a deep-link context parked across an auth
+  /// flow stays worth restoring. A day, so someone who signs in the next
+  /// morning still lands where the link pointed; beyond that the context
+  /// belongs to a session they have forgotten and restoring it is confusing.
+  static const Duration deepLinkParkLifetime = Duration(hours: 24);
 }
 
 /// Named easing curves.

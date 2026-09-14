@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 944 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,096 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -232,11 +232,31 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 153 | GEN-02588 | Per-field autosave with revisions; a failed save keeps the value | 6 |
 | 154 | GEN-04825 | FAB hides on keyboard, enforced by the new ROGUE_FAB guard rule | 6 |
 | 155 | GEN-04506 | Success haptic, fired synchronously; four moments, five kept silent | 6 |
+| 156 | GEN-03448 | The event envelope as a type; event_date and trace_id cannot be absent | 8 |
+| 157 | GEN-00809 | Every redaction rule carries a value it must catch and one it must not | 8 |
+| 158 | GEN-01738 | Fingerprints from frame symbols; the scrubbed-trace version collides | 8 |
+| 159 | GEN-01054 | Crash-free rate counts sessions; a network timeout is not a crash | 8 |
+| 160 | GEN-04649 | Abandonment inferred at the two moments the app learns about it | 7 |
+| 161 | GEN-04770 | 25 events per outbox entry; drop-off rates are a server query | 8 |
+| 162 | GEN-01021 | Four declared probes with reasons; healthy results stream too | 7 |
+| 163 | GEN-01076 | Abandonment joined to the last field that rejected the user | 8 |
+| 164 | GEN-04253 | RAIL's 100ms is for input; cold start has its own budget. p95, not mean | 7 |
+| 165 | GEN-03171 | Reports 0.625, below its own floor: three checks need a handset | 10 |
+| 166 | GEN-04539 | Foreground for the whole window; the naive filter scores 0.4 | 7 |
+| 167 | GEN-00754 | 60fps is 16.667ms; a frame budget is a complexity claim | 6 |
+| 168 | GEN-01065 | "Block" means refuse, not wrap; two columns at 360dp is 156dp each | 6 |
+| 169 | GEN-00888 | Three keys read, four forbidden; nothing throws on a hostile payload | 7 |
+| 170 | GEN-00522 | Web equivalent, then ancestor section, then the landing page | 7 |
+| 171 | GEN-01010 | Parked before the auth flow, not after; all-or-nothing restoration | 8 |
+| 172 | GEN-01187 | A directional threshold on an exact amount, through the Step 50 gate | 8 |
+| 173 | GEN-00134 | The client half of the spec, so the two can be joined | 8 |
+| 174 | GEN-00291 | Two roles holding one hex -- the defect nothing else here catches | 8 |
+| 175 | GEN-01132 | Known catalogue terms in clear; the user's own words as a hash | 8 |
 
-**944 gates across 155 steps.** 152 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**1,096 gates across 175 steps.** 170 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
-displayLarge at 200% on a 320dp screen), SSTLA-004 awaiting a reviewer score. Batches 4-10 added
-one deferral between them.
+displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
+GEN-00291 Partial (the palette is provisional), SSTLA-004 awaiting a reviewer score.
 
 ### MTO worker screens
 
@@ -360,6 +380,28 @@ advancing backwards in Urdu. Every field saves when it settles, locally first an
 carrying a revision so a correction beats the typo it replaced -- and a failed save keeps the
 value rather than clearing a dirty flag over an answer that then exists nowhere.
 
+### Instrumentation
+
+Steps 156-166 build the telemetry layer, and Step 156 comes first because everything after it
+emits events. The envelope is a type rather than a convention -- seven fields on every event,
+with `event_date` and `trace_id` on the envelope rather than in the payload, so the partition key
+and the cluster key cannot be missing from a kind whose author forgot them. No payload field may
+hold free text, because free text is how personal data reaches a warehouse and no amount of
+downstream sanitising reliably gets it out.
+
+What the client owns stops at handover. Events batch twenty-five to an outbox entry and carry the
+destination table; landing the rows is the server's, as it was at Steps 132 and 145. A drop-off
+rate is a ratio across many users, so the client sends the events it is computed from rather than
+a ratio with a denominator of one. Mean time to detect a price change is the backend's figure for
+the same reason -- no phone is watching a price.
+
+Two readings in this batch are worth keeping. RAIL's 100ms is the budget for a response to an
+input; a cold start is not one, and applying the RAIL bands to it would report every launch this
+app will ever make as a failure -- the same 1,100ms figure bands Good against the startup budget
+and Poor against RAIL. And a performance trace is kept only if the app was in the foreground for
+the *whole* window: checking at capture time passes the case everyone tests and keeps exactly the
+traces that carry suspended seconds in their elapsed time.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -379,6 +421,16 @@ value rather than clearing a dirty flag over an answer that then exists nowhere.
    test host. A handset number needs a profile-mode run; the caveat is on the gates themselves.
 6. **A Lighthouse run for CLS** (RCGLA-012). Step 61 builds what prevents layout shift and
    measures it at 0dp app-side, but the browser-reported figure still needs a real page load.
+7. **Cold start on a handset** (Step 165). Five of the verification's eight checks run on a CI
+   host; three need a profile-mode build on the declared floor device. Step 165 reports 0.625 --
+   below its own floor of 0.8 -- rather than a green number a release decision would rest on.
+8. **No crash reporter is wired** (Step 159). The capture filter is built against
+   `HabotCrashReporter`, an interface with no implementation, so the absence is a compile-time
+   obstacle. Choosing a vendor is a decision about what may be attached to a report, not an
+   integration task.
+9. **The OpenAPI document itself** (Step 173). Authored and served by whoever owns the endpoints;
+   a copy here would be a second source of truth and would drift within a release. What this repo
+   declares is the set of endpoints the app calls, so the two can be joined.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
