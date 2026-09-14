@@ -375,6 +375,40 @@ class HabotMotion {
   /// appears and is removed two frames later is the same flash in reverse.
   static const Duration loadingIndicatorMinimumVisible =
       Duration(milliseconds: 500);
+
+  // ---------------------------------------------------------------------
+  // Booking, checkout and pass. Steps 196-215.
+  // ---------------------------------------------------------------------
+
+  /// Step 204 (GEN-01518): the budget for recalculating an order total when
+  /// an add-on is toggled.
+  ///
+  /// The substance of the requirement is what this rules out. A round trip
+  /// does not fit in it, so the total shown while a parent is choosing is
+  /// computed on the device.
+  static const Duration orderTotalRecalculationBudget =
+      Duration(milliseconds: 50);
+
+  /// Step 211 (GEN-01231): the target wall-clock duration of a re-booking.
+  ///
+  /// Mostly made of a person confirming a date and a payment sheet this app
+  /// does not own, which is why the step bounds decisions rather than
+  /// seconds.
+  static const Duration rebookingTarget = Duration(seconds: 15);
+
+  /// Step 209 (GEN-01573): how long one rendered QR pass stays valid, and
+  /// how often its payload rotates while the screen is open.
+  ///
+  /// Rotation makes a forwarded screenshot expire; it does not make the pass
+  /// single-use. That is the door's job.
+  static const Duration passValidityWindow = Duration(minutes: 5);
+  static const Duration passRotationPeriod = Duration(minutes: 1);
+
+  /// Step 214 (GEN-01308): the optimal dispute resolution cycle time.
+  ///
+  /// The only one of that row's three bounds expressible as a duration -- the
+  /// floor and ceiling are in BUSINESS days, which a Duration cannot hold.
+  static const Duration disputeCycleOptimal = Duration(hours: 48);
 }
 
 /// Named easing curves.
