@@ -421,6 +421,34 @@ class HabotMotion {
   /// both to the millisecond. It is a SERVER property: the client can measure
   /// it and cannot meet it.
   static const Duration apiLatencySla = Duration(milliseconds: 200);
+
+  // ---------------------------------------------------------------------
+  // Form input, correction telemetry and deliberate friction (Steps 247-252).
+  // ---------------------------------------------------------------------
+
+  /// How close together corrections must be to count as one burst rather
+  /// than as a person editing. Step 247 (FLADE-006-03): three deletions
+  /// inside this window is a struggle; three spread over six seconds is not.
+  static const Duration correctionBurstWindow = Duration(seconds: 2);
+
+  /// Step 248 (HC-CMP-0054) dwell band, applied only to a confirmation
+  /// before an action that cannot be undone. Below the floor the person is
+  /// not pausing at all.
+  static const Duration frictionDwellFloor = Duration(seconds: 3);
+
+  /// The dwell the row calls optimal: long enough that the person has read
+  /// what they are about to do.
+  static const Duration frictionDwellOptimal = Duration(seconds: 5);
+
+  /// Past this the person is not deciding, they are stuck. The row treats a
+  /// longer dwell as a better result; this repository does not.
+  static const Duration frictionDwellCeiling = Duration(seconds: 10);
+
+  /// Step 252 (GEN-03569): the optimal for a client-side arithmetic gate.
+  /// The row's floor and ceiling were already declared -- 50ms is
+  /// [orderTotalRecalculationBudget] and 100ms is [railInstant] -- so this
+  /// is the one figure that row adds.
+  static const Duration clientMathGateBudget = Duration(milliseconds: 10);
 }
 
 /// Named easing curves.
