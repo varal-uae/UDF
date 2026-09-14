@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,237 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,377 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -272,13 +272,34 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 193 | GEN-04814 | Bottom-trailing, not bottom-right; handedness stated, not solved | 7 |
 | 194 | GEN-04726 | A global isLoading is the defect; counted scope, no flash | 7 |
 | 195 | GEN-02885 | Deciding what earns a modal; one at a time, never a bare OK | 7 |
+| 196 | GEN-01110 | FRE_Completed cannot produce the rate its own row asks for | 7 |
+| 197 | GEN-01419 | Suppression keyed on the account, because the flag cannot see them | 7 |
+| 198 | GEN-01121 | A card is a surface, not a target; the exemption is written down | 7 |
+| 199 | GEN-01430 | MD3 answers a press with a state layer, not a shadow under a finger | 7 |
+| 200 | GEN-01165 | Nineteen characters against a twelve-character budget | 7 |
+| 201 | GEN-01198 | A face and a tick, graded on whether the allergy field is filled | 7 |
+| 202 | GEN-01507 | One tap adds and removes; the payload is derived, never accumulated | 7 |
+| 203 | GEN-01209 | A cap of three over seven elects three winners | 7 |
+| 204 | GEN-01518 | 50ms rules out the network; AED 4.35 is 434 fils in a double | 7 |
+| 205 | GEN-01220 | Collapsed is the requirement; latched open by what it holds | 7 |
+| 206 | GEN-01529 | Shape checked locally, meaning never; Apply fires once | 7 |
+| 207 | GEN-01242 | The app is never in a position to hold a card number | 7 |
+| 208 | GEN-01551 | The brand comes from the field, not from reading digits | 7 |
+| 209 | GEN-01573 | A static pass survives a screenshot; the quiet zone is the symbol | 7 |
+| 210 | GEN-01606 | An incomplete export looks complete; coverage on the document | 7 |
+| 211 | GEN-01231 | Decisions are measurable; an instant re-book did not check | 7 |
+| 212 | GEN-01253 | Binary is the shape that manufactures false positives | 7 |
+| 213 | GEN-01562 | A pre-selected drop-down is not mandatory | 7 |
+| 214 | GEN-01308 | Cycle time is not ours; intake completeness is | 7 |
+| 215 | GEN-01617 | Packaging buys agreement, not reuse -- and carries no case data | 7 |
 
-**1,237 gates across 195 steps.** 186 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**1,377 gates across 215 steps.** 205 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
 GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
 GEN-00599 **Not Complete** (Inter is not vendored), GEN-04275 **Fail** (the tokenisation
-milestone, deliberately -- see Open decisions), SSTLA-004 awaiting a reviewer score.
+milestone, deliberately -- see Open decisions), GEN-01242 Partial (1 deferred: the log scrubber
+has no PAN rule), SSTLA-004 awaiting a reviewer score.
 
 ### MTO worker screens
 
@@ -449,6 +470,52 @@ time this has come up after Step 150's swipe direction and Step 167's frozen col
 concurrent operations, and the symptom is reported as "the spinner disappears too early", which
 sends people looking somewhere else entirely.
 
+### The parent booking journey
+
+Steps 196-215 follow one parent from first run to a dispute, and the pattern across them is that
+the metric on a row is usually a better instruction than the row. Step 196 asks for an
+`FRE_Completed` boolean and is graded on a completion rate; the boolean is written on completion
+and on skip, so once both write the same value the rate is 1.0 for every install past the first
+screen -- measured on ten constructed installs, 0.40 by outcome against 0.70 by boolean. Step 201
+describes an avatar and a checkmark and is graded on whether allergies and medication were
+captured; a card showing a face lets a parent select in a second and never see the empty field,
+so the card carries completeness and the measured figure is 0.72 where "did the card get
+selected" is 1.0. Step 210 asks for an export button and is graded on completeness; the failure
+mode of an export is that it looks complete, so the coverage statement is stamped on the
+document rather than announced in a toast that is gone before anyone opens the file.
+
+Two rows argue against themselves. Step 212 asks for binary Approve/Reject and is graded on the
+false-positive rate -- and binary is exactly the shape that manufactures false positives, because
+a reviewer who is unsure has to pick one and the incentive always points at reject. A third
+outcome that costs nothing to choose is the cheapest available reduction in that number. Step 213
+asks for a mandatory reason-code drop-down; a drop-down showing a value satisfies every validation
+that checks for a value, and the reviewer never touched it. Named here: a pre-selected one would
+have submitted `PAY_AVS_MISMATCH` on every rejection, which is the code the false-positive rate
+would then be grouped by.
+
+Steps 207 and 208 point in opposite directions and both are right. Brand detection reads the first
+digits of a card number; the PCI requirement is that the app is never in a position to see any of
+them. The reconciliation is the callback every hosted-field SDK emits, and the IIN table in the
+repo is the contract handed to the provider rather than a code path here. Checking the defence in
+depth found a real gap: the Step 68 log scrubber redacts a sixteen-digit PAN only incidentally,
+through a rule about hex hashes, and misses a fifteen-digit American Express number and any PAN
+written with spaces or dashes -- coverage measured at 0.25. The rule is proposed rather than
+copied, because Step 179 already said what two copies of a rule with one of them executed is.
+
+Two collisions with earlier work. "Contact for Details" is nineteen characters against Step 144's
+twelve-character button budget, in English, before translation; the budget is now declared per
+placement, because a twelve-character limit on a full-width button is a rule with no reason behind
+it. And a 144x160dp category card is three times Step 184's touch-target ceiling -- the band
+governs controls, a card is an item surface, and the exemption is written down with its rationale
+because an exemption that exists only as the absence of a check is indistinguishable from an
+oversight.
+
+Step 204 is where Step 140's exact-money type finally pays: AED 4.35 converted to fils through a
+double gives 434 rather than 435, and rounding VAT per line rather than once moves a three-line
+order by a fils. The 50ms budget on that row is doing real work -- it rules out a round trip,
+which means the total shown while a parent is choosing is the device's, and that creates two
+totals. The server's charges; a disagreement is disclosed before a card is taken.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -498,6 +565,29 @@ sends people looking somewhere else entirely.
 14. **`onSurfaceVariant` on `surfaceContainer` belongs in `ContrastAudit`** (Step 191). Measured
     and passing at AAA, but that gate is what every earlier step's evidence rests on, so the pair
     is raised rather than added through a styling row.
+
+15. **The log scrubber has no PAN rule** (Step 207). A sixteen-digit card number is redacted by
+    the `hex` rule, which matches sixteen or more hexadecimal characters -- decimal digits are
+    hexadecimal characters -- so the coverage is real and accidental. A fifteen-digit American
+    Express number is one character short of it, and a PAN with spaces or dashes matches nothing.
+    The rule belongs in `resilience/log_scrubber.dart`, which Step 68 owns; the regular expression
+    and its four test vectors are declared in `payments/card_form_contract.dart` as a proposal.
+    The contract means no PAN should reach a log at all; this is the layer that assumes one did.
+16. **Card brand artwork** (Step 208). Brand marks are trademarks and a redrawn approximation is
+    a legal problem and a recognition problem at once. Each asset key points at artwork from that
+    network's own brand kit; supplying those files is a delivery dependency, not a code task.
+17. **Single-use enforcement at the door** (Step 209). The pass payload rotates, so a forwarded
+    screenshot expires. Rotation bounds the exposure; it does not make the pass single-use, and
+    within the validity window a photograph works as well as the phone it came from. Single use
+    is the scanner's job and needs the venue side to agree to it.
+18. **Business days are not durations** (Steps 214-215). The dispute cycle-time floor and ceiling
+    are "<5 business days" and "<10 business days", which is seven to nine calendar days depending
+    on when it starts, and the weekend is not the same two days for every counterparty in this
+    market. They are held as business-day counts with the calendar left to whoever owns it.
+19. **The add-on ranking is an election** (Step 203). A cap of three over a catalogue of seven
+    decides which three get every attachment, and the attach rate then measures the ordering
+    rather than the catalogue. The ordering is declared and stable, but who sets `operatorPriority`
+    -- and on what evidence -- is an operations decision this repo cannot make.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
