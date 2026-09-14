@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,377 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,520 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -292,14 +292,36 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 213 | GEN-01562 | A pre-selected drop-down is not mandatory | 7 |
 | 214 | GEN-01308 | Cycle time is not ours; intake completeness is | 7 |
 | 215 | GEN-01617 | Packaging buys agreement, not reuse -- and carries no case data | 7 |
+| 216 | GEN-01694 | Four declaration sites, two enums, and a 600/744 boundary conflict | 8 |
+| 217 | GEN-01672 | A source-only linter reaches 75 where a constraint-aware one reaches 100 | 7 |
+| 218 | GEN-04748 | The ratio belongs to the relation, not to the caller | 7 |
+| 219 | GEN-04187 | **Partial.** Two codebases in scope; one of them cannot be inspected | 8 |
+| 220 | AWCV-015 | Fifteen cells; the tightest leaves 10dp of margin | 7 |
+| 221 | DLQDP-029-11 | A system split collapses the supporting pane the row asks for | 7 |
+| 222 | ARCPE-016-14 | Five of six phones cannot stack two panes with a keyboard open | 7 |
+| 223 | GEN-01771 | **Not Complete.** A portrait lock would fail WCAG 1.3.4 | 8 |
+| 224 | CFCST-014 | A width-only conversion makes a blocking decision swipeable | 7 |
+| 225 | GEN-04297 | The band was already declared; the ceiling is the right bound | 7 |
+| 226 | GEN-02356 | The sheet's band units are a defect; four snackbars are well formed | 7 |
+| 227 | GEN-04286 | Three rows, three ceilings, and a WCAG citation that is wrong | 7 |
+| 228 | GEN-03259 | 320/5 = 64dp, so geometry allows six and MD3 caps it at five | 7 |
+| 229 | GEN-04164 | A token resolving to 24dp passes the rule that reads literals | 7 |
+| 230 | GEN-05144 | Half of open decision 2 closes: responsiveness without the lock | 7 |
+| 231 | GEN-01970 | "Only visible" is false by design; 6 of 12 built and not visible | 7 |
+| 232 | GEN-01760 | Nodes are not where the memory goes -- a factor of 406 is | 7 |
+| 233 | GEN-03338 | No worklets, and 16,667us was a 60Hz figure nobody wrote down | 7 |
+| 234 | GEN-04108 | The crash reporter is the one thing that must not be deferred | 7 |
+| 235 | GEN-05441 | **Partial.** Two of three budgets have been in force since Step 165 | 7 |
 
-**1,377 gates across 215 steps.** 205 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**1,520 gates across 235 steps.** 222 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
 GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
 GEN-00599 **Not Complete** (Inter is not vendored), GEN-04275 **Fail** (the tokenisation
 milestone, deliberately -- see Open decisions), GEN-01242 Partial (1 deferred: the log scrubber
-has no PAN rule), SSTLA-004 awaiting a reviewer score.
+has no PAN rule), GEN-04187 Partial (habot-web cannot be inspected from here), GEN-01771
+**Not Complete** (a portrait lock would fail WCAG 1.3.4), GEN-05441 Partial (no owner sign-off
+is obtainable from a build host), SSTLA-004 awaiting a reviewer score.
 
 ### MTO worker screens
 
@@ -516,6 +538,53 @@ order by a fils. The 50ms budget on that row is doing real work -- it rules out 
 which means the total shown while a parent is choosing is the device's, and that creates two
 totals. The server's charges; a disagreement is disclosed before a card is taken.
 
+
+### Adaptive layout, touch targets and performance budgets
+
+Steps 216-235 are three clusters, and each one starts by counting what is already declared. Step
+216 asks for the MD3 window size classes and finds four declaration sites and two different enums
+already holding them; the answer is a census rather than a fifth. The same shape recurs at Step
+227, where three separate rows -- one in this batch and two more beside it -- ask for a 48dp touch
+target that six earlier steps already built, and the three rows disagree about the ceiling: 56, 64,
+56. That is resolved per control class, with 64 honoured for navigation destinations where the
+sheet meant it, and one coincidence is written down: `HabotSpacing.xxxl` is 48 and
+`HabotDensity.minTouchTarget` is 48, and they are not the same fact.
+
+Three rows are false as written and are measured to prove it. "Only visible components consume
+rendering resources" (Step 231) is false by design -- a `ListView.builder` builds a cache extent
+beyond the viewport so a flick does not hitch, and on the shortest declared phone with a 96dp item
+that is 6 items built and not visible out of 12. Setting the cache extent to zero satisfies the row
+exactly and produces a list that stutters. "Block OOM by limiting concurrent DOM nodes" (Step 232)
+names a platform this app does not run on, and nodes are not where the memory goes: a 4032x3024
+photograph decoded at source resolution is 48,771,072 bytes against 120,000 at its display size, a
+factor of 406, and eight thumbnails at source resolution overflow Flutter's 100 MiB image cache and
+start evicting the pictures the user is looking at. "Worklet-based animation runners" (Step 233)
+describes a React Native and CSS Houdini construct; Flutter's UI and raster threads are already
+separate, and what actually blocks a frame is a JSON decode called from `build`.
+
+Two findings are about instrumentation rather than layout. Step 229 adds
+`A11Y_TOUCH_TARGET_BELOW_BAND` because the existing `A11Y_LITERAL_TOUCH_SIZE` rule reads source
+text and cannot see the value a token resolves to -- a control sized from `HabotSpacing.lg` passes
+the guard at 24dp and fails WCAG. Each rule is demonstrated catching something the other passes,
+so neither replaces the other. And Step 234 refuses the blanket reading of its own row: deferring
+the crash reporter means crashes during startup go unreported, and those are the ones that matter
+most, because to the user they are not a crash, they are an app that does not open.
+
+Three steps report less than Complete and say why. Step 219's scope names two codebases and
+habot-web cannot be inspected from here. Step 223 would have to lock orientation to report
+Complete, and a portrait lock fails WCAG 2.1 SC 1.3.4. Step 235 asks for a decision record with
+"rationale & owner sign-off"; the record is authored and every figure carries its rationale and
+the conditions it holds under, but a sign-off is a person and one cannot be obtained from a build
+host. The finding underneath it is that two of the three SLAs the row asks to establish --
+FCP <= 1.2s and TTI <= 2.0s -- have been in force to the millisecond since Step 165 as
+`coldStartBudget` and `interactiveOn3g`. What was missing was the record, not the number.
+
+Step 230 closes half of open decision 2. RCGLA-012 wanted `user-scalable=no` and was deferred for
+failing SC 1.4.4; this row asks for something different and achievable -- disabling *accidental*
+double-tap zoom -- which `touch-action: manipulation` does, removing the gesture and the ~300ms tap
+delay while leaving pinch zoom intact. The meta tag is assembled from the directive list rather
+than written out, so a refusal cannot be re-added by editing a string.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -589,8 +658,29 @@ totals. The server's charges; a disagreement is disclosed before a card is taken
     rather than the catalogue. The ordering is declared and stable, but who sets `operatorPriority`
     -- and on what evidence -- is an operations decision this repo cannot make.
 
+20. **The 600dp and 744dp boundaries disagree** (Step 216). MD3 puts the compact/medium
+    boundary at 600dp; the repository's navigation collapse sits at 768dp and the expanded rail
+    guidance implies 744dp. Only one declared device -- the iPad Mini -- falls in the conflict
+    band, so nothing is broken today and the ladder is declared with both numbers visible rather
+    than one of them quietly winning.
+21. **Who owns the API latency SLA** (Step 235). `apiLatencySla` is 200ms at the 95th percentile,
+    server-side, excluding the network. The client can measure it and cannot meet it, so the
+    obligation recorded here is to report honestly. The owner is on the other side of the
+    contract, and no owner has signed any of the three budgets.
+22. **Nothing alerts on the SLAs yet** (Step 235). GEN-05452 -- "create an automated performance
+    alert subroutine flagging UI components that breach targets" -- is the row that acts on these
+    figures. It is in the remaining pool and not in this batch, so the record exists and the
+    alerting does not.
+23. **The Step 63 chunk controller has no eviction policy** (Step 232). It keeps every chunk it
+    has loaded for the life of the list, and it is the one retained memory source with no
+    declared bound. Raised rather than changed: eviction is Step 63's decision, and a chunk
+    evicted while the user is scrolling back through it is a worse bug than the memory it saves.
+
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
 reading still needs a release.
+
+Half-closed: open decision 2. Step 230 delivers the tap responsiveness RCGLA-012 was after, via
+`touch-action: manipulation`. The zoom suppression it asked for stays refused.
 
 See the [workspace README](../README.md) for team conventions.
