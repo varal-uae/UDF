@@ -1,5 +1,5 @@
 /*
- * STEP 35: ETMDI-001-10 — Hard-code EndDocument Metadata Structure & Single-Field Viewport Routing
+ * ETMDI-001-10 — Hard-code EndDocument Metadata Structure & Single-Field Viewport Routing
  * 
  * Setup Step (Action): Hard-code the EndDocument metadata structure inside the mobile client state manager.
  * Setup Step Description: Restrict the mobile viewport routing to permit only one isolated field snapshot at a time.
@@ -139,7 +139,7 @@ class _EndDocumentMetadataPanelState extends State<EndDocumentMetadataPanel> {
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 35: EndDocument Metadata Client State Schema',
+                              'EndDocument Metadata Client State Schema',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

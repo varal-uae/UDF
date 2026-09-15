@@ -1,5 +1,5 @@
 /*
- * STEP 40: HSCPE-017 — Hard Memory Request/Limit Specification (Enforcing OOM Protection)
+ * HSCPE-017 — Hard Memory Request/Limit Specification (Enforcing OOM Protection)
  * 
  * Setup Step (Action): Hard Memory Request/Limit Specification (Enforcing OOM Protection).
  * Setup Step Description: UX Implementation: Present dense utilization matrices under simple, scannable MD3 data layouts.
@@ -249,7 +249,7 @@ class _HardMemoryLimitPanelState extends State<HardMemoryLimitPanel> {
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 40: Hard Memory Request/Limit Specification (OOM Protection)',
+                              'Hard Memory Request/Limit Specification (OOM Protection)',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

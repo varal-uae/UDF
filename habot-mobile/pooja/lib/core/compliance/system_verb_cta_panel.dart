@@ -1,33 +1,10 @@
 /*
- * STEP 43: IS32-CSIVW-019-AS01 — Enforce System-Verb CTA Character Limits
+ * IS32-CSIVW-019-AS01 — Enforce System-Verb CTA Character Limits
  * 
  * Setup Step (Action): Enforce System-Verb CTA Character Limits.
  * Setup Step Description: Access call-to-action (CTA) button base component
  *   specification files.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 & DEA/OPS Doc Conversion):
- * 1. API Endpoint: POST /api/v1/components/cta-verb-limits/enforce
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/components/cta-verb-limits/{componentId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"accessType": String, "userRole": String, "permissionLevel": String, "accessLog": String, "completionStatus": String}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_CTA_LIMIT_ENFORCED ("System-Verb CTA character limits active globally.")
- *    - Email Notification: EMAIL_CTA_SPEC_AUDIT (Sent to OPS Lead and UX Designer)
- *    - SMS Alert: SMS_POKA_YOKE_VERB_WARNING (Sent to Design Ops when button text exceeds word/character threshold)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: OperationsLead (Role)
- *    - Escalation Handler: If Poka-Yoke warning triggered >3 times, escalates to UX_SYSTEMS_ARCHITECT
- * 7. Error Handling & Failure States:
- *    - Poka-Yoke Warning: Buttons exceeding limits pulse warning outlines, chasing designer to pick shorter verbs.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 42 (VPVMP-006-14) - Backward Document Mapping -> Route: /docs/mapping
- *    - Downstream Outcome: Step 44 - Global System-Verb Enforcement -> Route: /components/cta-global
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: OPS / UI Component Constraints Team | Submitted On: 2026-08-15 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - Asset Discovery Completeness: Floor 90%, Optimal 100%, Ceiling 100%. Standard: Complete/Partial/Not Complete.
- * ---------------------------------------------------------------------------------------------------
  * 
  * Mobile-First & Responsive UX/UI Decisions:
  *   - Ensures buttons never break into two lines on narrow screens, protecting grid alignment.
@@ -61,7 +38,7 @@ class CtaVerbConstraintRecord {
   final int maxCharacterLimit;
   final int maxWordLimit;
 
-  // DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 Doc Conversion)
+  // Step Specification & Metrics (Fields 10–11 Doc Conversion)
   final String apiEndpoint;
   final String httpMethod;
   final String authHeaderType;
@@ -228,7 +205,7 @@ class _Step43SystemVerbCtaPanelState extends State<Step43SystemVerbCtaPanel>
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 43: Enforce System-Verb CTA Character Limits',
+                              'Enforce System-Verb CTA Character Limits',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

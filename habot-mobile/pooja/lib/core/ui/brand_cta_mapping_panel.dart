@@ -1,5 +1,5 @@
 /*
- * STEP 21: SCTAS-002 — Hardcode Primary Brand Color Token #2E86C1 Across CTA Component Styling Frameworks
+ * SCTAS-002 — Hardcode Primary Brand Color Token #2E86C1 Across CTA Component Styling Frameworks
  * 
  * Setup Step (Action): Open global design token directory inside code repository.
  * Setup Step Description: Map variable parameter `brand-primary` to value `#2E86C1`; assign defined color variable
@@ -145,7 +145,7 @@ class _BrandCtaMappingPanelState extends State<BrandCtaMappingPanel>
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 21: SCTAS-002 (Row 1649)',
+                    'SCTAS-002 (Row 1649)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

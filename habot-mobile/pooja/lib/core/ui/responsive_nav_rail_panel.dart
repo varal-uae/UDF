@@ -1,5 +1,5 @@
 /*
- * STEP 29: TNRML-007 — Build Responsive Tablet Sidebar Navigation Rail
+ * TNRML-007 — Build Responsive Tablet Sidebar Navigation Rail
  * 
  * Setup Step (Action): Open shared front-end UI component repository and locate Master Sidebar Rail Shell.
  * Setup Step Description: Set sidebar conversion breakpoint trigger to 600dp viewport width; lock rail horizontal
@@ -127,7 +127,7 @@ class _ResponsiveNavRailPanelState extends State<ResponsiveNavRailPanel> {
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 29: TNRML-007 (Row 2034)',
+                    'TNRML-007 (Row 2034)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

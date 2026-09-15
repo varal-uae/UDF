@@ -1,11 +1,11 @@
 /*
- * STEP 12: MUFCE-001 — Campaign Imagery & Media Rule Implementation
+ * MUFCE-001 — Campaign Imagery & Media Rule Implementation
  * 
  * Setup Step (Action): Build a Material Design 3 fluid grid structure that rearranges upload thumbnails dynamically for mobile layouts.
  * Setup Step Description: Adaptive thumbnail grid for mobile layouts; 44–48px minimum touch targets;
  *   auto-rearranging asset preview tiles.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Responsive Layout / Grid System Validation: Pass/Fail.
  * Poka-Yoke Gate: Dynamic responsive column calculation locks touch targets to >= 48dp on all viewports.
  * 

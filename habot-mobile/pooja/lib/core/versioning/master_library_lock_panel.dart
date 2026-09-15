@@ -1,5 +1,5 @@
 /*
- * STEP 31: EDBAA-015-09 — Package and Lock the Master Component Library
+ * EDBAA-015-09 — Package and Lock the Master Component Library
  * 
  * Setup Step (Action): Apply repository access control rules setting uploaded artifact permissions to read-only for developer accounts.
  * Setup Step Description: Compile pre-approved visual view modules into a read-only distribution file to freeze codebase integrity;
@@ -143,7 +143,7 @@ class _MasterLibraryLockPanelState extends State<MasterLibraryLockPanel> {
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 31: EDBAA-015-09 (Row 2056)',
+                    'EDBAA-015-09 (Row 2056)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

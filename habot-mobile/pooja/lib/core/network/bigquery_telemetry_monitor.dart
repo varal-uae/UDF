@@ -1,10 +1,10 @@
 /*
- * STEP 16: TECH-ENG-015 — Establish BigQuery Event Telemetry and Performance Analytics
+ * TECH-ENG-015 — Establish BigQuery Event Telemetry and Performance Analytics
  * 
  * Setup Step (Action): Design the telemetry event schema fields: event name, service ID, timestamp, user hash, latency in ms.
  * Setup Step Description: API response latency monitor against Google RAIL Model (Sub-500ms API latency floor).
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Task Execution Quality Score (1-5 scale): Good (Score 5.0, <200ms), Average (Score 3.5-4.5, <500ms), Poor (Score < 3.5, >500ms).
  * Poka-Yoke Gate: Sub-500ms API response latency floor enforced; degraded telemetry streams automatically alert GCP Ops.
  * 

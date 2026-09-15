@@ -1,32 +1,9 @@
 /*
- * STEP 46: MTVPE-009-05 — Configure Mobile MTOI Training Embedded Videos
+ * MTVPE-009-05 — Configure Mobile MTOI Training Embedded Videos
  * 
  * Setup Step (Action): Configure Mobile MTOI Training Embedded Videos
  * Setup Step Description: Open the mobile layout layout XML view source code file for the MTOI task screen.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 & DEA/OPS Doc Conversion):
- * 1. API Endpoint: POST /api/v1/media/mtoi-embedded-video/configure
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/media/mtoi-embedded-video/{videoId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"layoutType": String, "layoutGridDimensions": String, "spacingRules": String, "alignmentSettings": String, "layoutValidationStatus": String}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_MTOI_VIDEO_ACTIVE ("Mobile MTOI training embedded video configured and active.")
- *    - Email Notification: EMAIL_MTOI_VIDEO_SPEC_AUDIT (Sent to Mobile Layout Engineer and Accessibility Specialist)
- *    - SMS Alert: SMS_POKA_YOKE_TOUCH_TARGET_VIOLATION (Sent to UI Ops when play button touch target < 48dp)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: MobileLayoutEngineer (Role)
- *    - Escalation Handler: If touch target size < 44dp, triggers ACCESSIBILITY_REJECTION_ESCALATION
- * 7. Error Handling & Failure States:
- *    - Poka-Yoke Guard: Enforces minimum 48dp touch target bounds around video player control buttons.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 45 (FLADE-006-02) - Rapid Backtracking Tracking -> Route: /telemetry/backtracking
- *    - Downstream Outcome: Step 47 - Interactive Media Certification -> Route: /media/certification
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: Mobile Media & Accessibility Team | Submitted On: 2026-08-15 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - Touch Target Size & Accessibility Compliance: Floor 44px / WCAG AA, Optimal 48px / WCAG AA, Ceiling 56px / WCAG AAA. Standard: M3 Accessibility & WCAG 2.1 AA.
- * ---------------------------------------------------------------------------------------------------
  * 
  * Mobile-First & Responsive UX/UI Decisions:
  *   - Integrate an M3 Media container directly into the task card.
@@ -56,7 +33,7 @@ class MobileVideoRecord {
   final String userSessionId;
   final double touchTargetSizeDp;
 
-  // DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 Doc Conversion)
+  // Step Specification & Metrics (Fields 10–11 Doc Conversion)
   final String apiEndpoint;
   final String httpMethod;
   final String authHeaderType;
@@ -170,7 +147,7 @@ class _Step46MobileVideoPlayerPanelState extends State<Step46MobileVideoPlayerPa
                           AppSpacingTokens.hGapMd,
                           Expanded(
                             child: Text(
-                              'Step 46: Configure Mobile MTOI Training Embedded Videos',
+                              'Configure Mobile MTOI Training Embedded Videos',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

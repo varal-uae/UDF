@@ -1,33 +1,11 @@
 /*
- * STEP 3: BPTR-0498 / BPTR-0498-A01 — Implement Offline Sync State Icon & Header Indicator
+ * BPTR-0498 / BPTR-0498-A01 — Implement Offline Sync State Icon & Header Indicator
  * 
  * ---------------------------------------------------------------------------------------------------
  * 49-COLUMN AISS SPECIFICATION MATRIX VERIFICATION (Row 351.0 | Level 13 Execution Phase):
  * 1. Global Reference ID: BPTR-0498 | Atomic Reference ID: BPTR-0498-A01
  * 2. Setup Step Action: Implement Offline Sync State Icon.
  * 3. Setup Step Description: Open the primary mobile application assets folder layout.
- * 4. Substeps (4):
- *    - 1. Select offline icon (cloud with slash).
- *    - 2. Define sync pending badge count.
- *    - 3. Design "Reconnecting" animation.
- *    - 4. Set persistent placement logic.
- * 5. Decision Group: Tech | Decision Category: Interaction
- * 6. Why This Matters: Remote connectivity drops; UI must indicate local storage vs cloud sync.
- * 7. Mobile App First Implication: Critical for 4G/5G drops during commute or on-site usage.
- * 8. UX Translation: Persistent header icon tracking local storage vs cloud sync.
- * 9. User Interaction / Flow Impact: Users confidently continue working offline without fear of data loss.
- * 10. Interface Implication: Integrated into global application shell top-bar header.
- * 11. Common Library to Store: System State Patterns
- * 12. GCP / BigQuery Alignment: Client-side cache sync management
- * 13. Sequence Order: Level 13 | Phase: EXECUTION | Atomic Step: 1.0 | Row: 351.0
- * 14. Estimated Time: 3 hours | Assigned Owner: Operations Team
- * 15. Poka-Yoke (Mistake-Proofing): System physically blocks page refresh if sync queue > 0, preventing accidental cache wipe.
- * 16. Self-Chasing Mechanism: When connection restores, icon pulses green until queue drains to 0.
- * 17. Vitality & Prosperity (Us): Prevents tab refresh and eliminates duplicate DB write queries.
- * 18. Vitality & Prosperity (Customer): Seamless, professional offline-first mobile user experience.
- * 19. Metric Name: Requirements Traceability Coverage (Floor: 90.0% | Target: 98.0% | Ceiling: 100.0%)
- * 20. Best Qualitative Output: Complete (Scale: Complete/Partial/Not Complete)
- * 21. Standardized Output Format: Standardized Data Collection Specification
  * ---------------------------------------------------------------------------------------------------
  */
 
@@ -78,13 +56,13 @@ class SyncStateDefinition {
     this.globalReferenceId = 'BPTR-0498',
     this.atomicStepsReferenceId = 'BPTR-0498-A01',
     this.requirementsTraceabilityCoverage = 98.0,
-    this.sequenceOrder = 'Level 13 | Phase: EXECUTION | Row: 351.0',
+    this.sequenceOrder = 'Row 351.0 | Level 13',
     this.estimatedTimeRequired = '3 hours',
     this.commonLibraryToStore = 'System State Patterns',
     this.gcpBigQueryAlignment = 'Client-side cache sync management',
-    required this.status,
+    this.status = SyncStatus.online,
     this.pendingQueueCount = 0,
-    required this.lastSyncedTimestamp,
+    this.lastSyncedTimestamp = 'Never',
     DateTime? actionTimestamp,
     String? userSessionId,
     this.completionStatus = SyncCompletionStatus.complete,
@@ -148,6 +126,33 @@ class _OfflineSyncIndicatorState extends State<OfflineSyncIndicator> with Single
     super.dispose();
   }
 
+  Map<String, dynamic> toExecutionLogJson() {
+    return {
+      'layoutType': widget.syncState.layoutType,
+      'layoutGridDimensions': widget.syncState.layoutGridDimensions,
+      'spacingRules': widget.syncState.spacingRules,
+      'alignmentSettings': widget.syncState.alignmentSettings,
+      'layoutValidationStatus': widget.syncState.layoutValidationStatus ? 'VALIDATED' : 'INVALID',
+      'completionStatus': widget.syncState.completionStatus.label,
+      'actionEventTimestamp': widget.syncState.actionTimestamp.toIso8601String(),
+      'userSessionId': widget.syncState.userSessionId,
+      'metadata': {
+        'taskCode': 'BPTR-0498-A01',
+        'row': 97,
+        'seq': 5060,
+        'assigned': 'Pooja',
+        'metricName': 'Requirements Traceability Coverage',
+        'floor': 90.0,
+        'target': 98.0,
+        'ceiling': 100.0,
+        'unit': 'Complete (Scale: Complete/Partial/Not Complete)',
+        'traceabilityCoverage': widget.syncState.requirementsTraceabilityCoverage,
+        'status': widget.syncState.status.name,
+        'pendingQueueCount': widget.syncState.pendingQueueCount,
+      },
+    };
+  }
+
   void _showPokaYokeCacheProtectionModal(BuildContext context) {
     showDialog(
       context: context,
@@ -176,15 +181,21 @@ class _OfflineSyncIndicatorState extends State<OfflineSyncIndicator> with Single
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(20),
+                color: Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Ref ID: ${widget.syncState.globalReferenceId} | Atomic: ${widget.syncState.atomicStepsReferenceId}', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Ref ID: ${widget.syncState.globalReferenceId} | Atomic: ${widget.syncState.atomicStepsReferenceId}',
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
                   Text('Sequence: ${widget.syncState.sequenceOrder}', style: const TextStyle(fontSize: 10)),
-                  Text('Traceability Coverage: ${widget.syncState.requirementsTraceabilityCoverage}% (Target: 98.0%)', style: const TextStyle(fontSize: 10, color: Colors.green, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Traceability Coverage: ${widget.syncState.requirementsTraceabilityCoverage}% (Target: 98.0%)',
+                    style: const TextStyle(fontSize: 10, color: Colors.green, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
             ),
@@ -195,10 +206,12 @@ class _OfflineSyncIndicatorState extends State<OfflineSyncIndicator> with Single
         ),
         actions: [
           TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text('Keep Active'),
           ),
           FilledButton.icon(
+            style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
             onPressed: () {
               Navigator.of(dialogContext).pop();
               if (widget.onSyncTap != null) widget.onSyncTap!();
@@ -239,68 +252,79 @@ class _OfflineSyncIndicatorState extends State<OfflineSyncIndicator> with Single
         break;
     }
 
-    return InkWell(
-      onTap: () {
-        if (widget.syncState.pendingQueueCount > 0) {
-          _showPokaYokeCacheProtectionModal(context);
-        } else if (widget.onSyncTap != null) {
-          widget.onSyncTap!();
-        }
-      },
-      borderRadius: BorderRadius.circular(AppSpacingTokens.lg),
-      child: AnimatedBuilder(
-        animation: _pulseController,
-        builder: (context, child) {
-          final scale = status == SyncStatus.reconnecting ? 1.0 + (_pulseController.value * 0.1) : 1.0;
-          return Transform.scale(
-            scale: scale,
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 48, minWidth: 120),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md, vertical: AppSpacingTokens.xs),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: BorderRadius.circular(AppSpacingTokens.lg),
-                border: widget.syncState.pendingQueueCount > 0
-                    ? Border.all(color: AppColorPalette.warning, width: 1.5)
-                    : null,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (status == SyncStatus.syncing || status == SyncStatus.reconnecting)
-                    RotationTransition(
-                      turns: _pulseController,
-                      child: Icon(iconData, size: 20.0, color: fg),
-                    )
-                  else
-                    Icon(iconData, size: 20.0, color: fg),
-                  AppSpacingTokens.hGapXs,
-                  Text(
-                    status == SyncStatus.online
-                        ? 'Online'
-                        : status == SyncStatus.syncing || status == SyncStatus.reconnecting
-                            ? 'Reconnecting...'
-                            : 'Offline (${widget.syncState.pendingQueueCount})',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: fg,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < 600;
+        final isExpanded = constraints.maxWidth >= 840;
+
+        return InkWell(
+          onTap: () {
+            if (widget.syncState.pendingQueueCount > 0) {
+              _showPokaYokeCacheProtectionModal(context);
+            } else if (widget.onSyncTap != null) {
+              widget.onSyncTap!();
+            }
+          },
+          borderRadius: BorderRadius.circular(AppSpacingTokens.lg),
+          child: AnimatedBuilder(
+            animation: _pulseController,
+            builder: (context, child) {
+              final scale = status == SyncStatus.reconnecting ? 1.0 + (_pulseController.value * 0.1) : 1.0;
+              return Transform.scale(
+                scale: scale,
+                child: Container(
+                  constraints: BoxConstraints(
+                    minHeight: 48,
+                    minWidth: isCompact ? 100 : (isExpanded ? 140 : 120),
                   ),
-                  if (widget.syncState.pendingQueueCount > 0 && status != SyncStatus.online) ...[
-                    AppSpacingTokens.hGapXs,
-                    Badge(
-                      label: Text('${widget.syncState.pendingQueueCount}'),
-                      backgroundColor: theme.colorScheme.error,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.md,
+                    vertical: AppSpacingTokens.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: bg,
+                    borderRadius: BorderRadius.circular(AppSpacingTokens.lg),
+                    border: widget.syncState.pendingQueueCount > 0
+                        ? Border.all(color: AppColorPalette.warning, width: 1.5)
+                        : null,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (status == SyncStatus.syncing || status == SyncStatus.reconnecting)
+                        RotationTransition(
+                          turns: _pulseController,
+                          child: Icon(iconData, size: 20.0, color: fg),
+                        )
+                      else
+                        Icon(iconData, size: 20.0, color: fg),
+                      AppSpacingTokens.hGapXs,
+                      Text(
+                        status == SyncStatus.online
+                            ? 'Online'
+                            : status == SyncStatus.syncing || status == SyncStatus.reconnecting
+                                ? 'Reconnecting...'
+                                : 'Offline (${widget.syncState.pendingQueueCount})',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: fg,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (widget.syncState.pendingQueueCount > 0 && status != SyncStatus.online) ...[
+                        AppSpacingTokens.hGapXs,
+                        Badge(
+                          label: Text('${widget.syncState.pendingQueueCount}'),
+                          backgroundColor: theme.colorScheme.error,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
-
-

@@ -1,5 +1,5 @@
 /*
- * STEP 32: DLQDP-015-13 — Configure System-Verb Icon Mapping Matrix
+ * DLQDP-015-13 — Configure System-Verb Icon Mapping Matrix
  * 
  * Setup Step (Action): Save and commit the finalized System-Verb Icon Mapping Matrix to the version control system.
  * Setup Step Description: Enforce strict iconography usage within the app mapping only to system actions;
@@ -77,8 +77,22 @@ class SystemVerbIconPanel extends StatefulWidget {
 
   const SystemVerbIconPanel({
     super.key,
-    required this.record,
-    required this.verbs,
+    this.record = const SystemVerbIconRecord(
+      versionNumber: 'v1.4.2',
+      versionType: 'SYSTEM_VERB_MAPPING',
+      releaseDate: '2026-09-08',
+      versionStatus: 'STABLE_PRODUCTION',
+      versionChecksum: 'sha256-4c7b8e19',
+      completionStatus: 'Good (100%)',
+      actionTimestamp: '2026-09-08T15:00:00Z',
+      userSessionId: 'SESSION-DLQDP-015-13',
+    ),
+    this.verbs = const [
+      SystemVerbItem(verbName: 'INGRESS', actionDescription: 'Data stream ingress pipeline', iconData: Icons.input_rounded),
+      SystemVerbItem(verbName: 'RECONCILE', actionDescription: 'Reconcile dual entry ledger balance', iconData: Icons.balance_rounded),
+      SystemVerbItem(verbName: 'PERSIST', actionDescription: 'Commit transaction record to vault', iconData: Icons.save_rounded),
+      SystemVerbItem(verbName: 'DISPATCH', actionDescription: 'Transmit real-time telemetry frame', iconData: Icons.send_rounded),
+    ],
   });
 
   @override
@@ -97,6 +111,34 @@ class _SystemVerbIconPanelState extends State<SystemVerbIconPanel> {
     );
   }
 
+  Map<String, dynamic> toExecutionLogJson() {
+    return {
+      'versionNumber': widget.record.versionNumber,
+      'versionType': widget.record.versionType,
+      'releaseDate': widget.record.releaseDate,
+      'versionStatus': widget.record.versionStatus,
+      'versionChecksum': widget.record.versionChecksum,
+      'completionStatus': widget.record.completionStatus,
+      'actionEventTimestamp': DateTime.now().toUtc().toIso8601String(),
+      'userSessionId': widget.record.userSessionId,
+      'metadata': {
+        'taskCode': 'DLQDP-015-13',
+        'row': 161,
+        'seq': 10746,
+        'assigned': 'Pooja',
+        'metricName': 'Task Atomicity / Single-Action Granularity Rate',
+        'floor': '≥90%',
+        'target': '100%',
+        'ceiling': '100%',
+        'unit': 'Good/Average/Poor → Best = Good (100%)',
+        'singleActionGranularityRate': widget.record.singleActionGranularityRate,
+        'iconBoundingBoxDp': widget.record.iconBoundingBoxDp,
+        'touchTargetPhantomPaddingDp': widget.record.touchTargetPhantomPaddingDp,
+        'verbsCount': widget.verbs.length,
+      }
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -105,12 +147,20 @@ class _SystemVerbIconPanelState extends State<SystemVerbIconPanel> {
     final atomicityPercentStr =
         '${(record.singleActionGranularityRate * 100).toStringAsFixed(0)}%';
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: AppSpacingTokens.paddingMd,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < 600;
+        final isExpanded = constraints.maxWidth >= 840;
+        final cardPadding = isCompact
+            ? AppSpacingTokens.paddingSm
+            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: cardPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header Bar with Step Badge
             Row(
@@ -141,7 +191,7 @@ class _SystemVerbIconPanelState extends State<SystemVerbIconPanel> {
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 32: DLQDP-015-13 (Row 2067)',
+                    'DLQDP-015-13 (Row 2067)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
@@ -379,6 +429,8 @@ class _SystemVerbIconPanelState extends State<SystemVerbIconPanel> {
           ],
         ),
       ),
+    );
+      },
     );
   }
 

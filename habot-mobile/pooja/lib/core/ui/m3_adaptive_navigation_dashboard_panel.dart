@@ -1,5 +1,5 @@
 /*
- * STEP 37: ANSA-020-12 — Deploy M3 Adaptive Navigation for Dashboards
+ * ANSA-020-12 — Deploy M3 Adaptive Navigation for Dashboards
  * 
  * Setup Step (Action): Deploy M3 Adaptive Navigation for Dashboards.
  * Setup Step Description: Launch the application environment in a mobile viewport emulator (width <600dp).
@@ -141,7 +141,7 @@ class _M3AdaptiveNavigationDashboardPanelState extends State<M3AdaptiveNavigatio
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 37: Deploy M3 Adaptive Dashboard Navigation',
+                              'Deploy M3 Adaptive Dashboard Navigation',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

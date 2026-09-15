@@ -1,5 +1,5 @@
 /*
- * STEP 36: UFHT-025-11 — UI Hesitation Heatmap Analyzer (Mobile Gestures)
+ * UFHT-025-11 — UI Hesitation Heatmap Analyzer (Mobile Gestures)
  * 
  * Setup Step (Action): UI Hesitation Heatmap Analyzer (Mobile Gestures).
  * Setup Step Description: Map coordinate values dynamically against the fluid grid viewport boundaries.
@@ -148,7 +148,7 @@ class _UiHesitationHeatmapPanelState extends State<UiHesitationHeatmapPanel> {
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 36: Mobile Gesture Hesitation Heatmap Analyzer',
+                              'Mobile Gesture Hesitation Heatmap Analyzer',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

@@ -1,10 +1,10 @@
 /*
- * STEP 5: SCTSS-017 — Create AI Draft vs Human Edit Split Ratio
+ * SCTSS-017 — Create AI Draft vs Human Edit Split Ratio
  * 
  * Setup Step (Action): Review workflow demands for verifying AI-generated blueprints against human edit tools.
  * Setup Step Description: Decide exact viewport ratio for dual-pane workspace (AI suggestion pane vs human edit input).
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Task Execution Quality Score (1-5 scale): Floor 3.5, Optimal 4.5, Ceiling 5.0.
  * Poka-Yoke Gate: Prompts explicitly constrain AI to output tasks taking <5 minutes. Over-length outputs
  * are visually flagged and auto-split into atomic chunks.

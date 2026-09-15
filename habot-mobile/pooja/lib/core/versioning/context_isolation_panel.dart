@@ -1,11 +1,11 @@
 /*
- * STEP 7: SSELC-002 — Design Visual Context Isolation Panel
+ * SSELC-002 — Design Visual Context Isolation Panel
  * 
  * Setup Step (Action): Define the purpose of the context isolation panel — what context data it displays.
  * Setup Step Description: Lock scrolling behavior to local micro-panels; remove global navigation rails from view;
  *   display focused evidence snippet asset above input box in distraction-free overlay.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Business Rule / Threshold Definition Coverage: Floor 90%, Target 100%, Ceiling 100%.
  * Poka-Yoke Gate: The client interface physically conceals surrounding PII document details from the worker's browser panel.
  * Self-Chasing: Frontend view breaks if uncropped full-scale files are received, forcing prompt backend pipeline optimization.

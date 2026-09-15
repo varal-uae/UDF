@@ -1,33 +1,10 @@
 /*
- * STEP 50: CCPME-012 — Contextual Mobile Consent Gates & Poka-Yoke Control
+ * CCPME-012 — Contextual Mobile Consent Gates & Poka-Yoke Control
  * 
  * Setup Step (Action): Contextual Mobile Consent Gates
  * Setup Step Description: Build in the mistake-proofing (poka-yoke) control: "Share Data"
  *   button remains permanently grayed out until user explicitly scrolls to bottom and clicks checkbox.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 & DEA/OPS Doc Conversion):
- * 1. API Endpoint: POST /api/v1/consent/mobile-gates/evaluate
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/consent/mobile-gates/{buildId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"buildStatus": String, "buildTimestamp": String, "buildArtifactsPath": String, "buildLogs": String, "buildDuration": String}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_CONSENT_GATE_VERIFIED ("Contextual mobile consent gate completed; legal agreement signed.")
- *    - Email Notification: EMAIL_CONSENT_AUDIT (Sent to UI Compliance Architect and Legal Engineering Ops)
- *    - SMS Alert: SMS_POKA_YOKE_CONSENT_BYPASS_ATTEMPT (Sent to Security Lead if share data button activated without scroll completion)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: UIComplianceArchitect (Role)
- *    - Escalation Handler: If consent bypass attempt detected, triggers COMPLIANCE_BUILD_REJECTION
- * 7. Error Handling & Failure States:
- *    - Poka-Yoke Guard: "Share Data" button remains permanently grayed out until user scrolls to bottom and clicks checkbox.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 49 (VPVMP-008) - Programmatic Checksum Verification -> Route: /security/checksum
- *    - Downstream Outcome: Complete Application Master Audit Directory (Steps 1–50 Registered)
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: UI Compliance Architecture Team | Submitted On: 2026-08-15 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - Poka-Yoke Consent Gate Compliance Ratio: Floor 0.9, Optimal 0.98, Ceiling 1.0. Standard: Lean Six Sigma Poka-Yoke Defect-Correction Benchmark.
- * ---------------------------------------------------------------------------------------------------
  * 
  * Mobile-First & Responsive UX/UI Decisions:
  *   - Secure, un-ignorable acknowledgment embedded inside responsive dialog modal forms.
@@ -59,7 +36,7 @@ class ConsentBuildRecord {
   final String userSessionId;
   final double pokaYokeComplianceRatio;
 
-  // DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 Doc Conversion)
+  // Step Specification & Metrics (Fields 10–11 Doc Conversion)
   final String apiEndpoint;
   final String httpMethod;
   final String authHeaderType;
@@ -212,7 +189,7 @@ class _Step50MobileConsentGatePanelState extends State<Step50MobileConsentGatePa
                           AppSpacingTokens.hGapMd,
                           Expanded(
                             child: Text(
-                              'Step 50: Contextual Mobile Consent Gates (Poka-Yoke Share Data Control)',
+                              'Contextual Mobile Consent Gates (Poka-Yoke Share Data Control)',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,
@@ -323,7 +300,7 @@ class _Step50MobileConsentGatePanelState extends State<Step50MobileConsentGatePa
                                   '2. Usage Rights: Anonymous interaction logs will be used strictly for interface performance optimization.\n'
                                   '3. Non-Disclosure: No personal operational identities or financial parameters will be exposed to unauthenticated third-party nodes.\n'
                                   '4. Poka-Yoke Controls: Legal sign-off requires complete reading of terms prior to checkbox enablement.\n'
-                                  '5. Final Audit Clause: Step 50 represents full master compliance registration across all 50 spreadsheet steps.',
+                                  '5. Final Audit Clause: Represents full master compliance registration across all spreadsheet steps.',
                                   style: TextStyle(fontSize: 12, height: 1.4),
                                 ),
                                 AppSpacingTokens.vGapMd,

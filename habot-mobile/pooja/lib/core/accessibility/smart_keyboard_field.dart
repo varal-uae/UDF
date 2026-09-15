@@ -1,11 +1,11 @@
 /*
- * STEP 19: NSKFI-015 — Build Mobile Virtual Keyboard Layout Interceptors
+ * NSKFI-015 — Build Mobile Virtual Keyboard Layout Interceptors
  * 
  * Setup Step (Action): Access the SmartKeyboardField component inside the Frontend Design System.
  * Setup Step Description: Attach specific attributes (inputmode="numeric", pattern="[0-9]*") to all value entry blocks;
  *   disable autocomplete; auto-focus traversal down form rows.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Common Library Storage: Shared core repository path `lib/core/accessibility/smart_keyboard_field.dart`.
  * Poka-Yoke Gate: Interceptor strips non-digit keystrokes programmatically before rendering input state.
  * 

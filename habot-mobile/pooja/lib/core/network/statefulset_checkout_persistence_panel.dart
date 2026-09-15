@@ -1,5 +1,5 @@
 /*
- * STEP 39: HSCPE-015 — StatefulSet Resource Manifest Construction (apps/v1) & Checkout State Persistence
+ * HSCPE-015 — StatefulSet Resource Manifest Construction (apps/v1) & Checkout State Persistence
  * 
  * Setup Step (Action): StatefulSet Resource Manifest Construction (apps/v1).
  * Setup Step Description: UX Implementation: Design the "Checkout State" view to persist continuously during
@@ -239,7 +239,7 @@ class _StatefulSetCheckoutPersistencePanelState extends State<StatefulSetCheckou
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 39: StatefulSet (apps/v1) Checkout State Persistence',
+                              'StatefulSet (apps/v1) Checkout State Persistence',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

@@ -1,11 +1,11 @@
 /*
- * STEP 11: HAZFE-001 — Provision Multi-Zone HA Setup & Auth Sign-Up Wireframe
+ * HAZFE-001 — Provision Multi-Zone HA Setup & Auth Sign-Up Wireframe
  * 
  * Setup Step (Action): Design the mobile frontend sync indicator using Google Material Design 3 (M3) top-bar patterns.
  * Setup Step Description: Transparent error handling during reconnects; subtle top-bar sync indicators;
  *   optimistic UI updates caching locally; low-fidelity auth signup wireframe.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Frontend/UI Integration Coverage: Pass/Fail.
  * Poka-Yoke Gate: System programmatically rejects form models lacking a valid `predecessor_id` context.
  * 

@@ -1,34 +1,11 @@
 /*
- * STEP 42: VPVMP-006-14 — Document Backward Data Mapping from Success Anchors
+ * VPVMP-006-14 — Document Backward Data Mapping from Success Anchors
  * 
  * Setup Step (Action): Document the precise data properties mapping the final step
  *   backward from success anchors.
  * Setup Step Description: Verify the horizontal step documentation entry strictly
  *   follows the non-narrative layout.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 & DEA/OPS Doc Conversion):
- * 1. API Endpoint: POST /api/v1/documents/backward-mapping/verify
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/documents/backward-mapping/{documentId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"documentTitle": String, "documentUrl": String, "userSessionId": String, "qaPassRate": double, "isReleaseFrozen": bool}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_DOC_MAPPING_VERIFIED ("Backward mapping sequence verified for {documentTitle}.")
- *    - Email Notification: EMAIL_DOC_MAPPING_AUDIT (Sent to BI Systems Modeler and QA Lead)
- *    - SMS Alert: SMS_SELF_CHASING_RELEASE_FREEZE (Sent to Release Ops if unmapped sequence gaps freeze release)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: BusinessIntelligenceSystemsModeler (Role)
- *    - Escalation Handler: If isReleaseFrozen = true, triggers RELEASE_FREEZE_ESCALATION to OPS_SECURITY_LEAD
- * 7. Error Handling & Failure States:
- *    - Poka-Yoke Exception: Portal specification forms throw TypeLayoutException if fields miss parent parameters.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 41 (PELCE-007-20) - Platform Fee Deduction -> Route: /fees/deduction
- *    - Downstream Outcome: Step 43 - Master Release Certification -> Route: /releases/certification
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: DEA/OPS Compliance Team | Submitted On: 2026-08-15 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - QA Test Case Pass Rate: Floor ≥95%, Optimal 100%, Ceiling 100%. Standard: ISO/IEC/IEEE 29119.
- * ---------------------------------------------------------------------------------------------------
  *
  * Mobile-First & Responsive UX/UI Decisions:
  *   - Compress long tracking parameter strings into clean, truncated text list elements for small screens.
@@ -63,7 +40,7 @@ class Step42DocMappingRecord {
   final String hasParentParameters;
   final bool isReleaseFrozen;
 
-  // DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 Doc Conversion)
+  // Step Specification & Metrics (Fields 10–11 Doc Conversion)
   final String apiEndpoint;
   final String httpMethod;
   final String authHeaderType;
@@ -170,14 +147,14 @@ class _Step42DocumentMappingPanelState extends State<Step42DocumentMappingPanel>
     ),
     const DocumentMappingItem(
       stepId: 'STEP-42-B',
-      stepTitle: 'Backward Lineage Mapping Step 41',
+      stepTitle: 'Backward Lineage Mapping Primary Node',
       parentParameterBinding: 'Parent: PlatformFeeFilter_PELCE-007-20',
       trackingParameter: 'param_flat_rate_fee_deduction_audit_log_trace',
       isMapped: true,
     ),
     const DocumentMappingItem(
       stepId: 'STEP-42-C',
-      stepTitle: 'Backward Lineage Mapping Step 40',
+      stepTitle: 'Backward Lineage Mapping Secondary Node',
       parentParameterBinding: 'Parent: MemoryLimitGuard_HSCPE-017',
       trackingParameter: 'param_oom_kill_protection_matrix_telemetry_trace',
       isMapped: true,
@@ -244,7 +221,7 @@ class _Step42DocumentMappingPanelState extends State<Step42DocumentMappingPanel>
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 42: Document Backward Data Mapping from Success Anchors',
+                              'Document Backward Data Mapping from Success Anchors',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

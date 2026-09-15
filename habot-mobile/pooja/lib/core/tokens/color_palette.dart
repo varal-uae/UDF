@@ -45,6 +45,10 @@ abstract class AppColorPalette {
   static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
   static const Color lightOnTertiaryContainer = Color(0xFF31111D);
 
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
   static const Color lightError = Color(0xFFB3261E);
   static const Color lightOnError = Color(0xFFFFFFFF);
   static const Color lightErrorContainer = Color(0xFFF9DEDC);
@@ -87,4 +91,14 @@ abstract class AppColorPalette {
   static const Color darkOnSurfaceVariant = Color(0xFFCAC4D0);
   static const Color darkOutline = Color(0xFF938F96);
   static const Color darkOutlineVariant = Color(0xFF49454F);
+}
+
+/// Compatibility alias class for components referencing AppColors
+abstract class AppColors {
+  static const Color primary = AppColorPalette.brandPrimary;
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color success = AppColorPalette.success;
+  static const Color warning = AppColorPalette.warning;
+  static const Color error = AppColorPalette.error;
 }

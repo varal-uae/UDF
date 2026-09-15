@@ -1,5 +1,5 @@
 /*
- * STEP 26: MUFCE-018 — Embed Universal Design Component Compliance Validator
+ * MUFCE-018 — Embed Universal Design Component Compliance Validator
  * 
  * Setup Step (Action): Open DevOps CI/CD pipeline code analysis directory and locate DesignComplianceLinterEngine.
  * Setup Step Description: Outlaw custom raw static pixel height statements inside product codebases globally;
@@ -177,7 +177,7 @@ Container(
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 26: MUFCE-018 (Row 1847)',
+                    'MUFCE-018 (Row 1847)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

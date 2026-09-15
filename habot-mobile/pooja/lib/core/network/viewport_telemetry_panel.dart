@@ -1,5 +1,5 @@
 /*
- * STEP 33: SSTLA-007 — Define Mobile Device Screen Dimension and Resolution Ingest Adapter Schema
+ * SSTLA-007 — Define Mobile Device Screen Dimension and Resolution Ingest Adapter Schema
  * 
  * Setup Step (Action): Define Mobile Device Screen Dimension and Resolution Ingest Adapter Schema.
  *   This decision determines the categories used to group hardware viewport boundaries, ensuring that aspect ratios
@@ -137,7 +137,7 @@ class _ViewportTelemetryPanelState extends State<ViewportTelemetryPanel> {
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 33: Mobile Viewport Ingest Adapter Schema',
+                              'Mobile Viewport Ingest Adapter Schema',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

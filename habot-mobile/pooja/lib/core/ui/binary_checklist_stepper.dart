@@ -1,10 +1,10 @@
 /*
- * STEP 4: RRCVG-024 — Enforce Binary Checklist Stepper Offboarding Rules
+ * RRCVG-024 — Enforce Binary Checklist Stepper Offboarding Rules
  * 
  * Setup Step (Action): Analyze complex multi-system offboarding manuals provided by Tech, OPS, and HRE teams.
  * Setup Step Description: Define offboarding items, map tool toggles, build vertical stepper UI, code final gate logic.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Process Execution Quality (%): Floor 85%, Optimal 95%, Ceiling 100%.
  * Poka-Yoke Gate: The final "Complete Offboarding" button is visually disabled until EVERY SINGLE tool's toggle
  * reads "YES (Revoked)". Unfinished toggles maintain the ticket in an "Active Risk" state on the Security Dashboard.

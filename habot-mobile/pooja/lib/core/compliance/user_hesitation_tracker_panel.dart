@@ -1,32 +1,9 @@
 /*
- * STEP 48: HC-INF-0302 — Build Interactive Event Listeners for User Hesitation and Friction Metrics
+ * HC-INF-0302 — Build Interactive Event Listeners for User Hesitation and Friction Metrics
  * 
  * Setup Step (Action): Build interactive event listeners onto input fields to capture user hesitation and friction metrics.
  * Setup Step Description: Configure the listeners to be non-blocking to the input field.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 & DEA/OPS Doc Conversion):
- * 1. API Endpoint: POST /api/v1/telemetry/user-hesitation/track
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/telemetry/user-hesitation/{sessionId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"configurationParameter": String, "currentSetting": String, "previousSetting": String, "changeLog": String, "configurationTimestamp": String}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_HESITATION_TRACKER_ACTIVE ("Non-blocking hesitation and friction listeners active.")
- *    - Email Notification: EMAIL_HESITATION_SPEC_AUDIT (Sent to Telemetry Engineer and Quality Ops Lead)
- *    - SMS Alert: SMS_POKA_YOKE_INPUT_BLOCKING_DETECTED (Sent to UX Architecture if listener blocks main thread >16ms)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: TelemetryEngineer (Role)
- *    - Escalation Handler: If main thread latency exceeds 16ms, triggers TELEMETRY_ISOLATION_ESCALATION
- * 7. Error Handling & Failure States:
- *    - Poka-Yoke Guard: Executes all hesitation tracking logic asynchronously on microtask queues to prevent UI thread frame drops.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 47 (RRCVG-006) - Reconciliation Readiness Gate -> Route: /gates/reconciliation
- *    - Downstream Outcome: Step 49 - User Friction Analytics Dashboard -> Route: /analytics/friction
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: Telemetry Engineering & Quality Operations Team | Submitted On: 2026-08-15 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - Task Configuration Completeness: Floor 0.8, Optimal 0.95, Ceiling 1.0. Standard: ISO 9001:2015 Quality Management — Process Conformance standard.
- * ---------------------------------------------------------------------------------------------------
  * 
  * Mobile-First & Responsive UX/UI Decisions:
  *   - Non-blocking asynchronous event listeners capturing focus dwell time and typing pause intervals.
@@ -57,7 +34,7 @@ class HesitationRecord {
   final String userSessionId;
   final double taskCompletenessRatio;
 
-  // DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 Doc Conversion)
+  // Step Specification & Metrics (Fields 10–11 Doc Conversion)
   final String apiEndpoint;
   final String httpMethod;
   final String authHeaderType;
@@ -191,7 +168,7 @@ class _Step48UserHesitationTrackerPanelState extends State<Step48UserHesitationT
                           AppSpacingTokens.hGapMd,
                           Expanded(
                             child: Text(
-                              'Step 48: Build Interactive Event Listeners for User Hesitation and Friction Metrics',
+                              'Build Interactive Event Listeners for User Hesitation and Friction Metrics',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

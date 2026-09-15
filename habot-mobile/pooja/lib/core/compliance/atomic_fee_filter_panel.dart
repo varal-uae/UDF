@@ -1,5 +1,5 @@
 /*
- * STEP 41: PELCE-007-20 — Atomic Action Filter: Flat-Rate Platform Fee Deduction
+ * PELCE-007-20 — Atomic Action Filter: Flat-Rate Platform Fee Deduction
  * 
  * Setup Step (Action): Implement the atomic action filter that performs flat-rate
  *   platform fee deductions, ensuring that the logic is transparent to
@@ -185,7 +185,7 @@ class _AtomicFeeFilterPanelState extends State<AtomicFeeFilterPanel> {
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 41: Atomic Action Filter: Flat-Rate Platform Fee Deduction',
+                              'Atomic Action Filter: Flat-Rate Platform Fee Deduction',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

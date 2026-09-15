@@ -1,11 +1,13 @@
 /*
- * STEP 1: RCGLA-014 — Standardize Mobile UI Component Library
+ * RCGLA-014 (Atomic Step Ref ID: RCGLA-014-A01) — Standardize Mobile UI Component Library
  * 
+ * Global Reference ID: RCGLA-014
+ * Atomic Step Reference ID: RCGLA-014-A01
  * Setup Step (Action): Define the Material Design 3 (M3) design tokens for the library.
  * Setup Step Description: Build M3 design tokens, create standard widgets (buttons, fields), 
  *   publish to internal package manager, enforce global usage via linters.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Substep 3 ("Publish to internal package manager") and Substep 4 ("Enforce global usage via linters")
  * are process/CI pipeline steps with no direct UI widget representation in this file. They are managed via
  * CI/CD deployment pipelines and repository static analysis configurations (e.g. analysis_options.yaml).
@@ -139,7 +141,7 @@ class M3DenseTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // DEA Audit Disclaimer for Substeps 3-4
+        // AUDIT Disclaimer for Substeps 3-4
         Container(
           width: double.infinity,
           margin: const EdgeInsets.only(bottom: AppDensityTokens.densityCeiling),
@@ -155,7 +157,7 @@ class M3DenseTable extends StatelessWidget {
               const SizedBox(width: AppDensityTokens.maxItemPadding),
               Expanded(
                 child: Text(
-                  'DEA Audit Note (Substeps 3–4): Package publishing and global linter enforcement are CI/CD pipeline steps managed outside of UI code.',
+                  'AUDIT Note (Substeps 3–4): Package publishing and global linter enforcement are CI/CD pipeline steps managed outside of UI code.',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,

@@ -1,5 +1,5 @@
 /*
- * STEP 30: FEBFL-005 — Enforce Private Flutter Pub Package Component Imports
+ * FEBFL-005 — Enforce Private Flutter Pub Package Component Imports
  * 
  * Setup Step (Action): Locate all frontend repository root folders in the codebase.
  * Setup Step Description: Enforce clean contextual split-screen view frameworks uniformly; enforce minimum 48x48dp
@@ -168,7 +168,7 @@ class CustomAdHocWidget extends StatelessWidget { // ERROR: Ad-hoc custom widget
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 30: FEBFL-005 (Row 2045)',
+                    'FEBFL-005 (Row 2045)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

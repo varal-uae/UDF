@@ -1,11 +1,11 @@
 /*
- * STEP 6: SGTIM-019 — Build Adaptive Circular Action Shortcut Buttons (<ContextualFAB>)
+ * SGTIM-019 — Build Adaptive Circular Action Shortcut Buttons (<ContextualFAB>)
  * 
  * Setup Step (Action): Navigate to the core UI layout component bundle directory.
  * Setup Step Description: Pin a standardized 56x56dp circular action button in the lower right thumb-comfort workspace sector.
  *   Program smooth expansion animation unfolding secondary action menus upward.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Environment & Configuration Setup Readiness: Pass/Fail gate.
  * Poka-Yoke Gate: Hide the floating action button completely if account permissions restrict a user from running that task.
  * Self-Chasing: Sub-menus collapse back to a single button automatically if a user taps anywhere outside the active option frame.

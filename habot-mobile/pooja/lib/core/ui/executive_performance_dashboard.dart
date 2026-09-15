@@ -1,10 +1,10 @@
 /*
- * STEP 13: LSAV-001 — Mobile-View Optimized Single-Column Executive Summary Dashboard
+ * LSAV-001 — Mobile-View Optimized Single-Column Executive Summary Dashboard
  * 
  * Setup Step (Action): Apply compact padding styles to eliminate unnecessary vertical viewport scrolling needs.
  * Setup Step Description: Single-column executive performance dashboard with revenue cards, conversion rate, and period metrics.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Breakpoint / Screen Reflow Test Coverage: Floor (Ad-hoc), Target (320–1280px), Ceiling (100% WCAG 1.4.10 Reflow). Pass/Fail output.
  * Poka-Yoke Gate: Compact layout eliminates horizontal scroll overflow on mobile viewports (<360dp reflow trigger).
  * 
@@ -56,7 +56,7 @@ class ExecutiveSummaryData {
     DateTime? actionTimestamp,
     String? userSessionId,
     this.completionStatus = ExecutiveDashboardCompletionStatus.pass,
-  })  : stepExecutionId = stepExecutionId ?? 'EXEC-STEP-13',
+  })  : stepExecutionId = stepExecutionId ?? 'EXEC-EXECSUMMARY-13',
         actionTimestamp = actionTimestamp ?? DateTime.now(),
         userSessionId = userSessionId ?? 'SESS-EXEC-2026';
 }

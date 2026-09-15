@@ -30,8 +30,7 @@ class _MasterMenuPageState extends State<MasterMenuPage> {
 
       final matchesQuery = step.stepCode.toLowerCase().contains(query) ||
           step.title.toLowerCase().contains(query) ||
-          step.description.toLowerCase().contains(query) ||
-          'step ${step.stepNumber}'.contains(query);
+          step.description.toLowerCase().contains(query);
 
       return matchesCategory && matchesQuery;
     }).toList();
@@ -148,11 +147,10 @@ class _MasterMenuPageState extends State<MasterMenuPage> {
                       ),
                       AppSpacingTokens.vGapLg,
 
-                      // Search TextField
+                      // Search Input
                       TextField(
-                        onChanged: (val) => setState(() => _searchQuery = val),
                         decoration: InputDecoration(
-                          hintText: 'Search steps by title, ID (e.g. HAZFE-001), or description...',
+                          hintText: 'Search steps by name, Global Ref ID, or Atomic Step ID...',
                           prefixIcon: const Icon(Icons.search),
                           suffixIcon: _searchQuery.isNotEmpty
                               ? IconButton(
@@ -160,16 +158,18 @@ class _MasterMenuPageState extends State<MasterMenuPage> {
                                   onPressed: () => setState(() => _searchQuery = ''),
                                 )
                               : null,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                           filled: true,
-                          fillColor: colorScheme.surfaceContainerLow,
+                          fillColor: colorScheme.surfaceContainerHighest.withAlpha(120),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
+                        onChanged: (val) => setState(() => _searchQuery = val),
                       ),
                       AppSpacingTokens.vGapMd,
 
-                      // Category Filter Chips
+                      // Category Horizontal Scroll Tabs
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
@@ -178,16 +178,20 @@ class _MasterMenuPageState extends State<MasterMenuPage> {
                             return Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: FilterChip(
-                                selected: isSelected,
                                 avatar: Icon(
                                   cat.icon,
-                                  size: 18,
+                                  size: 16,
                                   color: isSelected ? colorScheme.onPrimary : colorScheme.primary,
                                 ),
                                 label: Text(cat.label),
-                                onSelected: (_) {
-                                  setState(() => _selectedCategory = cat);
-                                },
+                                selected: isSelected,
+                                onSelected: (sel) => setState(() => _selectedCategory = cat),
+                                showCheckmark: false,
+                                selectedColor: colorScheme.primary,
+                                labelStyle: TextStyle(
+                                  color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                ),
                               ),
                             );
                           }).toList(),
@@ -223,7 +227,7 @@ class _MasterMenuPageState extends State<MasterMenuPage> {
                       sliver: SliverGrid(
                         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 400,
-                          mainAxisExtent: 220,
+                          mainAxisExtent: 230,
                           crossAxisSpacing: 16,
                           mainAxisSpacing: 16,
                         ),
@@ -250,31 +254,36 @@ class _MasterMenuPageState extends State<MasterMenuPage> {
                                       Row(
                                         children: [
                                           Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                             decoration: BoxDecoration(
                                               color: colorScheme.primaryContainer,
                                               borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: Text(
-                                              'Step ${step.stepNumber}',
+                                              step.effectiveAtomicCode,
                                               style: theme.textTheme.labelMedium?.copyWith(
                                                 color: colorScheme.onPrimaryContainer,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                           ),
-                                          AppSpacingTokens.hGapSm,
-                                          Expanded(
-                                            child: Text(
-                                              step.stepCode,
-                                              style: theme.textTheme.labelSmall?.copyWith(
-                                                color: colorScheme.secondary,
-                                                fontWeight: FontWeight.w600,
+                                          if (step.atomicStepCode != null && step.stepCode != step.atomicStepCode) ...[
+                                            const SizedBox(width: 6),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: colorScheme.surfaceContainerHighest,
+                                                borderRadius: BorderRadius.circular(6),
                                               ),
-                                              overflow: TextOverflow.ellipsis,
+                                              child: Text(
+                                                step.stepCode,
+                                                style: theme.textTheme.labelSmall?.copyWith(
+                                                  color: colorScheme.onSurfaceVariant,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          AppSpacingTokens.hGapSm,
+                                          ],
+                                          const Spacer(),
                                           Icon(step.icon, color: colorScheme.primary),
                                         ],
                                       ),

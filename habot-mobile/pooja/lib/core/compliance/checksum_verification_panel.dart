@@ -1,33 +1,10 @@
 /*
- * STEP 49: VPVMP-008 — Programmatic Data Checksum Verification & Digital Signature Layouts
+ * VPVMP-008 — Programmatic Data Checksum Verification & Digital Signature Layouts
  * 
  * Setup Step (Action): Enforce strict programmatic data checksum checks over computing logic states.
  * Setup Step Description: Translate this into the user-facing experience: Dynamic digital signature
  *   confirmation layouts rendering prominent verification icons alongside verified formula blocks on screens.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 & DEA/OPS Doc Conversion):
- * 1. API Endpoint: POST /api/v1/security/checksum-verification/enforce
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/security/checksum-verification/{signatureId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"layoutType": String, "layoutGridDimensions": String, "spacingRules": String, "alignmentSettings": String, "layoutValidationStatus": String}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_CHECKSUM_VERIFIED ("Programmatic data checksum verified; digital signature confirmed.")
- *    - Email Notification: EMAIL_CHECKSUM_SPEC_AUDIT (Sent to Cryptographic Systems Specialist & Automated Release Build Engineer)
- *    - SMS Alert: SMS_POKA_YOKE_CHECKSUM_MISMATCH (Sent to Build Ops when checksum mismatch blocks code promotion)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: CryptographicSystemsSpecialist (Role)
- *    - Escalation Handler: If checksum mismatch occurs during build promotion, triggers PIPELINE_DELIVERY_STALL
- * 7. Error Handling & Failure States:
- *    - Poka-Yoke Engine: Blocks codebase promotions if source variables mismatch verified specification blueprints.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 48 (HC-INF-0302) - User Hesitation Tracker -> Route: /telemetry/user-hesitation
- *    - Downstream Outcome: Step 50 - Master Compliance Release Sign-off -> Route: /compliance/release-signoff
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: Cryptographic Systems & Automated Release Engineering Team | Submitted On: 2026-08-15 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - Programmatic Checksum Verification Ratio: Floor 0.9, Optimal 0.97, Ceiling 1.0. Standard: ITIL v4 Service Level Management Standard.
- * ---------------------------------------------------------------------------------------------------
  * 
  * Mobile-First & Responsive UX/UI Decisions:
  *   - Organize complex analytical diagnostic data logs into simple, vertical accordion list groups.
@@ -59,7 +36,7 @@ class ChecksumRecord {
   final double checksumVerificationRatio;
   final String digitalSignatureHash;
 
-  // DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 Doc Conversion)
+  // Step Specification & Metrics (Fields 10–11 Doc Conversion)
   final String apiEndpoint;
   final String httpMethod;
   final String authHeaderType;
@@ -211,7 +188,7 @@ class _Step49ChecksumVerificationPanelState extends State<Step49ChecksumVerifica
                           AppSpacingTokens.hGapMd,
                           Expanded(
                             child: Text(
-                              'Step 49: Programmatic Data Checksum Verification & Digital Signature Layouts',
+                              'Programmatic Data Checksum Verification & Digital Signature Layouts',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

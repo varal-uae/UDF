@@ -1,10 +1,10 @@
 /*
- * STEP 18: TECH-ENG-046 — Establish GCP Cloud Costs and Infrastructure Budget Alerts
+ * TECH-ENG-046 — Establish GCP Cloud Costs and Infrastructure Budget Alerts
  * 
  * Setup Step (Action): Build a FinOps cost dashboard showing daily spend, cumulative spend, remaining budget, and burn rate trend.
  * Setup Step Description: Load time performance standards against Google RAIL model (< 5 seconds on 4G).
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Load Time Performance Score: Optimal (<1.5s), Acceptable (<5.0s 4G Floor), Degraded (>5.0s).
  * Poka-Yoke Gate: System enforces <5s dashboard load time; alerts trigger if monthly burn rate exceeds budget allocation.
  * 

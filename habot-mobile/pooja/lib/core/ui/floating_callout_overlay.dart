@@ -1,10 +1,10 @@
 /*
- * STEP 9: LSAV-024 — Define Floating Core Callout Overlay Block
+ * LSAV-024 — Define Floating Core Callout Overlay Block
  * 
  * Setup Step (Action): Save the floating overlay block definition layout to the core design system folder.
  * Setup Step Description: Build high-intensity elevation Level 4/5 drop shadow alert card with custom severity highlights.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Version Control Commit Discipline: Floor (Ad-hoc), Optimal (Descriptive + ticket), Ceiling (Descriptive + ticket + peer review).
  * Poka-Yoke Gate: CI/CD fails build if hardcoded .json keys exist in repo. Tokens persisting >1hr force auto-restart.
  * 

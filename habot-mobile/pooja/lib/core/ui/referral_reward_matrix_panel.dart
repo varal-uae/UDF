@@ -1,5 +1,5 @@
 /*
- * STEP 22: PDMV-032 — Setting up the Standardized Referral Reward Credit Token Matrix
+ * PDMV-032 — Setting up the Standardized Referral Reward Credit Token Matrix
  * 
  * Setup Step (Action): Select tertiary color tokens (md.sys.color.tertiary) and outlined card component layouts.
  * Setup Step Description: Apply Material M3 Card with tonal elevation and 16dp internal padding; set max width 640dp;
@@ -136,7 +136,7 @@ class ReferralRewardMatrixPanel extends StatelessWidget {
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 22: PDMV-032 (Row 1781)',
+                    'PDMV-032 (Row 1781)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

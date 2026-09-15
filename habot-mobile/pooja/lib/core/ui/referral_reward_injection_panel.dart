@@ -1,5 +1,5 @@
 /*
- * STEP 28: PDMV-016-10 — Build Mobile Referral-First Reward Injection
+ * PDMV-016-10 — Build Mobile Referral-First Reward Injection
  * 
  * Setup Step (Action): Size "Share" Floating Action Buttons (FABs) as large, easily tappable touch targets.
  * Setup Step Description: Native mobile share intent integration; 56dp FAB touch target compliance;
@@ -174,7 +174,7 @@ class _ReferralRewardInjectionPanelState
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 28: PDMV-016-10 (Row 1946)',
+                    'PDMV-016-10 (Row 1946)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

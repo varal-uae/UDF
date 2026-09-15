@@ -1,5 +1,5 @@
 /*
- * STEP 23: IS29-SCTAS-007 — Implement High-Contrast Mobile Status Badge System
+ * IS29-SCTAS-007 — Implement High-Contrast Mobile Status Badge System
  * 
  * Setup Step (Action): Open core UI status badge component library file.
  * Setup Step Description: Define status configuration maps matching data states to target token colors;
@@ -112,7 +112,7 @@ class StatusBadgeSystemPanel extends StatelessWidget {
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 23: IS29-SCTAS-007-AS01 (Row 1792)',
+                    'IS29-SCTAS-007-AS01 (Row 1792)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

@@ -1,10 +1,10 @@
 /*
- * STEP 8: IRBCA-055 — Access Mapping Matrix & Swipe Approval Queue
+ * IRBCA-055 — Access Mapping Matrix & Swipe Approval Queue
  * 
  * Setup Step (Action): Develop an administrative UI to manage the matrix & managerial claim approval queue.
  * Setup Step Description: Build swipeable claim queue (Swipe Right = Approve, Swipe Left = Reject) with haptics.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Process Execution Quality (%): Floor 95%, Target 99%, Ceiling 100%. Pass/Fail output.
  * Poka-Yoke Gate: Lock placement of critical widgets; managers cannot customize or hide mandatory evidence fields
  * (Amount, Category, Receipt Thumbnail) before swiping.

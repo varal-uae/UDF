@@ -1,5 +1,5 @@
 /*
- * STEP 27: EDEBS-015-10 — Execute Lineage Trace Test & Release Gate Control
+ * EDEBS-015-10 — Execute Lineage Trace Test & Release Gate Control
  * 
  * Setup Step (Action): Set the pipeline rules to physically disable the "Release to Tech" dashboard button if score > 0.
  * Setup Step Description: Observability & alert coverage verification against Google SRE Handbook standards;
@@ -144,7 +144,7 @@ class _LineageTraceTestPanelState extends State<LineageTraceTestPanel> {
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 27: EDEBS-015-10 (Row 1869)',
+                    'EDEBS-015-10 (Row 1869)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

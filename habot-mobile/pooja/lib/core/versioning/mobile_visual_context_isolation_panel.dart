@@ -1,5 +1,5 @@
 /*
- * STEP 34: MCIIM-014-07 — Isolate Mobile Visual Context
+ * MCIIM-014-07 — Isolate Mobile Visual Context
  * 
  * Setup Step (Action): Isolate Mobile Visual Context.
  * Setup Step Description: Display only the cropped focus region inside the primary viewport container.
@@ -113,7 +113,7 @@ class _MobileVisualContextIsolationPanelState extends State<MobileVisualContextI
                           AppSpacingTokens.hGapSm,
                           Expanded(
                             child: Text(
-                              'Step 34: Isolate Mobile Visual Context',
+                              'Isolate Mobile Visual Context',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,

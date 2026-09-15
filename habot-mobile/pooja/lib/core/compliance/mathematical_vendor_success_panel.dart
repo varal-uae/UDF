@@ -1,5 +1,5 @@
 /*
- * STEP 25: EDEBS-008-15 — Mathematically Prove Mobile Vendor Onboarding Success
+ * EDEBS-008-15 — Mathematically Prove Mobile Vendor Onboarding Success
  * 
  * Setup Step (Action): Open the mobile UI component library to build the final success interface.
  * Setup Step Description: Prove vendor onboarding success probability P(s)=1.0; MD3 elevated success card;
@@ -119,7 +119,7 @@ class MathematicalVendorSuccessPanel extends StatelessWidget {
                 AppSpacingTokens.hGapSm,
                 Expanded(
                   child: Text(
-                    'Step 25: EDEBS-008-15 (Row 1814)',
+                    'EDEBS-008-15 (Row 1814)',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,

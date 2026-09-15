@@ -1,5 +1,5 @@
 /*
- * STEP 38: CBSV-004-14 — Enforce Absolute Structural Decomposition on Compound Locations
+ * CBSV-004-14 — Enforce Absolute Structural Decomposition on Compound Locations
  * 
  * Setup Step (Action): Enforce absolute structural decomposition on large compound locations to maximize machine-driven
  *   filtering capabilities and support programmatic matching matrixes.
@@ -128,7 +128,7 @@ class _LocationStructuralDecompositionPanelState extends State<LocationStructura
                             AppSpacingTokens.hGapSm,
                             Expanded(
                               child: Text(
-                                'Step 38: Structural Decomposition on Location Data',
+                                'Structural Decomposition on Location Data',
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: colorScheme.onSurface,

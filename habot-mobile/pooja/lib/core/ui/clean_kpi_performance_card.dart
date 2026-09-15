@@ -1,10 +1,10 @@
 /*
- * STEP 15: MUFCE-024 — Strip Vanity Parameters from Performance Logs
+ * MUFCE-024 — Strip Vanity Parameters from Performance Logs
  * 
  * Setup Step (Action): Set analytical engines to block displays if users overlay social vanity datasets.
  * Setup Step Description: Highlights "Zero-Touch Conversion Rate" as central high-emphasis KPI asset container.
  * 
- * DEA AUDIT NOTICE:
+ * AUDIT NOTICE:
  * Object Lock / State Consistency Audit: High (Scale: High/Medium/Low).
  * Poka-Yoke Gate: Analytical engine blocks rendering if social vanity parameters bypass filtering layers.
  * 

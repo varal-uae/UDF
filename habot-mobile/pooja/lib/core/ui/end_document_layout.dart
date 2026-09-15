@@ -1,32 +1,9 @@
 /*
- * STEP 2: EDEBS-032 — Anchor Mobile End Document (ED) UI Layout
+ * EDEBS-032 — Anchor Mobile End Document (ED) UI Layout
  * 
  * Setup Step (Action): Open the master interface schema and data contract directory within the repository.
  * Setup Step Description: Definitive CDE restrictions | Nested structure bounds | Null condition rules | Precise type-casting schemas.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11):
- * 1. API Endpoint: POST /api/v1/documents/{documentId}/approve-sign
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/documents/{documentId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"documentId": String, "userSessionId": String, "userRole": String, "signatureHash": String}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_DOC_APPROVED ("Document {documentId} signed & approved.")
- *    - Email Notification: EMAIL_SIGN_OFF_CONFIRMATION (Sent to document owner and approver)
- *    - SMS Alert: SMS_RBAC_REJECTION_ALERT (Sent to OPS security if unauthorized sign-off attempted)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: ComplianceOfficer (Role)
- *    - Escalation Handler: If isRbacAuthorized = false, triggers ESCALATE_TO_ADMIN workflow (OPS_SECURITY_LEAD)
- * 7. Error Handling & Failure States:
- *    - Dynamic Network/API Error Banner (HTTP 500 / Network Timeout) with retry backoff loop.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 01 (RCGLA-014) - Dense Data Table -> Route: /documents/review
- *    - Downstream Outcome: Step 03 (SCTSS-001) - Toast Bar & Success Dashboard -> Route: /documents/completed
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: DEA/OPS Compliance Team | Submitted On: 2026-08-14 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - Title Length: Min 5 chars, Max 120 chars. Auto-truncated with Tooltip if >80 chars.
- * ---------------------------------------------------------------------------------------------------
  */
 
 import 'package:flutter/material.dart';
@@ -91,8 +68,8 @@ class EndDocumentDefinition {
     this.governanceOwner = 'DEA/OPS Compliance Team',
     DateTime? submittedOn,
     DateTime? targetDate,
-    this.upstreamSourceRoute = 'Step 01 (RCGLA-014) -> /documents/review',
-    this.downstreamOutcomeRoute = 'Step 03 (SCTSS-001) -> /documents/completed',
+    this.upstreamSourceRoute = 'RCGLA-014 -> /documents/review',
+    this.downstreamOutcomeRoute = 'SCTSS-001 -> /documents/completed',
     this.pushNotificationEvent = 'PUSH_NOTIF_DOC_APPROVED',
     this.emailNotificationEvent = 'EMAIL_SIGN_OFF_CONFIRMATION',
     this.smsRbacAlertEvent = 'SMS_RBAC_REJECTION_ALERT',

@@ -1,34 +1,11 @@
 /*
- * STEP 44: REF-016 — Integrated Character-Level Text Formatting Mask Handler
+ * REF-016 — Integrated Character-Level Text Formatting Mask Handler
  * 
  * Setup Step (Action): Build an integrated character-level text formatting mask
  *   handler for data entry input fields.
  * Setup Step Description: Identify all data entry input fields requiring text
  *   masking across the application.
  * 
- * ---------------------------------------------------------------------------------------------------
- * DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 & DEA/OPS Doc Conversion):
- * 1. API Endpoint: POST /api/v1/input-masks/character-level/enforce
- * 2. HTTP Method: POST | Fetch Endpoint: GET /api/v1/input-masks/{maskId}
- * 3. Auth Headers: Authorization: Bearer <userSessionId>, Content-Type: application/json
- * 4. Payload Mapping: {"stepExecutionId": String, "executionStatus": String, "executionTimestamp": String, "stepOutcome": String, "userId": String}
- * 5. Notifications / Messages:
- *    - Push Notification: PUSH_NOTIF_MASK_HANDLER_ACTIVE ("Character-level text formatting mask active across registry.")
- *    - Email Notification: EMAIL_MASK_SPEC_AUDIT (Sent to Frontend Logic Developer and RegEx Specialist)
- *    - SMS Alert: SMS_POKA_YOKE_INVALID_CHAR_DROPPED (Sent to QA Ops when invalid characters are intercepted)
- * 6. Approval Escalation Chain:
- *    - Primary Approver: FrontendLogicDeveloper (Role)
- *    - Escalation Handler: If unmasked inputs pass into payload compilation, triggers DEPLOYMENT_ERROR_FLAG
- * 7. Error Handling & Failure States:
- *    - Poka-Yoke Gate: Drops invalid characters from keyboard buffer before registering in form state memory.
- * 8. Upstream & Downstream Lineage:
- *    - Upstream Source: Step 43 (IS32-CSIVW-019-AS01) - CTA Verb Limits -> Route: /components/cta-limits
- *    - Downstream Outcome: Step 45 - Automated Form Validation Pipeline -> Route: /forms/validation-pipeline
- * 9. Governance Metadata:
- *    - Status: PASS | Owner: Frontend Input & Security Perimeter Team | Submitted On: 2026-08-15 | Target Date: 2026-08-20
- * 10. Validation Rules:
- *    - Identification Accuracy: Floor 95.0%, Optimal 100.0%, Ceiling 100.0%. Standard: Complete/Not Complete.
- * ---------------------------------------------------------------------------------------------------
  * 
  * Mobile-First & Responsive UX/UI Decisions:
  *   - Minimizes typing frustrations on soft keyboards by handling spacing and formatting automatically.
@@ -61,7 +38,7 @@ class TextMaskRecord {
   final String userSessionId;
   final double identificationAccuracy;
 
-  // DEA AUDIT & API CONTRACT SPECIFICATION (Fields 10–11 Doc Conversion)
+  // Step Specification & Metrics (Fields 10–11 Doc Conversion)
   final String apiEndpoint;
   final String httpMethod;
   final String authHeaderType;
@@ -206,7 +183,7 @@ class _Step44TextMaskHandlerPanelState extends State<Step44TextMaskHandlerPanel>
                           AppSpacingTokens.hGapMd,
                           Expanded(
                             child: Text(
-                              'Step 44: Integrated Character-Level Text Formatting Mask Handler',
+                              'Integrated Character-Level Text Formatting Mask Handler',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,
