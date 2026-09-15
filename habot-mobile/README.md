@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,826 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,998 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -352,8 +352,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 273 | TSIP-023 | Six subjects on one row; 30s is fifteen client budgets | 10 |
 | 274 | GEN-04517 | "No clean exit" is three events wearing one face | 10 |
 | 275 | GEN-02698 | axe-core cannot walk a widget tree; 3 errors is not evidence | 10 |
+| 276 | ARCPE-004-05 | Two handlers that are one gesture; the band mis-names both WCAG levels | 8 |
+| 277 | ARCPE-004-08 | A height cap is a nested scroller, and it hides from short tests | 9 |
+| 278 | DSDD-003-14 | Collapsing the mistakes hides them from everyone but the worried | 8 |
+| 279 | GEN-03006 | "Drawer" would have spent the gesture Step 226 gave to back | 9 |
+| 280 | ERMWD-029-07 | A focus trap is not a touch construct; both are needed | 9 |
+| 281 | HSFVS-011-15 | A hard stop is in neither vocabulary -- as Step 272 found | 8 |
+| 282 | EDEBS-019-13 | "Action Failed" passes every check and says nothing | 8 |
+| 283 | GEN-00854 | Two rows, one metric, bands 10x and 25x apart | 8 |
+| 284 | RRCVG-002 | An HTML tag, a touch metric on something nobody presses | 8 |
+| 285 | BDAE-003 | A gap is the way out of the size rule, not a second rule | 9 |
+| 286 | HSCPE-019 | The floor is "no token system", so the band cannot fail | 9 |
+| 287 | CBSV-004-13 | Two hex literals the guard would refuse; seven emirates | 9 |
+| 288 | IS05-CSIVW-026-AS01 | The first row in nine batches whose metric fits its action | 9 |
+| 289 | ETMDI-016-11 | Stripping without a destination is deleting; one has none | 8 |
+| 290 | GEN-00101 | Dwell and hesitation are different; the limits span 45x | 8 |
+| 291 | PELCE-029-16 | The row already contains the antidote to the next one | 8 |
+| 292 | PELCE-029-17 | "Permanently" refused; the floor forbids what the rule allows | 9 |
+| 293 | PCDE-019 | The remedy and the repeat, two lines apart in one row | 9 |
+| 294 | BLGTA-033 | Disabled is a hint; "unverified" is three states | 9 |
+| 295 | LSAV-002 | "Interface permissions" is a contradiction; read-only is three | 10 |
 
-**1,826 gates across 275 steps.** 254 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**1,998 gates across 295 steps.** 274 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
 GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
@@ -369,7 +389,10 @@ bundled assets to compress, so the ratio has an empty population), GEN-01595 **P
 scrubber intercepts three of eleven contact strings), GEN-04902 Partial (a cycle time from
 convening to ratification measures a meeting), GEN-02808 **Fail** (no cipher ships in `lib/`, so
 an encryption health badge's honest state is failed). Each of those four is the measurement the
-row asked for, reported as it came out.
+row asked for, reported as it came out. Steps 276-295 report clean throughout -- no Fail, no
+Partial, no deferred gate -- which is the first batch in nine to do so, and is a property of the
+rows rather than of the effort: every one of the twenty had something a client could actually
+build.
 
 ### MTO worker screens
 
@@ -763,6 +786,87 @@ evidence its floor does -- ten thousand sessions against a hundred (Step 274). R
 first four bytes moves attachment validation accuracy from 0.875, below the row's floor, to 1.0
 (Step 262).
 
+### Disclosure, density, and the five jobs the word "disabled" is doing
+
+Steps 276-295 are one arc with three movements: what the interface reveals, how dense it is
+allowed to be, and what it does when it will not let you act. The third movement is the finding.
+
+**"Disabled" names five different things across five adjacent rows, and only one of them is
+enforceable here.** Step 291 binds a button to a reconciliation result and reuses Step 254's
+sealed gate, so every refusal carries a reason and a field to focus. Step 292 asks to
+*permanently* disable the same button on a score that changes -- implemented literally, the first
+non-zero score latches it off and the person closes every gap and watches nothing happen; the word
+is refused and the latched kind is declared-but-unused so that choosing it would be visible. Step
+293 disables payout buttons on a server flag and, in its own design notes, both supplies the
+recovery dialogue Step 292 was missing *and* repeats "permanently disabled" two lines later. Step
+294 locks pathways on unverified authorisation, where the point is that a disabled control is a
+hint and not a boundary. Step 295 blocks cell editing under the name "interface permissions",
+which is a contradiction: permissions are enforced where the data is.
+
+**Two of those rows contain the cure for the others, and none of them knows it.** Step 291's
+design notes say "tap the widget to see exactly which logic chunk is missing" -- exactly what Step
+292's greyed-out button lacks. Step 293's say "tapping the suspended chip opens a dialogue
+explaining recovery steps" -- the same fix again, on the row that also repeats the defect. All
+three are adjacent in the sheet, assigned as separate steps, cross-referencing nothing. The remedy
+is implemented for all of them and the adjacency is recorded, because a reader who implements 292
+alone builds the dead end.
+
+**"Unverified" is three states.** Verified-and-allowed, verified-and-refused, and not-yet-known.
+Collapsing the third into the second means a slow authorisation check reads as a refusal, so the
+person on the worst connection is the one told they may not do something they may. Step 271 gave
+the encryption badge the same three-valued shape a fortnight ago for the same reason: silence is
+not a verdict.
+
+**The disclosure rows found a scrolling hazard that hides from tests.** Step 277 asks for a
+maximum height on an expanded accordion panel. A capped panel with more content than fits is a
+second vertical scroller inside a vertical page, and the inner one takes the gesture -- the bug
+arrives as "the screen is stuck", not as anything about scrolling. It is also intermittent by
+construction: the cap does nothing until the content is long, so it passes every short test case.
+The constraint moved onto the content instead: six rows inline, the rest on a surface of its own.
+
+**Step 282 is the batch's cleanest measurement.** The row asks for a snackbar reading "Action
+Failed". That string passes `HabotErrorSnackbar.isPresentable` -- the gate built to stop stack
+traces and HTTP codes reaching users -- because it leaks nothing. It is also useless: it names
+neither the action nor a next move, so a person with a booking saving and a photo uploading learns
+that one of them stopped. Leakage and emptiness are different failures, the old gate is not at
+fault for missing the second, and the corpus here contains all four combinations so neither test
+can pass on the strength of the other.
+
+**Two rows cite the same standard on the same day and disagree.** Step 276 gives 44px as the WCAG
+AA touch-target floor; Step 285 gives 24x24px. SC 2.5.8 (AA) is 24 and SC 2.5.5 (AAA) is 44, so
+Step 285 is right and Step 276's floor is the AAA figure wearing an AA label -- and its 56px
+ceiling is in neither level. Step 285 also turned out to be the more interesting row: a gap is not
+a second requirement, it is the *exception* to the first, so target size is one predicate with two
+branches and an 18-point link with 12 points around it passes where two 20-point chips two points
+apart do not.
+
+**Two bands for one metric.** Step 283's haptic delay band is 10ms / 2ms / 16ms; the band already
+declared for the same tap-to-motor interval is 100ms / 50ms / 16ms. They agree only on the
+ceiling, which is the one figure that is a fact about anything -- 16ms is a frame. Two
+milliseconds across a platform channel is not a harder target, it is an unmeetable one.
+
+**And one band cannot fail at all.** Step 286's MD3 Token Compliance floor is "ad-hoc custom
+styling, no token system" -- the condition a token system exists to end. Every repository meets
+it, including one that has never heard of tokens. Step 263 refused to report Pass over an empty
+population; this is the same defect written into a band.
+
+**Eight rows written for other stacks.** CSS at 276, 277 and 291; React Native props at 280;
+`md-linear-progress`, a Material Web Components custom element, at 284; `Arrangement.Center` from
+Jetpack Compose at 289; a JavaScript function at 295. Step 258 keeps the running list.
+
+**The exception worth naming.** Step 288 asks to identify ENUM fields needing chip presentation
+and is scored on Asset & Component Discovery Completeness. After nine batches of metrics belonging
+to other rows, that one measures its own action -- and its ceiling, "100% (full inventory -- no
+further discovery value beyond complete coverage)", is the only ceiling in this batch that
+explains itself and is right.
+
+**Arithmetic worth keeping.** Eight columns of scheduling data need 690dp and a phone has 328, so
+five go past the edge unseen (286). Dwell thresholds span 45x across input kinds, from four
+seconds on an empty numeric field to three minutes on a note (290). Two thirds of a single-task
+screen leaves it, and one of the nine elements has nowhere to go (289). A greyed label at MD3's
+0.38 opacity keeps about 2.7:1 of a 7:1 contrast (292). 99.99% payout accuracy is one person in
+ten thousand (293).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -892,6 +996,25 @@ first four bytes moves attachment validation accuracy from 0.875, below the row'
     under a withdrawn consent, the identity standard for digital signatures -- a drawn signature
     identifies nobody -- and who owns the decision. No placeholder owner was invented, because a
     decision record with an invented owner is one nobody checks.
+33. **A terminal state has no slot in either vocabulary** (Steps 272, 281). `HabotErrorCategory`
+    has nine members and every one describes something that went wrong on the way to an outcome;
+    `HabotSurfaceIntent` has four and every one assumes the flow continues. A hard stop is neither.
+    Two rows reached the same hole from different directions; adding a terminal kind to both
+    touches gated files from earlier steps, so it is recorded rather than done quietly.
+34. **Two bands for the haptic delay metric** (Step 283). 100/50/16 ms was declared earlier;
+    GEN-00854 says 10/2/16 ms for the same interval. Only the ceiling matches. Somebody should
+    pick one, and the 2 ms optimal is not reachable across a platform channel.
+35. **Nothing can read the OS haptic setting** (Step 283). Flutter exposes no API for it, so a
+    person who turned haptics off at the system level still gets them until they find the in-app
+    switch. Either the in-app default flips to off, or a plugin that can read the platform setting
+    is added. Both have a cost; neither is free to keep deferring.
+36. **Two rows disagree about the WCAG AA touch-target figure** (Steps 276, 285). 44px against
+    24x24px, same standard, same batch. SC 2.5.8 (AA) is 24 and SC 2.5.5 (AAA) is 44, so Step 285
+    is correct -- but the sheet now contains both and somebody will read the wrong one.
+37. **A referral code nobody owns** (Step 289). It is on the confirmation screen, nothing reads
+    it, and no other surface has a place for it. Stripping it from the screen would delete it, so
+    it is reported instead: either something should consume it, or it should be removed
+    deliberately.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
