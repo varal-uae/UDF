@@ -449,6 +449,20 @@ class HabotMotion {
   /// [orderTotalRecalculationBudget] and 100ms is [railInstant] -- so this
   /// is the one figure that row adds.
   static const Duration clientMathGateBudget = Duration(milliseconds: 10);
+
+  // ---------------------------------------------------------------------
+  // Attestation and release safety (Steps 271, 275).
+  // ---------------------------------------------------------------------
+
+  /// How long a server encryption attestation may be trusted before the
+  /// client stops showing a verdict and shows "unknown" instead. A badge
+  /// that stays green on a stale attestation is an assurance nobody made.
+  static const Duration attestationMaxAge = Duration(hours: 24);
+
+  /// The window over which two release variants' error rates are compared
+  /// before a rollback may fire. Shorter than this and the comparison is
+  /// about which cohort arrived first.
+  static const Duration variantObservationWindow = Duration(hours: 1);
 }
 
 /// Named easing curves.
