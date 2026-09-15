@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,660 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,826 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -332,8 +332,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 253 | GEN-02117 | "Impenetrable client-side" is refused; OWASP says so | 7 |
 | 254 | GEN-01992 | Strict True as a sealed result with no third case | 7 |
 | 255 | IRBCA-034-09 | Which updates may be optimistic, and which may not | 7 |
+| 256 | GEN-03877 | Twelve rows for thirty-two directories; the metric times a person | 7 |
+| 257 | GEN-03965 | There is no lib/screens, because this application has panes | 7 |
+| 258 | GEN-03921 | AppRouter.tsx is the fifth row written for another stack | 7 |
+| 259 | GEN-04473 | A custom scheme is unverified, so it is the fallback | 7 |
+| 260 | GEN-05386 | The named API covers one of three targets; type is not quality | 8 |
+| 261 | GEN-04495 | A grant rate measures people; two routes need no camera | 7 |
+| 262 | GEN-04308 | An extension is a claim -- 1.0 by bytes against 0.875 by name | 8 |
+| 263 | GEN-00988 | **Fail**: zero bundled assets, and a ratio with no direction | 8 |
+| 264 | HAZFE-020-09 | A frame secures nothing; the snapshot and the cache do | 8 |
+| 265 | MCIIM-010-10 | One figure per document hides which three fields are wrong | 8 |
+| 266 | GEN-04627 | "All" scores 75% and the census scores 100% | 8 |
+| 267 | GEN-04594 | Masking for display leaves four other copies | 8 |
+| 268 | GEN-01595 | **Poor**: 3 of 11 intercepted, 2 of those by accident | 9 |
+| 269 | GEN-00820 | No field type can hold free text, so the zero is structural | 9 |
+| 270 | GEN-04902 | **Partial**: withdrawal and deletion of the record are opposites | 8 |
+| 271 | GEN-02808 | **Fail**: no cipher ships, so the badge's honest state is failed | 10 |
+| 272 | GEN-03536 | The detector and the thing detected share an address space | 9 |
+| 273 | TSIP-023 | Six subjects on one row; 30s is fifteen client budgets | 10 |
+| 274 | GEN-04517 | "No clean exit" is three events wearing one face | 10 |
+| 275 | GEN-02698 | axe-core cannot walk a widget tree; 3 errors is not evidence | 10 |
 
-**1,660 gates across 255 steps.** 237 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**1,826 gates across 275 steps.** 254 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
 GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
@@ -344,7 +364,12 @@ has no PAN rule), GEN-04187 Partial (habot-web cannot be inspected from here), G
 is obtainable from a build host), GEN-02290 **Fail** and GEN-03558 **Fail** and GEN-02071 **Low**
 (one defect, three metrics -- see below; a correction is built and not yet wired in), HC-CMP-0054
 Partial (two of three friction devices refused), GEN-05298 Partial (code coverage needs a
-toolchain), SSTLA-004 awaiting a reviewer score.
+toolchain), SSTLA-004 awaiting a reviewer score. From Steps 256-275: GEN-00988 **Fail** (there are no
+bundled assets to compress, so the ratio has an empty population), GEN-01595 **Poor** (the log
+scrubber intercepts three of eleven contact strings), GEN-04902 Partial (a cycle time from
+convening to ratification measures a meeting), GEN-02808 **Fail** (no cipher ships in `lib/`, so
+an encryption health badge's honest state is failed). Each of those four is the measurement the
+row asked for, reported as it came out.
 
 ### MTO worker screens
 
@@ -659,6 +684,85 @@ client does not know what happened: on a timeout the request may have been recei
 committed with only the response lost, so retrying a payment there charges a parent twice. The
 retry rule is now a function of two things — what failed, and whether the call was safe to repeat.
 
+### The repository, the network edge and what a client may attest to
+
+Steps 256-275 are the batch where the sheet asked the repository to describe itself and then asked
+the client to vouch for things that happen somewhere else. Both halves produced findings.
+
+**Three rows asked for files that are not there.** Step 256 maps thirty-two real directories in
+twelve rows, 267 Dart files, four hops from the repository root to a component. Step 257 asks for
+`lib/screens` and there is none, because this application has panes rather than pages -- five
+routes served by one adaptive shell, so there are more routes than screen files. Step 258 asks to
+open `src/navigation/AppRouter.tsx`, which is TypeScript in a Dart application, and is the fifth
+row in this track written for a stack that was never used. None of the three was answered by
+creating a file so the sentence would come true; each was answered with what is actually there and
+a note about the gap.
+
+**The three metrics on those rows are stopwatches on a human.** "Path Navigation Overhead",
+"Directory Navigation Time" and "Router Module Open Latency" all time a person opening something,
+which no build host can do. The substitution in each case is the search space: thirty-two
+directories average 8.34 files each, so finding one file means reading about a thirtieth of the
+tree. Steps 256 and 257 carry the identical band -- 1.0s / 0.1s / 2.0s -- under two different
+metric names, transcribed independently so the twin shows up as a finding rather than as a shared
+constant.
+
+**Four rows measured something and the measurement came out badly.** Step 263 found zero bundled
+image assets: `assets:` is commented out in `pubspec.yaml`, there is no `assets/` directory, and
+all thirty-five image files in the repository are platform launcher icons and favicons -- 71% of
+the bytes are macOS. It reports **Fail**, because reporting Pass over an empty population is how a
+metric stops being able to fail. The same row's band, "Asset Compression Ratio >= 90%", has no
+direction: on one reading the ceiling is the best outcome and on the other the floor is, and both
+are computed on one worked pair rather than argued about.
+
+Step 268 put fifteen strings through the log scrubber that actually ships. It intercepts three of
+eleven personal contact strings, and two of those three are collateral from a rule written for
+something else -- so the deliberate rate is one in eleven. Four proposed rules reach nine of
+eleven with no control redacted, and are not merged, because the scrubber is an earlier step's
+gated file and no host here has a Dart toolchain. The ceiling is not one either: the two still
+missed are a personal name and a street address, which no pattern recognises.
+
+Step 271 asked for an encryption health badge. Six facts a reader would take such a badge to cover
+are enumerated; three are knowable on the device and **none of the three key-management facts is**
+-- custody, rotation and access audit all live where the keys are, and that is the subject the
+metric is named after. Worse, `HabotEncryptedStore` requires a `HabotCipher` and none ships in
+`lib/`, so the badge's honest state on this build is **failed**. It has three states rather than
+two, because green and red leave no room for "I have not heard recently", which is the client's
+ordinary condition; staleness lands on unknown rather than red, because a badge that goes red on a
+bad network is a badge people learn to ignore.
+
+Step 270 reports **Partial**: a Decision Governance Cycle Time measures a meeting, and no build
+host can convene or time one. What is produced instead is the decision record -- two clauses
+settled, three left open with what each needs. The first clause is the counter-intuitive one:
+withdrawing consent and deleting the consent record are opposites, because the obligation is to
+demonstrate that consent *was* given, so somebody implementing "delete everything on withdrawal"
+deletes the evidence that the collection had been lawful.
+
+**Five rows are about the boundary between what a client may claim and what it may only report.**
+Step 269's Cloud DLP scan runs against a warehouse this application has no credentials for -- and
+should not have. Step 272's execution blocks depend on detectors that run inside the environment
+they are judging, so four of the five signals are evidence rather than verdicts and the block is
+the server's decision that the dialog explains. Step 273's TLS floor is met structurally, because
+the socket policy declares `wss` and refuses anything else, while the negotiated version and
+cipher suite belong to the platform stack. Step 274's crash-free session rate needs a denominator
+the device does not hold. Step 275's rollback is a change to a flag the server owns. In each case
+the client half is built and the other half is named rather than claimed.
+
+**And three rows were about the same word meaning two things.** Step 266: "alt descriptions for
+all non-text content" scores 75% on the row's own metric if taken literally, because alt text on a
+decorative divider makes a screen reader announce a divider; marking the decorative classes
+decorative scores 100%. Step 267: "masking displayed sensitive values" leaves the value in process
+memory, in the app-switcher snapshot, on the clipboard and in anything emitted -- five surfaces are
+ruled on and exactly one sees the whole value. Step 275: "elevated error rates" with no threshold
+would roll a release back on three unhappy sessions out of forty, which reads as four and a half
+times the control rate and is three people.
+
+**Arithmetic worth keeping.** Thirty seconds of server patience is fifteen client interactive
+budgets (Step 273). An encryption badge polled every thirty seconds asks 2,880 times inside one
+24-hour freshness window (Step 271). A crash-free ceiling of 0.9999 needs a hundred times the
+evidence its floor does -- ten thousand sessions against a hundred (Step 274). Reading a file's
+first four bytes moves attachment validation accuracy from 0.875, below the row's floor, to 1.0
+(Step 262).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -767,6 +871,27 @@ retry rule is now a function of two things — what failed, and whether the call
 27. **The reconciliation assumes one currency** (Step 253). Two numerically equal amounts in
     different currencies balance and are wrong, and the subtraction cannot see it. Sound while
     every amount is AED; written down now rather than discovered by the first multi-currency order.
+28. **No cipher ships in `lib/`** (Steps 122, 271). `HabotEncryptedStore` requires a `HabotCipher`
+    and declares no default, because the platform keystore is behind a plugin this environment
+    cannot resolve. Until somebody supplies one, an encryption health badge cannot honestly render
+    anything but failed -- which is what Step 271 reports.
+29. **The log scrubber intercepts three of eleven personal contact strings** (Step 268), and two
+    of those three by accident. Four proposed rules reach nine of eleven with no false positives
+    and are gated here, not merged: `log_scrubber.dart` belongs to an earlier step and carries its
+    own gates, and no host in this track has a toolchain to re-run them. Same shape as decision 24.
+30. **There are no bundled assets at all** (Step 263). `assets:` is commented out in
+    `pubspec.yaml`, there is no `assets/` directory, and the compression row therefore has an
+    empty population. Somebody should decide whether that is intended -- and if it is, the row is
+    not measurable until it changes.
+31. **`lib/screens` does not exist and routing has no single entry point** (Steps 257, 258). Five
+    routes are served by one adaptive shell across four Dart declarations. The pane architecture
+    looks deliberate; it is not written down anywhere, so the next person to read the sheet will
+    find the folder missing and create it. The convention a screens folder would need is recorded
+    at Step 257 against that day.
+32. **Three consent clauses need an owner** (Step 270): the deletion schedule for data collected
+    under a withdrawn consent, the identity standard for digital signatures -- a drawn signature
+    identifies nobody -- and who owns the decision. No placeholder owner was invented, because a
+    decision record with an invented owner is one nobody checks.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
