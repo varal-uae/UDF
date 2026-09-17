@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,001 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,201 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -472,8 +472,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 393 | GEN-04440 | An empty box is worse than a crash | 10 |
 | 394 | GEN-01782 | Step 194's counter-example, requested as a feature | 10 |
 | 395 | GEN-03226 | Collapsed at one end, inverted at the other | 10 |
+| 396 | ETMDI-016-02 | An audit tool that does not exist, counting something the row does not define | 10 |
+| 397 | ETMDI-016-07 | Three words for one rule, doing three different jobs | 10 |
+| 398 | ETMDI-003 | Three subjects in one row, and five cells from a TLS row | 10 |
+| 399 | BTPM-032-05 | An access question joined to a content question | 10 |
+| 400 | TECH-ENG-040 | A band written in sentences, and one of them describes failure | 10 |
+| 401 | FEBFL-027-03 | A layout grammar that is useful for what it refuses | 10 |
+| 402 | CBSV-036-03 | Two identical strings, kept apart on purpose | 10 |
+| 403 | FEBFL-027-08 | A mapping table exactly as wide as the schema | 10 |
+| 404 | GEN-01749 | The row calls it an AST; it is a parse tree | 10 |
+| 405 | FEBFL-027-12 | A route surrenders its body and keeps its guards | 10 |
+| 406 | DLQDP-024-08 | "Use score as a quality gate" -- which score? | 10 |
+| 407 | ETMDI-008-10 | Show the working, and refuse colour as the only carrier | 10 |
+| 408 | GEN-02037 | "All components" -- and the two that must not snap | 10 |
+| 409 | GEN-00044 | A CSS linter for an application with no CSS | 10 |
+| 410 | GEN-03193 | The same instruction as the previous row | 10 |
+| 411 | GEN-04220 | A band whose floor and ceiling both read "N/A" | 10 |
+| 412 | GEN-01837 | The twenty-line limit Step 296 already set | 10 |
+| 413 | GEN-04407 | Type safety, scored on how long the build takes | 10 |
+| 414 | GEN-04605 | Coverage as a fraction where the track uses percentages | 10 |
+| 415 | GEN-03943 | Import View and Text from React Native, in Flutter | 10 |
 
-**3,001 gates across 395 steps.** Every step reports Complete except the following, each of
+**3,201 gates across 415 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -514,7 +534,11 @@ run holds three of the four, so the badge is refused rather than shown on a part
 nineteen report clean, and the batch carries no deferred gate. Steps 376-395 report clean
 throughout -- no Fail, no Partial, no deferred gate -- the second batch in
 twenty to do so, and, like Steps 276-295 before it, a property of the rows:
-every one of the twenty had something a client could actually build.
+every one of the twenty had something a client could actually build. Steps
+396-415 report clean as well -- no Fail, no Partial, no deferred gate -- the third such batch
+and the first time two have run back to back. That is not because these rows were well
+written: four of them ask for rules the build already enforces, and a row that asks for
+something already in the repository is easy to satisfy honestly and worth nothing.
 
 ### MTO worker screens
 
@@ -1450,6 +1474,76 @@ widgets surviving one failure (393). Seven malformation classes, four invisible 
 (391). AED 100 split three ways as 3334/3333/3333 fils, against a naive 99.99 (392). Fifty-
 nine redraws a minute per card not taken (395).
 
+### The screen you can count, and the screen you can generate
+
+Steps 396-415 begin with the screen as a thing you can count -- an inventory, a transaction
+per screen, a scope, a census -- move through the screen as a thing you can generate -- a JSON
+layout grammar, a field extraction, an instantiation engine, a recursive tree, a route binding,
+a quality gate -- and end in nine tooling rows, four of which ask for rules that have been
+blocking merges for four hundred steps.
+
+**Counting is where the disagreements live.** Step 396 asks for an audit of "each screen's
+designated user actions" and the word *action* is doing more work than it looks: five screens
+carry seven declared actions and twenty-three interactive elements, and the only difference
+between a five-screen application that reports seven and one that reports twenty-three is
+which noun somebody used. Step 397 then asks for "exactly one atomic, singular system
+transaction" per screen -- three words for one rule, doing three different jobs. *Exactly one*
+counts. *Atomic* describes how a write fails. *Singular* describes what the screen is about. A
+screen can satisfy any one of the three while failing the others, and the overtime approval
+screen is the case: one transaction, three writes, and it is right on all three readings. One
+screen split; approve and decline stayed together, because they are two answers to one
+question and splitting them would satisfy a single-action count while making declining the
+longer path.
+
+**The layout engine is a grammar, and grammars are useful for what they refuse.** Step 401
+declares six component types, three layout types and four things the schema cannot express:
+expressions, raw colour literals, conditionals and imports. Each refusal names what it
+protects, and they are not interchangeable -- a raw colour defeats the token rules, an
+expression makes the packet a program, an import makes it a fetch, and a conditional would let
+a layout place a control the access map hides. Step 403's mapping table is exactly as wide as
+that grammar, with no reflection and no generic fallback, so an unmapped type is skipped and
+reported rather than rendered as something plausible. Step 404 asks for trees "based on the
+AST" and the noun is wrong: there is no source code and no expressions, so it is a parse tree,
+and the wrong noun quietly re-opens what Step 401 closed. Three defences bound the walk -- a
+depth limit, a node budget and a visited set -- because a cycle exhausts neither of the other
+two in any useful time.
+
+**Four rows ask for rules already in force, and three of them are consecutive.** Step 409 asks
+for a CSS linter to block hex colours, Step 410 for static analysis rules to reject hardcoded
+hex colours, Step 411 for CI/CD to block local custom styling: one instruction, three
+vocabularies, three metrics, three rows, and none of the three citing either of the others.
+Step 410 is *one row* after Step 409 -- the closest duplicated pair this track has recorded,
+against gaps of twelve, ninety and two hundred in the previous batch. Step 412 then asks for
+the twenty-line function limit Step 296 set a hundred steps ago and Step 379 already relies
+on. None was rebuilt. `RAW_COLOR_LITERAL` and `UNTOKENISED_MATERIAL_COLOR` have been blocking
+since Step 4; a second check would be a second answer to one question, and the only thing
+worse than a rule nobody enforces is three rules that disagree at the margins.
+
+**Two rows swapped metrics.** Step 409 carries "Function Complexity / Size Limit Compliance"
+with a band about lines and cyclomatic complexity, on a row about hex colours. Step 412, three
+rows later and about function length, carries a generic step completion rate. Each row holds
+the other's metric. The track has recorded wrong metrics before; a metric that is not wrong but
+*right for a different row in the same batch* is new, and only reading both rows makes either
+legible.
+
+**And one band declines to be a band.** Step 411's floor and ceiling are both the string
+"N/A - Binary Governance Gate" and its optimal is a sentence. Every previous band defect in
+this track attempted a value -- inverted, collapsed, typeset in LaTeX, annotated with an
+argument, holding three different types. This one says the question does not apply, and it is
+right: the row describes a binary gate, a binary gate has no band, the honest answer is one
+cell, and the sheet has no way to write it. Step 415 then supplies the seventh distinct shape:
+a floor of "< 20 ms" and a ceiling of "50 ms" describing the interval twenty to fifty, with an
+optimal of "< 2 ms" sitting below both -- a target outside the range its own boundaries define.
+
+Numbers worth carrying out of this batch: seven declared actions against twenty-three
+interactive elements (396). Three subjects in one row and five cells belonging to a TLS
+hardening row (398). Fourteen string occurrences reduced to nine entries, with two "Save"s kept
+apart by context (402). A composite of 93.5 that clears every threshold while one of its four
+inputs sits seventeen points short (406). Five calculation lines summing in integer fils to
+174,100 (407). Six of seven components on the eight-point rhythm and one exempt with a stated
+reason (408). Six rows sharing one metric (389, 401, 403, 405, 406, 407). Nineteen foreign
+stacks on the register Step 258 keeps -- CSS at 409, NPM at 411, React Native at 415.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -1754,6 +1848,50 @@ nine redraws a minute per card not taken (395).
     The manual clock-in is flagged, which is the right client-side behaviour and is only half
     the answer: somebody has to see the flag and resolve it, and no row in the pool builds
     that queue. Until it exists, the flag is a record rather than a route.
+
+67. **Three rows ask for one colour lint, consecutively** (Steps 409, 410, 411). Three
+    vocabularies, three metrics, no cross-references, and one instruction. Step 410 is one row
+    after Step 409, the closest duplicated pair in the track. Step 410's wording is the best of
+    the three -- "static analysis" is what a Dart project has, and "flag and reject"
+    distinguishes advisory from blocking -- and is worth keeping if the three are ever
+    collapsed, because the usual outcome of a duplicate is that the first one wins.
+
+68. **Steps 409 and 412 have swapped metrics.** Each carries a band that belongs to the other.
+    This is a failure mode the track has not recorded: a metric that is not merely wrong for
+    its row but correct for a different row three rows away. Both rows are gated against what
+    they actually ask for, with the swap recorded; the sheet needs the two cells exchanged.
+
+69. **A band that declines to be a band** (Step 411). Floor and ceiling both "N/A - Binary
+    Governance Gate", optimal a sentence. The row is right that a binary gate has no band. The
+    sheet has no way to express a one-cell measure, which is the thing to fix -- every gate row
+    after this one will hit it.
+
+70. **An optimal outside its own boundaries** (Step 415). Floor "< 20 ms", ceiling "50 ms",
+    optimal "< 2 ms". Two cells are inequalities and the third is not. Separately, there is no
+    run-time import cost in a compiled Dart binary to measure at all, so the metric names a
+    quantity that does not exist; the import count, the unused count and the first-frame budget
+    are published in its place.
+
+71. **Six rows share one metric** (Steps 389, 401, 403, 405, 406, 407). "UI Design-System
+    Adherence Rate" with the same mixed-unit band appears across a JSON grammar, an
+    instantiation engine, a route binding, a quality gate and a calculation disclosure. A metric
+    that fits six subjects is measuring none of them.
+
+72. **The most spliced row in the track** (Step 398). Three subjects in one row -- counting
+    screens, TLS 1.3 hardening at the edge, and a SmartKeyboardField component -- with five
+    cells belonging outright to the TLS row. Steps 388 and 390 each joined two subjects. There
+    is a real TLS requirement in those five cells that now has no row of its own.
+
+73. **Two rows name a subject with no antecedent** (Steps 398 and 406). "The count" and
+    "score" are used as though defined, and neither row says of what. Both readings are stated
+    as assumptions in the gate files rather than presented as the meaning; both need a word
+    adding at source.
+
+74. **Seven rows across two batches ask for work the repository already contains** (Steps 380,
+    382, 394, 409, 410, 411, 412). The rate is rising: three in the previous twenty, four in
+    this twenty, three of those four consecutive. Worth a de-duplication pass over the
+    remaining pool before it grows further.
+
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
