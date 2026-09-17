@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,401 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,601 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -412,8 +412,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 333 | GEN-01981 | 483 events become 12 triples become 5 alerts | 10 |
 | 334 | GEN-03481 | An open circuit answers three and a half seconds sooner | 10 |
 | 335 | GEN-03237 | Ten crashes is a floor on one day and ten times a ceiling on another | 10 |
+| 336 | CBSV-006-15 | Three routes to one function; the row names only the path | 10 |
+| 337 | SGTIM-015 | An incident-response metric on a 200ms finger movement | 10 |
+| 338 | GEN-04858 | The row's own requirement fails the row's own floor | 10 |
+| 339 | GEN-02863 | Friction that keeps its Level A alternative | 10 |
+| 340 | GEN-05012 | Drag-to-reorder is SC 2.5.7's own worked example | 10 |
+| 341 | GEN-05023 | A row that says poka-yoke and earns it | 10 |
+| 342 | MCIIM-014-11 | "48dp (44px)" is two standards, not one conversion | 10 |
+| 343 | CBSV-005-14 | The gap between targets, after nine rows about size | 10 |
+| 344 | VPVMP-015 | Nine control classes, seven proven; the guard runs | 10 |
+| 345 | MTVPE-018 | A ring that is not the focus indicator | 10 |
+| 346 | MTVPE-004 | CSS transitions in an application with no CSS | 10 |
+| 347 | MTVPE-020 | The cell that reports the generator's own miss | 10 |
+| 348 | GEN-04660 | A hover construct on a touch surface, in three units | 10 |
+| 349 | GEN-05342 | Reports **Fail**: two of three criteria never observed | 10 |
+| 350 | GEN-01815 | Six promises, five of them invisible to review | 10 |
+| 351 | GEN-03215 | Both of the previous batch's defects, on one row | 10 |
+| 352 | GEN-02511 | Five locales, five confirmation words | 10 |
+| 353 | GEN-04031 | A band of 1/1/1 on a measure with a distribution | 10 |
+| 354 | EDEBS-013-11 | A stepper promises a denominator; a bar cannot | 10 |
+| 355 | EDEBS-019-12 | "N/A (Backend database setup)", four times, on a UI row | 10 |
 
-**2,401 gates across 335 steps.** Every step reports Complete except the following, each of
+**2,601 gates across 355 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -442,7 +462,13 @@ report clean. From Steps 316-335: GEN-00077 **Fail** -- six of the eight defined
 criteria for the masked field are confirmed, which is 75% against a 95% floor, and the two that
 are not confirmed need a screen reader on a handset and the platform secure-entry flag observed
 under recording. It is reported as Fail rather than rounded into a Partial. The other nineteen
-report clean, and the batch carries no deferred gate.
+report clean, and the batch carries no deferred gate. From Steps 336-355: GEN-05342 **Fail**
+-- its composite rule is an AND over three completion criteria, one of which was observed and
+met while two were never observed, because a completion rate needs a cohort and a window and
+an average application duration needs a definition of when the clock starts, and neither
+exists in the sheet. Nothing fell short; the failure is absence, which the row's Pass/Fail
+output cannot express. The other nineteen report clean, and this batch too carries no
+deferred gate.
 
 ### MTO worker screens
 
@@ -1110,6 +1136,105 @@ evasion forms are caught by text matching, against a 90% floor, which makes it a
 problem rather than a matching one (328). A PHI egress gateway sees one of three exits (329). A
 thirty-second poll is up to thirty seconds stale on a counter the row calls real-time (331).
 
+### The gesture nobody was taught
+
+Steps 336-355 are about direct manipulation: what a person is expected to already know, how the
+interface tries to teach it, and what it costs when a gesture is the only way in. Twenty rows,
+and the thing they share is that a gesture is cheap to specify and expensive to make reachable.
+
+**A row that fails its own floor.** Step 338's Atomic Step asks for a swipe-threshold snap
+animation under **150 ms**. The band that scores it sets a floor of **100 ms**. Build exactly what
+the row asks for -- 149 ms -- and it misses the floor by 49 per cent. Every band defect this track
+has recorded in eleven batches was internal to the band: ends inverted, ends collapsed, units
+mismatched, floors that cannot be failed. This is the first time a row's *instruction* and a row's
+*boundary* contradict each other, which means the row cannot be satisfied and scored at the same
+time. Its ceiling compounds it: ">100ms begins to feel laggy to users" is the definition of being
+past the floor, written in the cell where the best attainable value belongs.
+
+**Five gesture rows, five accessibility exposures.** WCAG 2.2 SC 2.5.1 Pointer Gestures is
+**Level A** -- the lowest bar in the standard -- and requires that anything operable by a
+path-based gesture also be operable by a single pointer without a path. SC 2.5.7 Dragging
+Movements is AA and uses drag-to-reorder as its own worked example. Steps 336 (swipe between
+viewports), 337 (drag a card layer), 339 (swipe to confirm a destructive action), 340 (drag to
+reorder) and 343 (long-press to copy) each specify the gesture and name no alternative. None of
+the five is wrong to want the gesture; all five are wrong to stop there. Step 339 is the sharpest:
+a slide-to-confirm control guarding an irreversible action, where the accessible alternative
+cannot be a plain button or the person using a switch gets the dangerous one-tap version and
+everybody else gets the careful one. The answer is a second *cost* rather than a second *route* --
+typing the action word (Step 352), or holding for the declared dwell.
+
+**A new guard, specified where the need appeared and enabled where it could run.**
+`A11Y_GESTURE_WITHOUT_ALTERNATIVE` is declared at Step 336 with an id and a description and left
+off, because the census that would run it did not exist. It runs at Step 344 over nine control
+classes, four of which use a path gesture. All four declare a single-pointer route, so the rule
+starts with nothing to report -- which is the only honest way for a new rule to start.
+
+**The counts that did not close.** Batch K ended by recording that its two repeated defects --
+inverted latency bands and one-valued output columns -- had closed. They closed for that batch.
+Step 351 carries both again: a ceiling of 150 ms against a floor of 100 ms, and a Best Qualitative
+Output column reading "Complete" with no failing value. With Step 338 that makes **six inverted
+bands** and **five one-valued columns** across the track. Two consecutive batches is where these
+stop being incidents in particular cells and become a property of how the sheet is written.
+
+**Four more shapes of band defect.** Four rows put the same number in the optimal and the ceiling
+(336, 339, 346, 352), so the band has two ends and three labels. Five mix a percentage floor with
+a bare-ratio ceiling (336, 343, 348, 354, 355). Step 348 manages three unit systems in one band --
+0.6, 0.8, and "90%+ (diminishing returns)" -- with a ceiling that cannot be parsed as a number;
+read literally it spans a factor of 150. And Step 349's floor is the *failure condition*: "Any
+single stated criterion unmet", written in the cell for the minimum acceptable value, which says
+the minimum acceptable outcome is failure.
+
+**Two collapsed bands, one of which is right.** Step 341's floor, optimal and ceiling are all
+100%, and its ceiling cell explains why: poka-yoke coverage is binary. That is the second
+collapsed band this track has been able to endorse, after Step 316's. Step 353's is also 1/1/1,
+and is not the same case -- haptic trigger precision is a timing accuracy, which has a
+distribution, and no scheduler fires a callback exactly on a boundary every time. What is measured
+there instead is what can be guaranteed: the pulse fires once, at the declared moment, and never
+twice.
+
+**Two metrics from other disciplines.** Step 337 scores a horizontal card drag on **Mean Time to
+Detect**, cited to the Google SRE book -- an on-call number whose floor of fifteen minutes is
+4,500 times the duration of the interaction it measures. Step 344 scores 48dp touch targets on
+**Core Web Vitals INP**, which is defined over DOM events and collected by the browser Event
+Timing API, in an application that rasterises its own widgets. Its floor cell reads "<200 ms
+(needs improvement ceiling)" -- the right boundary with the band on the wrong side of it, since
+below 200 ms is the *good* band.
+
+**Three cells that are the generator talking.** Step 347's Data Requirement column reads "No
+matched reference row in Setup Implementation master list ... verify manually" -- the generator
+reporting its own miss, printed as a requirement. It is the first cell this track has met that
+documents its own absence, and it is worth more than most of the cells that are filled in, because
+a stated gap can be closed. Step 352's artefact cell is the word **DEACTIVATE**, lifted out of the
+Atomic Step's parenthesis. Step 355's reads "N/A (Backend database setup). | N/A. | N/A. | N/A."
+on a row about restoring a user interface -- the second such cell in two batches, after Step 332.
+
+**"48dp (44px)" is not a unit conversion** (342). At the baseline density 48dp is 48px. 44 is
+Apple's Human Interface Guidelines figure, and separately the WCAG 2.1 SC 2.5.5 number at Level
+AAA. Two vendors' specifications printed as one figure in two units, four points apart -- nine per
+cent on a side and nineteen per cent of area. In this repository they are already the floor and
+the optimal of the band Step 184 built.
+
+**The half of touch accuracy nobody wrote a row for.** Nine rows in this track have asked about
+touch *size*; Step 343 is the first about the *gap*. Two 48dp targets sharing an edge each pass
+every size rule this repository enforces, and a finger landing on the seam hits one of them at
+random. The gap is 8dp, from the spacing scale declared at Step 2, and it does not separate the
+fingers -- a contact patch is about 50dp across -- it separates the reported centroids.
+
+**And one row reports Fail, for a reason worth reading.** Step 349 verifies three completion
+criteria with an AND: a 70 per cent onboarding rate, a 15-minute average application, and 100 ms
+grading latency. One is observable from this repository and was met. Two were never observed,
+because a completion rate needs a cohort and a window and an average duration needs a definition
+of when the clock starts -- and neither definition exists anywhere in the sheet. So the composite
+does not pass, and nothing failed. A Pass/Fail output cannot say that, and it is the only thing
+worth saying when somebody asks why the gate is red.
+
+Numbers worth carrying out of this batch: a snap built to the row's own 149 ms misses the row's
+own 100 ms floor by 49 per cent (338). MTTD's fifteen-minute floor is 4,500 times a 200 ms drag
+(337). A long move costs one drag or five taps; the adjacent move -- the commonest -- costs one of
+either (340). 48dp against 44dp is 19 per cent of area (342). Four labels across 328dp is 82dp
+each (354). Four hundred and eighty-three is Batch K's number; this batch's is nine control
+classes, seven of them statically provable (344).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -1292,6 +1417,27 @@ thirty-second poll is up to thirty seconds stale on a counter the row calls real
     reader's announcement of a masked field needs a handset, and the platform's own secure-entry
     flag needs to be observed under screen recording. Until both are taken, the row reports Fail
     at 75% against a 95% floor, which is the honest reading rather than a blocked one.
+
+45. **A row that fails its own floor** (Step 338). The Atomic Step asks for a snap animation under
+    150ms; the band that scores it sets a floor of 100ms. Built exactly to specification the row
+    misses its own floor by 49 per cent, so it cannot be satisfied and scored at the same time.
+    First contradiction in this track between a row's instruction and its own boundary; worth
+    correcting at source before anything downstream reads either number.
+
+46. **Five gesture rows specify no single-pointer alternative** (Steps 336, 337, 339, 340, 343).
+    SC 2.5.1 Pointer Gestures is Level A and SC 2.5.7 Dragging Movements is AA. The alternatives
+    are built here and `A11Y_GESTURE_WITHOUT_ALTERNATIVE` now enforces them, but the rows
+    themselves name only the gesture, and a future row written the same way will ship without one.
+
+47. **The inverted-band and one-valued-column counts did not close** (Steps 338, 351). Batch K
+    recorded both as closed for that batch; two consecutive batches carrying the same two defects
+    makes six inverted bands and five one-valued output columns across the track, and makes them a
+    property of the sheet rather than incidents in particular cells.
+
+48. **Two of Step 349's three completion criteria are undefined, not merely unmeasured.** A
+    mobile onboarding completion rate needs a cohort and a window; an average application duration
+    needs a decision about when the clock starts and whether abandonment counts. Neither definition
+    appears anywhere in the sheet, so the row reports Fail on absence rather than shortfall.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
