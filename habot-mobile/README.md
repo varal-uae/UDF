@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,201 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,401 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -392,8 +392,29 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 313 | GEN-01374 | The verification has run for 84 steps; the limits had not been written | 10 |
 | 314 | GEN-04979 | A screen-reader fallback list is the defect, not the fix | 10 |
 | 315 | RTVMA-016 | A metric named for the one ratio at which nothing is visible | 11 |
+| 316 | GEN-00445 | Null, Error and False are three facts; two of them are ours | 10 |
+| 317 | ERMWD-029-03 | Five refusal states, five designs, and no state without one | 10 |
+| 318 | AWCV-007-08 | The sum of the parts is not the total, in doubles | 10 |
+| 319 | ONCS-002 | Twenty-one denies, so the emphasis goes to the three allows | 10 |
+| 320 | GEN-03028 | Step 292's missing remedy: a way out of a greyed control | 10 |
+| 321 | GEN-03426 | A 25m accuracy radius straddling a 50m fence | 10 |
+| 322 | GEN-03459 | Who did this, and on whose behalf, from the record itself | 10 |
+| 323 | GEN-04330 | The best-formed ceiling in the track, aimed at the wrong subject | 10 |
+| 324 | MUFCE-026-A01 | The extension is right four times in six; the bytes, six | 10 |
+| 325 | CCPME-016 | An inverted band, under Step 315's narrative verbatim | 10 |
+| 326 | GEN-03712 | The step-up names two people; dispatch is 0.208% of the wait | 10 |
+| 327 | GEN-00077 | Reports **Fail**: six of eight criteria against a 95% floor | 10 |
+| 328 | GEN-05188 | Four of eight evasion forms caught, against a 90% floor | 10 |
+| 329 | GEN-03050 | HIPAA in a UAE app, and a gateway that sees one exit of three | 10 |
+| 330 | GEN-00123 | The floor and the ceiling are the same number, twice named | 10 |
+| 331 | GEN-00224 | "Real-time" on a surface the same row polls every 30 seconds | 10 |
+| 332 | HSFVS-013-17 | The ceiling is the optimal with an inequality in front of it | 10 |
+| 333 | GEN-01981 | 483 events become 12 triples become 5 alerts | 10 |
+| 334 | GEN-03481 | An open circuit answers three and a half seconds sooner | 10 |
+| 335 | GEN-03237 | Ten crashes is a floor on one day and ten times a ceiling on another | 10 |
 
-**2,201 gates across 315 steps.** 274 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**2,401 gates across 335 steps.** Every step reports Complete except the following, each of
+which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
 GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
@@ -417,7 +438,11 @@ the operating system before the Flutter engine starts, so no frame of it is obse
 `lib/`; what a real measurement needs is written out) and GEN-01098 Good with 1 deferred (icon
 recognition accuracy is a number about people, and the ISO 9186-1 protocol is specified rather
 than approximated by the easier question this repository already passes). The other eighteen
-report clean.
+report clean. From Steps 316-335: GEN-00077 **Fail** -- six of the eight defined acceptance
+criteria for the masked field are confirmed, which is 75% against a 95% floor, and the two that
+are not confirmed need a screen reader on a handset and the platform secure-entry flag observed
+under recording. It is reported as Fail rather than rounded into a Partial. The other nineteen
+report clean, and the batch carries no deferred gate.
 
 ### MTO worker screens
 
@@ -988,6 +1013,103 @@ screen leaves it, and one of the nine elements has nowhere to go (289). A greyed
 0.38 opacity keeps about 2.7:1 of a 7:1 contrast (292). 99.99% payout accuracy is one person in
 ten thousand (293).
 
+### Refusal, and what gets written down
+
+Steps 316-335 are about the word no. What the application refuses, how it refuses, whether the
+person refused has anywhere to go, and what is left in the record afterwards. Twenty rows, and
+the shape they share is that a refusal is easy to implement and hard to finish: the stopping is
+one line, and everything after it -- the reason, the remedy, the log entry, the alert that fires
+because of it -- is the rest of the work.
+
+**Fail-closed is three facts, and two of them are ours.** Step 316 asks for Null, Error and False
+to be treated as a hard stop. It is the first collapsed band in this track that is the right
+shape: those three are genuinely one category at the decision point, because none of them is a
+yes. They are not one category anywhere else. Null is a question that was never answered, Error
+is a question that could not be answered, and False is an answer. Two of the three are the
+system's own failure and one is the subject's, so the stop is identical and the sentence shown to
+the person cannot be. Step 317 turns that into five states with five designs and proves the map
+is bijective: no state without a design, no design without a state. The state a person meets most
+often -- the one where our own service is down -- is the one where they have done nothing wrong,
+and it is the state a single generic error message erases.
+
+**Money does not balance in doubles.** Step 318 is a submit gate that will not accept a form whose
+parts do not sum to its total. AED 350.21 plus AED 454.47 is AED 804.68, and in IEEE 754 binary
+it is not: the residual is 1.14e-13, small enough to look like nothing and large enough to refuse
+a correct form. The gate reconciles in fils, as integers, and the decimal strings are parsed
+rather than the doubles compared. This is the same refusal Step 168's strict-true gate makes, and
+it is worth naming twice: a currency is a count of minor units, and the moment it becomes a
+floating point number, a person who typed the right thing gets told they did not.
+
+**Three floors that cannot be failed, of three different kinds.** Step 319's floor is
+"default-allow", which is the insecure configuration described as the minimum acceptable one --
+a floor that a correctly built perimeter passes by being wrong. Step 329's band puts a gradient
+on a fail-closed control, so a gateway that lets some data out scores partial credit on a
+question that has two answers. Step 331's floor is a sentence: "Matches MD3 spec with minor
+documented variance", where "minor" and "documented" are both undefined and between them cover
+any variance somebody is willing to write down. Three rows, three mechanisms, and the same
+consequence -- a measure that no implementation can fall below is not a measure.
+
+**Four inverted latency bands, and the one that is not.** Steps 325, 326, 334 and 335 each give a
+lower-is-better latency measure a ceiling worse than its floor: 5s over 2s, 60s over 30s. Step 333
+gives the same kind of measure a floor of 60 seconds, an optimal of 10 and a ceiling of 5 --
+ordered correctly, the worst tolerable value at the floor and the best at the ceiling. That single
+correct instance is the finding. If all five ran the same way, the reading would be that this
+sheet writes latency bands upside down and every consumer should invert them. One ordered
+correctly means the other four are mistakes in four particular cells, and the sheet cannot be
+read by convention at all.
+
+**Four output columns with one value in them.** Steps 321, 322, 334 and 335 have a Best
+Qualitative Output column that reads "Pass" and nothing else. A column with one value cannot
+express the outcome it exists to record; a row scored on it reports Pass whether it passed or
+not. Two more band defects sit beside those: Step 330's floor and ceiling are the same 300
+seconds under two different names, and Step 332's ceiling is its optimal with an inequality
+written in front of it. Five distinct band defects in twenty rows.
+
+**One row reports Fail.** Step 327 asks for a masked text field and scores it on the share of
+defined acceptance criteria confirmed, floor 95%. Six of the eight criteria are confirmed. That is
+75%, it is below the floor, and it is reported as Fail rather than rounded into a Partial. The two
+that are not confirmed are not confirmable from `lib/`: one needs a screen reader on a handset and
+one needs the platform's own secure-entry flag observed under recording. The word "masked" is also
+doing three jobs on that row -- input formatting, visual obscuring, and redaction in logs -- and
+the three have different threat models and different failure modes.
+
+**A refusal with no way out is an abandonment.** Step 320 is the remedy Step 292 needed and did
+not have: a greyed control that a person cannot use is a dead end unless something on the screen
+says what would ungrey it and offers the request. Four of the five fields in the elevation request
+are pre-filled from what the application already knows, so the ask costs one sentence. Step 324 is
+the same failure in the other direction -- a claimant blocked at the DOM from submitting evidence
+during a force-majeure event, with no channel left. The file check there is the ordinary lesson
+about trusting an extension: the declared extension is right four times in six, and the magic
+bytes six times in six.
+
+**What gets written down is a volume problem.** Step 333's row says alert on "any unauthorized
+modification attempt". A day of real telemetry is 483 such events. Deduplicated by actor,
+resource and kind they are 12 distinct triples; escalating refusals on rate rather than on
+occurrence, and a successful unauthorised change on its own occurrence, gives 5 alerts. The
+reduction is 97.5%, and it is not a filter -- the difference between a refused modification and a
+successful one is the difference between the control working and the control failing, so
+"any attempt" puts the loudest signal on the quietest available news. Step 335 makes the
+denominator point: ten crashes in a thousand sessions is a hundred sessions per crash, the floor
+of the Step 274 band, and ten crashes in a million sessions is a hundred thousand, ten times its
+ceiling. The same numerator, opposite verdicts, which is why the rule is a rate against the same
+weekday's baseline and refuses to fire below five hundred sessions.
+
+**An outage is the one time the application is fast.** Step 334's page is what a client shows
+while a circuit is open. A closed circuit working through a retry policy of 500ms, 1s and 2s
+takes three and a half seconds to know anything, which is a spinner before any sentence. An open
+circuit knows immediately. The one occasion a person gets a straight answer at once is the
+occasion when everything is broken, and that is worth building on purpose rather than treating
+as an accident of the failure path.
+
+Numbers worth carrying out of this batch: the residual on a three-part AED sum in doubles is
+1.14e-13 (318). Twenty-one of twenty-four perimeter rules are denies, so 87.5% of the list is the
+default and 12.5% is the exception worth seeing (319). A 60-metre position with a 25-metre
+accuracy radius straddles a 50-metre geofence, and the badge has three verdicts rather than two
+(321). A panic button's dispatch decision is 0.208% of a four-minute wait (326). Four of eight
+evasion forms are caught by text matching, against a 90% floor, which makes it an enforcement
+problem rather than a matching one (328). A PHI egress gateway sees one of three exits (329). A
+thirty-second poll is up to thirty seconds stale on a counter the row calls real-time (331).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -1154,6 +1276,22 @@ ten thousand (293).
     animation's frame metrics need a platform-side trace in the host project, on a physical device
     in a release build. Icon recognition accuracy needs an ISO 9186-1 comprehension test with
     people. Both are specified in their gate files; neither is work a build host can do.
+
+42. **Four latency bands in the sheet are inverted** (Steps 325, 326, 334, 335): the ceiling is a
+    worse value than the floor on a lower-is-better measure. Step 333's equivalent band is ordered
+    correctly, which is why these are four cell-level errors rather than a house convention, and
+    why the sheet cannot be read by convention at all. Worth correcting at source before anything
+    downstream consumes the bands numerically.
+
+43. **Four Best Qualitative Output columns hold a single value** (Steps 321, 322, 334, 335): they
+    read "Pass" with no failing value, so a row scored on them reports Pass whether it passed or
+    not. Each is recorded in its gate file and in the evidence; none is gated, because there is
+    nothing to gate against.
+
+44. **Two of Step 327's eight acceptance criteria cannot be confirmed from `lib/`**: the screen
+    reader's announcement of a masked field needs a handset, and the platform's own secure-entry
+    flag needs to be observed under screen recording. Until both are taken, the row reports Fail
+    at 75% against a 95% floor, which is the honest reading rather than a blocked one.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
