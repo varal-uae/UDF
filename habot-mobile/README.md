@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,801 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,001 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -452,8 +452,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 373 | GEN-02577 | "Instantly", on a screen nobody is looking at | 10 |
 | 374 | GEN-01628 | A widget that names its warehouse holds its credentials | 10 |
 | 375 | GEN-01319 | A package name is a dependency direction | 10 |
+| 376 | REF-106 | Hidden and disabled are different answers | 10 |
+| 377 | GEN-02014 | "Automatically" is the whole of the step | 10 |
+| 378 | GEN-01892 | Segments or switches: an "or" between different questions | 10 |
+| 379 | GEN-04385 | Sixteen inline states become six named branches | 10 |
+| 380 | GEN-02665 | Step 368's instruction again, twelve rows later | 10 |
+| 381 | GEN-03072 | "Detected" is an inference, and the lock is for somebody else | 10 |
+| 382 | GEN-03061 | The release button Step 292 already disabled | 10 |
+| 383 | GEN-03204 | A disabled clock-in with no route through is an unpaid hour | 10 |
+| 384 | GEN-04781 | Three strikes the platform already counts | 10 |
+| 385 | GEN-02422 | An acceptance is evidence about a moment | 10 |
+| 386 | GEN-02378 | A blocked Next button is the worst place for a requirement | 10 |
+| 387 | GEN-01727 | "Localized" is the load-bearing word | 10 |
+| 388 | ARCPE-013-12 | Three columns, three subjects, and the fields are the design | 10 |
+| 389 | PELCE-036-13 | A freeze on a rate the row never names | 10 |
+| 390 | BCDLD-022 | Two features in one row; the asymmetry is in a parenthesis | 10 |
+| 391 | GEN-04097 | The only row that tests a refusal instead of building one | 10 |
+| 392 | GEN-02115 | The answer is not to have the error | 10 |
+| 393 | GEN-04440 | An empty box is worse than a crash | 10 |
+| 394 | GEN-01782 | Step 194's counter-example, requested as a feature | 10 |
+| 395 | GEN-03226 | Collapsed at one end, inverted at the other | 10 |
 
-**2,801 gates across 375 steps.** Every step reports Complete except the following, each of
+**3,001 gates across 395 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -491,7 +511,10 @@ output cannot express. The other nineteen report clean, and this batch too carri
 deferred gate. From Steps 356-375: GEN-02301 **Fail** -- "Verified" on
 that row means four different things checked by four different actors, and the worked payroll
 run holds three of the four, so the badge is refused rather than shown on a partial. The other
-nineteen report clean, and the batch carries no deferred gate.
+nineteen report clean, and the batch carries no deferred gate. Steps 376-395 report clean
+throughout -- no Fail, no Partial, no deferred gate -- the second batch in
+twenty to do so, and, like Steps 276-295 before it, a property of the rows:
+every one of the twenty had something a client could actually build.
 
 ### MTO worker screens
 
@@ -1344,6 +1367,89 @@ cursor, and four plotted points resolving to three selections (366). Four fields
 32dp spare and a fifth at 120dp (370). Four export decisions on one button, and forty-eight
 people in the worked run (372).
 
+### The interface that says no
+
+Steps 376-395 are about refusal: who gets stopped, how they are told, and what it
+costs. Hidden and disabled elements, out-of-bounds actions, a station lock, a rubric lock,
+a release gate, a clock-in gate, a spend freeze, edge validation, error boundaries, and a
+countdown to a consequence. Twenty rows, and what they share is that saying no is easy and
+saying it *usefully* is the whole of the work.
+
+**Three rows in this batch ask for work that already exists.** Step 380 repeats Step 368's
+read-only dashboard instruction twelve rows later under a different reference id, a
+different metric, a different standard and a different team, and neither row mentions the
+other. Step 382 disables a release control Step 292 already disables, under a different
+condition and a different button name -- so if it is one button it has two gates and each
+row knows about one. Step 394 repeats Step 194's `isLoading = true` two hundred rows later,
+and Step 194 keeps a naive single flag in the repository *as a recorded counter-example*,
+which means this row asks for the counter-example by name. Every previous repeat this track
+has recorded was a duplicated **defect**; these are duplicated **work**, and a reader
+following the sheet in order builds each of them twice.
+
+**What a refusal owes the person it stops.** A disabled control with no reason is the
+failure the whole batch exists to prevent, and Step 292 settled where the reason lives --
+beside the control, never inside it, because a greyed label is the one place nobody looks.
+Step 377 extends that: "out of bounds" is five different things (above a ceiling, below a
+floor, a precondition unmet, a role refused, a state already reached), only two of which are
+bounds in the arithmetic sense, and a renderer that calls all five "invalid" produces one
+grey button and one silence for all of them. Step 376 adds the question before it -- whether
+to disable at all, or to render nothing: a disabled control teaches the reader the limit,
+the threshold and the role that clears it, which is exactly right for a report they may not
+run and exactly wrong for a refund ceiling that is a fact about somebody's authority.
+
+**The costliest refusal in the batch stops somebody starting work.** Step 383 disables
+clock-in when location is unavailable, and the person it stops is paid by the hour and
+standing at the door. A disabled clock-in with no route through is an unpaid hour, so the
+route is the step: clock in without a location, recorded as missing and flagged for a
+supervisor. The row names one location state and there are four that are not a usable fix --
+off for the device, denied to this app, no fix yet, and a fix too coarse to place somebody
+at a site -- and treating all four as "GPS off" tells somebody in a basement to turn on a
+setting that is already on.
+
+**Three rows refuse to refuse the way they were asked to.** Step 386's blocked Next button
+becomes a live button whose tap moves focus to the unanswered question, because "physically
+blocked" is enforced more completely by a focus move than by a grey rectangle -- and the
+grey rectangle does not say why. Step 387's block applies to the submit and never to the
+typing or the saving, because a form that refuses everything until every field is perfect
+loses the work that took longest. Step 380's sweep removes the two controls that write and
+keeps the three that only change what one person is looking at, because a dashboard with no
+filters is a poster.
+
+**Five band shapes, three of them new.** Step 395 is collapsed at one end and inverted at
+the other -- floor 1s, optimal 1s, ceiling 2s on a refresh interval -- which no previous
+band managed, so neither defect can be read as the other one's rounding. Step 384's three
+boundary cells are sentences, and its ceiling holds an *argument*: "100% (coverage beyond
+100% is not meaningful; further effort has diminishing return)", a cell reasoning with its
+reader instead of holding a value. Step 380's three cells hold three different types, a
+string, a string with a process condition, and a bare `1`. Step 390 puts the one genuinely
+useful thing on the row -- that a false negative (a bad value accepted) is worse than a
+false positive (a good value refused) -- inside a parenthesis in a cell that does not parse.
+And the familiar shapes recur: two collapsed 1/1/1 bands (383, 391), three mixed-unit bands
+(364, 389, 393), and one-valued output columns reaching nine.
+
+**A cell that annotates itself.** Step 389's Best Qualitative Output reads
+`Good/Average/Poor -> Best = Good (100%)`: a scale, an arrow, a note naming which value is
+best and a percentage gloss, in one cell. A consumer parsing that column for a scale gets a
+sentence. The same row freezes marketing spend when "rate" drops below 98% and never says
+which rate -- and the metric on the row is a *design-system adherence rate*, so read
+literally a budget freezes because somebody shipped a component with the wrong padding.
+
+**Two rows are spliced.** Step 388's Atomic Step builds a finalisation button, its Data
+Requirement column describes a glossary screen, and its Setup Step column asks for a
+code-splitting regression check: three subjects, one row -- and its five lock data fields
+(Lock Type, Locked By, Lock Timestamp, Lock Reason) describe the design the instruction does
+not ask for, so a reader who implements only the Atomic Step builds a lock nobody can safely
+undo. Step 390 is the same shape with two halves: validation above, and masking salaries,
+blocking the clipboard and padlock markers below -- a real requirement that now has no row
+of its own.
+
+Numbers worth carrying out of this batch: three duplicated instructions, twelve, ninety and
+two hundred rows apart (380, 382, 394). Five reasons an action can be out of bounds, two of
+them arithmetic (377). Four location states where the row names one (383). Seven of eight
+widgets surviving one failure (393). Seven malformation classes, four invisible on screen
+(391). AED 100 split three ways as 3334/3333/3333 fils, against a naive 99.99 (392). Fifty-
+nine redraws a minute per card not taken (395).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -1598,6 +1704,56 @@ people in the worked run (372).
     different checks performed by four different actors. The worked payroll run holds three of the
     four, so the badge is refused rather than shown on a partial. Deciding which of the four the
     badge is allowed to assert is a product decision this repository cannot make.
+
+58. **Three rows ask for work the repository already contains** (Steps 380, 382, 394). Step
+    380 repeats Step 368's read-only dashboard instruction; Step 382 disables the release
+    control Step 292 disables, under a second condition and a second name; Step 394 repeats
+    Step 194's `isLoading = true`. None of the three cites the row it repeats. Previous
+    repeats in this track were duplicated defects; these are duplicated work, and whoever
+    owns the sheet is the only person who can collapse them.
+
+59. **A band that is collapsed and inverted at once** (Step 395). Floor 1s, optimal 1s,
+    ceiling 2s on a refresh interval: the floor equals the optimal and the ceiling is the
+    worst of the three. Every previous inversion had three distinct values and every previous
+    collapse was flat, so this is the first cell group where neither defect can be read as
+    the other one's rounding.
+
+60. **Boundary cells that are sentences, arguments and annotations** (Steps 384, 389, 390).
+    Step 384's three cells are prose and its ceiling contains a justification for itself;
+    Step 389's output cell holds a scale, an arrow and a gloss; Step 390's ceiling hides the
+    row's one useful statement -- zero false negatives -- inside a parenthesis. None of the
+    seven cells parses as a value. This is now a class alongside the LaTeX-encoded bands of
+    Steps 356 and 365.
+
+61. **Two rows describe more than one feature** (Steps 388, 390). Step 388 spans a
+    finalisation button, a glossary screen and a code-splitting check across three columns;
+    Step 390's lower half describes masked fields, a blocked clipboard and padlock markers
+    -- a real requirement, now with no row of its own. Worth splitting at source before the
+    second feature is lost.
+
+62. **One metric scores two unrelated rows five apart** (Steps 387, 392). An automated
+    pull-request rejection rate, identical in name and band, on a row about blocking somebody
+    in a form and a row about floating-point arithmetic. Neither subject is a pull request.
+
+63. **The generator-miss sentence now decorates a populated cell** (Step 376, after 347 and
+    369). Five real data fields, then "No matched reference row in Setup Implementation
+    master list ... verify manually" appended after a double pipe. Third occurrence, first
+    hybrid -- which means a cell that looks filled in can still be reporting that nothing was
+    found.
+
+64. **One-valued output columns reach nine** (Steps 383, 389, 395, after 321, 322, 334, 335,
+    351, 370, 371). Three in one batch of twenty is a higher rate than any earlier batch. A
+    column with one value reports success whether or not anything succeeded.
+
+65. **A usability metric on a safety interlock runs backwards** (Step 381). A task success
+    rate asks whether people complete what they set out to do; an interlock exists so that
+    some attempts do not. A lock working perfectly lowers the score, so the row cannot be
+    scored honestly against its own metric.
+
+66. **The clock-in refusal needs a supervisor workflow that does not exist here** (Step 383).
+    The manual clock-in is flagged, which is the right client-side behaviour and is only half
+    the answer: somebody has to see the flag and resolve it, and no row in the pool builds
+    that queue. Until it exists, the flag is a record rather than a route.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
