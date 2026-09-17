@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,201 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,401 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -492,8 +492,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 413 | GEN-04407 | Type safety, scored on how long the build takes | 10 |
 | 414 | GEN-04605 | Coverage as a fraction where the track uses percentages | 10 |
 | 415 | GEN-03943 | Import View and Text from React Native, in Flutter | 10 |
+| 416 | FEBFL-016-A01 | A review of guidelines for a framework that was never written | 10 |
+| 417 | UFHT-019 | No metric name at all, and an output column written backwards | 10 |
+| 418 | GEN-03127 | Where the band pattern becomes legible | 10 |
+| 419 | GEN-02199 | "The tracking SDK" -- which one is never said | 10 |
+| 420 | BLGTA-017-06 | A device ID the platforms will not give you | 10 |
+| 421 | GEN-03954 | An average over a distribution that has no useful average | 10 |
+| 422 | UFHT-025-12 | The touch-target band, for the third time | 10 |
+| 423 | SIDM-017 | A delta against targets that are never stated | 10 |
+| 424 | GEN-02244 | What makes a bottleneck hidden is that nobody looks | 10 |
+| 425 | GEN-04130 | Red, where red already means something else | 10 |
+| 426 | GEN-02907 | The same mark, for a reader who can act today | 10 |
+| 427 | GEN-02786 | A test written to an architecture nobody built | 10 |
+| 428 | GEN-03304 | Likes and comments in a shift-management application | 10 |
+| 429 | RTSET-013 | Channels per scope rather than per card | 10 |
+| 430 | GEN-04869 | A socket and a warehouse, only one of which is live | 10 |
+| 431 | GEN-04086 | A reference standard that is the row’s own floor | 10 |
+| 432 | GEN-01286 | An instruction that contradicts its own band | 10 |
+| 433 | GEN-04352 | Four delivery states where a message has five | 10 |
+| 434 | GEN-04075 | A fast 202 measures a queue, not the work | 10 |
+| 435 | GEN-02003 | "Guarantee" under a floor of 99.5 | 10 |
 
-**3,201 gates across 415 steps.** Every step reports Complete except the following, each of
+**3,401 gates across 435 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -538,7 +558,10 @@ every one of the twenty had something a client could actually build. Steps
 396-415 report clean as well -- no Fail, no Partial, no deferred gate -- the third such batch
 and the first time two have run back to back. That is not because these rows were well
 written: four of them ask for rules the build already enforces, and a row that asks for
-something already in the repository is easy to satisfy honestly and worth nothing.
+something already in the repository is easy to satisfy honestly and worth nothing. Steps
+416-435 break the run: Step 430 reports **Partial** and Steps 432 and 433 report **Average**,
+each because its own band says so -- 94 per cent coverage against an optimal of 95, and a
+worst-case p99 above the optimal on two latency rows. Nothing was rounded up to keep a streak.
 
 ### MTO worker screens
 
@@ -1544,6 +1567,76 @@ inputs sits seventeen points short (406). Five calculation lines summing in inte
 reason (408). Six rows sharing one metric (389, 401, 403, 405, 406, 407). Nineteen foreign
 stacks on the register Step 258 keeps -- CSS at 409, NPM at 411, React Native at 415.
 
+### What the application records, and what you can watch change
+
+Steps 416-435 have two halves that turn out to be one subject. The first ten rows instrument
+the person using the application -- how long they hesitate on a field, where they abandon a
+form, which screens they struggle with. The last seven put state on the screen that changes
+while they are looking at it -- sockets, streaming numbers, clocks, delivery states. Between
+them sit three rows about showing a bottleneck to somebody who can do something about it. The
+question underneath all twenty is the same: what does a number mean when the person it is
+about did not know it was being taken?
+
+**Six rows put the Optimal below both the Floor and the Ceiling, and that settles something.**
+Step 415 met this shape last batch and recorded it as new. It is not new and it is not a
+defect in one row. On a lower-is-better measure this sheet writes the floor as the acceptable
+threshold, the ceiling as the *worst tolerable* value, and the optimal as the aspiration
+beneath both -- seven rows across two batches are written that way. Then Steps 432 and 433
+close the argument: they measure the same thing, message delivery latency, they share an
+optimal of 500ms, and one row apart they use the Ceiling column in **opposite directions** --
+"<5s" as the worst value, "<100ms" as the best. After that pair the column cannot be read from
+its name at all. The defect has never been in the rows; it is in the headings, and every
+latency target in the sheet is being read backwards by somebody.
+
+**Step 417 has no metric.** The Metric Name cell is empty -- the first in four hundred and
+seventeen rows -- and the band still reads 0.8, 0.95, 1, to two decimal places, measuring
+nothing the row names. Its output column reads "Not Complete / Partial / Complete", the only
+row in the track written worst-first, which under the positional convention six other rows
+state outright would make failure its best outcome. It does not mean that; what it shows is
+that the column is read by position rather than by value, so any row listed in an unusual order
+is silently mis-scored.
+
+**Two rows contradict themselves.** Step 432's Atomic Step targets sub-100ms transit under a
+band whose optimal is 500ms -- an instruction disagreeing with its own metric by five times,
+which the track had not seen. Step 435 says "guarantee mathematically" under a floor of 99.5,
+which permits one user in two hundred to be handed the other variant halfway through a task --
+the exact failure the instruction exists to prevent. The second is the sharper of the two,
+because the guarantee is achievable by construction: a hash of a stable key gives the same
+answer every time, on every device, with no storage and no network call. The mechanism is 100
+per cent, so the band is what is wrong.
+
+**Three instructions were met without building what they literally asked for.** Step 417 asks
+for friction indicators to be "silently logged"; silence as an engineering property -- no
+layout shift, no main-thread work -- is built, and silence as secrecy is refused, with every
+indicator listed on a disclosure surface. Step 420 asks the gateway to "silently capture the
+unique mobile device ID", which neither platform supplies to an ordinary application; an
+app-scoped install identifier answers the duplicate-submission question the gateway actually
+has, and nothing else. Step 428 asks for hesitation heatmaps, which at coordinate granularity
+would put a near-signature into the payload -- which hand holds the phone, how far a tap
+overshoots -- so the heatmap is built over fields instead. In all three the requirement
+survives and only the mechanism changes. Fifteen rows later Step 420's replacement turns out
+to be exactly the assignment key Step 435 needs, which is the argument for making refusals
+constructively rather than simply declining.
+
+**Step 417's lower half is about dismissing people.** Its Poka-Yoke, Completion Measures,
+Expected Output, Common Library and Decision Group cells all describe a scheduled script that
+removes a worker's access when they fall below a threshold, with managers explicitly prevented
+from intervening -- on a row whose instruction is about logging friction. It is the fifth
+spliced row in the track and the first whose two halves fit together into something coherent,
+which is precisely why it is recorded and refused rather than built. Step 416 had already fixed
+the unit of analysis at a screen and forbidden attributing an indicator to an individual; that
+limit was written for this case, one row before it arrived.
+
+Numbers worth carrying out of this batch: seven declared actions of friction against
+twenty-three interactive elements (418's listeners see all of it without wrapping a single
+widget). Fourteen occurrences of a mean sitting above its own ninetieth percentile, carried by
+one interrupted session (421). The reason-code field found independently by three rows taking
+three different routes (421, 423, 424). Eight fields on the telemetry allowlist, none of which
+identifies a person (419). Three refusals, each naming its replacement (417, 420, 428). Five
+nouns in one batch for one concept -- friction, hesitation, drop-off, bottleneck, complexity
+bottleneck (426). Three clocks that do not tick once a second (431). A p99 of 2.4 seconds in
+the cold store against a median of 38 milliseconds in the depot office (432).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -1891,6 +1984,47 @@ stacks on the register Step 258 keeps -- CSS at 409, NPM at 411, React Native at
     382, 394, 409, 410, 411, 412). The rate is rising: three in the previous twenty, four in
     this twenty, three of those four consecutive. Worth a de-duplication pass over the
     remaining pool before it grows further.
+
+
+75. **The Ceiling Boundary column has no fixed meaning** (Steps 415, 418, 421, 425, 431, 432,
+    434 against Step 433). Seven rows use it as the worst tolerable value on a lower-is-better
+    measure; one uses it as the best. Steps 432 and 433 are one row apart, measure the same
+    thing and share an optimal, and point opposite ways. This is the largest single correction
+    the sheet needs: either the column is renamed on duration rows, or the seven rows are
+    rewritten. Until then every latency target is ambiguous.
+
+76. **Step 417 has no metric name at all.** The cell is empty and the band is not. First in
+    four hundred and seventeen rows. A substituted metric is used and named as substituted in
+    the gate file; the sheet needs the cell filled.
+
+77. **Step 417's output column is written worst-first**, the only row in the track. Under the
+    positional convention six rows state outright, it declares failure to be its best outcome.
+    Worth fixing at source, and worth checking every other row for order rather than content.
+
+78. **Step 432's instruction and its own band disagree by five times.** Sub-100ms in the Atomic
+    Step, 500ms in the optimal, with nothing to say which is the requirement. Both are
+    published; the sheet needs one of them changed.
+
+79. **Step 435 promises a guarantee under a floor of 99.5.** The guarantee is achievable by
+    construction, so the band is the error and the honest band is one cell -- the second such
+    row after Step 411's binary gate. The sheet still cannot express a one-cell measure.
+
+80. **Step 430's ceiling is the longest band cell in the track** and holds a semicolon and two
+    clauses of argument; its floor joins two criteria with an oblique that could be "and" or
+    "or". Read as "and" here and recorded as a choice. Both cells need rewriting.
+
+81. **Step 417's lower half describes automatic dismissal of low performers.** Five cells from
+    another row entirely, on a row about friction logging. Recorded and refused. The real
+    requirement in those cells -- whatever workflow they belong to -- has no row of its own, and
+    if it is genuinely wanted it needs one, with the people affected named in it.
+
+82. **Four more spliced rows** (416, 417, 423, 429), bringing the track to seven. Step 429's
+    lower half is a complete CORS specification requirement with no row of its own.
+
+83. **"Silently" is used twice in this batch to mean two different things** (417, 420). The
+    engineering sense is a real requirement; the secrecy sense is not something the sheet should
+    be asking for in an application used by employees. Worth a wording pass across the remaining
+    pool for the same word.
 
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
