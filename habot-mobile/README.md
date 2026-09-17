@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 1,998 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,201 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -372,8 +372,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 293 | PCDE-019 | The remedy and the repeat, two lines apart in one row | 9 |
 | 294 | BLGTA-033 | Disabled is a hint; "unverified" is three states | 9 |
 | 295 | LSAV-002 | "Interface permissions" is a contradiction; read-only is three | 10 |
+| 296 | ETMDI-021-12 | Shown on every route, four of six indicators flash | 10 |
+| 297 | CRSSS-004-18 | The Setup Step caps text scaling below SC 1.4.4, silently | 10 |
+| 298 | ACRAE-032-15 | Three obligations, one metric -- and two of the three are one | 10 |
+| 299 | CRSSS-007-16 | The splash is drawn before the engine starts; the row depends on itself | 11 |
+| 300 | BTPM-025-13 | "Continuous" is 240x the SC 2.2.2 threshold -- a Level A failure | 10 |
+| 301 | GEN-04946 | A slider on the amount field moves AED 304.88 per point | 10 |
+| 302 | GEN-03910 | The optimal is one microsecond; two empty strings survive trim | 10 |
+| 303 | VPVMP-004-01 | Splitting the sentence is the defect; 11 of 16 forms have nowhere to go | 10 |
+| 304 | GEN-02049 | Full success makes the metric undefined | 10 |
+| 305 | DLQDP-015-11 | A rate per thousand over twelve things | 10 |
+| 306 | ERMWD-025-15 | One error hue asked to carry three severities | 10 |
+| 307 | GEN-02444 | Nine file types, four silhouettes, three units in one band | 10 |
+| 308 | GEN-01098 | Stricter than ISO 9186, and unmeasurable from code | 11 |
+| 309 | BLGTA-002-10 | 300 interruptions or 3, from one decision about when to look | 10 |
+| 310 | HSCPE-006 | Step 286's instruction and Step 286's band, verbatim | 10 |
+| 311 | ACRAE-032-14 | A list keeps 11 of 13 relations and says which two it drops | 10 |
+| 312 | RTSET-033 | The ceiling is below the optimal | 10 |
+| 313 | GEN-01374 | The verification has run for 84 steps; the limits had not been written | 10 |
+| 314 | GEN-04979 | A screen-reader fallback list is the defect, not the fix | 10 |
+| 315 | RTVMA-016 | A metric named for the one ratio at which nothing is visible | 11 |
 
-**1,998 gates across 295 steps.** 274 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
+**2,201 gates across 315 steps.** 274 steps Complete, RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
 GEN-00291 Partial (the palette is provisional), GEN-02852 Partial (no SwiftUI target),
@@ -392,7 +412,12 @@ an encryption health badge's honest state is failed). Each of those four is the 
 row asked for, reported as it came out. Steps 276-295 report clean throughout -- no Fail, no
 Partial, no deferred gate -- which is the first batch in nine to do so, and is a property of the
 rows rather than of the effort: every one of the twenty had something a client could actually
-build.
+build. From Steps 296-315: CRSSS-007-16 **Partial** (1 deferred -- the splash surface is drawn by
+the operating system before the Flutter engine starts, so no frame of it is observable from
+`lib/`; what a real measurement needs is written out) and GEN-01098 Good with 1 deferred (icon
+recognition accuracy is a number about people, and the ISO 9186-1 protocol is specified rather
+than approximated by the easier question this repository already passes). The other eighteen
+report clean.
 
 ### MTO worker screens
 
@@ -854,6 +879,102 @@ population; this is the same defect written into a band.
 `md-linear-progress`, a Material Web Components custom element, at 284; `Arrangement.Center` from
 Jetpack Compose at 289; a JavaScript function at 295. Step 258 keeps the running list.
 
+### Waiting, absence, and the ceiling below its own optimal
+
+Steps 296-315 are one arc about what a screen shows when it has little or nothing to show:
+waiting states (296-301), absent and empty values (302-304), icons and severity (305-309),
+density and lists (310-312), and reach and verification (313-315).
+
+**Step 312 carries the first band in this track that is false on its own terms.** Its floor is
+0.98, its optimal is 1, and its **ceiling is 0.999** -- the value the row calls best sits outside
+the range the row calls acceptable, by a thousandth. Every band defect recorded in the eleven
+batches before it was a unit mismatch, an unfailable floor, or a boundary about another subject.
+And the population makes it worse: the thing being scored is five status badges, so the index
+moves in fifths and neither 0.98 nor 0.999 is a value the measurement can take. One attainable
+value clears the floor. Step 305 has the same shape at a different scale -- a banned-term rate of
+"<=1 per 1,000" over twelve asset ids, where the smallest expressible non-zero rate is 83.33 per
+thousand, eighty-three times the floor.
+
+**One adjective in Step 300 costs a Level A criterion.** "Display subtle animation hints ... to
+signify *continuous* background tracking" is, taken literally, motion that starts automatically
+and never stops: 72,000 frames across a twenty-minute session, 240 times the five-second threshold
+at which SC 2.2.2 Pause, Stop, Hide applies. Nearly every accessibility defect this track has
+recorded sits at AA or AAA; this one is at the lowest level there is. The element animates once on
+the transition and then says, in words, what is being collected and how to stop it -- which is
+also the honest answer to a tracking disclosure being attempted by a shimmer.
+
+**Steps 303 and 309 are the same subject six rows apart and neither knows.** 303 asks that
+combined text strings be broken into "separate atomic variables"; 309 asks that compound syntax be
+painted red while somebody is typing it. 303's instruction, followed literally, produces the harm
+it is reaching for: a concatenation has one shape, so it offers one plural form per locale, and
+the five locales this application already ships need sixteen between them -- Welsh six, Polish
+four. Eleven of those sixteen have nowhere to go. The cure is the opposite move, one whole
+parameterised message per sentence, which also leaves the parameter separate enough to wrap in
+the bidi isolates Step 139 already shipped for Urdu.
+
+**Step 309's own finding is about when, not what.** At 200 characters a minute a ninety-second
+draft is 300 keystrokes. Highlighting on each one paints and unpaints up to 300 times and tells
+somebody their sentence is wrong before they have finished it; running on the two-second dwell
+Step 290 declared gives three evaluations. A hundredfold difference in how often a person is
+interrupted, out of one decision about when to look -- and the people who meet it most often are
+the slowest typists.
+
+**Step 302's metric times a trim, and the trim is not the problem.** The optimal is 0.001 ms --
+one microsecond, at the resolution of the clock that would measure it -- for an operation that
+takes tens of nanoseconds. Meanwhile the check the row describes accepts two strings that render
+as nothing: U+200B ZERO WIDTH SPACE and U+2060 WORD JOINER have no Unicode White_Space property,
+so `trim()` leaves them and the field is "not empty". The person is looking at an empty box the
+application insists is filled, and there is no edit that fixes it except deleting a character
+they cannot see.
+
+**Two rows in this batch cite different criteria for the same number, and the codebase had
+already settled it.** Step 298 gives 44dp as WCAG 2.2 SC 2.5.8; Step 313, fifteen rows later,
+gives the same figure as WCAG 2.1 SC 2.5.5. SC 2.5.8 Target Size (Minimum) is 24x24 at Level AA
+and SC 2.5.5 is 44x44 at Level AAA, so Step 313 is right -- and Step 227 recorded and resolved
+that exact confusion in this repository ninety steps ago. The sheet has reproduced a defect the
+code had fixed.
+
+**Step 313's contribution is a boundary, not a check.** The row asks somebody to verify that all
+interactive targets meet the minimum. That verification has run at stage G-C of `verify_aiss.sh`,
+before the tests, on every commit since Step 229 -- the same shape as Step 180, where the
+mechanism the row asked to activate had been running for 176 steps. What was missing is what the
+guard cannot see: four of six control classes declare a size and two compose one at run time, from
+a translated label and from the text scale, and those two are exactly the ones that move under the
+conditions people actually use the app in.
+
+**Step 310 repeats Step 286 verbatim, band and all.** Same instruction -- condense a dense table
+into a scannable summary -- and the same three MD3 Token Compliance boundary strings, twenty-four
+rows apart, cross-referencing nothing. The transform is imported from Step 286 rather than written
+a second time, because a repository with two data-summary components has a drift problem rather
+than a design. The hardware table also showed something Step 286's did not: its truncation and its
+summary happen to pick the same three columns, so it looks right in review and is right by luck --
+one longer device name takes the table to two columns while the summary stays at three.
+
+**Step 314 asks for the anti-pattern by name.** A "screen-reader fallback list" is a second
+structure holding the same nine categories: eighteen places to change, nine pairs that can
+disagree, and every disagreement invisible to everybody except the person it was built for. One
+structure that is accessible is the answer, and the metric's own instrument cannot see the
+difference -- a row with no semantic label executes exactly the lines a labelled row executes, so
+a suite at 100% coverage passes over a control that announces nothing.
+
+**Four rows reach SC 1.4.1 from four directions.** Step 300's tone swap for a spending threshold,
+Step 306's error colour asked to signify three severities when Material has one error hue, Step
+309's red highlight, and Step 315's "red-highlighting". Step 315 also carries the batch's other
+impossible cell: a metric named **"WCAG Contrast Ratio (1:1)"**, which is two identical colours,
+on a row whose own floor is 4.5 -- and a *cross-browser* accessibility test in an application that
+renders its own text and has no browser.
+
+**Two gates are deferred, both with their protocol written out.** Step 299's splash animation is
+drawn by the operating system before the Flutter engine starts, so no frame of it is observable
+from `lib/` by any amount of effort; what is observable, and what people actually complain about,
+is the handoff to the first Flutter frame, and that is budgeted at one frame. Step 308's icon
+recognition accuracy is a number about people -- an ISO 9186-1 comprehension test -- and the
+tempting substitute, the share of icons carrying labels, is a different and easier question this
+repository already passes at 100%.
+
+**Four more rows written for other stacks**, bringing the running list to twelve: CSS with a
+z-index at 299, Jetpack Compose at 297, the DOM at 308, and cross-browser testing at 315.
+
 **The exception worth naming.** Step 288 asks to identify ENUM fields needing chip presentation
 and is scored on Asset & Component Discovery Completeness. After nine batches of metrics belonging
 to other rows, that one measures its own action -- and its ceiling, "100% (full inventory -- no
@@ -1015,6 +1136,24 @@ ten thousand (293).
     it, and no other surface has a place for it. Stripping it from the screen would delete it, so
     it is reported instead: either something should consume it, or it should be removed
     deliberately.
+
+38. **An eleventh poka-yoke rule is specified and switched off** (Step 304). `HARDCODED_HELP_TEXT`
+    has its id, its four matched parameters and its three exempt paths declared in
+    `help_text_registry.dart`. The guard file it belongs in is gated by an earlier step, so
+    enabling it edits work already signed off. Somebody should turn it on deliberately.
+
+39. **Steps 298 and 313 disagree about which WCAG criterion says 44dp** (this batch), and Step 227
+    had already resolved it. 2.5.8 is 24x24 at AA, 2.5.5 is 44x44 at AAA, and this project
+    enforces 48. The sheet now carries both readings; the resolution lives in the code.
+
+40. **Two control classes are outside the touch-target guard** (Step 313): a chip sized to a
+    translated label, and an inline link sized by the text scale. A widget test at the audited
+    scales is what would cover them, and it does not exist yet.
+
+41. **Two measurements cannot be taken from this repository** (Steps 299, 308). The splash
+    animation's frame metrics need a platform-side trace in the host project, on a physical device
+    in a release build. Icon recognition accuracy needs an ISO 9186-1 comprehension test with
+    people. Both are specified in their gate files; neither is work a build host can do.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
