@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,601 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 2,801 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -432,8 +432,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 353 | GEN-04031 | A band of 1/1/1 on a measure with a distribution | 10 |
 | 354 | EDEBS-013-11 | A stepper promises a denominator; a bar cannot | 10 |
 | 355 | EDEBS-019-12 | "N/A (Backend database setup)", four times, on a UI row | 10 |
+| 356 | GEN-00932 | Four sources say "verified"; one of them is a bank | 10 |
+| 357 | GEN-02301 | Reports **Fail**: four meanings of "Verified", three held | 10 |
+| 358 | GEN-01407 | A ratio with no denominator, on the sixth copy of one band | 10 |
+| 359 | ACRAE-004 | The two ratings the control exists for score highest | 10 |
+| 360 | GEN-02466 | "Swept" is a verb: examined, quarantined, removed | 10 |
+| 361 | GEN-01540 | A forecast and a count, rendered as the same kind of fact | 10 |
+| 362 | GEN-01143 | A search log is a record of people; anonymity floor 10 | 10 |
+| 363 | OPMV-006 | A cap nobody can see is a wrong answer that renders fast | 10 |
+| 364 | FLADE-016-10 | The fifteenth foreign stack, and four properties lost | 10 |
+| 365 | GEN-00876 | The second LaTeX-typeset band in one batch | 10 |
+| 366 | EDEBS-011-09 | A finger is 12.5 times a cursor and sits on the target | 10 |
+| 367 | OFBSE-013-04 | Boundary cells holding two measures each | 10 |
+| 368 | GEN-02411 | A ceiling inside its own optimal; a lock on no door | 10 |
+| 369 | HC-SCH-0179 | The generator-miss cell, for the second time | 10 |
+| 370 | SIDM-016 | Ceiling 0.98 below an optimal of 1 -- the second such band | 10 |
+| 371 | HSCPE-009 | An ordinal is an address, not an identity | 10 |
+| 372 | GEN-02478 | One tap, and the four decisions it makes on your behalf | 10 |
+| 373 | GEN-02577 | "Instantly", on a screen nobody is looking at | 10 |
+| 374 | GEN-01628 | A widget that names its warehouse holds its credentials | 10 |
+| 375 | GEN-01319 | A package name is a dependency direction | 10 |
 
-**2,601 gates across 355 steps.** Every step reports Complete except the following, each of
+**2,801 gates across 375 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -468,7 +488,10 @@ met while two were never observed, because a completion rate needs a cohort and 
 an average application duration needs a definition of when the clock starts, and neither
 exists in the sheet. Nothing fell short; the failure is absence, which the row's Pass/Fail
 output cannot express. The other nineteen report clean, and this batch too carries no
-deferred gate.
+deferred gate. From Steps 356-375: GEN-02301 **Fail** -- "Verified" on
+that row means four different things checked by four different actors, and the worked payroll
+run holds three of the four, so the badge is refused rather than shown on a partial. The other
+nineteen report clean, and the batch carries no deferred gate.
 
 ### MTO worker screens
 
@@ -1235,6 +1258,92 @@ either (340). 48dp against 44dp is 19 per cent of area (342). Four labels across
 each (354). Four hundred and eighty-three is Batch K's number; this batch's is nine control
 classes, seven of them statically provable (344).
 
+### The claim, and what is behind it
+
+Steps 356-375 are about assertion. A verified badge, a confidence rating, a swept-records count,
+a safety ratio, an anomaly flag, a status panel that says "Healthy": twenty rows in which the
+interface tells somebody that something is true. The question each one raises is the same --
+what is behind the claim, and does the reader get to see it.
+
+**Four meanings of one word.** Step 356 renders "Bank Verified Revenue" and Step 357 renders
+"Payroll Verified". Between them the sheet uses "verified" for four different checks performed
+by four different actors: a bank confirming a deposit, a payroll system confirming a run, an
+operator confirming a document, and a model scoring a likelihood. Step 357 reports **Fail**
+because the worked run holds three of the four and a badge that means four things cannot be
+shown when one of them is missing. Step 359 is the sharpest version: the confidence indicator's
+four worked ratings include one outside the model's calibrated range and one with nothing to
+cite -- and both score above 0.9. The scoring function is confident in exactly the two cases
+where the interface should not be, which is the argument for rendering a named band rather than
+a number.
+
+**A band carried by six rows is a template, not six mistakes.** Steps 358, 362, 374 and 375 all
+carry the identical refresh-latency cells -- floor `<1 hour`, optimal `<5 minutes`, ceiling
+`<24 hours` -- and so do Steps 163 and 175, which tokenised them long before this batch. The
+ceiling is twenty-four times the floor on a lower-is-better measure, which reads the ceiling as
+the worst bound and every other latency band in the sheet as the best. Open decision 47 asked
+whether the inverted bands were incidents or a property of the sheet; six identical copies of one
+cell answers it.
+
+**The second band false on its own terms.** Step 370 sets a floor of 0.9, an optimal of 1 and a
+ceiling of **0.98**. The value the row calls best sits outside the range the row calls attainable.
+Step 312 carried the identical shape fifty-eight rows earlier with a gap of one thousandth; this
+gap is two hundredths, twenty times as large. Step 368 adds a third shape to the family: an
+optimal written `"0-1"` with a ceiling of 1 sitting inside it, so three cells hold two distinct
+positions.
+
+**And a band that is not a number at all.** Steps 356 and 365 write all three of their boundary
+cells as `$60\text{ fps}$` -- LaTeX math mode, in a spreadsheet column a consumer will parse.
+Two rows in one batch is a pipeline rendering numbers with a typesetting wrapper, not a
+keystroke. Step 367 adds a fourth shape by joining two measures with a slash in every cell
+(`95% cov. / <15 min`), so a reading of 99 per cent coverage at twelve minutes clears the
+coverage optimal and misses the latency floor at the same time, and the cell cannot say which
+verdict wins. Split apart, both halves are well formed, which is the argument for splitting them
+rather than discarding them.
+
+**A truncation nobody can see is a wrong answer with a fast render time.** Step 363 caps a
+listing at five hundred rows over a table of 3,120: the list says `Showing 500 of 3120` and the
+complete one says `Showing all 84`, because an unqualified count leaves a reader unable to tell
+the two apart. 2,620 rows are named as not drawn. Step 365 applies the same rule to a graph,
+which is harder because a graph has no scrollbar to be short. Step 370 applies it to a format:
+four fields fit in 296dp of a 328dp screen with 32dp to spare, the fifth is 120dp and does not,
+and the one that is dropped is named along with where it can still be found.
+
+**Aggregation is a privacy control before it is a performance one.** Step 362's search-trends
+panel publishes three of five filter combinations and holds two back below an anonymity floor of
+ten distinct searchers -- the two suppressed ones being "overnight, medical needs,
+postcode-level" and "Arabic-speaking carer, infant, specific street", in which no field is a
+name. Twenty-three searches sit behind them and are counted on the face of the panel rather than
+dropped. Step 374 reuses the same floor on a telemetry series: a bucket with four contributors is
+four people, and drawing it as a very short bar publishes them, while drawing it as zero would
+read as a collapse in activity. Step 373 carries the consequence into HR: an anomaly flag is a
+claim about a person, and two of its four worked flags are unusual against one baseline and
+ordinary against another.
+
+**The word that keeps not surviving contact.** "Instantly" (373), "clearly" (369) and
+"single-tap" (372) are each a requirement only once somebody says what they exclude. A dashboard
+cannot display anything instantly to a person who is not looking at it, so "instantly" on a pull
+surface means "as soon as they open it" -- the same finding Steps 331 and 371 record about a
+counter and a warning indicator, and none of the three rows asks for the push that would close
+the gap. "Clearly" excludes colour alone, an icon alone and an abbreviation, which is three of
+the four available presentations. And a single tap answers four questions about an export --
+which period, which people, which format, where it goes -- so the button keeps its one tap and
+puts the four answers on its face.
+
+**Two cells in this sheet now document their own absence.** Step 369's Data Requirement column
+reads "No matched reference row in Setup Implementation master list ... verify manually",
+identical to Step 347's twenty-two rows earlier. A first occurrence is an accident; a second with
+the same wording is a template -- and it remains more useful than most of the cells that are
+filled in, because a stated gap can be closed and an invented requirement cannot be told apart
+from a real one.
+
+Numbers worth carrying out of this batch: one band, six rows, and a ceiling twenty-four times its
+floor (358, 362, 374, 375). A ceiling two hundredths below its own optimal, twenty times the gap
+of the first such band (370). 2,620 rows named as not drawn (363). Seventy records touched out of
+two million, which is thirty-five per million (360). A fingertip at 12.5 times the width of a
+cursor, and four plotted points resolving to three selections (366). Four fields in 296dp with
+32dp spare and a fifth at 120dp (370). Four export decisions on one button, and forty-eight
+people in the worked run (372).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -1438,6 +1547,57 @@ classes, seven of them statically provable (344).
     mobile onboarding completion rate needs a cohort and a window; an average application duration
     needs a decision about when the clock starts and whether abandonment counts. Neither definition
     appears anywhere in the sheet, so the row reports Fail on absence rather than shortfall.
+
+49. **The inverted refresh-latency band is a template** (Steps 358, 362, 374, 375, with 163 and
+    175). Six rows carry the identical three cells -- floor `<1 hour`, optimal `<5 minutes`,
+    ceiling `<24 hours` -- with the ceiling twenty-four times the floor on a lower-is-better
+    measure. Open decision 47 asked whether the inverted bands were incidents or a property of the
+    sheet; six identical copies of one cell settles it. The tokenised constants already carry the
+    correct reading; the sheet still does not.
+
+50. **A second band false on its own terms** (Step 370). Floor 0.9, optimal 1, ceiling **0.98**:
+    the value the row calls best sits outside the range the row calls attainable. Step 312 carried
+    the same shape fifty-eight rows earlier with a gap twenty times smaller. Two occurrences with
+    nothing linking them makes it a class rather than a typo.
+
+51. **Two band cells are LaTeX, not numbers** (Steps 356, 365). All six boundary cells across the
+    two rows hold `$60\text{ fps}$` in math mode, and none parses as a number. Two rows in one
+    batch points at the pipeline that produced the sheet rather than at a keystroke. The first
+    *encoding* defect this track has recorded; worth correcting at source before anything reads
+    the bands numerically.
+
+52. **Two more band shapes with no honest reading** (Steps 367, 368). Step 367 joins a coverage
+    percentage and a latency with a slash in every boundary cell, so a reading can satisfy half a
+    boundary and the cell cannot say which verdict wins; split apart, both halves are well formed.
+    Step 368's optimal is the range `"0-1"` with a ceiling of 1 inside it, so three cells hold two
+    distinct positions.
+
+53. **The generator-miss cell is a template too** (Steps 347, 369). Both rows carry the identical
+    "No matched reference row in Setup Implementation master list ... verify manually" text where a
+    data requirement belongs. It is the most useful cell on either row and it is still an absence;
+    what closes it is the source rows, not a build.
+
+54. **One-valued output columns reach seven** (Steps 370, 371, after 321, 322, 334, 335, 351). Two
+    more Best Qualitative Output cells hold a single value -- "High" and "Pass" -- so a row scored
+    on either reports success whether it succeeded or not. Recorded, not gated: there is nothing to
+    gate against.
+
+55. **Four rows are scored on a metric belonging to another subject** (Steps 360, 363, 366, 375):
+    an RBAC enforcement rate on a counting tile, Largest Contentful Paint on a row cap, an SRE
+    alert-coverage measure on a chart, and a dashboard refresh latency on a package. Three of the
+    batch's citations are Google Core Web Vitals (344, 363, 369) in an application with no DOM.
+    What each metric points at is usually real; none of them is what the row builds.
+
+56. **Nothing pushes** (Steps 331, 371, 373). Three rows now ask a dashboard to tell somebody
+    something promptly -- a real-time counter, a warning indicator scored on Mean Time to Detect,
+    and an anomaly surface that should display "instantly". A pull surface shortens only the
+    interval after a person looks. No row in the pool asks for the notification that would close
+    the first part, so the honest claim for all three is readability on arrival.
+
+57. **Step 357 reports Fail, and the reason is vocabulary.** "Verified" on that row means four
+    different checks performed by four different actors. The worked payroll run holds three of the
+    four, so the badge is refused rather than shown on a partial. Deciding which of the four the
+    badge is allowed to assert is a product decision this repository cannot make.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
