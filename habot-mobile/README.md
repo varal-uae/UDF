@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,401 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,601 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -512,8 +512,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 433 | GEN-04352 | Four delivery states where a message has five | 10 |
 | 434 | GEN-04075 | A fast 202 measures a queue, not the work | 10 |
 | 435 | GEN-02003 | "Guarantee" under a floor of 99.5 | 10 |
+| 436 | GEN-02127 | What "complete" means, and a charter for scoring people | 10 |
+| 437 | GEN-00721 | The client receives a level-up; it does not decide one | 10 |
+| 438 | GEN-02104 | The accounting metric finally fits: points are a ledger | 10 |
+| 439 | GEN-05221 | A level, not a "performance tier" | 10 |
+| 440 | GEN-02489 | The first zero floor, and only the person's own card recoloured | 10 |
+| 441 | GEN-02687 | A scorecard contract where every figure carries its working | 10 |
+| 442 | GEN-05232 | Thanks is worth zero points, and publication is the person's choice | 10 |
+| 443 | GEN-05243 | The first true ceiling: Goodhart's law in a cell | 10 |
+| 444 | GEN-03248 | A slider that behaves like five labelled choices | 10 |
+| 445 | GEN-02161 | NPS measures the respondents, not the form | 10 |
+| 446 | GEN-05122 | The longest band cell in the track is a template | 10 |
+| 447 | GEN-05133 | A lost comparison sign decides the result | 10 |
+| 448 | GEN-05254 | Factor notes before scores | 10 |
+| 449 | GEN-05265 | Distribution reported, never enforced | 10 |
+| 450 | GEN-05331 | Rules before questions | 10 |
+| 451 | GEN-01936 | The row that judges the video, not the worker | 10 |
+| 452 | GEN-02172 | Functional escalation before hierarchical | 10 |
+| 453 | GEN-05364 | Documented, not confirmed, so Partial | 10 |
+| 454 | GEN-05375 | Claimed savings are not savings | 10 |
+| 455 | GEN-03415 | A projection that tells you what you will lose | 10 |
 
-**3,401 gates across 435 steps.** Every step reports Complete except the following, each of
+**3,601 gates across 455 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -562,6 +582,10 @@ something already in the repository is easy to satisfy honestly and worth nothin
 416-435 break the run: Step 430 reports **Partial** and Steps 432 and 433 report **Average**,
 each because its own band says so -- 94 per cent coverage against an optimal of 95, and a
 worst-case p99 above the optimal on two latency rows. Nothing was rounded up to keep a streak.
+Steps 436-455 report one **Fail** (GEN-05133: a response-rate target lost its comparison sign
+in export, and under the intended reading 27 per cent misses 30), one **Partial** (GEN-05364:
+the objective is documented but no stakeholder here can confirm it) and one **Average**
+(GEN-02161: an NPS of 14).
 
 ### MTO worker screens
 
@@ -1637,6 +1661,59 @@ nouns in one batch for one concept -- friction, hesitation, drop-off, bottleneck
 bottleneck (426). Three clocks that do not tick once a second (431). A p99 of 2.4 seconds in
 the cold store against a median of 38 milliseconds in the depot office (432).
 
+### Scoring people
+
+Batch P fixed the unit of analysis at a screen and forbade attributing friction to a person.
+Steps 436-455 are the rows where that rule cannot apply, because the person is the point:
+points, streaks and levels; thanks and recognition; feedback prompts and rating controls;
+monthly evaluations, skill quizzes and an escalation timer; a suggestion scheme; and, last, a
+projection of somebody's own leave. So Step 436, which defines what "complete" means before
+anything can be awarded for it, also writes a four-rule charter for whenever a person is
+legitimately the subject: they see their own score and how it was computed; any score can be
+contested and a contest pauses its use; no score triggers a consequence without a named
+person deciding; and telemetry about how somebody used a screen can never feed a score.
+Every later row in the batch binds to it.
+
+**Step 443 has the best cell in the sheet.** Its ceiling reads "<= 50% (gaming-risk
+ceiling)": recognition engagement above half is not better but worse, because past that point
+thanks is being given because it is counted. It is Goodhart's law written into a band, and it
+is the first ceiling in the track used as a true upper bound -- two-sided, with a failure at
+each end. After Batch P showed the Ceiling column holding the *worst* value on latency rows,
+this row uses it exactly as a ceiling should be used.
+
+**Step 447 fails on a character nobody can see.** Its completion measure reads "\30% user
+response rate": a comparison sign lost in export, replaced by the backslash that tried to
+carry it, and the same defect sits on another row still in the pool. Read as "at least 30%",
+the only sensible reading of a response-rate target, the observed 27% fails; read as "at
+most" it would pass. The row reports Fail, and the fix is explicitly not to prompt more --
+Step 446 capped prompts at one a week and never after a refusal, and relaxing either would hit
+the number and make the prompts worse.
+
+**The slide from game to appraisal is caught twice.** Step 439's instruction says "level" and
+its metric says "performance tier"; a level counts completions and ignores the quality,
+difficulty and circumstances a rating must weigh, so the card says level. Step 449 asks for
+"automated performance distribution tracking" in a manager evaluation tool, which is the
+machinery of a forced curve; the distribution is reported to each manager beside the
+organisation's and never enforced -- no quota, no rescaling, no curve.
+
+**Some rows get things right, and the track records that too.** Step 438 carries the A - B = 0
+metric that Step 435 misapplied, and here it fits: points are a ledger. Step 451 says outright
+that worker failures are evidence about the *training video*, the first row in two batches to
+point its measurement at the material unprompted. Step 452's band descends correctly and its
+best value is the five minutes its instruction names -- the first row in two batches whose
+words and numbers agree -- and its cited standard, ITIL, contains the correction to its own
+instruction: functional escalation to a colleague who can pick the work up, not hierarchical
+escalation to the HR Director every five minutes.
+
+Numbers worth carrying out of this batch: four charter rules (436). Sixty points awarded and
+sixty backed by validated completions (438). Forty points written as four overtime
+completions (439). Zero points for a thank-you (442). Engagement of 34.7 per cent inside a
+two-sided band, with one team of two suppressed (443). An NPS of 14 from fifty anonymous
+responses (445). Eleven of twelve ratings "exceeds" against 29 per cent across the
+organisation, shown and not corrected (449). One quiz question in four flagged as a bad
+question (450). AED 4,700 claimed against AED 1,150 verified (454). And 9.7 days of leave
+that will be lost unless booked, said plainly to the person they belong to (455).
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -2025,6 +2102,34 @@ the cold store against a median of 38 milliseconds in the depot office (432).
     engineering sense is a real requirement; the secrecy sense is not something the sheet should
     be asking for in an application used by employees. Worth a wording pass across the remaining
     pool for the same word.
+
+
+84. **Export has dropped comparison signs** (Step 447, GEN-04935). "\30%" and "\95%" where a
+    greater-than-or-equal sign belonged. On Step 447 the missing character decides whether the
+    row passes. Worth a scan of every cell for a backslash before a digit, and a fix at export.
+
+85. **A scoring charter is now in force** (Step 436). Any future row that scores a person binds
+    to its four rules. If the organisation wants different rules, that is a decision for a
+    named owner, not something a later row should quietly override.
+
+86. **Step 439 relabels a level as a performance tier; Step 441 serves a "performance
+    scorecard".** The word is kept where it is honest and refused where it is not. Worth a
+    wording decision before gamification and appraisal share a data model.
+
+87. **Step 449's distribution tracking must stay a report.** If anybody later asks for quotas
+    per rating band or automatic rescaling, it is a forced curve and needs an explicit policy
+    decision with the people affected consulted.
+
+88. **The reward for an adopted improvement is undecided** (Step 453). Peer thanks is worth
+    zero points (Step 442); rewarding suggestions is a separate decision with an owner named.
+    Step 453 reports Partial until a stakeholder confirms its four open questions.
+
+89. **Two rows design one rating control two ways** (Steps 444 and 447): a labelled slider and a
+    row of stars. One needs to win.
+
+90. **Step 446 repeats Step 430's band character for character**, and Steps 450 and 454 share
+    theirs. Blocks are being pasted onto rows by name ("substep", "design the approach"); the
+    remaining pool should be checked for more.
 
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
