@@ -1,0 +1,20 @@
+{
+  "//": "GEN-00207 — OpenAPI schema for GMRD_Figma_Schema (coordinates).",
+  "openapi": "3.0.3",
+  "info": { "title": "GMRD_Figma_Schema", "version": "1.0.0" },
+  "components": {
+    "schemas": {
+      "FigmaNode": {
+        "type": "object",
+        "required": ["node_id", "x", "y", "width", "height"],
+        "properties": {
+          "node_id": { "type": "string" },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number", "minimum": 0 },
+          "height": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

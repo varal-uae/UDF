@@ -1,0 +1,13 @@
+{
+  "//": "GEN-00719 — event schema reward_unlocked.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "reward_unlocked",
+  "type": "object",
+  "required": ["user_id", "reward_id", "unlocked_at"],
+  "properties": {
+    "user_id": { "type": "string" },
+    "reward_id": { "type": "string" },
+    "unlocked_at": { "type": "string", "format": "date-time" },
+    "points": { "type": "integer", "minimum": 0 }
+  }
+}

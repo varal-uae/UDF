@@ -1,0 +1,9 @@
+{
+  "//": "GEN-00366 — deploy mobile frontend bundle to Firebase Hosting CDN.",
+  "//metric": "Deployment Readiness Completeness",
+  "hosting": {
+    "public": "build/web",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }]
+  }
+}
