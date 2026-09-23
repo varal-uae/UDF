@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,801 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 4,001 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -552,8 +552,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 473 | GEN-05166 | "Real-time" given a number | 10 |
 | 474 | GEN-05199 | A 95 per cent floor on a safeguarding check | 10 |
 | 475 | GEN-05210 | Three instructions, two measures | 10 |
+| 476 | GEN-04616 | A ceiling that is one vulnerability | 10 |
+| 477 | GEN-04671 | Three bare decimals, and a number about people | 10 |
+| 478 | GEN-04693 | The same three packaging defects, a third time | 10 |
+| 479 | RRCVG-045-A08 | Three subjects in three columns of one row | 10 |
+| 480 | BPTR-0176-A14 | A cell that admits nothing matched | 10 |
+| 481 | GEN-01032 | Floor, optimal and ceiling are the same word | 10 |
+| 482 | RCGLA-016-A20 | The first strictly nested band in the track | 10 |
+| 483 | DRVUT-010-A18 | A floor fifty releases wide | 10 |
+| 484 | GEN-05320 | Instantly, for the thing that can be known instantly | 10 |
+| 485 | GEN-00478 | A band holding its own alert condition | 10 |
+| 486 | GEN-00687 | A ceiling slower than its floor, and a measure with two names | 10 |
+| 487 | GEN-00921 | Fifteen per cent of forty-seven people | 10 |
+| 488 | GEN-05452 | Paint time and contrast in one cell | 10 |
+| 489 | RCGLA-018-A20 | Signal in the wrong column | 10 |
+| 490 | GEN-00943 | A question, and a statement about people | 10 |
+| 491 | GEN-05353 | A sixth noun for one idea | 10 |
+| 492 | GEN-05408 | A heatmap that at street zoom is a list of addresses | 10 |
+| 493 | GEN-04682 | One quantity written two ways | 10 |
+| 494 | GEN-05287 | Two ordinals, and a band in the singular | 10 |
+| 495 | GEN-05419 | Step 475 again, and a ledger that reopens | 10 |
 
-**3,801 gates across 475 steps.** Every step reports Complete except the following, each of
+**4,001 gates across 495 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -614,6 +634,14 @@ GEN-05155 and GEN-05210), each because the top of its band is a formal signature
 accountable owner and no such person exists in a build session. The four Partials are one
 finding rather than four: naming the owners turns all of them into Complete with no code
 changing. The other fifteen report clean.
+
+Steps 476-495 report three **Fail** and one **Partial**, each the row's own band read as
+written. GEN-04935's successor is not among them: the failures here are a staging smoke-pass
+rate of 75 per cent against a floor of 95 (BPTR-0176-A14), a change-failure rate of 25 per cent
+against a floor of 2 (DRVUT-010-A18), and a first-contentful-paint breach on the oldest declared
+device found by the very subroutine the row asked for (GEN-05452). The Partial is GEN-05419,
+which is GEN-05210 character for character and stops, as GEN-05210 did, at a signature nobody
+has been named to give. The other sixteen report clean.
 
 ### MTO worker screens
 
@@ -1815,6 +1843,85 @@ which ranks anybody (471). Four service areas in place of a coordinate (472). A 
 lag budget where the row said "real-time" (473). Five worked credential records, two displayed
 and three excluded (474). And four rows closing unsigned, which is one sentence away from none.
 
+### Shipping it, and what comes back
+
+Steps 476-495 leave the product and follow the release: the build is hardened and obfuscated
+(476), an over-the-air channel is integrated (477), the shared component package is published
+(478, 482), release gates are configured (479), staging and the store receive the artefact (480,
+481), a variant halt rule is written (484), four kinds of alert are built (485-488), and then
+the field answers back -- layout regressions (489), sentiment by build (490), a friction
+specification (491), a demand heatmap (492) and a continuous improvement roadmap (493). Two
+closing rows confirm prerequisites and ask for a signature (494, 495).
+
+**Two bands in this batch hold one value in all three cells.** Step 481's floor, optimal and
+ceiling all read "Deployed"; Step 485's all read the same typeset LaTeX fragment. Step 456 had
+already collapsed a floor into a ceiling and Step 460 a floor into an optimal; this batch
+collapses all three, twice. A band that holds one value is not a measure, it is a condition --
+and at Step 481 it is a condition decided by a store reviewer rather than by anybody here, so
+four things the team does control are measured instead, including a field-by-field comparison of
+the store privacy declaration against the Step 419 telemetry allowlist.
+
+**The Ceiling column acquires a fourth meaning.** Step 476 sets it to 1 on a vulnerability count
+whose floor and optimal are both zero, so the band ascends into failure. With the worst value
+(418), a true upper bound (443) and the negation of the floor (456), the column now means four
+different things, which is why Step 493's roadmap carries "rewrite the ceiling column heading"
+as an item with a named owner. Three further rows in this batch -- 486, 487 and 490 -- put a
+latency ceiling slower than the floor, the pattern Batch P first recorded.
+
+**Two rows show what a band should look like.** Step 482's three tiers are strictly nested:
+manual smoke, then automated smoke plus twenty-four hours of monitoring plus zero critical
+regressions, then progressive rollout plus a rollback path that has been tested. Each tier keeps
+everything below it and adds one thing, and the ceiling is genuinely better than the optimal.
+Step 489's does the same for implementation completeness. Both are on rows about releasing
+rather than about the product, which may be a clue about who wrote them.
+
+**Step 479 carries three distinct subjects in three columns.** Its instruction is about release
+gate configuration, its metric about Material 3 token conformity, and its Setup Step cell asks
+for "the data linkage between training completion metrics and the enterprise promotion
+evaluation engine". Eleven rows in this track have carried a spliced half; this is the first
+with three subjects at once. The Setup Step cell is recorded verbatim and refused: a score about
+a person driving a consequence without a person deciding is what the Step 436 charter forbids.
+
+**Arithmetic that makes a floor unreachable, twice.** Step 458 found that a 95 per cent floor on
+a twelve-case suite means 100 per cent. Step 483's 98 per cent floor on a release success rate
+needs fifty releases before it can be cleared with any failure in it, so for a team releasing
+fortnightly it means no failures at all -- and a team can reach it by releasing more often
+rather than by failing less. Step 487's fifteen per cent funnel-drop threshold has the opposite
+problem: on a step forty-seven people reach, fifteen per cent is eight people, so the rule fires
+every week until a minimum weekly volume is added.
+
+**Where the work happens is where people live.** Step 492 asks for a geo-density heatmap.
+At city zoom that is a planning tool; at street zoom it is a list of home addresses drawn as
+colour. The aggregation is fixed to the named service areas Step 472 established rather than
+clustered dynamically, a cell under five records is not drawn, there is no zoom level below the
+area boundary, and nothing is interpolated between cells. Step 490 draws the same line through
+a different column: cutting sentiment by build hash asks whether a release made things worse,
+and cutting it by acquisition channel produces statements about the people who arrived a
+particular way, so the channel cut stays aggregate with a minimum cohort of twenty-five.
+
+**Step 495 is Step 475 character for character.** Eight cells identical, twenty rows apart,
+across a batch boundary -- the second instruction-identical pair in the track after Steps 458
+and 465, and the first to cross batches. The duplicate register opened at Step 458 therefore has
+to span batches. So does the signature ledger: Step 475 closed with four rows awaiting a named
+accountable owner and the remark that one list would clear them. Nobody was named, so Step 495
+is the fifth.
+
+Numbers worth carrying out of this batch: a ceiling of one vulnerability (476). An adoption rate
+of 0.83 that says more about a four-on-four-off rota than about an SDK (477). Three rows sharing
+the SemVer band and all three of its defects (478). Four gate settings, one of them waivable,
+by a named role (479). A repeated word -- "a staging environment environment" -- and the first
+cell in 480 rows to admit that nothing matched (480). A rollback rehearsed and timed at 214
+seconds (482). A change-failure rate of 25 per cent over four releases (483). Five hundred
+sessions per arm before a variant is judged on performance, and one occurrence before it is
+judged on being broken (484). Sixty-five minutes as sixty plus five, said out loud (485). One
+message from forty retries (486). Nineteen hundred people on the step that fired and forty-seven
+on the step that did not (487). Body text held at 4.5:1 where the band offered 3:1 (488). Four
+golden-layout comparisons across three breakpoints (489). A sentiment cell holding three people,
+suppressed and shown as suppressed (490). Six nouns now in use for a place where people stop
+(491). Three of four heatmap cells drawn (492). A closure rate of 0.75 on a backlog whose every
+item cites the step that raised it (493). Six output vocabularies across 494 rows (494). And a
+signature ledger that reopens at five.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -2266,6 +2373,34 @@ and three excluded (474). And four rows closing unsigned, which is one sentence 
     Step and @habot/shared-library in the Common Library column. Both names are recorded and
     neither is chosen over the other; where these modules actually publish is a decision for
     the owner of the registries.
+
+
+98. **The Ceiling column now means four different things** (418, 443, 456, 476): the worst
+    tolerated value, a true upper bound, the negation of the floor, and a quantity of harm. One
+    proposal covering all four readings is the item Step 493's roadmap is holding open.
+
+99. **Three bands hold one value in all their cells** (456, 460, 481, 485). A band that cannot
+    distinguish success from failure is a heading, not a measure. These four rows need bands
+    written, or the column dropped for them.
+
+100. **Percentage floors on small populations** (458, 483, 487). A 98 per cent release floor
+     needs fifty releases; a fifteen per cent funnel threshold needs a minimum weekly volume.
+     Every percentage band in the remaining pool should be checked against the size of the thing
+     it divides.
+
+101. **Step 479's Setup Step cell asks for training completion to feed a promotion engine.**
+     Recorded verbatim and refused. If the organisation wants training to inform promotion, that
+     is a decision with a named owner and the people affected consulted, not a data linkage.
+
+102. **Two registries are still named on every packaging row** (460, 470, 478). Three rows now.
+     Where @Universal-Library actually publishes is one sentence from somebody who knows.
+
+103. **The signature ledger is five rows and spans two batches** (457, 463, 472, 475, 495). The
+     remedy has not changed: a list of named accountable owners.
+
+104. **The duplicate register has to span batches** (458/465 inside one; 475/495 across two).
+     Any de-duplication pass over the remaining 819 rows has to compare against what is already
+     implemented, not only within a batch.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
