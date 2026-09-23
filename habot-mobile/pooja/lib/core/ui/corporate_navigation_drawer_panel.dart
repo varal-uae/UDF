@@ -40,8 +40,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-008-A06 Record Data Model.
 class CorporateNavigationDrawerRecord {
@@ -264,7 +262,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('SSO ROUTED: ${dest['title']} (${dest['url']}) | Zero CORS Exception at $nowIso.'),
-        backgroundColor: AppColorPalette.success,
+        backgroundColor: CorporateNavigationDrawerPanelTokens.success,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -281,7 +279,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
             color: Theme.of(context).colorScheme.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          padding: AppSpacingTokens.paddingMd,
+          padding: CorporateNavigationDrawerPanelTokens.paddingMd,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,7 +302,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                     'Corporate Operational Hubs',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  const Text('IAP Secured', style: TextStyle(color: AppColorPalette.success, fontSize: 10, fontWeight: FontWeight.bold)),
+                  const Text('IAP Secured', style: TextStyle(color: CorporateNavigationDrawerPanelTokens.success, fontSize: 10, fontWeight: FontWeight.bold)),
                 ],
               ),
               const Divider(),
@@ -314,17 +312,17 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                 final isSelected = _selectedDestinationIndex == idx;
                 return ListTile(
                   dense: true,
-                  leading: Icon(dest['icon'] as IconData, color: isSelected ? AppColorPalette.brandPrimary : null),
+                  leading: Icon(dest['icon'] as IconData, color: isSelected ? CorporateNavigationDrawerPanelTokens.brandPrimary : null),
                   title: Text(dest['title'] as String, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, fontSize: 12)),
                   subtitle: Text(dest['url'] as String, style: const TextStyle(fontSize: 10)),
-                  trailing: isSelected ? const Icon(Icons.check, color: AppColorPalette.success, size: 16) : null,
+                  trailing: isSelected ? const Icon(Icons.check, color: CorporateNavigationDrawerPanelTokens.success, size: 16) : null,
                   onTap: () {
                     Navigator.pop(ctx);
                     _onSelectDestination(idx);
                   },
                 );
               }),
-              AppSpacingTokens.vGapMd,
+              CorporateNavigationDrawerPanelTokens.vGapMd,
             ],
           ),
         );
@@ -343,8 +341,8 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? CorporateNavigationDrawerPanelTokens.xs : (isExpanded ? CorporateNavigationDrawerPanelTokens.md : CorporateNavigationDrawerPanelTokens.sm),
+          vertical: CorporateNavigationDrawerPanelTokens.xs,
         );
 
         return Card(
@@ -353,7 +351,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? CorporateNavigationDrawerPanelTokens.sm : (isExpanded ? CorporateNavigationDrawerPanelTokens.lg : CorporateNavigationDrawerPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,7 +382,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                CorporateNavigationDrawerPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Corporate Navigation Drawer & Hub Destination Architecture',
@@ -395,22 +393,22 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: CorporateNavigationDrawerPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: CorporateNavigationDrawerPanelTokens.success),
                   ),
                   child: Text(
                     'GATE: ${record.completionStatus.toUpperCase()} (100%)',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: CorporateNavigationDrawerPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            CorporateNavigationDrawerPanelTokens.vGapMd,
 
             // Overview Details Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: CorporateNavigationDrawerPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -421,7 +419,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                   Row(
                     children: [
                       Icon(Icons.dns_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      CorporateNavigationDrawerPanelTokens.hGapSm,
                       Expanded(
                         child: Text(
                           'Assigned Team: ${record.assignedGroupTeam} | Decision Group: ${record.decisionGroup}',
@@ -432,19 +430,19 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      AppSpacingTokens.hGapSm,
+                      CorporateNavigationDrawerPanelTokens.hGapSm,
                       Text(
                         'Seq: ${record.sequenceOrder}',
                         style: theme.textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  CorporateNavigationDrawerPanelTokens.vGapXs,
                   Text(
                     'Setup Step: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  CorporateNavigationDrawerPanelTokens.vGapXs,
                   Text(
                     'UX Translation: ${record.uxTranslation}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -452,7 +450,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            CorporateNavigationDrawerPanelTokens.vGapLg,
 
             // Viewport Mode & Media Query Controls
             SingleChildScrollView(
@@ -469,30 +467,30 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                       });
                     },
                   ),
-                  AppSpacingTokens.hGapSm,
+                  CorporateNavigationDrawerPanelTokens.hGapSm,
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.brandPrimary.withValues(alpha: 0.08),
+                      color: CorporateNavigationDrawerPanelTokens.brandPrimary.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.security, size: 14, color: AppColorPalette.brandPrimary),
+                        Icon(Icons.security, size: 14, color: CorporateNavigationDrawerPanelTokens.brandPrimary),
                         SizedBox(width: 4),
-                        Text('IAP Edge Proxy Active (Zero CORS)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary)),
+                        Text('IAP Edge Proxy Active (Zero CORS)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: CorporateNavigationDrawerPanelTokens.brandPrimary)),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            CorporateNavigationDrawerPanelTokens.vGapLg,
 
             // Navigation Shell & Destination Engine Container
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: CorporateNavigationDrawerPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
@@ -515,25 +513,25 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColorPalette.success.withValues(alpha: 0.10),
+                            color: CorporateNavigationDrawerPanelTokens.success.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text(
                             'SSO FOOTPRINT ACTIVE',
-                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: CorporateNavigationDrawerPanelTokens.success),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapMd,
+                  CorporateNavigationDrawerPanelTokens.vGapMd,
 
                   if (_isMobileView)
                     // Mobile Viewport: Hamburger Icon opening bottom sheet modal
                     Container(
                       width: double.infinity,
-                      padding: AppSpacingTokens.paddingMd,
+                      padding: CorporateNavigationDrawerPanelTokens.paddingMd,
                       decoration: BoxDecoration(
                         color: colorScheme.surface,
                         borderRadius: BorderRadius.circular(12),
@@ -550,7 +548,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                                 tooltip: 'Open Mobile Navigation Drawer',
                                 onPressed: _openMobileDrawerModal,
                               ),
-                              AppSpacingTokens.hGapSm,
+                              CorporateNavigationDrawerPanelTokens.hGapSm,
                               Expanded(
                                 child: Text(
                                   'Tap hamburger icon to open sliding modal drawer with 5 operational hubs.',
@@ -559,7 +557,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                               ),
                             ],
                           ),
-                          AppSpacingTokens.vGapMd,
+                          CorporateNavigationDrawerPanelTokens.vGapMd,
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -571,11 +569,11 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                               children: [
                                 Text('Active Routed Destination:', style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold)),
                                 const SizedBox(height: 2),
-                                Text(_activeDestinationUrl, style: const TextStyle(fontSize: 11, color: AppColorPalette.brandPrimary, fontWeight: FontWeight.bold)),
+                                Text(_activeDestinationUrl, style: const TextStyle(fontSize: 11, color: CorporateNavigationDrawerPanelTokens.brandPrimary, fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),
-                          AppSpacingTokens.vGapMd,
+                          CorporateNavigationDrawerPanelTokens.vGapMd,
                           SizedBox(
                             width: double.infinity,
                             height: 44,
@@ -584,7 +582,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                               icon: const Icon(Icons.open_in_browser),
                               label: const Text('Open Hub Navigation Drawer Sheet'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColorPalette.brandPrimary,
+                                backgroundColor: CorporateNavigationDrawerPanelTokens.brandPrimary,
                                 foregroundColor: Colors.white,
                               ),
                             ),
@@ -601,7 +599,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                         Expanded(
                           flex: 6,
                           child: Container(
-                            padding: AppSpacingTokens.paddingSm,
+                            padding: CorporateNavigationDrawerPanelTokens.paddingSm,
                             decoration: BoxDecoration(
                               color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
@@ -637,13 +635,13 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                             ),
                           ),
                         ),
-                        AppSpacingTokens.hGapMd,
+                        CorporateNavigationDrawerPanelTokens.hGapMd,
 
                         // Right Destination Metadata & Cloud Console Router
                         Expanded(
                           flex: 5,
                           child: Container(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: CorporateNavigationDrawerPanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
@@ -662,14 +660,14 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    AppSpacingTokens.hGapXs,
+                                    CorporateNavigationDrawerPanelTokens.hGapXs,
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: AppColorPalette.success.withValues(alpha: 0.12),
+                                        color: CorporateNavigationDrawerPanelTokens.success.withValues(alpha: 0.12),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: const Text('NO CORS ERROR', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                                      child: const Text('NO CORS ERROR', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: CorporateNavigationDrawerPanelTokens.success)),
                                     ),
                                   ],
                                 ),
@@ -679,7 +677,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                                 _buildMetadataRow('Auth State', _operationalHubDestinations[_selectedDestinationIndex]['auth'] as String),
                                 _buildMetadataRow('Latency', '${_ssoRouteLatencyMs}ms instant switch'),
                                 _buildMetadataRow('Execution ID', record.stepExecutionId),
-                                AppSpacingTokens.vGapSm,
+                                CorporateNavigationDrawerPanelTokens.vGapSm,
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
@@ -688,7 +686,7 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                                   ),
                                   child: const Row(
                                     children: [
-                                      Icon(Icons.lock_open_outlined, size: 16, color: AppColorPalette.success),
+                                      Icon(Icons.lock_open_outlined, size: 16, color: CorporateNavigationDrawerPanelTokens.success),
                                       SizedBox(width: 6),
                                       Expanded(
                                         child: Text(
@@ -708,11 +706,11 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            CorporateNavigationDrawerPanelTokens.vGapLg,
 
             // Telemetry & BigQuery Verification Log
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: CorporateNavigationDrawerPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -731,35 +729,35 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      AppSpacingTokens.hGapXs,
+                      CorporateNavigationDrawerPanelTokens.hGapXs,
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: CorporateNavigationDrawerPanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('IAP SECURED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('IAP SECURED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: CorporateNavigationDrawerPanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  CorporateNavigationDrawerPanelTokens.vGapXs,
                   Text(
                     'Last Routing Timestamp: $_lastRouteTimestamp',
                     style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  CorporateNavigationDrawerPanelTokens.vGapXs,
                   Text(
                     'Route Latency: ${_ssoRouteLatencyMs}ms | Cross-Domain Policy: ZERO CORS EXCEPTIONS',
-                    style: theme.textTheme.bodySmall?.copyWith(color: AppColorPalette.success),
+                    style: theme.textTheme.bodySmall?.copyWith(color: CorporateNavigationDrawerPanelTokens.success),
                   ),
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            CorporateNavigationDrawerPanelTokens.vGapLg,
 
             // Audit Gate Metrics Grid
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: CorporateNavigationDrawerPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -772,13 +770,13 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  CorporateNavigationDrawerPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Gate Status', '100% PASS', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, CorporateNavigationDrawerPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, CorporateNavigationDrawerPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, CorporateNavigationDrawerPanelTokens.success),
+                      _buildMetricTile(context, 'Gate Status', '100% PASS', CorporateNavigationDrawerPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -825,4 +823,115 @@ class _CorporateNavigationDrawerPanelState extends State<CorporateNavigationDraw
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class CorporateNavigationDrawerPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: CorporateNavigationDrawerPanel(
+        record: CorporateNavigationDrawerRecord(
+          actionTimestamp: '2026-08-29 08:40:00 UTC',
+          userSessionId: 'USR-NAV-16590',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

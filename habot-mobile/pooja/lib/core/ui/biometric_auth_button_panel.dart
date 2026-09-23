@@ -25,8 +25,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Data record holding 49-column metadata and ADFA specification parameters.
 class BiometricAuthButtonRecord {
@@ -218,7 +216,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('WEBAUTHN PASS: TouchID Verified. Cryptographic token dispatched to Pub/Sub!'),
-            backgroundColor: AppColorPalette.success,
+            backgroundColor: BiometricAuthButtonPanelTokens.success,
             duration: Duration(seconds: 2),
           ),
         );
@@ -235,7 +233,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('POKA-YOKE FAIL-CLOSED: Count delta detected (A - B != 0)! Routed to tbl_governed_exception_log.'),
-        backgroundColor: AppColorPalette.error,
+        backgroundColor: BiometricAuthButtonPanelTokens.error,
         duration: Duration(seconds: 4),
       ),
     );
@@ -260,8 +258,8 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? BiometricAuthButtonPanelTokens.paddingSm
+            : (isExpanded ? BiometricAuthButtonPanelTokens.paddingLg : BiometricAuthButtonPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -270,11 +268,11 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
             children: [
               // Header Card
               _buildHeaderCard(context, colorScheme, theme, r, isCompact: isCompact, isExpanded: isExpanded),
-              AppSpacingTokens.vGapMd,
+              BiometricAuthButtonPanelTokens.vGapMd,
 
               // Navigation Segment Bar
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              BiometricAuthButtonPanelTokens.vGapMd,
 
               // Active Tab Content
               if (_activeTab == 'button') ...[
@@ -284,7 +282,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r, isExpanded: isExpanded),
               ],
-              AppSpacingTokens.vGapLg,
+              BiometricAuthButtonPanelTokens.vGapLg,
 
               // Lineage Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -304,7 +302,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
     required bool isExpanded,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? BiometricAuthButtonPanelTokens.paddingSm : BiometricAuthButtonPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -339,18 +337,18 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.brandPrimary.withValues(alpha: 0.1),
+                      color: BiometricAuthButtonPanelTokens.brandPrimary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.brandPrimary.withValues(alpha: 0.3)),
+                      border: Border.all(color: BiometricAuthButtonPanelTokens.brandPrimary.withValues(alpha: 0.3)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.smart_button, size: 12, color: AppColorPalette.brandPrimary),
+                        Icon(Icons.smart_button, size: 12, color: BiometricAuthButtonPanelTokens.brandPrimary),
                         SizedBox(width: 4),
                         Text(
                           'MD3 BUTTON: 100% COMPLETE',
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: BiometricAuthButtonPanelTokens.brandPrimary),
                         ),
                       ],
                     ),
@@ -365,12 +363,12 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          BiometricAuthButtonPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          AppSpacingTokens.vGapXs,
+          BiometricAuthButtonPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -386,9 +384,9 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
       child: Row(
         children: [
           _buildSegmentButton('button', 'Biometric Button Component', Icons.fingerprint, colorScheme),
-          AppSpacingTokens.hGapSm,
+          BiometricAuthButtonPanelTokens.hGapSm,
           _buildSegmentButton('triangular', 'Triangular Check (A - B = 0)', Icons.balance, colorScheme),
-          AppSpacingTokens.hGapSm,
+          BiometricAuthButtonPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -422,7 +420,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
     required bool isExpanded,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? BiometricAuthButtonPanelTokens.paddingSm : BiometricAuthButtonPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -433,12 +431,12 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
         children: [
           Text('MD3 Standardized Biometric Authentication Trigger Button',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          BiometricAuthButtonPanelTokens.vGapSm,
           Text(
             'Centered biometric trigger action with min-height 52dp, fluid ripple feedback, and standardized fingerprint icon tokens.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapLg,
+          BiometricAuthButtonPanelTokens.vGapLg,
 
           // Centered Biometric Auth Button Container
           Center(
@@ -458,7 +456,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
                   ),
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(48, 48),
-                    backgroundColor: AppColorPalette.brandPrimary,
+                    backgroundColor: BiometricAuthButtonPanelTokens.brandPrimary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     elevation: 2,
                   ),
@@ -466,7 +464,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
               ),
             ),
           ),
-          AppSpacingTokens.vGapLg,
+          BiometricAuthButtonPanelTokens.vGapLg,
 
           // Auth State Indicator Card
           Container(
@@ -475,7 +473,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
               color: colorScheme.surface,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: _authSuccess ? AppColorPalette.success.withValues(alpha: 0.31) : colorScheme.outlineVariant,
+                color: _authSuccess ? BiometricAuthButtonPanelTokens.success.withValues(alpha: 0.31) : colorScheme.outlineVariant,
               ),
             ),
             child: Row(
@@ -483,9 +481,9 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
                 Icon(
                   _authSuccess ? Icons.check_circle : Icons.shield_outlined,
                   size: 20,
-                  color: _authSuccess ? AppColorPalette.success : colorScheme.onSurfaceVariant,
+                  color: _authSuccess ? BiometricAuthButtonPanelTokens.success : colorScheme.onSurfaceVariant,
                 ),
-                AppSpacingTokens.hGapMd,
+                BiometricAuthButtonPanelTokens.hGapMd,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,7 +493,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: _authSuccess ? AppColorPalette.success : colorScheme.onSurface,
+                          color: _authSuccess ? BiometricAuthButtonPanelTokens.success : colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -521,7 +519,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
     final isBalanced = delta == 0;
 
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: BiometricAuthButtonPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -538,22 +536,22 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: (isBalanced ? AppColorPalette.success : AppColorPalette.error).withValues(alpha: 0.1),
+                  color: (isBalanced ? BiometricAuthButtonPanelTokens.success : BiometricAuthButtonPanelTokens.error).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   isBalanced ? 'BALANCED (Delta = 0)' : 'MISMATCH (Delta = $delta)',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isBalanced ? AppColorPalette.success : AppColorPalette.error),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isBalanced ? BiometricAuthButtonPanelTokens.success : BiometricAuthButtonPanelTokens.error),
                 ),
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          BiometricAuthButtonPanelTokens.vGapSm,
           Text(
             'Verifies client interaction count against server trace count. Any non-zero delta immediately rolls back database transactions.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          BiometricAuthButtonPanelTokens.vGapMd,
 
           Container(
             padding: const EdgeInsets.all(12),
@@ -586,14 +584,14 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
                     const Text('Verification Equation:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                     Text(
                       '$_clientInteractionCnt - $_serverTraceCnt = $delta ${isBalanced ? "== 0 (PASS)" : "!= 0 (FAIL-CLOSED)"}',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isBalanced ? AppColorPalette.success : AppColorPalette.error),
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isBalanced ? BiometricAuthButtonPanelTokens.success : BiometricAuthButtonPanelTokens.error),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          BiometricAuthButtonPanelTokens.vGapMd,
 
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -606,15 +604,15 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
                   child: const Text('Reset Counts', style: TextStyle(fontSize: 11)),
                 ),
               ),
-              AppSpacingTokens.hGapSm,
+              BiometricAuthButtonPanelTokens.hGapSm,
               ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 48),
                 child: FilledButton.tonal(
                   onPressed: _simulateTriangularMismatch,
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(48, 48),
-                    backgroundColor: AppColorPalette.error.withValues(alpha: 0.1),
-                    foregroundColor: AppColorPalette.error,
+                    backgroundColor: BiometricAuthButtonPanelTokens.error.withValues(alpha: 0.1),
+                    foregroundColor: BiometricAuthButtonPanelTokens.error,
                   ),
                   child: const Text('Simulate Mismatch', style: TextStyle(fontSize: 11)),
                 ),
@@ -633,7 +631,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
     required bool isExpanded,
   }) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: BiometricAuthButtonPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -644,7 +642,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          BiometricAuthButtonPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -659,19 +657,19 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                BiometricAuthButtonPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Completeness', '${r.completenessPercent.toStringAsFixed(0)}% (Complete)', AppColorPalette.success),
+                    _buildMetricTile('Completeness', '${r.completenessPercent.toStringAsFixed(0)}% (Complete)', BiometricAuthButtonPanelTokens.success),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          BiometricAuthButtonPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -737,7 +735,7 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, BiometricAuthButtonRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: BiometricAuthButtonPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10),
@@ -757,9 +755,120 @@ class _BiometricAuthButtonPanelState extends State<BiometricAuthButtonPanel> {
               ],
             ),
           ),
-          const Icon(Icons.security, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.security, size: 16, color: BiometricAuthButtonPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class BiometricAuthButtonPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: BiometricAuthButtonPanel(
+        record: BiometricAuthButtonRecord(
+          actionTimestamp: '2026-09-02 10:25:00 UTC',
+          userSessionId: 'USR-BIOBTN-33610',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

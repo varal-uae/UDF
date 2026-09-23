@@ -22,8 +22,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 enum SseState {
   connected,    // Green
@@ -114,11 +112,11 @@ class SseStatusIndicator extends StatelessWidget {
   Color _getDotColor() {
     switch (sseStatus.state) {
       case SseState.connected:
-        return AppColorPalette.success;
+        return SseStatusIndicatorTokens.success;
       case SseState.reconnecting:
-        return AppColorPalette.warning;
+        return SseStatusIndicatorTokens.warning;
       case SseState.disconnected:
-        return AppColorPalette.lightError;
+        return SseStatusIndicatorTokens.lightError;
     }
   }
 
@@ -146,13 +144,13 @@ class SseStatusIndicator extends StatelessWidget {
 
         return Card(
           margin: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: SseStatusIndicatorTokens.sm,
+            vertical: SseStatusIndicatorTokens.xs,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
+              horizontal: SseStatusIndicatorTokens.md,
+              vertical: SseStatusIndicatorTokens.sm,
             ),
             child: isCompact
                 ? _buildCompactLayout(theme, dotColor, label)
@@ -173,7 +171,7 @@ class SseStatusIndicator extends StatelessWidget {
           child: Row(
             children: [
               _buildPulseDot(dotColor),
-              AppSpacingTokens.hGapSm,
+              SseStatusIndicatorTokens.hGapSm,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +210,7 @@ class SseStatusIndicator extends StatelessWidget {
         Row(
           children: [
             _buildPulseDot(dotColor),
-            AppSpacingTokens.hGapMd,
+            SseStatusIndicatorTokens.hGapMd,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -235,7 +233,7 @@ class SseStatusIndicator extends StatelessWidget {
               label: Text(sseStatus.contrastRatio, style: const TextStyle(fontSize: 10)),
               backgroundColor: dotColor.withValues(alpha: 0.12),
             ),
-            AppSpacingTokens.hGapSm,
+            SseStatusIndicatorTokens.hGapSm,
             if (sseStatus.state != SseState.connected)
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
@@ -259,7 +257,7 @@ class SseStatusIndicator extends StatelessWidget {
         Row(
           children: [
             _buildPulseDot(dotColor),
-            AppSpacingTokens.hGapMd,
+            SseStatusIndicatorTokens.hGapMd,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -269,7 +267,7 @@ class SseStatusIndicator extends StatelessWidget {
                       label,
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    SseStatusIndicatorTokens.hGapSm,
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
@@ -305,7 +303,7 @@ class SseStatusIndicator extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
-            AppSpacingTokens.hGapMd,
+            SseStatusIndicatorTokens.hGapMd,
             if (sseStatus.state != SseState.connected)
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
@@ -339,4 +337,115 @@ class SseStatusIndicator extends StatelessWidget {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class SseStatusIndicatorTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SseStatusIndicator(
+              sseStatus: SseConnectionStatus(
+                state: SseState.connected,
+                serverEndpoint: 'https://api.habot.io/v1/sse',
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

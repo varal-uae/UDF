@@ -23,8 +23,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// AEETE-009 Record Data Model.
 class DesignTokenAuditRecord {
@@ -157,8 +155,8 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
   bool _isScannerRunning = false;
 
   final List<TokenAuditRuleItem> _rules = const [
-    TokenAuditRuleItem(ruleId: 'RULE-COLOR-01', ruleName: 'Primary Palette Token Mapping', targetAsset: 'AppColorPalette.brandPrimary'),
-    TokenAuditRuleItem(ruleId: 'RULE-SPACING-02', ruleName: 'Padding Grid Bounds (16px)', targetAsset: 'AppSpacingTokens.paddingMd'),
+    TokenAuditRuleItem(ruleId: 'RULE-COLOR-01', ruleName: 'Primary Palette Token Mapping', targetAsset: 'DesignTokenAuditPanelTokens.brandPrimary'),
+    TokenAuditRuleItem(ruleId: 'RULE-SPACING-02', ruleName: 'Padding Grid Bounds (16px)', targetAsset: 'DesignTokenAuditPanelTokens.paddingMd'),
     TokenAuditRuleItem(ruleId: 'RULE-TYPO-03', ruleName: 'M3 Type Scale Compliance', targetAsset: 'Theme.textTheme.titleMedium'),
     TokenAuditRuleItem(ruleId: 'RULE-SSL-04', ruleName: 'TLS 1.3 Cryptographic Handshake', targetAsset: 'Cloud Ingress SSL Policy'),
   ];
@@ -176,7 +174,7 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Design Token Audit Scan Complete: 100% Compliance (ISO/IEC 25010 Passed)'),
-            backgroundColor: AppColorPalette.success,
+            backgroundColor: DesignTokenAuditPanelTokens.success,
             duration: Duration(seconds: 3),
           ),
         );
@@ -190,7 +188,7 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        icon: const Icon(Icons.security_update_warning, color: AppColorPalette.warning, size: 48),
+        icon: const Icon(Icons.security_update_warning, color: DesignTokenAuditPanelTokens.warning, size: 48),
         title: const Text('App Update Required'),
         content: const Text(
           'Your device connection uses an outdated TLS protocol. To protect your data, please update your application to continue accessing secure operations.',
@@ -207,7 +205,7 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Redirecting to App Store for Secure Update...'),
-                  backgroundColor: AppColorPalette.brandPrimary,
+                  backgroundColor: DesignTokenAuditPanelTokens.brandPrimary,
                 ),
               );
             },
@@ -234,11 +232,11 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
           elevation: 1,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacingTokens.xs : AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: isCompact ? DesignTokenAuditPanelTokens.xs : DesignTokenAuditPanelTokens.sm,
+            vertical: DesignTokenAuditPanelTokens.xs,
           ),
           child: Padding(
-            padding: EdgeInsets.all(isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md)),
+            padding: EdgeInsets.all(isCompact ? DesignTokenAuditPanelTokens.sm : (isExpanded ? DesignTokenAuditPanelTokens.lg : DesignTokenAuditPanelTokens.md)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -268,7 +266,7 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    DesignTokenAuditPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Design Token Style Audit & SSL Ingress Policy',
@@ -279,22 +277,22 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: DesignTokenAuditPanelTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: DesignTokenAuditPanelTokens.success),
                       ),
                       child: Text(
                         'STATUS: ${record.completionStatus}',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: DesignTokenAuditPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                DesignTokenAuditPanelTokens.vGapMd,
 
                 // Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: DesignTokenAuditPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -304,18 +302,18 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.lock, color: AppColorPalette.success, size: 20),
-                          AppSpacingTokens.hGapSm,
+                          const Icon(Icons.lock, color: DesignTokenAuditPanelTokens.success, size: 20),
+                          DesignTokenAuditPanelTokens.hGapSm,
                           Text(
                             'TLS 1.3 Ingress Active | ISO/IEC 25010 Software Quality Standard',
                             style: theme.textTheme.labelMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColorPalette.success,
+                              color: DesignTokenAuditPanelTokens.success,
                             ),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      DesignTokenAuditPanelTokens.vGapXs,
                       Text(
                         record.whyThisMatters,
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -323,14 +321,14 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                DesignTokenAuditPanelTokens.vGapLg,
 
                 // Design Token Linking Rules List
                 Text(
                   'Design System Token Audit Rules (Strict 100% Token Binding)',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                DesignTokenAuditPanelTokens.vGapSm,
                 Column(
                   children: _rules.map((rule) {
                     return Container(
@@ -343,8 +341,8 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.check_circle, color: AppColorPalette.success, size: 18),
-                          AppSpacingTokens.hGapSm,
+                          const Icon(Icons.check_circle, color: DesignTokenAuditPanelTokens.success, size: 18),
+                          DesignTokenAuditPanelTokens.hGapSm,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,17 +355,17 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.success.withValues(alpha: 0.12),
+                              color: DesignTokenAuditPanelTokens.success.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: Text(rule.status, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                            child: Text(rule.status, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: DesignTokenAuditPanelTokens.success)),
                           ),
                         ],
                       ),
                     );
                   }).toList(),
                 ),
-                AppSpacingTokens.vGapLg,
+                DesignTokenAuditPanelTokens.vGapLg,
 
                 // Interactive Controls: Scan Runner & Outdated Connection Block Simulation
                 Wrap(
@@ -390,11 +388,11 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapLg,
+                DesignTokenAuditPanelTokens.vGapLg,
 
                 // Audit Metric Boundary Grid
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: DesignTokenAuditPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -407,18 +405,18 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                         'Audit Metric: ${record.metricName}',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      DesignTokenAuditPanelTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', '${(record.floorBoundary * 100).toInt()}%', AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', '>=${(record.optimalTarget * 100).toInt()}%', AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', '${(record.ceilingBoundary * 100).toInt()}%', AppColorPalette.success),
-                          _buildMetricTile(context, 'Current Pass Rate', '${(record.currentPassRate * 100).toStringAsFixed(1)}%', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', '${(record.floorBoundary * 100).toInt()}%', DesignTokenAuditPanelTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', '>=${(record.optimalTarget * 100).toInt()}%', DesignTokenAuditPanelTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', '${(record.ceilingBoundary * 100).toInt()}%', DesignTokenAuditPanelTokens.success),
+                          _buildMetricTile(context, 'Current Pass Rate', '${(record.currentPassRate * 100).toStringAsFixed(1)}%', DesignTokenAuditPanelTokens.brandPrimary),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      DesignTokenAuditPanelTokens.vGapSm,
                       Divider(color: colorScheme.outlineVariant, height: 1),
-                      AppSpacingTokens.vGapSm,
+                      DesignTokenAuditPanelTokens.vGapSm,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -435,12 +433,12 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                DesignTokenAuditPanelTokens.vGapLg,
 
                 if (isExpanded) ...[
                   Container(
                     width: double.infinity,
-                    padding: AppSpacingTokens.paddingSm,
+                    padding: DesignTokenAuditPanelTokens.paddingSm,
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
@@ -453,7 +451,7 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                       ],
                     ),
                   ),
-                  AppSpacingTokens.vGapMd,
+                  DesignTokenAuditPanelTokens.vGapMd,
                 ],
 
                 // Vitality & Prosperity Summary Grid
@@ -462,9 +460,9 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: AppSpacingTokens.paddingSm,
+                        padding: DesignTokenAuditPanelTokens.paddingSm,
                         decoration: BoxDecoration(
-                          color: AppColorPalette.brandPrimary.withValues(alpha: 0.08),
+                          color: DesignTokenAuditPanelTokens.brandPrimary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -474,21 +472,21 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                               'Vitality & Prosperity (Us)',
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: AppColorPalette.brandPrimary,
+                                color: DesignTokenAuditPanelTokens.brandPrimary,
                               ),
                             ),
-                            AppSpacingTokens.vGapXs,
+                            DesignTokenAuditPanelTokens.vGapXs,
                             Text(record.vitalityProsperityUs, style: theme.textTheme.bodySmall),
                           ],
                         ),
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    DesignTokenAuditPanelTokens.hGapSm,
                     Expanded(
                       child: Container(
-                        padding: AppSpacingTokens.paddingSm,
+                        padding: DesignTokenAuditPanelTokens.paddingSm,
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.08),
+                          color: DesignTokenAuditPanelTokens.success.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -498,10 +496,10 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
                               'Vitality & Prosperity (Customer)',
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: AppColorPalette.success,
+                                color: DesignTokenAuditPanelTokens.success,
                               ),
                             ),
-                            AppSpacingTokens.vGapXs,
+                            DesignTokenAuditPanelTokens.vGapXs,
                             Text(record.vitalityProsperityCustomer, style: theme.textTheme.bodySmall),
                         const SizedBox.shrink(),
                           ],
@@ -538,4 +536,115 @@ class _DesignTokenAuditPanelState extends State<DesignTokenAuditPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class DesignTokenAuditPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: DesignTokenAuditPanel(
+        record: DesignTokenAuditRecord(
+          actionTimestamp: '2026-08-24 19:12:00 UTC',
+          userSessionId: 'USR-SEC-7030',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

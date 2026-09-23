@@ -40,8 +40,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-007-A01 Record Data Model.
 class GlobalLayoutStyleSheetRecord {
@@ -237,7 +235,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                 ? 'PRINT PREVIEW READY: Opened in browser preview tab ($nowIso). Compilation: ${elapsedMs}ms.'
                 : 'EXECUTIVE REPORT GENERATED: Boardroom PDF ready for download ($nowIso). Compilation: ${elapsedMs}ms.',
           ),
-          backgroundColor: AppColorPalette.success,
+          backgroundColor: GlobalLayoutStyleSheetPanelTokens.success,
           duration: const Duration(seconds: 3),
         ),
       );
@@ -255,8 +253,8 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? GlobalLayoutStyleSheetPanelTokens.xs : (isExpanded ? GlobalLayoutStyleSheetPanelTokens.md : GlobalLayoutStyleSheetPanelTokens.sm),
+          vertical: GlobalLayoutStyleSheetPanelTokens.xs,
         );
 
         return Card(
@@ -265,7 +263,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? GlobalLayoutStyleSheetPanelTokens.sm : (isExpanded ? GlobalLayoutStyleSheetPanelTokens.lg : GlobalLayoutStyleSheetPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +294,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                GlobalLayoutStyleSheetPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Global Layout Style Sheet & Executive Print Setup Engine',
@@ -307,22 +305,22 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: GlobalLayoutStyleSheetPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: GlobalLayoutStyleSheetPanelTokens.success),
                   ),
                   child: Text(
                     'GATE: ${record.completionStatus.toUpperCase()}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: GlobalLayoutStyleSheetPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            GlobalLayoutStyleSheetPanelTokens.vGapMd,
 
             // Overview Details Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: GlobalLayoutStyleSheetPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -333,7 +331,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                   Row(
                     children: [
                       Icon(Icons.verified_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      GlobalLayoutStyleSheetPanelTokens.hGapSm,
                       Text(
                         'Assigned Team: ${record.assignedGroupTeam} | Decision Group: ${record.decisionGroup}',
                         style: theme.textTheme.labelMedium?.copyWith(
@@ -348,12 +346,12 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  GlobalLayoutStyleSheetPanelTokens.vGapXs,
                   Text(
                     'Setup Step: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  GlobalLayoutStyleSheetPanelTokens.vGapXs,
                   Text(
                     'UX Translation: ${record.uxTranslation}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -361,7 +359,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            GlobalLayoutStyleSheetPanelTokens.vGapLg,
 
             // Device Viewport & Export Rule Controls
             SingleChildScrollView(
@@ -378,7 +376,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                       });
                     },
                   ),
-                  AppSpacingTokens.hGapSm,
+                  GlobalLayoutStyleSheetPanelTokens.hGapSm,
                   FilterChip(
                     avatar: Icon(_pokaYokeInkSaverActive ? Icons.format_color_fill_outlined : Icons.invert_colors_off, size: 16),
                     label: Text(_pokaYokeInkSaverActive ? 'Poka-Yoke Ink Saver (White BG)' : 'Original Theme Colors'),
@@ -392,11 +390,11 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            GlobalLayoutStyleSheetPanelTokens.vGapLg,
 
             // Side-by-Side or Mobile Layout Preview Shell
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: GlobalLayoutStyleSheetPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
@@ -415,21 +413,21 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      AppSpacingTokens.hGapXs,
+                      GlobalLayoutStyleSheetPanelTokens.hGapXs,
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.brandPrimary.withValues(alpha: 0.10),
+                          color: GlobalLayoutStyleSheetPanelTokens.brandPrimary.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           'COMPILER: ${record.commonLibraryToStore}',
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: GlobalLayoutStyleSheetPanelTokens.brandPrimary),
                         ),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapMd,
+                  GlobalLayoutStyleSheetPanelTokens.vGapMd,
 
                   // Mobile vs Desktop Specific Content Layout
                   if (_isMobileView)
@@ -438,7 +436,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                       children: [
                         Container(
                           width: double.infinity,
-                          padding: AppSpacingTokens.paddingMd,
+                          padding: GlobalLayoutStyleSheetPanelTokens.paddingMd,
                           decoration: BoxDecoration(
                             color: colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
@@ -446,19 +444,19 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                           ),
                           child: Column(
                             children: [
-                              const Icon(Icons.print_outlined, size: 40, color: AppColorPalette.brandPrimary),
-                              AppSpacingTokens.vGapSm,
+                              const Icon(Icons.print_outlined, size: 40, color: GlobalLayoutStyleSheetPanelTokens.brandPrimary),
+                              GlobalLayoutStyleSheetPanelTokens.vGapSm,
                               Text(
                                 'Executive Mobile Report Compiler',
                                 style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                               ),
-                              AppSpacingTokens.vGapXs,
+                              GlobalLayoutStyleSheetPanelTokens.vGapXs,
                               Text(
                                 'Compiles boardroom files locally inside mobile browser. Opens print preview in clean new browser tab.',
                                 style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                                 textAlign: TextAlign.center,
                               ),
-                              AppSpacingTokens.vGapMd,
+                              GlobalLayoutStyleSheetPanelTokens.vGapMd,
 
                               // Large Centered Action Button (Mobile Design Decision)
                               SizedBox(
@@ -471,7 +469,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                                       : const Icon(Icons.open_in_new),
                                   label: Text(_isGeneratingReport ? 'Assembling Styles...' : 'Open Print Preview in New Tab'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColorPalette.brandPrimary,
+                                    backgroundColor: GlobalLayoutStyleSheetPanelTokens.brandPrimary,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   ),
@@ -491,7 +489,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                         Expanded(
                           flex: 5,
                           child: Container(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: GlobalLayoutStyleSheetPanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
@@ -501,9 +499,9 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Desktop Section Selection', style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                                AppSpacingTokens.vGapXs,
+                                GlobalLayoutStyleSheetPanelTokens.vGapXs,
                                 Text('Select dashboard sections to include in executive report:', style: theme.textTheme.bodySmall),
-                                AppSpacingTokens.vGapSm,
+                                GlobalLayoutStyleSheetPanelTokens.vGapSm,
                                 Material(
                                   color: Colors.transparent,
                                   child: CheckboxListTile(
@@ -541,7 +539,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                                     onChanged: (val) => setState(() => _hideInteractiveUIInPrint = val),
                                   ),
                                 ),
-                                AppSpacingTokens.vGapMd,
+                                GlobalLayoutStyleSheetPanelTokens.vGapMd,
                                 SizedBox(
                                   width: double.infinity,
                                   height: 44,
@@ -550,7 +548,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                                     icon: const Icon(Icons.picture_as_pdf),
                                     label: const Text('Generate Executive Report'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColorPalette.brandPrimary,
+                                      backgroundColor: GlobalLayoutStyleSheetPanelTokens.brandPrimary,
                                       foregroundColor: Colors.white,
                                     ),
                                   ),
@@ -559,13 +557,13 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                             ),
                           ),
                         ),
-                        AppSpacingTokens.hGapMd,
+                        GlobalLayoutStyleSheetPanelTokens.hGapMd,
 
                         // Right Live Print Preview Window
                         Expanded(
                           flex: 6,
                           child: Container(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: GlobalLayoutStyleSheetPanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: _pokaYokeInkSaverActive ? Colors.white : colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(12),
@@ -588,14 +586,14 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    AppSpacingTokens.hGapXs,
+                                    GlobalLayoutStyleSheetPanelTokens.hGapXs,
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: AppColorPalette.success.withValues(alpha: 0.12),
+                                        color: GlobalLayoutStyleSheetPanelTokens.success.withValues(alpha: 0.12),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: const Text('INK-SAVER WHITE BG ACTIVE', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                                      child: const Text('INK-SAVER WHITE BG ACTIVE', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: GlobalLayoutStyleSheetPanelTokens.success)),
                                     ),
                                   ],
                                 ),
@@ -606,7 +604,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                                   Container(
                                     padding: const EdgeInsets.all(6),
                                     margin: const EdgeInsets.only(bottom: 8),
-                                    color: AppColorPalette.warningContainer,
+                                    color: GlobalLayoutStyleSheetPanelTokens.warningContainer,
                                     child: const Text('⚠️ Interactive Search Bar & Nav buttons visible (Uncheck hide UI to remove)', style: TextStyle(fontSize: 10)),
                                   ),
 
@@ -652,7 +650,7 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                                       children: [
                                         Text('2. Performance & Analytics Visuals', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black87)),
                                         SizedBox(height: 4),
-                                        Text('[Chart Widget Vector Rendered Cleanly Without Text Cut-Offs]', style: TextStyle(fontSize: 10, color: AppColorPalette.brandPrimary, fontWeight: FontWeight.bold)),
+                                        Text('[Chart Widget Vector Rendered Cleanly Without Text Cut-Offs]', style: TextStyle(fontSize: 10, color: GlobalLayoutStyleSheetPanelTokens.brandPrimary, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                   ),
@@ -685,11 +683,11 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            GlobalLayoutStyleSheetPanelTokens.vGapLg,
 
             // Self-Chasing Integrity Check & Telemetry Status
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: GlobalLayoutStyleSheetPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -708,38 +706,38 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      AppSpacingTokens.hGapXs,
+                      GlobalLayoutStyleSheetPanelTokens.hGapXs,
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: _isDocumentVerifiedComplete ? AppColorPalette.success.withValues(alpha: 0.10) : AppColorPalette.warningContainer,
+                          color: _isDocumentVerifiedComplete ? GlobalLayoutStyleSheetPanelTokens.success.withValues(alpha: 0.10) : GlobalLayoutStyleSheetPanelTokens.warningContainer,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           _isDocumentVerifiedComplete ? 'DOCUMENT VERIFIED COMPLETE' : 'COMPLETENESS CHECKING',
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _isDocumentVerifiedComplete ? AppColorPalette.success : AppColorPalette.warning),
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _isDocumentVerifiedComplete ? GlobalLayoutStyleSheetPanelTokens.success : GlobalLayoutStyleSheetPanelTokens.warning),
                         ),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  GlobalLayoutStyleSheetPanelTokens.vGapXs,
                   Text(
                     'Last Export Timestamp: $_lastExportIsoTimestamp',
                     style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  GlobalLayoutStyleSheetPanelTokens.vGapXs,
                   Text(
                     'Client-Side Assembly Latency: ${_exportAssemblyTimeMs}ms | Zero Server Burden',
-                    style: theme.textTheme.bodySmall?.copyWith(color: AppColorPalette.success),
+                    style: theme.textTheme.bodySmall?.copyWith(color: GlobalLayoutStyleSheetPanelTokens.success),
                   ),
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            GlobalLayoutStyleSheetPanelTokens.vGapLg,
 
             // Audit Gate Metrics Grid
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: GlobalLayoutStyleSheetPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -752,13 +750,13 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  GlobalLayoutStyleSheetPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Readiness Status', 'GATE PASS', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, GlobalLayoutStyleSheetPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, GlobalLayoutStyleSheetPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, GlobalLayoutStyleSheetPanelTokens.success),
+                      _buildMetricTile(context, 'Readiness Status', 'GATE PASS', GlobalLayoutStyleSheetPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -792,4 +790,115 @@ class _GlobalLayoutStyleSheetPanelState extends State<GlobalLayoutStyleSheetPane
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class GlobalLayoutStyleSheetPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: GlobalLayoutStyleSheetPanel(
+        record: GlobalLayoutStyleSheetRecord(
+          actionTimestamp: '2026-08-27 11:00:00 UTC',
+          userSessionId: 'USR-LAYOUT-16420',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

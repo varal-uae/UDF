@@ -336,6 +336,169 @@ import 'core/interaction/ime_focus_manager_package_panel.dart';
 import 'core/interaction/gesture_performance_60fps_tester_panel.dart';
 import 'core/tokens/outdoor_daylight_high_contrast_token_panel.dart';
 import 'core/interaction/toggle_responsiveness_feedback_panel.dart';
+import 'core/network/push_notification_alert_delivery_panel.dart';
+import 'core/compliance/automated_test_suite_coverage_panel.dart';
+import 'core/interaction/async_haptic_feedback_panel.dart';
+import 'core/compliance/multi_step_prerequisite_gate_panel.dart';
+import 'core/layout/lazy_loaded_screen_route_panel.dart';
+import 'core/compliance/master_prerequisite_checkpoint_panel.dart';
+import 'core/compliance/pydantic_django_attribution_schema_panel.dart';
+import 'core/network/bigquery_partitioned_telemetry_panel.dart';
+import 'core/network/api_gateway_pubsub_router_panel.dart';
+import 'core/compliance/mobile_conversion_audit_panel.dart';
+import 'core/compliance/pure_function_immutability_enforcer_panel.dart';
+import 'core/compliance/explicit_exception_trigger_guard_panel.dart';
+import 'core/compliance/django_database_model_sync_panel.dart';
+import 'core/compliance/mypy_static_type_enforcer_panel.dart';
+import 'core/network/cloud_logging_driver_integration_panel.dart';
+import 'core/compliance/pitr_recovery_window_verifier_panel.dart';
+import 'core/network/pubsub_purchase_event_topic_panel.dart';
+import 'core/network/unacknowledged_packet_redelivery_tester_panel.dart';
+import 'core/compliance/appsflyer_purchase_event_mapping_panel.dart';
+import 'core/layout/deep_link_router_module_panel.dart';
+import 'core/compliance/dual_dispatch_conversion_event_panel.dart';
+import 'core/compliance/integrations_directory_inspector_panel.dart';
+import 'core/compliance/terraform_warehouse_module_panel.dart';
+import 'core/compliance/orphan_sweeper_daily_scheduler_panel.dart';
+import 'core/tokens/active_code_version_sha_retriever_panel.dart';
+import 'core/compliance/mcp_query_channel_roas_panel.dart';
+import 'core/layout/portrait_orientation_lock_enforcer_panel.dart';
+import 'core/layout/mobile_scaffold_library_panel.dart';
+import 'core/tokens/action_button_48dp_style_panel.dart';
+import 'core/interaction/submit_button_disable_guard_panel.dart';
+import 'core/network/local_friction_log_batcher_panel.dart';
+import 'core/compliance/dbt_micro_batch_scheduler_panel.dart';
+import 'core/tokens/canonical_user_id_token_panel.dart';
+import 'core/tokens/kpi_typography_scale_enforcer_panel.dart';
+import 'core/compliance/mandatory_utm_sql_assertion_panel.dart';
+import 'core/compliance/budget_threshold_trigger_panel.dart';
+import 'core/compliance/data_lineage_trace_test_panel.dart';
+import 'core/network/mobile_telemetry_package_panel.dart';
+import 'core/network/bq_gamification_event_table_panel.dart';
+import 'core/compliance/bq_fraud_quarantine_table_panel.dart';
+import 'core/compliance/dbt_cohort_retention_materialization_panel.dart';
+import 'core/compliance/local_queue_capacity_guard_panel.dart';
+import 'core/compliance/apple_skan_parser_panel.dart';
+import 'core/compliance/skan_postback_test_panel.dart';
+import 'core/tokens/predictive_risk_chip_panel.dart';
+import 'core/interaction/certificate_button_disable_guard_panel.dart';
+import 'core/compliance/gcp_dlp_inspection_template_panel.dart';
+import 'core/network/sla_monitoring_threshold_alert_panel.dart';
+import 'core/compliance/worker_accuracy_ranking_panel.dart';
+import 'core/ui/master_app_button_component_panel.dart';
+import 'core/compliance/protobuf_schema_repository_panel.dart';
+import 'core/network/network_emulator_transmission_panel.dart';
+import 'core/ui/orphan_nodes_highlighter_panel.dart';
+import 'core/tokens/attribution_metadata_token_panel.dart';
+import 'core/network/fcm_payload_validation_panel.dart';
+import 'core/compliance/terraform_max_instances_guard_panel.dart';
+import 'core/ui/step_dropoff_severity_calculator_panel.dart';
+import 'core/compliance/bank_settlement_reconciliation_sql_panel.dart';
+import 'core/network/google_play_reporting_ingestion_panel.dart';
+import 'core/layout/mobile_core_scaffolds_inspector_panel.dart';
+import 'core/ui/mobile_bottom_sheet_viewport_panel.dart';
+import 'core/compliance/p1_shakti_slack_alert_panel.dart';
+import 'core/compliance/code_methodology_compliance_panel.dart';
+import 'core/compliance/cicd_linter_build_check_panel.dart';
+import 'core/layout/route_existence_validator_panel.dart';
+import 'core/network/pubsub_handshake_verifier_panel.dart';
+import 'core/compliance/flutter_integration_driver_test_panel.dart';
+import 'core/ui/shakti_dashboard_health_panel.dart';
+import 'core/tokens/habot_ui_tokens_importer_panel.dart';
+import 'core/tokens/thumb_zone_boundary_panel.dart';
+import 'core/network/bigquery_scroll_depth_streamer_panel.dart';
+import 'core/interaction/screen_hesitation_tracker_panel.dart';
+import 'core/ui/family_structure_metrics_panel.dart';
+import 'core/ui/account_state_distribution_panel.dart';
+import 'core/interaction/carousel_completion_rate_panel.dart';
+import 'core/interaction/category_tap_latency_benchmark_panel.dart';
+import 'core/ui/filter_reset_all_button_panel.dart';
+import 'core/ui/fallback_image_placeholder_panel.dart';
+import 'core/layout/vendor_profile_tab_container_panel.dart';
+import 'core/ui/helpfulness_voting_button_panel.dart';
+import 'core/interaction/optimistic_state_toggle_panel.dart';
+import 'core/network/provider_schedule_availability_panel.dart';
+import 'core/compliance/booking_payload_foreign_key_panel.dart';
+import 'core/layout/sticky_top_cart_banner_panel.dart';
+import 'core/ui/one_tap_book_again_button_panel.dart';
+import 'core/ui/partner_mrr_metrics_panel.dart';
+import 'core/compliance/luhn_checksum_card_validator_panel.dart';
+import 'core/ui/downloadable_invoice_card_panel.dart';
+import 'core/compliance/offline_qr_pass_storage_panel.dart';
+import 'core/ui/multimodal_support_input_panel.dart';
+import 'core/ui/activity_history_list_layout_panel.dart';
+import 'core/ui/order_issue_reporting_button_panel.dart';
+import 'core/ui/upcoming_today_hero_card_panel.dart';
+import 'core/ui/spend_graph_surface_card_panel.dart';
+import 'core/compliance/ab_experiment_confidence_panel.dart';
+import 'core/tokens/npm_design_token_publisher_panel.dart';
+import 'core/interaction/adaptive_haptic_feedback_token_panel.dart';
+import 'core/tokens/thumb_zone_cta_placement_panel.dart';
+import 'core/ui/conversion_funnel_dropoff_panel.dart';
+import 'core/network/hesitation_telemetry_streamer_panel.dart';
+import 'core/compliance/m3_compliance_list_layout_panel.dart';
+import 'core/interaction/animated_onboarding_carousel_panel.dart';
+import 'core/ui/fre_conversion_dropoff_dashboard_panel.dart';
+import 'core/network/category_tap_clickstream_pubsub_panel.dart';
+import 'core/ui/zero_result_filter_suggestion_prompt_panel.dart';
+import 'core/compliance/available_today_badge_guard_panel.dart';
+import 'core/layout/lazy_loading_tab_content_panel.dart';
+import 'core/ui/verified_parent_review_badge_panel.dart';
+import 'core/ui/save_to_collection_bottom_sheet_panel.dart';
+import 'core/compliance/optimistic_slot_lock_engine_panel.dart';
+import 'features/operations/provider_tag_distribution_dashboard.dart';
+import 'features/operations/sla_countdown_badge_timer.dart';
+import 'features/profile/prefill_state_engine_card.dart';
+import 'features/payment/brand_payment_container_view.dart';
+import 'features/security/card_auth_failure_dashboard.dart';
+import 'features/compliance/tax_liability_bi_dashboard.dart';
+import 'features/ticketing/rotating_qr_hash_ticket_pass.dart';
+import 'features/media/media_attachment_fab_control.dart';
+import 'features/logging/profile_filter_chips_feed.dart';
+import 'features/disputes/dispute_intake_wizard_flow.dart';
+import 'features/dashboard/quick_action_badge_grid_view.dart';
+import 'features/analytics/chart_color_token_palette_view.dart';
+import 'features/operations/ops_bottleneck_console_table.dart';
+import 'features/theming/primitive_color_token_matrix.dart';
+import 'features/accessibility/accessibility_touch_matrix_card.dart';
+import 'features/testing/touch_target_constraint_test_console.dart';
+import 'features/testing/spaced_layout_regression_inspector.dart';
+import 'features/adaptive/adaptive_info_screen_container.dart';
+import 'features/streaming/stream_quota_allocation_manager.dart';
+import 'features/forms/validated_submit_button_form_card.dart';
+import 'features/security/fail_closed_circuit_breaker_console.dart';
+import 'features/analytics/silent_friction_bottleneck_detector.dart';
+import 'features/forms/form_draft_recovery_engine_card.dart';
+import 'features/layout/rigid_split_pane_flex_container.dart';
+import 'features/interaction/locked_bottom_panel_keyboard_host.dart';
+import 'features/forms/cross_platform_input_masking_field.dart';
+import 'features/forms/global_input_wrapper_theme_console.dart';
+import 'features/ui/dynamic_skeleton_data_loader_card.dart';
+import 'features/accessibility/semantic_modal_bounds_enforcer.dart';
+import 'features/interaction/guided_error_correction_wizard.dart';
+import 'features/forms/multi_input_form_deconstructor_panel.dart';
+import 'features/interaction/swipe_only_form_navigation_tester.dart';
+import 'features/security/unapproved_styling_gatekeeper_console.dart';
+import 'features/interaction/sla_timer_hook_canvas.dart';
+import 'features/interaction/sla_timer_zero_breach_tester.dart';
+import 'core/compliance/compliance_utils_registry_console.dart';
+import 'features/interaction/single_action_enforcer_screen.dart';
+import 'features/ai/conflict_triage_agent_router.dart';
+import 'features/layout/aspect_ratio_muscle_memory_lock_card.dart';
+import 'features/compliance/triangular_check_reconciler_panel.dart';
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4027,17 +4190,1356 @@ List<StepItem> _buildAppStepDirectory() {
       icon: Icons.touch_app_rounded,
       builder: (_) => const ToggleResponsivenessFeedbackPanel(),
     ),
-
-
-
-
-
-
-
-
-
-
-
+    StepItem(
+      stepCode: 'GEN-00308',
+      atomicStepCode: 'GEN-00308',
+      title: 'Push Notification Alert Delivery Panel',
+      description: 'Confirm the alert delivers a push notification to mobile devices within 500ms.',
+      category: StepCategory.network,
+      icon: Icons.notifications_active_rounded,
+      builder: (_) => const PushNotificationAlertDeliveryPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00319',
+      atomicStepCode: 'GEN-00319',
+      title: 'Automated Test Suite Coverage Panel',
+      description: 'Confirm the automated test suite with an enforced 95%+ coverage gate is delivered.',
+      category: StepCategory.compliance,
+      icon: Icons.fact_check_rounded,
+      builder: (_) => const AutomatedTestSuiteCoveragePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00330',
+      atomicStepCode: 'GEN-00330',
+      title: 'Async Haptic Feedback Panel',
+      description: 'Ensure haptic execution runs asynchronously without blocking the main UI thread.',
+      category: StepCategory.interaction,
+      icon: Icons.vibration_rounded,
+      builder: (_) => const AsyncHapticFeedbackPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00341',
+      atomicStepCode: 'GEN-00341',
+      title: 'Multi-Step Prerequisite Gate Panel',
+      description: 'Confirm Steps 9, 15, and 24 are complete as prerequisites.',
+      category: StepCategory.compliance,
+      icon: Icons.checklist_rtl_rounded,
+      builder: (_) => const MultiStepPrerequisiteGatePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00352',
+      atomicStepCode: 'GEN-00352',
+      title: 'Lazy-Loaded Screen Route Panel',
+      description: 'Lazy-load non-critical mobile screens until requested by user navigation.',
+      category: StepCategory.layout,
+      icon: Icons.route_rounded,
+      builder: (_) => const LazyLoadedScreenRoutePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00363',
+      atomicStepCode: 'GEN-00363',
+      title: 'Master Prerequisite Checkpoint Panel',
+      description: 'Confirm Steps 1 through 49 are complete as prerequisites.',
+      category: StepCategory.compliance,
+      icon: Icons.lock_open_rounded,
+      builder: (_) => const MasterPrerequisiteCheckpointPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00374',
+      atomicStepCode: 'GEN-00374',
+      title: 'Pydantic/Django Attribution Schema Panel',
+      description: 'Create the Pydantic/Django schema file ed_mobile_attribution.py.',
+      category: StepCategory.compliance,
+      icon: Icons.schema_rounded,
+      builder: (_) => const PydanticDjangoAttributionSchemaPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00385',
+      atomicStepCode: 'GEN-00385',
+      title: 'BigQuery Partitioned Telemetry Panel',
+      description: 'Configure BigQuery table partitioning on the timestamp column.',
+      category: StepCategory.network,
+      icon: Icons.table_chart_rounded,
+      builder: (_) => const BigqueryPartitionedTelemetryPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00396',
+      atomicStepCode: 'GEN-00396',
+      title: 'API Gateway Pub/Sub Router Panel',
+      description: 'Configure Google API Gateway routing rules targeting Cloud Pub/Sub topics.',
+      category: StepCategory.network,
+      icon: Icons.alt_route_rounded,
+      builder: (_) => const ApiGatewayPubsubRouterPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00407',
+      atomicStepCode: 'GEN-00407',
+      title: 'Mobile Conversion Audit Panel',
+      description: 'Audit all existing mobile conversion functions (Install, Registration, Purchase, In-App Events).',
+      category: StepCategory.compliance,
+      icon: Icons.policy_rounded,
+      builder: (_) => const MobileConversionAuditPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00418',
+      atomicStepCode: 'GEN-00418',
+      title: 'Pure Function Immutability Enforcer Panel',
+      description: 'Enforce pure function patterns returning new immutable outputs.',
+      category: StepCategory.compliance,
+      icon: Icons.functions_rounded,
+      builder: (_) => const PureFunctionImmutabilityEnforcerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00429',
+      atomicStepCode: 'GEN-00429',
+      title: 'Explicit Exception Trigger Guard Panel',
+      description: 'Add an explicit exception trigger if the evaluation result is null or ambiguous.',
+      category: StepCategory.compliance,
+      icon: Icons.gavel_rounded,
+      builder: (_) => const ExplicitExceptionTriggerGuardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00440',
+      atomicStepCode: 'GEN-00440',
+      title: 'Django Database Model Sync Panel',
+      description: 'Open the Django database models file for the core architecture.',
+      category: StepCategory.compliance,
+      icon: Icons.sync_alt_rounded,
+      builder: (_) => const DjangoDatabaseModelSyncPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00451',
+      atomicStepCode: 'GEN-00451',
+      title: 'MyPy Static Type Enforcer Panel',
+      description: 'Conduct static type checking via MyPy to enforce -> bool return signatures.',
+      category: StepCategory.compliance,
+      icon: Icons.code_rounded,
+      builder: (_) => const MypyStaticTypeEnforcerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00462',
+      atomicStepCode: 'GEN-00462',
+      title: 'Cloud Logging Driver Integration Panel',
+      description: 'Integrate Cloud Logging drivers with Cloud Run containers.',
+      category: StepCategory.network,
+      icon: Icons.cloud_done_rounded,
+      builder: (_) => const CloudLoggingDriverIntegrationPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00473',
+      atomicStepCode: 'GEN-00473',
+      title: 'PITR 7-Day Recovery Window Panel',
+      description: 'Enable Point-in-Time Recovery (PITR) with a 7-day transaction log window.',
+      category: StepCategory.compliance,
+      icon: Icons.history_rounded,
+      builder: (_) => const PitrRecoveryWindowVerifierPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00484',
+      atomicStepCode: 'GEN-00484',
+      title: 'Pub/Sub Purchase Event Topic Panel',
+      description: 'Define the Cloud Pub/Sub topic topic-purchase-event.',
+      category: StepCategory.network,
+      icon: Icons.shopping_cart_checkout_rounded,
+      builder: (_) => const PubsubPurchaseEventTopicPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00495',
+      atomicStepCode: 'GEN-00495',
+      title: 'Unacknowledged Packet Redelivery Panel',
+      description: 'Perform message failure tests to confirm unacknowledged packets are redelivered.',
+      category: StepCategory.network,
+      icon: Icons.replay_rounded,
+      builder: (_) => const UnacknowledgedPacketRedeliveryTesterPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00506',
+      atomicStepCode: 'GEN-00506',
+      title: 'AppsFlyer Purchase Event Mapping Panel',
+      description: 'Map the standard event AFEventPurchase with revenue, currency, and content type.',
+      category: StepCategory.compliance,
+      icon: Icons.monetization_on_rounded,
+      builder: (_) => const AppsflyerPurchaseEventMappingPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00517',
+      atomicStepCode: 'GEN-00517',
+      title: 'Deep Link Router Module Panel',
+      description: 'Create the deep link router module handling inbound marketing deep links.',
+      category: StepCategory.layout,
+      icon: Icons.link_rounded,
+      builder: (_) => const DeepLinkRouterModulePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00528',
+      atomicStepCode: 'GEN-00528',
+      title: 'Dual-Dispatch Conversion Event Sync Panel',
+      description: 'Dispatch conversion events carrying event_id simultaneously to Meta SDK and API Gateway.',
+      category: StepCategory.compliance,
+      icon: Icons.sync_problem_rounded,
+      builder: (_) => const DualDispatchConversionEventPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00539',
+      atomicStepCode: 'GEN-00539',
+      title: 'Integrations Directory Inspector Panel',
+      description: 'Open and audit the integrations directory master_library/integrations/.',
+      category: StepCategory.compliance,
+      icon: Icons.folder_shared_rounded,
+      builder: (_) => const IntegrationsDirectoryInspectorPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00550',
+      atomicStepCode: 'GEN-00550',
+      title: 'Terraform Warehouse Module Panel',
+      description: 'Open and inspect the Terraform warehouse module infrastructure/terraform/.',
+      category: StepCategory.compliance,
+      icon: Icons.architecture_rounded,
+      builder: (_) => const TerraformWarehouseModulePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00561',
+      atomicStepCode: 'GEN-00561',
+      title: 'Orphan Sweeper Daily Scheduler Panel',
+      description: 'Schedule the Orphan Sweeper query to run daily at midnight.',
+      category: StepCategory.compliance,
+      icon: Icons.cleaning_services_rounded,
+      builder: (_) => const OrphanSweeperDailySchedulerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00572',
+      atomicStepCode: 'GEN-00572',
+      title: 'Active Code Version SHA Retriever Panel',
+      description: 'Retrieve active code version SHA-256 and assign as transformation_hash.',
+      category: StepCategory.tokens,
+      icon: Icons.tag_rounded,
+      builder: (_) => const ActiveCodeVersionShaRetrieverPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00583',
+      atomicStepCode: 'GEN-00583',
+      title: 'MCP Query Channel ROAS Panel',
+      description: 'Register MCP tool query_channel_roas pointing to pre-governed SQL templates.',
+      category: StepCategory.compliance,
+      icon: Icons.query_stats_rounded,
+      builder: (_) => const McpQueryChannelRoasPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00594',
+      atomicStepCode: 'GEN-00594',
+      title: 'Portrait Orientation Lock Enforcer Panel',
+      description: 'Lock mobile viewport orientations to DeviceOrientation.portraitUp.',
+      category: StepCategory.layout,
+      icon: Icons.screen_lock_portrait_rounded,
+      builder: (_) => const PortraitOrientationLockEnforcerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00605',
+      atomicStepCode: 'GEN-00605',
+      title: 'Mobile Scaffolds Library Panel',
+      description: 'Open and verify the mobile scaffolds library mobile_core/ui/scaffolds/.',
+      category: StepCategory.layout,
+      icon: Icons.dashboard_customize_rounded,
+      builder: (_) => const MobileScaffoldLibraryPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00616',
+      atomicStepCode: 'GEN-00616',
+      title: 'Action Button 48dp Style Panel',
+      description: 'Style action form buttons using Material 3 48dp touch targets.',
+      category: StepCategory.tokens,
+      icon: Icons.touch_app_rounded,
+      builder: (_) => const ActionButton48dpStylePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00627',
+      atomicStepCode: 'GEN-00627',
+      title: 'Submit Button Disable Guard Panel',
+      description: 'Program form state logic to keep the Submit button disabled until regex patterns evaluate to True.',
+      category: StepCategory.interaction,
+      icon: Icons.lock_outline_rounded,
+      builder: (_) => const SubmitButtonDisableGuardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00638',
+      atomicStepCode: 'GEN-00638',
+      title: 'Local Friction Log Batcher Panel',
+      description: 'Implement local background batching to queue friction logs without impacting main thread performance.',
+      category: StepCategory.network,
+      icon: Icons.queue_play_next_rounded,
+      builder: (_) => const LocalFrictionLogBatcherPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00649',
+      atomicStepCode: 'GEN-00649',
+      title: 'dbt Micro-Batch Scheduler Panel',
+      description: 'Schedule dbt execution runs on a 4-hour micro-batch schedule.',
+      category: StepCategory.compliance,
+      icon: Icons.schedule_rounded,
+      builder: (_) => const DbtMicroBatchSchedulerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00660',
+      atomicStepCode: 'GEN-00660',
+      title: 'Canonical User ID Token Panel',
+      description: 'Generate canonical canonical_user_id tokens for matched identity clusters.',
+      category: StepCategory.tokens,
+      icon: Icons.fingerprint_rounded,
+      builder: (_) => const CanonicalUserIdTokenPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00671',
+      atomicStepCode: 'GEN-00671',
+      title: 'KPI Typography Scale Enforcer Panel',
+      description: 'Set primary KPI typography font size to 2-3x larger than body text.',
+      category: StepCategory.tokens,
+      icon: Icons.format_size_rounded,
+      builder: (_) => const KpiTypographyScaleEnforcerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00682',
+      atomicStepCode: 'GEN-00682',
+      title: 'Mandatory UTM SQL Assertion Panel',
+      description: 'Write SQL assertions validating mandatory UTM parameters on incoming links.',
+      category: StepCategory.compliance,
+      icon: Icons.rule_folder_rounded,
+      builder: (_) => const MandatoryUtmSqlAssertionPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00694',
+      atomicStepCode: 'GEN-00694',
+      title: 'Budget Threshold Trigger Panel',
+      description: 'Configure budget threshold trigger logic inspecting live spend vs. caps every 15 minutes.',
+      category: StepCategory.compliance,
+      icon: Icons.trending_up_rounded,
+      builder: (_) => const BudgetThresholdTriggerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00705',
+      atomicStepCode: 'GEN-00705',
+      title: 'Data Lineage Trace Test Panel',
+      description: 'Create test_lineage_trace.py.',
+      category: StepCategory.compliance,
+      icon: Icons.account_tree_rounded,
+      builder: (_) => const DataLineageTraceTestPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00716',
+      atomicStepCode: 'GEN-00716',
+      title: 'Mobile Telemetry Package Panel',
+      description: 'Open the mobile telemetry package mobile_core/telemetry/.',
+      category: StepCategory.network,
+      icon: Icons.folder_special_rounded,
+      builder: (_) => const MobileTelemetryPackagePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00727',
+      atomicStepCode: 'GEN-00727',
+      title: 'BigQuery Gamification Event Table Panel',
+      description: 'Create BigQuery event table analytics.mobile_gamification_events.',
+      category: StepCategory.network,
+      icon: Icons.table_chart_rounded,
+      builder: (_) => const BqGamificationEventTablePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00738',
+      atomicStepCode: 'GEN-00738',
+      title: 'BigQuery Fraud Quarantine Table Panel',
+      description: 'Create BigQuery fraud quarantine table audit.quarantined_fraud_events.',
+      category: StepCategory.compliance,
+      icon: Icons.security_rounded,
+      builder: (_) => const BqFraudQuarantineTablePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00749',
+      atomicStepCode: 'GEN-00749',
+      title: 'dbt Cohort Retention Materialization Panel',
+      description: 'Configure dbt materialization targeting analytics.v_cohort_retention_matrix.',
+      category: StepCategory.compliance,
+      icon: Icons.view_compact_alt_rounded,
+      builder: (_) => const DbtCohortRetentionMaterializationPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00760',
+      atomicStepCode: 'GEN-00760',
+      title: 'Local Queue Capacity Guard Panel',
+      description: 'Set maximum local storage queue cap to 5,000 events.',
+      category: StepCategory.compliance,
+      icon: Icons.storage_rounded,
+      builder: (_) => const LocalQueueCapacityGuardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00771',
+      atomicStepCode: 'GEN-00771',
+      title: 'Apple SKAN Parser Panel',
+      description: 'Create apple_skan_parser.py.',
+      category: StepCategory.compliance,
+      icon: Icons.apple_rounded,
+      builder: (_) => const AppleSkanParserPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00782',
+      atomicStepCode: 'GEN-00782',
+      title: 'SKAN Postback Test Panel',
+      description: 'Test postback processing and verify 100% of SKAN payloads parse without conversion value errors.',
+      category: StepCategory.compliance,
+      icon: Icons.rule_rounded,
+      builder: (_) => const SkanPostbackTestPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00793',
+      atomicStepCode: 'GEN-00793',
+      title: 'Predictive Risk Chip Panel',
+      description: 'Build Material 3 predictive risk score chips (Green/Amber/Red) for mobile admin profile views.',
+      category: StepCategory.tokens,
+      icon: Icons.label_important_outline_rounded,
+      builder: (_) => const PredictiveRiskChipPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00804',
+      atomicStepCode: 'GEN-00804',
+      title: 'Certificate Button Disable Guard Panel',
+      description: 'Hardcode validation rules physically disabling the Generate button until all mandatory UTM fields are populated.',
+      category: StepCategory.interaction,
+      icon: Icons.lock_clock_rounded,
+      builder: (_) => const CertificateButtonDisableGuardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00815',
+      atomicStepCode: 'GEN-00815',
+      title: 'GCP DLP Inspection Template Panel',
+      description: 'Provision Google Cloud Data Loss Prevention (DLP) inspection templates.',
+      category: StepCategory.compliance,
+      icon: Icons.security_update_good_rounded,
+      builder: (_) => const GcpDlpInspectionTemplatePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00826',
+      atomicStepCode: 'GEN-00826',
+      title: 'SLA Monitoring Threshold Alert Panel',
+      description: 'Set Cloud Monitoring SLA alert thresholds (> 200ms for APIs, > 5s for pipelines).',
+      category: StepCategory.network,
+      icon: Icons.notifications_active_rounded,
+      builder: (_) => const SlaMonitoringThresholdAlertPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00837',
+      atomicStepCode: 'GEN-00837',
+      title: 'Worker Accuracy Ranking Panel',
+      description: 'Write worker ranking algorithm sorting active workers by accuracy score (%) and speed (seconds).',
+      category: StepCategory.compliance,
+      icon: Icons.leaderboard_rounded,
+      builder: (_) => const WorkerAccuracyRankingPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00849',
+      atomicStepCode: 'GEN-00849',
+      title: 'Master AppButton Component Panel',
+      description: 'Define master AppButton component.',
+      category: StepCategory.ui,
+      icon: Icons.smart_button_rounded,
+      builder: (_) => const MasterAppButtonComponentPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00860',
+      atomicStepCode: 'GEN-00860',
+      title: 'Protobuf Schema Repository Panel',
+      description: 'Access schema repository master_library/schemas/protobuf/.',
+      category: StepCategory.compliance,
+      icon: Icons.source_rounded,
+      builder: (_) => const ProtobufSchemaRepositoryPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00871',
+      atomicStepCode: 'GEN-00871',
+      title: 'Network Emulator Transmission Panel',
+      description: 'Test network transmission on 3G/4G network emulators.',
+      category: StepCategory.network,
+      icon: Icons.cell_tower_rounded,
+      builder: (_) => const NetworkEmulatorTransmissionPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00882',
+      atomicStepCode: 'GEN-00882',
+      title: 'Orphan Nodes Highlighter Panel',
+      description: 'Program visualizer to automatically highlight orphan nodes in bright flashing red.',
+      category: StepCategory.ui,
+      icon: Icons.warning_amber_rounded,
+      builder: (_) => const OrphanNodesHighlighterPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00887',
+      atomicStepCode: 'GEN-00887',
+      title: 'Attribution Metadata Token Panel',
+      description: 'Embed attribution metadata tokens (push_campaign_id, utm_campaign, trace_id) into FCM push payloads.',
+      category: StepCategory.tokens,
+      icon: Icons.mark_email_unread_rounded,
+      builder: (_) => const AttributionMetadataTokenPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00894',
+      atomicStepCode: 'GEN-00894',
+      title: 'FCM Payload Validation Panel',
+      description: 'Add payload validation physically rejecting FCM dispatches lacking a valid push_campaign_id.',
+      category: StepCategory.network,
+      icon: Icons.security_update_warning_rounded,
+      builder: (_) => const FcmPayloadValidationPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00905',
+      atomicStepCode: 'GEN-00905',
+      title: 'Terraform Max Instances Guard Panel',
+      description: 'Add Terraform validation scripts blocking deployment if max_instances < 10 or CDN is disabled.',
+      category: StepCategory.compliance,
+      icon: Icons.gavel_rounded,
+      builder: (_) => const TerraformMaxInstancesGuardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00916',
+      atomicStepCode: 'GEN-00916',
+      title: 'Step Drop-off Severity Calculator Panel',
+      description: 'Calculate step drop-off severity ratios, highlighting the largest bottleneck step.',
+      category: StepCategory.ui,
+      icon: Icons.trending_down_rounded,
+      builder: (_) => const StepDropoffSeverityCalculatorPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00927',
+      atomicStepCode: 'GEN-00927',
+      title: 'Bank Settlement Reconciliation SQL Panel',
+      description: 'Write SQL matching query (Bank_Settlement - Recorded_Revenue = 0) joining on transaction UUIDs.',
+      category: StepCategory.compliance,
+      icon: Icons.account_balance_wallet_rounded,
+      builder: (_) => const BankSettlementReconciliationSqlPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00938',
+      atomicStepCode: 'GEN-00938',
+      title: 'Google Play Reporting Ingestion Panel',
+      description: 'Configure automated ingestion workers connecting to Google Play Developer API.',
+      category: StepCategory.network,
+      icon: Icons.shop_two_rounded,
+      builder: (_) => const GooglePlayReportingIngestionPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00949',
+      atomicStepCode: 'GEN-00949',
+      title: 'Mobile Core Scaffolds Inspector Panel',
+      description: 'Open mobile scaffolds directory mobile_core/ui/scaffolds/.',
+      category: StepCategory.layout,
+      icon: Icons.space_dashboard_rounded,
+      builder: (_) => const MobileCoreScaffoldsInspectorPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00960',
+      atomicStepCode: 'GEN-00960',
+      title: 'Mobile Bottom Sheet Viewport Panel',
+      description: 'Test bottom-sheets on mobile viewports to verify 0 full-screen popup modals remain.',
+      category: StepCategory.ui,
+      icon: Icons.view_agenda_rounded,
+      builder: (_) => const MobileBottomSheetViewportPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00971',
+      atomicStepCode: 'GEN-00971',
+      title: 'P1 Shakti Slack Alert Panel',
+      description: 'Emit P1 Shakti Alerts to Slack if API pause retries fail.',
+      category: StepCategory.compliance,
+      icon: Icons.warning_rounded,
+      builder: (_) => const P1ShaktiSlackAlertPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00983',
+      atomicStepCode: 'GEN-00983',
+      title: 'Code Methodology Compliance Panel',
+      description: 'Calculate Code Methodology Compliance Score on technical health views.',
+      category: StepCategory.compliance,
+      icon: Icons.fact_check_rounded,
+      builder: (_) => const CodeMethodologyCompliancePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-00994',
+      atomicStepCode: 'GEN-00994',
+      title: 'CI/CD Linter Build Check Panel',
+      description: 'Add CI/CD build check automatically failing release builds if binary size > 20MB.',
+      category: StepCategory.compliance,
+      icon: Icons.data_usage_rounded,
+      builder: (_) => const CicdLinterBuildCheckPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01005',
+      atomicStepCode: 'GEN-01005',
+      title: 'Route Existence Validator Panel',
+      description: 'Add target route existence validation in router prior to executing navigation.',
+      category: StepCategory.layout,
+      icon: Icons.alt_route_rounded,
+      builder: (_) => const RouteExistenceValidatorPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01016',
+      atomicStepCode: 'GEN-01016',
+      title: 'Pub/Sub Handshake Verifier Panel',
+      description: 'Write Pub/Sub queue connection handshake verification logic inside readiness probes.',
+      category: StepCategory.network,
+      icon: Icons.handshake_rounded,
+      builder: (_) => const PubsubHandshakeVerifierPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01027',
+      atomicStepCode: 'GEN-01027',
+      title: 'Flutter Integration Driver Test Panel',
+      description: 'Execute Flutter integration driver tests across iOS and Android production builds.',
+      category: StepCategory.compliance,
+      icon: Icons.integration_instructions_rounded,
+      builder: (_) => const FlutterIntegrationDriverTestPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01038',
+      atomicStepCode: 'GEN-01038',
+      title: 'Shakti Dashboard Health Panel',
+      description: 'Confirm Shakti Dashboard displays active Green status across all 50 implementation stations.',
+      category: StepCategory.ui,
+      icon: Icons.dashboard_customize_rounded,
+      builder: (_) => const ShaktiDashboardHealthPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01049',
+      atomicStepCode: 'GEN-01049',
+      title: 'Habot UI Tokens Importer Panel',
+      description: 'Import @habot/ui-tokens into the mobile client base layout configurations.',
+      category: StepCategory.tokens,
+      icon: Icons.token_rounded,
+      builder: (_) => const HabotUiTokensImporterPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01060',
+      atomicStepCode: 'GEN-01060',
+      title: 'Thumb-Zone Boundary Panel',
+      description: 'Define bottom screen thumb-zone boundaries for primary call-to-action (CTA) placement.',
+      category: StepCategory.tokens,
+      icon: Icons.touch_app_rounded,
+      builder: (_) => const ThumbZoneBoundaryPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01071',
+      atomicStepCode: 'GEN-01071',
+      title: 'BigQuery Scroll Depth Streamer Panel',
+      description: 'Stream scroll-depth and user navigation events to BigQuery user behavior tables.',
+      category: StepCategory.network,
+      icon: Icons.stream_rounded,
+      builder: (_) => const BigqueryScrollDepthStreamerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01082',
+      atomicStepCode: 'GEN-01082',
+      title: 'Screen Hesitation Tracker Panel',
+      description: 'Wrap all mobile screen view containers with the hesitation tracking wrapper.',
+      category: StepCategory.interaction,
+      icon: Icons.touch_app_rounded,
+      builder: (_) => const ScreenHesitationTrackerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01093',
+      atomicStepCode: 'GEN-01093',
+      title: 'Family Structure Metrics Panel',
+      description: 'Display aggregated family structure metrics on marketplace demographic dashboards.',
+      category: StepCategory.ui,
+      icon: Icons.family_restroom_rounded,
+      builder: (_) => const FamilyStructureMetricsPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01104',
+      atomicStepCode: 'GEN-01104',
+      title: 'Account State Distribution Panel',
+      description: 'Render active account state distributions on operational management dashboards.',
+      category: StepCategory.ui,
+      icon: Icons.pie_chart_outline_rounded,
+      builder: (_) => const AccountStateDistributionPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01116',
+      atomicStepCode: 'GEN-01116',
+      title: 'Carousel Completion Rate Panel',
+      description: 'Measure carousel completion rates against the 90% target threshold.',
+      category: StepCategory.interaction,
+      icon: Icons.view_carousel_rounded,
+      builder: (_) => const CarouselCompletionRatePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01127',
+      atomicStepCode: 'GEN-01127',
+      title: 'Category Tap Latency Benchmark Panel',
+      description: 'Benchmark category selection tap response times to ensure rendering completes under 100ms.',
+      category: StepCategory.interaction,
+      icon: Icons.speed_rounded,
+      builder: (_) => const CategoryTapLatencyBenchmarkPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01138',
+      atomicStepCode: 'GEN-01138',
+      title: 'Filter Reset All Button Panel',
+      description: 'Add a prominent "Reset All" button to clear active parameters and prevent zero-result states.',
+      category: StepCategory.ui,
+      icon: Icons.filter_alt_off_rounded,
+      builder: (_) => const FilterResetAllButtonPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01149',
+      atomicStepCode: 'GEN-01149',
+      title: 'Fallback Image Placeholder Panel',
+      description: 'Set up a fallback image placeholder to display if a vendor image fails to load.',
+      category: StepCategory.ui,
+      icon: Icons.broken_image_rounded,
+      builder: (_) => const FallbackImagePlaceholderPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01160',
+      atomicStepCode: 'GEN-01160',
+      title: 'Vendor Profile Tab Container Panel',
+      description: 'Define tab containers: "About", "Reviews", "Schedule", and "Policies".',
+      category: StepCategory.layout,
+      icon: Icons.tab_rounded,
+      builder: (_) => const VendorProfileTabContainerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01171',
+      atomicStepCode: 'GEN-01171',
+      title: 'Helpfulness Voting Button Panel',
+      description: 'Implement M3 Icon buttons for parent helpfulness voting.',
+      category: StepCategory.ui,
+      icon: Icons.thumb_up_alt_rounded,
+      builder: (_) => const HelpfulnessVotingButtonPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01182',
+      atomicStepCode: 'GEN-01182',
+      title: 'Optimistic State Toggle Panel',
+      description: 'Configure optimistic local state updates that immediately toggle the heart visual state to filled within 50ms of a user tap.',
+      category: StepCategory.interaction,
+      icon: Icons.favorite_rounded,
+      builder: (_) => const OptimisticStateTogglePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01193',
+      atomicStepCode: 'GEN-01193',
+      title: 'Provider Schedule Availability Panel',
+      description: 'Fetch real-time provider schedule availability from the slot reservation API.',
+      category: StepCategory.network,
+      icon: Icons.calendar_month_rounded,
+      builder: (_) => const ProviderScheduleAvailabilityPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01204',
+      atomicStepCode: 'GEN-01204',
+      title: 'Booking Payload Foreign Key Panel',
+      description: 'Attach the selected child_id foreign key and requirement notes to the pending order payload.',
+      category: StepCategory.compliance,
+      icon: Icons.link_rounded,
+      builder: (_) => const BookingPayloadForeignKeyPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01215',
+      atomicStepCode: 'GEN-01215',
+      title: 'Sticky Top Cart Banner Panel',
+      description: 'Build a sticky top cart banner using M3 Surface banner components.',
+      category: StepCategory.layout,
+      icon: Icons.shopping_cart_rounded,
+      builder: (_) => const StickyTopCartBannerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01226',
+      atomicStepCode: 'GEN-01226',
+      title: 'One-Tap Book Again Button Panel',
+      description: 'Embed a "Book Again" M3 Filled Tonal Button onto completed order history cards.',
+      category: StepCategory.ui,
+      icon: Icons.replay_rounded,
+      builder: (_) => const OneTapBookAgainButtonPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01237',
+      atomicStepCode: 'GEN-01237',
+      title: 'Partner MRR Metrics Panel',
+      description: 'Display Monthly Recurring Revenue (MRR), average cart sizes, and subscription retention rates on executive dashboards.',
+      category: StepCategory.ui,
+      icon: Icons.trending_up_rounded,
+      builder: (_) => const PartnerMrrMetricsPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01248',
+      atomicStepCode: 'GEN-01248',
+      title: 'Luhn Checksum Card Validator Panel',
+      description: 'Test form entry validation against valid and invalid card number datasets.',
+      category: StepCategory.compliance,
+      icon: Icons.credit_card_rounded,
+      builder: (_) => const LuhnChecksumCardValidatorPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01259',
+      atomicStepCode: 'GEN-01259',
+      title: 'Downloadable Invoice Card Panel',
+      description: 'Embed a downloadable invoice card component onto order confirmation views.',
+      category: StepCategory.ui,
+      icon: Icons.receipt_long_rounded,
+      builder: (_) => const DownloadableInvoiceCardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01270',
+      atomicStepCode: 'GEN-01270',
+      title: 'Offline QR Pass Storage Panel',
+      description: 'Store pass data in local client storage to enable offline QR rendering without internet access.',
+      category: StepCategory.compliance,
+      icon: Icons.qr_code_2_rounded,
+      builder: (_) => const OfflineQrPassStoragePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01281',
+      atomicStepCode: 'GEN-01281',
+      title: 'Multimodal Support Input Panel',
+      description: 'Embed input fields for text entry, voice notes, and photo attachments.',
+      category: StepCategory.ui,
+      icon: Icons.perm_media_rounded,
+      builder: (_) => const MultimodalSupportInputPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01292',
+      atomicStepCode: 'GEN-01292',
+      title: 'Activity History List Layout Panel',
+      description: 'Construct the Activity History list screen layout using M3 Timeline List specifications.',
+      category: StepCategory.ui,
+      icon: Icons.timeline_rounded,
+      builder: (_) => const ActivityHistoryListLayoutPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01303',
+      atomicStepCode: 'GEN-01303',
+      title: 'Order Issue Reporting Button Panel',
+      description: 'Add a "Report an Issue" CTA button to completed order detail views.',
+      category: StepCategory.ui,
+      icon: Icons.report_problem_rounded,
+      builder: (_) => const OrderIssueReportingButtonPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01314',
+      atomicStepCode: 'GEN-01314',
+      title: 'Upcoming Today Hero Card Panel',
+      description: 'Position the "Upcoming Today" Hero Card prominently within the top viewport.',
+      category: StepCategory.ui,
+      icon: Icons.star_rounded,
+      builder: (_) => const UpcomingTodayHeroCardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01325',
+      atomicStepCode: 'GEN-01325',
+      title: 'Spend Graph Surface Card Panel',
+      description: 'Construct M3 Surface Cards housing Bar and Donut spend graph components.',
+      category: StepCategory.ui,
+      icon: Icons.donut_large_rounded,
+      builder: (_) => const SpendGraphSurfaceCardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01336',
+      atomicStepCode: 'GEN-01336',
+      title: 'A/B Experiment Confidence Panel',
+      description: 'Display real-time experiment conversion deltas and confidence intervals on growth BI dashboards.',
+      category: StepCategory.compliance,
+      icon: Icons.insights_rounded,
+      builder: (_) => const AbExperimentConfidencePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01347',
+      atomicStepCode: 'GEN-01347',
+      title: 'NPM Design Token Publisher Panel',
+      description: 'Publish the schema contract to the NPM design token repository @habot/schemas/parent.',
+      category: StepCategory.tokens,
+      icon: Icons.publish_rounded,
+      builder: (_) => const NpmDesignTokenPublisherPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01358',
+      atomicStepCode: 'GEN-01358',
+      title: 'Adaptive Haptic Feedback Token Panel',
+      description: 'Bind adaptive haptic feedback triggers to touch target token interactions.',
+      category: StepCategory.interaction,
+      icon: Icons.vibration_rounded,
+      builder: (_) => const AdaptiveHapticFeedbackTokenPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01369',
+      atomicStepCode: 'GEN-01369',
+      title: 'Thumb-Zone CTA Placement Panel',
+      description: 'Place main conversion CTAs and floating action buttons strictly within the bottom thumb zone.',
+      category: StepCategory.tokens,
+      icon: Icons.pan_tool_rounded,
+      builder: (_) => const ThumbZoneCtaPlacementPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01380',
+      atomicStepCode: 'GEN-01380',
+      title: 'Conversion Funnel Drop-off Panel',
+      description: 'Configure the conversion drop-off tracking dashboard broken down by mobile device type.',
+      category: StepCategory.ui,
+      icon: Icons.filter_list_rounded,
+      builder: (_) => const ConversionFunnelDropoffPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01391',
+      atomicStepCode: 'GEN-01391',
+      title: 'Hesitation Telemetry Streamer Panel',
+      description: 'Verify real-time transmission of hesitation telemetry without impacting main UI thread performance.',
+      category: StepCategory.network,
+      icon: Icons.speed_rounded,
+      builder: (_) => const HesitationTelemetryStreamerPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01402',
+      atomicStepCode: 'GEN-01402',
+      title: 'M3 Compliance List Layout Panel',
+      description: 'Construct a compliance screen layout using an M3 List view structure.',
+      category: StepCategory.compliance,
+      icon: Icons.security_rounded,
+      builder: (_) => const M3ComplianceListLayoutPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01413',
+      atomicStepCode: 'GEN-01413',
+      title: 'Animated Onboarding Carousel Panel',
+      description: 'Design a 3-card animated onboarding carousel highlighting key platform value propositions.',
+      category: StepCategory.interaction,
+      icon: Icons.view_carousel_rounded,
+      builder: (_) => const AnimatedOnboardingCarouselPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01425',
+      atomicStepCode: 'GEN-01425',
+      title: 'FRE Conversion Dropoff Dashboard Panel',
+      description: 'Display first-run experience conversion and drop-off reports on the user activation dashboard.',
+      category: StepCategory.ui,
+      icon: Icons.trending_up_rounded,
+      builder: (_) => const FreConversionDropoffDashboardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01436',
+      atomicStepCode: 'GEN-01436',
+      title: 'Category Tap Clickstream PubSub Panel',
+      description: 'Connect category tap handlers to dispatch clickstream analytics events.',
+      category: StepCategory.network,
+      icon: Icons.touch_app_rounded,
+      builder: (_) => const CategoryTapClickstreamPubsubPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01447',
+      atomicStepCode: 'GEN-01447',
+      title: 'Zero Result Filter Suggestion Prompt Panel',
+      description: 'Implement automated UX suggestion prompts advising users to widen filter parameters if current selections return zero matches.',
+      category: StepCategory.ui,
+      icon: Icons.filter_alt_off_rounded,
+      builder: (_) => const ZeroResultFilterSuggestionPromptPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01458',
+      atomicStepCode: 'GEN-01458',
+      title: 'Available Today Badge Guard Panel',
+      description: 'Implement logic to automatically remove the "Available Today" badge if a provider status switches to offline.',
+      category: StepCategory.compliance,
+      icon: Icons.event_available_rounded,
+      builder: (_) => const AvailableTodayBadgeGuardPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01469',
+      atomicStepCode: 'GEN-01469',
+      title: 'Lazy Loading Tab Content Panel',
+      description: 'Implement lazy-loading for tab content views, fetching data only upon active tab selection.',
+      category: StepCategory.layout,
+      icon: Icons.tab_rounded,
+      builder: (_) => const LazyLoadingTabContentPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01480',
+      atomicStepCode: 'GEN-01480',
+      title: 'Verified Parent Review Badge Panel',
+      description: 'Attach an explicit "Verified Parent" badge to reviews associated with verified booking IDs.',
+      category: StepCategory.ui,
+      icon: Icons.verified_user_rounded,
+      builder: (_) => const VerifiedParentReviewBadgePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01491',
+      atomicStepCode: 'GEN-01491',
+      title: 'Save to Collection Bottom Sheet Panel',
+      description: 'Build a "Save to Collection" modal bottom sheet picker allowing parents to select or create custom list folders.',
+      category: StepCategory.ui,
+      icon: Icons.bookmark_add_rounded,
+      builder: (_) => const SaveToCollectionBottomSheetPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01502',
+      atomicStepCode: 'GEN-01502',
+      title: 'Optimistic Slot Lock Engine Panel',
+      description: 'Configure an optimistic slot-locking engine that applies a 10-minute hold upon slot selection.',
+      category: StepCategory.compliance,
+      icon: Icons.lock_clock_rounded,
+      builder: (_) => const OptimisticSlotLockEnginePanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01513',
+      atomicStepCode: 'GEN-01513',
+      title: 'Provider Tag Distribution Dashboard',
+      description: 'Render service requirement tag distributions on the provider operations dashboard.',
+      category: StepCategory.infrastructure,
+      icon: Icons.label_important_rounded,
+      builder: (_) => const ProviderTagDistributionDashboard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01524',
+      atomicStepCode: 'GEN-01524',
+      title: 'SLA Countdown Badge Timer',
+      description: 'Embed an M3 clock-icon Badge displaying a 10-minute ticking SLA countdown timer.',
+      category: StepCategory.realTimeSync,
+      icon: Icons.timer_outlined,
+      builder: (_) => const SlaCountdownBadgeTimer(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01535',
+      atomicStepCode: 'GEN-01535',
+      title: 'Pre-fill State Engine Card',
+      description: 'Create a pre-fill state engine that extracts saved profile Byts, preferred children, and past add-ons.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.flash_auto_rounded,
+      builder: (_) => const PrefillStateEngineCard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01546',
+      atomicStepCode: 'GEN-01546',
+      title: 'Brand Payment Container View',
+      description: 'Construct the payment container view following official Apple and Google brand display guidelines.',
+      category: StepCategory.ui,
+      icon: Icons.payment_rounded,
+      builder: (_) => const BrandPaymentContainerView(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01557',
+      atomicStepCode: 'GEN-01557',
+      title: 'Card Auth Failure Dashboard',
+      description: 'Display card authorization failure rates and validation error metrics on security dashboards.',
+      category: StepCategory.compliance,
+      icon: Icons.security_update_warning_rounded,
+      builder: (_) => const CardAuthFailureDashboard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01568',
+      atomicStepCode: 'GEN-01568',
+      title: 'Tax Liability BI Dashboard',
+      description: 'Display monthly tax liabilities, invoice totals, and compliance verification audit logs on legal BI dashboards.',
+      category: StepCategory.analyticsKpi,
+      icon: Icons.account_balance_rounded,
+      builder: (_) => const TaxLiabilityBiDashboard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01579',
+      atomicStepCode: 'GEN-01579',
+      title: 'Rotating QR Hash Ticket Pass',
+      description: 'Implement time-based rotating QR hashes to block ticket pass screenshot duplication.',
+      category: StepCategory.compliance,
+      icon: Icons.qr_code_2_rounded,
+      builder: (_) => const RotatingQrHashTicketPass(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01590',
+      atomicStepCode: 'GEN-01590',
+      title: 'Media Attachment FAB Control',
+      description: 'Add an M3 Floating Action Button (md-fab) to trigger media attachment selection.',
+      category: StepCategory.interaction,
+      icon: Icons.attach_file_rounded,
+      builder: (_) => const MediaAttachmentFabControl(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01601',
+      atomicStepCode: 'GEN-01601',
+      title: 'Profile Filter Chips Feed',
+      description: 'Add M3 Filter Chips (md-filter-chip) to enable filtering log feeds by child profile.',
+      category: StepCategory.ui,
+      icon: Icons.filter_vintage_rounded,
+      builder: (_) => const ProfileFilterChipsFeed(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01612',
+      atomicStepCode: 'GEN-01612',
+      title: 'Dispute Intake Wizard Flow',
+      description: 'Construct a step-by-step dispute intake wizard using custom dispute form views.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.gavel_rounded,
+      builder: (_) => const DisputeIntakeWizardFlow(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01623',
+      atomicStepCode: 'GEN-01623',
+      title: 'Quick Action Badge Grid View',
+      description: 'Construct a quick-action 2x2 icon grid (Book, Chat, History, Support) using M3 Icon Badges.',
+      category: StepCategory.interaction,
+      icon: Icons.grid_view_rounded,
+      builder: (_) => const QuickActionBadgeGridView(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01634',
+      atomicStepCode: 'GEN-01634',
+      title: 'Chart Color Token Palette View',
+      description: 'Apply M3 Chart Color Tokens to align visualizations with the app color palette.',
+      category: StepCategory.analyticsKpi,
+      icon: Icons.palette_outlined,
+      builder: (_) => const ChartColorTokenPaletteView(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01645',
+      atomicStepCode: 'GEN-01645',
+      title: 'Ops Bottleneck Console Table',
+      description: 'Construct the Ops Intelligence & Bottleneck Console using M3 Data Tables and Status Badges (md-badge).',
+      category: StepCategory.compliance,
+      icon: Icons.table_view_rounded,
+      builder: (_) => const OpsBottleneckConsoleTable(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01656',
+      atomicStepCode: 'GEN-01656',
+      title: 'Primitive Color Token Matrix',
+      description: 'Define primitive tokens specifically for color styling.',
+      category: StepCategory.ui,
+      icon: Icons.colorize_rounded,
+      builder: (_) => const PrimitiveColorTokenMatrix(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01667',
+      atomicStepCode: 'GEN-01667',
+      title: 'Accessibility Touch Matrix Card',
+      description: 'Adopt the 48x48dp baseline matrix from MD3 Accessibility standards.',
+      category: StepCategory.accessibility,
+      icon: Icons.accessibility_new_rounded,
+      builder: (_) => const AccessibilityTouchMatrixCard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01678',
+      atomicStepCode: 'GEN-01678',
+      title: 'Touch Target Constraint Test Console',
+      description: 'Configure UI test suites to fail instantly if a rendered button measures under 48x48dp.',
+      category: StepCategory.accessibility,
+      icon: Icons.flaky_rounded,
+      builder: (_) => const TouchTargetConstraintTestConsole(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01689',
+      atomicStepCode: 'GEN-01689',
+      title: 'Spaced Layout Regression Inspector',
+      description: 'Execute visual regression testing on the spaced mobile layouts.',
+      category: StepCategory.compliance,
+      icon: Icons.compare_rounded,
+      builder: (_) => const SpacedLayoutRegressionInspector(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01700',
+      atomicStepCode: 'GEN-01700',
+      title: 'AdaptiveInfo Screen Container',
+      description: 'Configure feature screens to accept only AdaptiveInfo structures.',
+      category: StepCategory.layout,
+      icon: Icons.devices_fold_rounded,
+      builder: (_) => const AdaptiveInfoScreenContainer(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01711',
+      atomicStepCode: 'GEN-01711',
+      title: 'Stream Quota Allocation Manager',
+      description: 'Allocate stream counts strategically to avoid hitting quota limits.',
+      category: StepCategory.network,
+      icon: Icons.stream_rounded,
+      builder: (_) => const StreamQuotaAllocationManager(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01722',
+      atomicStepCode: 'GEN-01722',
+      title: 'Validated Submit Button Form Card',
+      description: 'Bind the Submit button\'s active/inactive state to the validation boolean.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.check_box_outlined,
+      builder: (_) => const ValidatedSubmitButtonFormCard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01733',
+      atomicStepCode: 'GEN-01733',
+      title: 'Fail-Closed Circuit Breaker Console',
+      description: 'Enforce strict "Fail Closed" logic to automatically stop the data circuit on unexpected responses.',
+      category: StepCategory.compliance,
+      icon: Icons.electric_bolt_rounded,
+      builder: (_) => const FailClosedCircuitBreakerConsole(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01744',
+      atomicStepCode: 'GEN-01744',
+      title: 'Silent Friction Bottleneck Detector',
+      description: 'Identify mobile-specific friction bottlenecks silently based on the streamed data.',
+      category: StepCategory.analyticsKpi,
+      icon: Icons.sensors_rounded,
+      builder: (_) => const SilentFrictionBottleneckDetector(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01755',
+      atomicStepCode: 'GEN-01755',
+      title: 'Form Draft Recovery Engine Card',
+      description: 'Force-close the application while mid-way through a data entry form.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.save_as_rounded,
+      builder: (_) => const FormDraftRecoveryEngineCard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01766',
+      atomicStepCode: 'GEN-01766',
+      title: 'Rigid Split-Pane Flex Container',
+      description: 'Create rigid 50/50 flex containers utilizing split-pane wrapper components.',
+      category: StepCategory.layout,
+      icon: Icons.vertical_split_rounded,
+      builder: (_) => const RigidSplitPaneFlexContainer(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01777',
+      atomicStepCode: 'GEN-01777',
+      title: 'Locked Bottom Panel Keyboard Host',
+      description: 'Trigger the virtual keyboard inside the locked bottom panel.',
+      category: StepCategory.interaction,
+      icon: Icons.keyboard_rounded,
+      builder: (_) => const LockedBottomPanelKeyboardHost(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01788',
+      atomicStepCode: 'GEN-01788',
+      title: 'Cross-Platform Input Masking Field',
+      description: 'Select a cross-platform library for input masking.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.dialpad_rounded,
+      builder: (_) => const CrossPlatformInputMaskingField(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01799',
+      atomicStepCode: 'GEN-01799',
+      title: 'Global Input Wrapper Theme Console',
+      description: 'Apply the input component wrappers globally.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.layers_rounded,
+      builder: (_) => const GlobalInputWrapperThemeConsole(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01810',
+      atomicStepCode: 'GEN-01810',
+      title: 'Dynamic Skeleton Data Loader Card',
+      description: 'Swap the skeleton loaders for the actual data components dynamically.',
+      category: StepCategory.ui,
+      icon: Icons.auto_mode_rounded,
+      builder: (_) => const DynamicSkeletonDataLoaderCard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01821',
+      atomicStepCode: 'GEN-01821',
+      title: 'Semantic Modal Bounds Enforcer',
+      description: 'Implement semantic labeling for all modal bounds.',
+      category: StepCategory.accessibility,
+      icon: Icons.lock_person_rounded,
+      builder: (_) => const SemanticModalBoundsEnforcer(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01832',
+      atomicStepCode: 'GEN-01832',
+      title: 'Guided Error Correction Wizard',
+      description: 'Guide the user through error correction using the provided instructions.',
+      category: StepCategory.interaction,
+      icon: Icons.support_agent_rounded,
+      builder: (_) => const GuidedErrorCorrectionWizard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01843',
+      atomicStepCode: 'GEN-01843',
+      title: 'Multi-Input Form Deconstructor Panel',
+      description: 'Identify and deconstruct multi-input forms across the application.',
+      category: StepCategory.dataAndForms,
+      icon: Icons.dynamic_form_rounded,
+      builder: (_) => const MultiInputFormDeconstructorPanel(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01854',
+      atomicStepCode: 'GEN-01854',
+      title: 'Swipe-Only Form Navigation Tester',
+      description: 'Test form progression using swipe-only navigation.',
+      category: StepCategory.interaction,
+      icon: Icons.swipe_rounded,
+      builder: (_) => const SwipeOnlyFormNavigationTester(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01865',
+      atomicStepCode: 'GEN-01865',
+      title: 'Unapproved Styling Gatekeeper Console',
+      description: 'Block developer PRs if unapproved external styling is detected.',
+      category: StepCategory.compliance,
+      icon: Icons.gavel_rounded,
+      builder: (_) => const UnapprovedStylingGatekeeperConsole(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01876',
+      atomicStepCode: 'GEN-01876',
+      title: 'SLA Timer Hook Canvas',
+      description: 'Build the useSLATimer component hook in the Mobile canvas.',
+      category: StepCategory.interaction,
+      icon: Icons.timer_outlined,
+      builder: (_) => const SlaTimerHookCanvas(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01887',
+      atomicStepCode: 'GEN-01887',
+      title: 'SLA Timer Zero-Breach Tester',
+      description: 'Test functionality by allowing an SLA timer to reach zero during data entry.',
+      category: StepCategory.interaction,
+      icon: Icons.timer_off_rounded,
+      builder: (_) => const SlaTimerZeroBreachTester(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01898',
+      atomicStepCode: 'GEN-01898',
+      title: 'Compliance Utils Registry Console',
+      description: 'Store the standard implementation in the Compliance Utils library.',
+      category: StepCategory.compliance,
+      icon: Icons.library_books_rounded,
+      builder: (_) => const ComplianceUtilsRegistryConsole(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01909',
+      atomicStepCode: 'GEN-01909',
+      title: 'Single Action Enforcer Screen',
+      description: 'Ensure mobile screens are guaranteed to only ask a user for one specific action at a time.',
+      category: StepCategory.interaction,
+      icon: Icons.touch_app_rounded,
+      builder: (_) => const SingleActionEnforcerScreen(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01920',
+      atomicStepCode: 'GEN-01920',
+      title: 'Conflict Triage Agent Router',
+      description: 'Route the flagged conflict to 3 entirely new agents automatically.',
+      category: StepCategory.aiAndAutomation,
+      icon: Icons.alt_route_rounded,
+      builder: (_) => const ConflictTriageAgentRouter(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01931',
+      atomicStepCode: 'GEN-01931',
+      title: 'Aspect Ratio Muscle Memory Lock Card',
+      description: 'Apply aspect ratio locks to maintain a pixel-fixed position and foster muscle memory.',
+      category: StepCategory.layout,
+      icon: Icons.aspect_ratio_rounded,
+      builder: (_) => const AspectRatioMuscleMemoryLockCard(),
+    ),
+    StepItem(
+      stepCode: 'GEN-01942',
+      atomicStepCode: 'GEN-01942',
+      title: 'Triangular Check Reconciler Panel',
+      description: 'Execute mathematical reconciliation using a decorator (@triangular_check).',
+      category: StepCategory.compliance,
+      icon: Icons.change_circle_rounded,
+      builder: (_) => const TriangularCheckReconcilerPanel(),
+    ),
   ];
 }
 

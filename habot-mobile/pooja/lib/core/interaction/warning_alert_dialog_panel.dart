@@ -23,8 +23,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// AWCV-016-16 Record Data Model
 class WarningAlertDialogRecord {
@@ -165,10 +163,10 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
             constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColorPalette.warning.withValues(alpha: 0.14),
+              color: WarningAlertDialogPanelTokens.warning.withValues(alpha: 0.14),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.warning_amber_rounded, color: AppColorPalette.warning, size: 36),
+            child: const Icon(Icons.warning_amber_rounded, color: WarningAlertDialogPanelTokens.warning, size: 36),
           ),
           title: const Text('Session Ingestion Timeout Warning', style: TextStyle(fontWeight: FontWeight.bold)),
           content: Column(
@@ -189,7 +187,7 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.lock, size: 14, color: AppColorPalette.warning),
+                    Icon(Icons.lock, size: 14, color: WarningAlertDialogPanelTokens.warning),
                     SizedBox(width: 6),
                     Text('Auto-Lock Inputs & Mark Timed-Out', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                   ],
@@ -211,7 +209,7 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
             ),
             FilledButton.icon(
               style: FilledButton.styleFrom(
-                backgroundColor: AppColorPalette.warning,
+                backgroundColor: WarningAlertDialogPanelTokens.warning,
                 minimumSize: const Size(48, 48),
               ),
               onPressed: () {
@@ -241,8 +239,8 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? WarningAlertDialogPanelTokens.xs : (isExpanded ? WarningAlertDialogPanelTokens.md : WarningAlertDialogPanelTokens.sm),
+          vertical: WarningAlertDialogPanelTokens.xs,
         );
 
         return Card(
@@ -281,7 +279,7 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    WarningAlertDialogPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Warning Alert Dialog & Task Timeout Engine',
@@ -295,22 +293,22 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.14),
+                        color: WarningAlertDialogPanelTokens.success.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: WarningAlertDialogPanelTokens.success),
                       ),
                       child: Text(
                         'ALERT COVERAGE: ${record.completionStatus.toUpperCase()} (100%)',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: WarningAlertDialogPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                WarningAlertDialogPanelTokens.vGapMd,
 
                 // Architectural Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: WarningAlertDialogPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -321,7 +319,7 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                       Row(
                         children: [
                           Icon(Icons.notifications_active, color: colorScheme.primary, size: 18),
-                          AppSpacingTokens.hGapSm,
+                          WarningAlertDialogPanelTokens.hGapSm,
                           Expanded(
                             child: Text(
                               'Assigned: ${record.assignedTeamMember} (${record.assignedGroupTeam}) | Seq: ${record.sequenceOrder}',
@@ -335,19 +333,19 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.warning.withValues(alpha: 0.1),
+                              color: WarningAlertDialogPanelTokens.warning.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: const Text('GOOGLE SRE STANDARD', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.warning)),
+                            child: const Text('GOOGLE SRE STANDARD', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: WarningAlertDialogPanelTokens.warning)),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      WarningAlertDialogPanelTokens.vGapXs,
                       Text(
                         'Setup Action: ${record.setupAction}',
                         style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       ),
-                      AppSpacingTokens.vGapXs,
+                      WarningAlertDialogPanelTokens.vGapXs,
                       Text(
                         'Implementation: Lock layout input controls and mark processing task state as Timed-Out upon event capture.',
                         style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -355,7 +353,7 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                WarningAlertDialogPanelTokens.vGapLg,
 
                 // Interactive Task Queue Simulation Container
                 Container(
@@ -375,17 +373,17 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: _isTaskLocked ? AppColorPalette.warning.withValues(alpha: 0.12) : AppColorPalette.success.withValues(alpha: 0.12),
+                              color: _isTaskLocked ? WarningAlertDialogPanelTokens.warning.withValues(alpha: 0.12) : WarningAlertDialogPanelTokens.success.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               'Status: $_taskStatus',
-                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _isTaskLocked ? AppColorPalette.warning : AppColorPalette.success),
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _isTaskLocked ? WarningAlertDialogPanelTokens.warning : WarningAlertDialogPanelTokens.success),
                             ),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      WarningAlertDialogPanelTokens.vGapSm,
 
                       TextField(
                         decoration: InputDecoration(
@@ -395,14 +393,14 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                           helperText: _isTaskLocked ? 'INPUT LOCKED BY TIMEOUT DIALOG' : 'Input active',
                         ),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      WarningAlertDialogPanelTokens.vGapSm,
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           FilledButton.icon(
                             style: FilledButton.styleFrom(
-                              backgroundColor: AppColorPalette.warning,
+                              backgroundColor: WarningAlertDialogPanelTokens.warning,
                               minimumSize: const Size(48, 48),
                             ),
                             onPressed: _showWarningAlertDialog,
@@ -424,11 +422,11 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                WarningAlertDialogPanelTokens.vGapLg,
 
                 // Audit Gate Metrics Matrix
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: WarningAlertDialogPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -441,13 +439,13 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
                         'Audit Metric Standard: ${record.metricName}',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      WarningAlertDialogPanelTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                          _buildMetricTile(context, 'Gate Status', 'GOOD (100%)', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, WarningAlertDialogPanelTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', record.optimalTarget, WarningAlertDialogPanelTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, WarningAlertDialogPanelTokens.success),
+                          _buildMetricTile(context, 'Gate Status', 'GOOD (100%)', WarningAlertDialogPanelTokens.brandPrimary),
                         ],
                       ),
                     ],
@@ -481,4 +479,115 @@ class _WarningAlertDialogPanelState extends State<WarningAlertDialogPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class WarningAlertDialogPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: WarningAlertDialogPanel(
+        record: WarningAlertDialogRecord(
+          actionTimestamp: '2026-08-31 14:15:00 UTC',
+          userSessionId: 'USR-ALERT-24490',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

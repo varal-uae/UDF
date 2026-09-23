@@ -25,8 +25,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Data record holding 49-column metadata and ADFA specification parameters.
 class ComplianceCheckpointFlowRecord {
@@ -259,7 +257,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('PREDICTIVE BACK: Safely popped to ${_flowNodes[_activeNodeIndex].screenName}. Predecessor lineage intact.'),
-          backgroundColor: AppColorPalette.brandPrimary,
+          backgroundColor: ComplianceCheckpointFlowPanelTokens.brandPrimary,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -280,7 +278,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('POKA-YOKE BLOCKED: Missing predecessor_id argument! Transition blocked and quarantined to q_dead_letter_quarantine (ERR_MISSING_PREDECESSOR_ID).'),
-        backgroundColor: AppColorPalette.error,
+        backgroundColor: ComplianceCheckpointFlowPanelTokens.error,
         duration: Duration(seconds: 4),
       ),
     );
@@ -297,8 +295,8 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? ComplianceCheckpointFlowPanelTokens.paddingSm
+            : (isExpanded ? ComplianceCheckpointFlowPanelTokens.paddingLg : ComplianceCheckpointFlowPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -307,11 +305,11 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
             children: [
               // Header Card
               _buildHeaderCard(context, colorScheme, theme, r, isCompact: isCompact, isExpanded: isExpanded),
-              AppSpacingTokens.vGapMd,
+              ComplianceCheckpointFlowPanelTokens.vGapMd,
 
               // Navigation Segment Bar
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              ComplianceCheckpointFlowPanelTokens.vGapMd,
 
               // Active Tab Content
               if (_activeTab == 'graph') ...[
@@ -321,7 +319,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r, isExpanded: isExpanded),
               ],
-              AppSpacingTokens.vGapLg,
+              ComplianceCheckpointFlowPanelTokens.vGapLg,
 
               // Lineage Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -341,7 +339,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
     required bool isExpanded,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? ComplianceCheckpointFlowPanelTokens.paddingSm : ComplianceCheckpointFlowPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -376,18 +374,18 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.success.withValues(alpha: 0.1),
+                      color: ComplianceCheckpointFlowPanelTokens.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.success.withValues(alpha: 0.3)),
+                      border: Border.all(color: ComplianceCheckpointFlowPanelTokens.success.withValues(alpha: 0.3)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.hub_outlined, size: 12, color: AppColorPalette.success),
+                        Icon(Icons.hub_outlined, size: 12, color: ComplianceCheckpointFlowPanelTokens.success),
                         SizedBox(width: 4),
                         Text(
                           'ORPHAN NODES == 0',
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: ComplianceCheckpointFlowPanelTokens.success),
                         ),
                       ],
                     ),
@@ -402,12 +400,12 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          ComplianceCheckpointFlowPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          AppSpacingTokens.vGapXs,
+          ComplianceCheckpointFlowPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -423,9 +421,9 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
       child: Row(
         children: [
           _buildSegmentButton('graph', 'Navigation Graph & Checkpoints', Icons.account_tree_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          ComplianceCheckpointFlowPanelTokens.hGapSm,
           _buildSegmentButton('predictive_back', 'Predictive Back Gesture Sandbox', Icons.arrow_back, colorScheme),
-          AppSpacingTokens.hGapSm,
+          ComplianceCheckpointFlowPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -459,7 +457,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
     required bool isCompact,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? ComplianceCheckpointFlowPanelTokens.paddingSm : ComplianceCheckpointFlowPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -482,18 +480,18 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
                     minimumSize: const Size(48, 48),
                   ),
                   onPressed: _simulateMissingPredecessorTrap,
-                  icon: const Icon(Icons.warning, size: 14, color: AppColorPalette.error),
-                  label: const Text('Test Missing Trap', style: TextStyle(fontSize: 10, color: AppColorPalette.error)),
+                  icon: const Icon(Icons.warning, size: 14, color: ComplianceCheckpointFlowPanelTokens.error),
+                  label: const Text('Test Missing Trap', style: TextStyle(fontSize: 10, color: ComplianceCheckpointFlowPanelTokens.error)),
                 ),
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          ComplianceCheckpointFlowPanelTokens.vGapSm,
           Text(
             'Every active screen transition requires an unbroken predecessor_id link, syncing to BigQuery Graph targets.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          ComplianceCheckpointFlowPanelTokens.vGapMd,
 
           // Node List Flow
           ..._flowNodes.asMap().entries.map((entry) {
@@ -524,10 +522,10 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
                         child: Icon(
                           Icons.check_circle,
                           size: 16,
-                          color: isCurrent ? colorScheme.onPrimary : AppColorPalette.success,
+                          color: isCurrent ? colorScheme.onPrimary : ComplianceCheckpointFlowPanelTokens.success,
                         ),
                       ),
-                      AppSpacingTokens.hGapMd,
+                      ComplianceCheckpointFlowPanelTokens.hGapMd,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -577,7 +575,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
     final currentNode = _flowNodes[_activeNodeIndex];
 
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: ComplianceCheckpointFlowPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -588,12 +586,12 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
         children: [
           Text('Predictive Back Gesture Simulation',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          ComplianceCheckpointFlowPanelTokens.vGapSm,
           Text(
             'Simulates Android 14+ / iOS Predictive Back navigation maintaining 100% state context without route corruption.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          ComplianceCheckpointFlowPanelTokens.vGapMd,
 
           Container(
             padding: const EdgeInsets.all(16),
@@ -622,7 +620,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
                   'Historical Predecessor Target: ${currentNode.predecessorNodeId}',
                   style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant),
                 ),
-                AppSpacingTokens.vGapLg,
+                ComplianceCheckpointFlowPanelTokens.vGapLg,
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -666,7 +664,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
     required bool isExpanded,
   }) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: ComplianceCheckpointFlowPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -677,7 +675,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          ComplianceCheckpointFlowPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -692,19 +690,19 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                ComplianceCheckpointFlowPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Measured Rate', '${r.measuredErrorRatePercent}% (Pass)', AppColorPalette.success),
+                    _buildMetricTile('Measured Rate', '${r.measuredErrorRatePercent}% (Pass)', ComplianceCheckpointFlowPanelTokens.success),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          ComplianceCheckpointFlowPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -770,7 +768,7 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, ComplianceCheckpointFlowRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: ComplianceCheckpointFlowPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10),
@@ -790,9 +788,120 @@ class _ComplianceCheckpointFlowPanelState extends State<ComplianceCheckpointFlow
               ],
             ),
           ),
-          const Icon(Icons.security, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.security, size: 16, color: ComplianceCheckpointFlowPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class ComplianceCheckpointFlowPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: ComplianceCheckpointFlowPanel(
+        record: ComplianceCheckpointFlowRecord(
+          actionTimestamp: '2026-09-01 19:24:00 UTC',
+          userSessionId: 'USR-DCYN-32040',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

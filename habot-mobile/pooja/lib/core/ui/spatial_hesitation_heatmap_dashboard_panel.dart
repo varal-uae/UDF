@@ -248,3 +248,19 @@ class _HeatmapGridPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SpatialHesitationHeatmapDashboardPanel(),
+          ),
+        ),
+      ),
+    ),
+  );
+}

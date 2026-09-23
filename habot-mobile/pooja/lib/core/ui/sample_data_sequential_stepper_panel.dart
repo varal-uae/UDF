@@ -30,8 +30,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-002-A13 Record Data Model.
 class SampleDataSequentialStepperRecord {
@@ -267,7 +265,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Sample Dataset Injected: ${ds.title}. All sequential form fields populated!'),
-        backgroundColor: AppColorPalette.brandPrimary,
+        backgroundColor: SampleDataSequentialStepperPanelTokens.brandPrimary,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -330,7 +328,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('ANSA-002 NON-DESTRUCTIVE BACKWARD NAVIGATION: 100% of sample form memory preserved!'),
-          backgroundColor: AppColorPalette.success,
+          backgroundColor: SampleDataSequentialStepperPanelTokens.success,
           duration: Duration(seconds: 2),
         ),
       );
@@ -359,11 +357,11 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
           elevation: 1,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacingTokens.xs : AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: isCompact ? SampleDataSequentialStepperPanelTokens.xs : SampleDataSequentialStepperPanelTokens.sm,
+            vertical: SampleDataSequentialStepperPanelTokens.xs,
           ),
           child: Padding(
-            padding: EdgeInsets.all(isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md)),
+            padding: EdgeInsets.all(isCompact ? SampleDataSequentialStepperPanelTokens.sm : (isExpanded ? SampleDataSequentialStepperPanelTokens.lg : SampleDataSequentialStepperPanelTokens.md)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -393,7 +391,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    SampleDataSequentialStepperPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Sequential Sample Data & Stepper Engine',
@@ -404,22 +402,22 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: SampleDataSequentialStepperPanelTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: SampleDataSequentialStepperPanelTokens.success),
                       ),
                       child: Text(
                         'STATUS: ${record.completionStatus}',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: SampleDataSequentialStepperPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                SampleDataSequentialStepperPanelTokens.vGapMd,
 
                 // Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: SampleDataSequentialStepperPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -430,7 +428,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                       Row(
                         children: [
                           Icon(Icons.gavel_outlined, color: colorScheme.primary, size: 20),
-                          AppSpacingTokens.hGapSm,
+                          SampleDataSequentialStepperPanelTokens.hGapSm,
                           Text(
                             'Assigned Team: ${record.assignedGroupTeam}',
                             style: theme.textTheme.labelMedium?.copyWith(
@@ -445,7 +443,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      SampleDataSequentialStepperPanelTokens.vGapXs,
                       Text(
                         'Store Location: ${record.commonLibraryToStore} | ${record.setupAction}',
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -453,14 +451,14 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                SampleDataSequentialStepperPanelTokens.vGapLg,
 
                 // Quick Sample Dataset Injector (ANSA-002-A13 Requirement - Min 48dp)
                 Text(
                   'Sample Multi-Step Dataset Injector (ANSA-002-A13)',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                SampleDataSequentialStepperPanelTokens.vGapSm,
 
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -480,7 +478,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                     }).toList(),
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                SampleDataSequentialStepperPanelTokens.vGapLg,
 
                 // Policy Mode Switcher
                 Row(
@@ -498,7 +496,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                           _useDestructiveResetMode ? 'Destructive Reset (Legacy Bug)' : 'Non-Destructive Cache (ANSA-002)',
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: _useDestructiveResetMode ? colorScheme.error : AppColorPalette.success,
+                            color: _useDestructiveResetMode ? colorScheme.error : SampleDataSequentialStepperPanelTokens.success,
                           ),
                         ),
                         SizedBox(
@@ -513,11 +511,11 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapSm,
+                SampleDataSequentialStepperPanelTokens.vGapSm,
 
                 // Interactive Multi-Step Form Container
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: SampleDataSequentialStepperPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(16),
@@ -540,7 +538,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                       // Step 0: Profile Info
                       if (_currentStep == 0) ...[
                         Text('Step 1: User Profile & Contact Info', style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                        AppSpacingTokens.vGapSm,
+                        SampleDataSequentialStepperPanelTokens.vGapSm,
                         TextField(
                           controller: _nameController,
                           decoration: const InputDecoration(
@@ -549,7 +547,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                           ),
                           onChanged: (val) => _operatorName = val,
                         ),
-                        AppSpacingTokens.vGapSm,
+                        SampleDataSequentialStepperPanelTokens.vGapSm,
                         TextField(
                           controller: _roleController,
                           decoration: const InputDecoration(
@@ -558,7 +556,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                           ),
                           onChanged: (val) => _operatorRole = val,
                         ),
-                        AppSpacingTokens.vGapSm,
+                        SampleDataSequentialStepperPanelTokens.vGapSm,
                         TextField(
                           controller: _emailController,
                           decoration: const InputDecoration(
@@ -572,7 +570,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                       // Step 1: Org & Region
                       if (_currentStep == 1) ...[
                         Text('Step 2: Workspace, Region & Clearance', style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                        AppSpacingTokens.vGapSm,
+                        SampleDataSequentialStepperPanelTokens.vGapSm,
                         TextField(
                           controller: _orgController,
                           decoration: const InputDecoration(
@@ -581,7 +579,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                           ),
                           onChanged: (val) => _workspaceOrg = val,
                         ),
-                        AppSpacingTokens.vGapSm,
+                        SampleDataSequentialStepperPanelTokens.vGapSm,
                         TextField(
                           controller: _regionController,
                           decoration: const InputDecoration(
@@ -590,7 +588,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                           ),
                           onChanged: (val) => _regionZone = val,
                         ),
-                        AppSpacingTokens.vGapSm,
+                        SampleDataSequentialStepperPanelTokens.vGapSm,
                         TextField(
                           controller: _clearanceController,
                           decoration: const InputDecoration(
@@ -610,14 +608,14 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: AppColorPalette.brandPrimary.withValues(alpha: 0.1),
+                                color: SampleDataSequentialStepperPanelTokens.brandPrimary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: const Text('MD3 SLIDABLE LIST SPEC', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary)),
+                              child: const Text('MD3 SLIDABLE LIST SPEC', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SampleDataSequentialStepperPanelTokens.brandPrimary)),
                             ),
                           ],
                         ),
-                        AppSpacingTokens.vGapSm,
+                        SampleDataSequentialStepperPanelTokens.vGapSm,
 
                         // Slidable List Tile Items
                         _buildSlidableListItem('Operator Name', _operatorName, Icons.person_outlined),
@@ -628,7 +626,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                         _buildSlidableListItem('Clearance Tier', _clearanceTier, Icons.verified_user_outlined),
                       ],
 
-                      AppSpacingTokens.vGapLg,
+                      SampleDataSequentialStepperPanelTokens.vGapLg,
 
                       // Navigation Action Buttons (Soft Transparent Background Accent for Back, >=48dp)
                       Row(
@@ -658,24 +656,24 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                SampleDataSequentialStepperPanelTokens.vGapLg,
 
                 // Live Sample Data Memory Retention Gauge
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: SampleDataSequentialStepperPanelTokens.paddingMd,
                   decoration: BoxDecoration(
-                    color: isAllRetained ? AppColorPalette.success.withValues(alpha: 0.1) : colorScheme.errorContainer,
+                    color: isAllRetained ? SampleDataSequentialStepperPanelTokens.success.withValues(alpha: 0.1) : colorScheme.errorContainer,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: isAllRetained ? AppColorPalette.success : colorScheme.error),
+                    border: Border.all(color: isAllRetained ? SampleDataSequentialStepperPanelTokens.success : colorScheme.error),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         isAllRetained ? Icons.check_circle_outline : Icons.error_outline,
-                        color: isAllRetained ? AppColorPalette.success : colorScheme.error,
+                        color: isAllRetained ? SampleDataSequentialStepperPanelTokens.success : colorScheme.error,
                         size: 20,
                       ),
-                      AppSpacingTokens.hGapSm,
+                      SampleDataSequentialStepperPanelTokens.hGapSm,
                       Expanded(
                         child: Text(
                           isAllRetained
@@ -683,18 +681,18 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                               : 'Sample Data Retention Gauge: Data Wiped! Legacy reset cleared form entries.',
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: isAllRetained ? AppColorPalette.success : colorScheme.onErrorContainer,
+                            color: isAllRetained ? SampleDataSequentialStepperPanelTokens.success : colorScheme.onErrorContainer,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                SampleDataSequentialStepperPanelTokens.vGapLg,
 
                 // Audit Metric Boundary Grid (System/Rule Implementation Compliance)
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: SampleDataSequentialStepperPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -707,13 +705,13 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
                         'Audit Metric: ${record.metricName}',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      SampleDataSequentialStepperPanelTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', '80% Coverage', AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', '95%+ Coverage', AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', '100% Coverage', AppColorPalette.success),
-                          _buildMetricTile(context, 'Current Quality', '100% COMPLETE', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', '80% Coverage', SampleDataSequentialStepperPanelTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', '95%+ Coverage', SampleDataSequentialStepperPanelTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', '100% Coverage', SampleDataSequentialStepperPanelTokens.success),
+                          _buildMetricTile(context, 'Current Quality', '100% COMPLETE', SampleDataSequentialStepperPanelTokens.brandPrimary),
                         ],
                       ),
                     ],
@@ -751,7 +749,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const Icon(Icons.check, size: 14, color: AppColorPalette.success),
+          const Icon(Icons.check, size: 14, color: SampleDataSequentialStepperPanelTokens.success),
         ],
       ),
     );
@@ -771,7 +769,7 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isPassed
-                ? AppColorPalette.success
+                ? SampleDataSequentialStepperPanelTokens.success
                 : (isActive ? colorScheme.primary : colorScheme.surfaceContainerHigh),
           ),
           child: Center(
@@ -819,4 +817,115 @@ class _SampleDataSequentialStepperPanelState extends State<SampleDataSequentialS
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class SampleDataSequentialStepperPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SampleDataSequentialStepperPanel(
+        record: SampleDataSequentialStepperRecord(
+          actionTimestamp: '2026-08-26 10:48:00 UTC',
+          userSessionId: 'USR-SAMPLE-16020',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

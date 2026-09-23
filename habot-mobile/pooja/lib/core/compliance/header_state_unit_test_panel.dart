@@ -37,8 +37,6 @@
 
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Header Unit Test Case Model
 class HeaderTestCase {
@@ -297,8 +295,8 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? HeaderStateUnitTestPanelTokens.xs : (isExpanded ? HeaderStateUnitTestPanelTokens.md : HeaderStateUnitTestPanelTokens.sm),
+          vertical: HeaderStateUnitTestPanelTokens.xs,
         );
 
         return Card(
@@ -307,7 +305,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? HeaderStateUnitTestPanelTokens.sm : (isExpanded ? HeaderStateUnitTestPanelTokens.lg : HeaderStateUnitTestPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +336,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                HeaderStateUnitTestPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Header State Rendering Logic & Unit Test Suite',
@@ -349,22 +347,22 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: HeaderStateUnitTestPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: HeaderStateUnitTestPanelTokens.success),
                   ),
                   child: Text(
                     'GATE: ${record.completionStatus.toUpperCase()} (${record.testCoverage}%)',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: HeaderStateUnitTestPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            HeaderStateUnitTestPanelTokens.vGapMd,
 
             // Architectural Overview Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: HeaderStateUnitTestPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -375,7 +373,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                   Row(
                     children: [
                       Icon(Icons.terminal_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      HeaderStateUnitTestPanelTokens.hGapSm,
                       Expanded(
                         child: Text(
                           'Assigned: ${record.assignedTeamMember} (${record.assignedGroupTeam}) | Seq: ${record.sequenceOrder}',
@@ -389,19 +387,19 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: HeaderStateUnitTestPanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('COVERAGE: 92.4%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('COVERAGE: 92.4%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: HeaderStateUnitTestPanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  HeaderStateUnitTestPanelTokens.vGapXs,
                   Text(
                     'Setup Action: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  HeaderStateUnitTestPanelTokens.vGapXs,
                   Text(
                     'Why This Matters: ${record.whyThisMatters}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -409,7 +407,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            HeaderStateUnitTestPanelTokens.vGapLg,
 
             // Live 56dp Header Component Simulation with BackdropFilter & Poka-Yoke Gate
             Container(
@@ -439,8 +437,8 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.shield, size: 20, color: AppColorPalette.brandPrimary),
-                            AppSpacingTokens.hGapSm,
+                            const Icon(Icons.shield, size: 20, color: HeaderStateUnitTestPanelTokens.brandPrimary),
+                            HeaderStateUnitTestPanelTokens.hGapSm,
                             Expanded(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -468,7 +466,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                               ),
                               IconButton(
                                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                                icon: const Icon(Icons.lock_open, size: 20, color: AppColorPalette.success),
+                                icon: const Icon(Icons.lock_open, size: 20, color: HeaderStateUnitTestPanelTokens.success),
                                 tooltip: 'Unlock Patient Pipeline',
                                 onPressed: () {},
                               ),
@@ -476,10 +474,10 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: AppColorPalette.warning.withValues(alpha: 0.10),
+                                  color: HeaderStateUnitTestPanelTokens.warning.withValues(alpha: 0.10),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                                child: const Text('READ ONLY', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.warning)),
+                                child: const Text('READ ONLY', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: HeaderStateUnitTestPanelTokens.warning)),
                               ),
                             ],
                           ],
@@ -490,7 +488,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
 
                   // Permission & Glassmorphism Interactive Controls
                   Padding(
-                    padding: AppSpacingTokens.paddingMd,
+                    padding: HeaderStateUnitTestPanelTokens.paddingMd,
                     child: Column(
                       children: [
                         Row(
@@ -507,7 +505,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                                 },
                               ),
                             ),
-                            AppSpacingTokens.hGapSm,
+                            HeaderStateUnitTestPanelTokens.hGapSm,
                             Expanded(
                               child: SwitchListTile.adaptive(
                                 title: const Text('Backdrop Gaussian Blur', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
@@ -528,11 +526,11 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            HeaderStateUnitTestPanelTokens.vGapLg,
 
             // Unit Test Case Table
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: HeaderStateUnitTestPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -547,7 +545,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                       Row(
                         children: [
                           Icon(Icons.checklist, size: 16, color: colorScheme.primary),
-                          AppSpacingTokens.hGapXs,
+                          HeaderStateUnitTestPanelTokens.hGapXs,
                           Text(
                             'Header State Logic Test Manifest (6/6 Suites Passed)',
                             style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -557,14 +555,14 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: HeaderStateUnitTestPanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('ALL BRANCHES COVERED', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('ALL BRANCHES COVERED', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: HeaderStateUnitTestPanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapSm,
+                  HeaderStateUnitTestPanelTokens.vGapSm,
 
                   Column(
                     children: _unitTests.map((t) {
@@ -578,8 +576,8 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.check_circle, size: 16, color: AppColorPalette.success),
-                            AppSpacingTokens.hGapSm,
+                            const Icon(Icons.check_circle, size: 16, color: HeaderStateUnitTestPanelTokens.success),
+                            HeaderStateUnitTestPanelTokens.hGapSm,
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -593,7 +591,7 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                                       ),
                                       Text(
                                         '${t.coveragePercentage}%',
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: AppColorPalette.success),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: HeaderStateUnitTestPanelTokens.success),
                                       ),
                                     ],
                                   ),
@@ -613,11 +611,11 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            HeaderStateUnitTestPanelTokens.vGapLg,
 
             // Audit Gate Metrics Matrix
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: HeaderStateUnitTestPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -630,13 +628,13 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  HeaderStateUnitTestPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Gate Status', 'PASS (92.4% Coverage)', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, HeaderStateUnitTestPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, HeaderStateUnitTestPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, HeaderStateUnitTestPanelTokens.success),
+                      _buildMetricTile(context, 'Gate Status', 'PASS (92.4% Coverage)', HeaderStateUnitTestPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -670,4 +668,115 @@ class _HeaderStateUnitTestPanelState extends State<HeaderStateUnitTestPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class HeaderStateUnitTestPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: HeaderStateUnitTestPanel(
+        record: HeaderStateUnitTestRecord(
+          actionTimestamp: '2026-08-31 12:55:00 UTC',
+          userSessionId: 'USR-UNITTEST-17130',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

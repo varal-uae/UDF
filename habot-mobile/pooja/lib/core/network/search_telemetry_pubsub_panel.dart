@@ -42,8 +42,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Telemetry Log Event Model
 class SearchTelemetryEvent {
@@ -353,7 +351,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
               ? 'SELF-CHASING: Zero result query logged & dispatched alert to fulfillment desks.'
               : 'PUBSUB ROUTER: Log streamed to ${widget.record.destinationBigQueryLedger} (Latency: ${latency}ms)',
         ),
-        backgroundColor: isZero ? AppColorPalette.warning : AppColorPalette.success,
+        backgroundColor: isZero ? SearchTelemetryPubsubPanelTokens.warning : SearchTelemetryPubsubPanelTokens.success,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -370,8 +368,8 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? SearchTelemetryPubsubPanelTokens.xs : (isExpanded ? SearchTelemetryPubsubPanelTokens.md : SearchTelemetryPubsubPanelTokens.sm),
+          vertical: SearchTelemetryPubsubPanelTokens.xs,
         );
 
         return Card(
@@ -380,7 +378,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? SearchTelemetryPubsubPanelTokens.sm : (isExpanded ? SearchTelemetryPubsubPanelTokens.lg : SearchTelemetryPubsubPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -411,7 +409,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                SearchTelemetryPubsubPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Pub/Sub Search Telemetry & BigQuery Stream Engine',
@@ -422,22 +420,22 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: SearchTelemetryPubsubPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: SearchTelemetryPubsubPanelTokens.success),
                   ),
                   child: Text(
                     'GATE: ${record.completionStatus.toUpperCase()}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: SearchTelemetryPubsubPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            SearchTelemetryPubsubPanelTokens.vGapMd,
 
             // Architectural Overview Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SearchTelemetryPubsubPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -448,7 +446,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                   Row(
                     children: [
                       Icon(Icons.cloud_sync_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      SearchTelemetryPubsubPanelTokens.hGapSm,
                       Expanded(
                         child: Text(
                           'Assigned: ${record.assignedTeamMember} (${record.assignedGroupTeam}) | Seq: ${record.sequenceOrder}',
@@ -462,19 +460,19 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: SearchTelemetryPubsubPanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('GCP PUB/SUB LIVE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('GCP PUB/SUB LIVE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SearchTelemetryPubsubPanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SearchTelemetryPubsubPanelTokens.vGapXs,
                   Text(
                     'Setup Action: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SearchTelemetryPubsubPanelTokens.vGapXs,
                   Text(
                     'BigQuery Alignment: ${record.gcpBigQueryAlignment}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -482,7 +480,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SearchTelemetryPubsubPanelTokens.vGapLg,
 
             // Real-Time Telemetry Metrics Overview
             Row(
@@ -492,43 +490,43 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                   title: 'Captured Events',
                   value: '$_totalEventsStreamed',
                   subtitle: 'Near real-time (<10s)',
-                  color: AppColorPalette.brandPrimary,
+                  color: SearchTelemetryPubsubPanelTokens.brandPrimary,
                   icon: Icons.upload_file,
                 ),
-                AppSpacingTokens.hGapSm,
+                SearchTelemetryPubsubPanelTokens.hGapSm,
                 _buildStatCard(
                   context,
                   title: 'Avg Latency',
                   value: '${_averageLatencyMs}ms',
                   subtitle: 'Target: <100ms',
-                  color: AppColorPalette.success,
+                  color: SearchTelemetryPubsubPanelTokens.success,
                   icon: Icons.timer_outlined,
                 ),
-                AppSpacingTokens.hGapSm,
+                SearchTelemetryPubsubPanelTokens.hGapSm,
                 _buildStatCard(
                   context,
                   title: 'Zero-Result Alerts',
                   value: '$_totalZeroMatchesCaptured',
                   subtitle: 'Auto-chasing Desk',
-                  color: AppColorPalette.warning,
+                  color: SearchTelemetryPubsubPanelTokens.warning,
                   icon: Icons.notifications_active_outlined,
                 ),
-                AppSpacingTokens.hGapSm,
+                SearchTelemetryPubsubPanelTokens.hGapSm,
                 _buildStatCard(
                   context,
                   title: 'Capture Rate',
                   value: '$_currentCapturedRate%',
                   subtitle: 'Ceiling: 99.9%',
-                  color: AppColorPalette.info,
+                  color: SearchTelemetryPubsubPanelTokens.info,
                   icon: Icons.check_circle_outline,
                 ),
               ],
             ),
-            AppSpacingTokens.vGapLg,
+            SearchTelemetryPubsubPanelTokens.vGapLg,
 
             // Live Simulator / Interactive Query Emitter
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SearchTelemetryPubsubPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
@@ -555,7 +553,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapSm,
+                  SearchTelemetryPubsubPanelTokens.vGapSm,
 
                   Row(
                     children: [
@@ -572,7 +570,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                           onSubmitted: (val) => _triggerSearchTelemetryEvent(),
                         ),
                       ),
-                      AppSpacingTokens.hGapSm,
+                      SearchTelemetryPubsubPanelTokens.hGapSm,
                       FilledButton.icon(
                         onPressed: _triggerSearchTelemetryEvent,
                         icon: const Icon(Icons.cloud_upload_outlined, size: 16),
@@ -580,7 +578,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapSm,
+                  SearchTelemetryPubsubPanelTokens.vGapSm,
 
                   // Quick test query chips
                   Wrap(
@@ -589,12 +587,12 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                     children: [
                       ActionChip(
                         label: const Text('Normal Query (8 hits)', style: TextStyle(fontSize: 10)),
-                        avatar: const Icon(Icons.check, size: 12, color: AppColorPalette.success),
+                        avatar: const Icon(Icons.check, size: 12, color: SearchTelemetryPubsubPanelTokens.success),
                         onPressed: () => _triggerSearchTelemetryEvent(customQuery: 'Pediatric Physical Therapy clinic'),
                       ),
                       ActionChip(
                         label: const Text('Zero-Match Trigger (Self-Chasing)', style: TextStyle(fontSize: 10)),
-                        avatar: const Icon(Icons.warning_amber_rounded, size: 12, color: AppColorPalette.warning),
+                        avatar: const Icon(Icons.warning_amber_rounded, size: 12, color: SearchTelemetryPubsubPanelTokens.warning),
                         onPressed: () => _triggerSearchTelemetryEvent(customQuery: 'Rare Pediatric Hydrotherapy XYZ Specialist'),
                       ),
                     ],
@@ -602,11 +600,11 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SearchTelemetryPubsubPanelTokens.vGapLg,
 
             // Telemetry Stream Log Table (habot_analytics.search_intent_ledger)
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SearchTelemetryPubsubPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -621,7 +619,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                       Row(
                         children: [
                           Icon(Icons.table_chart_outlined, size: 16, color: colorScheme.primary),
-                          AppSpacingTokens.hGapXs,
+                          SearchTelemetryPubsubPanelTokens.hGapXs,
                           Text(
                             'Live Stream Ledger: ${record.destinationBigQueryLedger}',
                             style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -640,7 +638,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapSm,
+                  SearchTelemetryPubsubPanelTokens.vGapSm,
 
                   Column(
                     children: _telemetryLogs.map((evt) {
@@ -652,7 +650,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: evt.zeroResultTriggered
-                                ? AppColorPalette.warning.withValues(alpha: 0.31)
+                                ? SearchTelemetryPubsubPanelTokens.warning.withValues(alpha: 0.31)
                                 : colorScheme.outlineVariant.withValues(alpha: 0.24),
                           ),
                         ),
@@ -661,16 +659,16 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                             Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: (evt.zeroResultTriggered ? AppColorPalette.warning : AppColorPalette.success).withValues(alpha: 0.08),
+                                color: (evt.zeroResultTriggered ? SearchTelemetryPubsubPanelTokens.warning : SearchTelemetryPubsubPanelTokens.success).withValues(alpha: 0.08),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 evt.zeroResultTriggered ? Icons.warning_amber : Icons.check_circle_outline,
                                 size: 16,
-                                color: evt.zeroResultTriggered ? AppColorPalette.warning : AppColorPalette.success,
+                                color: evt.zeroResultTriggered ? SearchTelemetryPubsubPanelTokens.warning : SearchTelemetryPubsubPanelTokens.success,
                               ),
                             ),
-                            AppSpacingTokens.hGapSm,
+                            SearchTelemetryPubsubPanelTokens.hGapSm,
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -687,7 +685,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 11,
-                                          color: evt.queryExecutionLatencyMs < 20 ? AppColorPalette.success : AppColorPalette.warning,
+                                          color: evt.queryExecutionLatencyMs < 20 ? SearchTelemetryPubsubPanelTokens.success : SearchTelemetryPubsubPanelTokens.warning,
                                         ),
                                       ),
                                     ],
@@ -700,11 +698,11 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                                 ],
                               ),
                             ),
-                            AppSpacingTokens.hGapSm,
+                            SearchTelemetryPubsubPanelTokens.hGapSm,
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: (evt.zeroResultTriggered ? AppColorPalette.warning : AppColorPalette.brandPrimary).withValues(alpha: 0.10),
+                                color: (evt.zeroResultTriggered ? SearchTelemetryPubsubPanelTokens.warning : SearchTelemetryPubsubPanelTokens.brandPrimary).withValues(alpha: 0.10),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -712,7 +710,7 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                                 style: TextStyle(
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
-                                  color: evt.zeroResultTriggered ? AppColorPalette.warning : AppColorPalette.brandPrimary,
+                                  color: evt.zeroResultTriggered ? SearchTelemetryPubsubPanelTokens.warning : SearchTelemetryPubsubPanelTokens.brandPrimary,
                                 ),
                               ),
                             ),
@@ -724,11 +722,11 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SearchTelemetryPubsubPanelTokens.vGapLg,
 
             // Audit Gate Metrics Matrix
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SearchTelemetryPubsubPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -741,13 +739,13 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  SearchTelemetryPubsubPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Gate Status', 'PASS (99.9%)', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, SearchTelemetryPubsubPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, SearchTelemetryPubsubPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, SearchTelemetryPubsubPanelTokens.success),
+                      _buildMetricTile(context, 'Gate Status', 'PASS (99.9%)', SearchTelemetryPubsubPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -817,4 +815,115 @@ class _SearchTelemetryPubSubPanelState extends State<SearchTelemetryPubSubPanel>
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class SearchTelemetryPubsubPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SearchTelemetryPubSubPanel(
+        record: SearchTelemetryPubSubRecord(
+          actionTimestamp: '2026-08-31 12:35:00 UTC',
+          userSessionId: 'USR-PUBSUB-16820',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

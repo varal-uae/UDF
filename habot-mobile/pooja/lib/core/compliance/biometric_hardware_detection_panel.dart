@@ -25,8 +25,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Hardware status enum representing evaluated sensor capabilities.
 enum BiometricHardwareStatus {
@@ -233,8 +231,8 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? BiometricHardwareDetectionPanelTokens.paddingSm
+            : (isExpanded ? BiometricHardwareDetectionPanelTokens.paddingLg : BiometricHardwareDetectionPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -243,11 +241,11 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
             children: [
               // Header Card
               _buildHeaderCard(context, colorScheme, theme, r, isCompact: isCompact, isExpanded: isExpanded),
-              AppSpacingTokens.vGapMd,
+              BiometricHardwareDetectionPanelTokens.vGapMd,
 
               // Navigation Segment Bar
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              BiometricHardwareDetectionPanelTokens.vGapMd,
 
               // Active Tab Content
               if (_activeTab == 'detector') ...[
@@ -257,7 +255,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r, isExpanded: isExpanded),
               ],
-              AppSpacingTokens.vGapLg,
+              BiometricHardwareDetectionPanelTokens.vGapLg,
 
               // Lineage Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -277,7 +275,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
     required bool isExpanded,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? BiometricHardwareDetectionPanelTokens.paddingSm : BiometricHardwareDetectionPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -312,18 +310,18 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.success.withValues(alpha: 0.1),
+                      color: BiometricHardwareDetectionPanelTokens.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.success.withValues(alpha: 0.3)),
+                      border: Border.all(color: BiometricHardwareDetectionPanelTokens.success.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.verified, size: 12, color: AppColorPalette.success),
+                        const Icon(Icons.verified, size: 12, color: BiometricHardwareDetectionPanelTokens.success),
                         const SizedBox(width: 4),
                         Text(
                           'FIDO2: ${r.measuredReliabilityRate}%',
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: BiometricHardwareDetectionPanelTokens.success),
                         ),
                       ],
                     ),
@@ -338,12 +336,12 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          BiometricHardwareDetectionPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          AppSpacingTokens.vGapXs,
+          BiometricHardwareDetectionPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -359,9 +357,9 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
       child: Row(
         children: [
           _buildSegmentButton('detector', 'Hardware Availability Probe', Icons.fingerprint, colorScheme),
-          AppSpacingTokens.hGapSm,
+          BiometricHardwareDetectionPanelTokens.hGapSm,
           _buildSegmentButton('render_tokens', 'Client Render Queue (q_client_render_queue)', Icons.token_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          BiometricHardwareDetectionPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -402,7 +400,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
 
     switch (_currentStatus) {
       case BiometricHardwareStatus.available:
-        statusColor = AppColorPalette.success;
+        statusColor = BiometricHardwareDetectionPanelTokens.success;
         statusTitle = 'BIOMETRIC HARDWARE READY (AVAILABLE)';
         statusIcon = Icons.fingerprint;
         break;
@@ -412,7 +410,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
         statusIcon = Icons.warning_amber_rounded;
         break;
       case BiometricHardwareStatus.unavailable:
-        statusColor = AppColorPalette.error;
+        statusColor = BiometricHardwareDetectionPanelTokens.error;
         statusTitle = 'NO BIOMETRIC SENSORS DETECTED';
         statusIcon = Icons.sensors_off;
         break;
@@ -424,7 +422,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
     }
 
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? BiometricHardwareDetectionPanelTokens.paddingSm : BiometricHardwareDetectionPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -441,7 +439,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
               DropdownButton<String>(
                 value: _simulatedDevice,
                 isDense: true,
-                style: const TextStyle(fontSize: 11, color: AppColorPalette.brandPrimary, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 11, color: BiometricHardwareDetectionPanelTokens.brandPrimary, fontWeight: FontWeight.bold),
                 underline: const SizedBox(),
                 items: const [
                   DropdownMenuItem(value: 'Pixel 9 Pro (Android 15)', child: Text('Pixel 9 Pro (Android 15)')),
@@ -461,12 +459,12 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          BiometricHardwareDetectionPanelTokens.vGapSm,
           Text(
             'Evaluates platform capabilities (WebAuthn / FIDO2 Level 3) before rendering biometric trigger buttons.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          BiometricHardwareDetectionPanelTokens.vGapMd,
 
           // Live Sensor Status Card
           Container(
@@ -488,7 +486,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
                       ? const SizedBox(width: 28, height: 28, child: CircularProgressIndicator(strokeWidth: 2))
                       : Icon(statusIcon, size: 28, color: statusColor),
                 ),
-                AppSpacingTokens.hGapMd,
+                BiometricHardwareDetectionPanelTokens.hGapMd,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -509,12 +507,12 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          BiometricHardwareDetectionPanelTokens.vGapMd,
 
           // Simulate State Probe Triggers
           Text('Simulate Native Hardware Responses:',
               style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          BiometricHardwareDetectionPanelTokens.vGapSm,
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -541,8 +539,8 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
                   onPressed: () => _runHardwareProbe(BiometricHardwareStatus.unavailable),
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(48, 48),
-                    backgroundColor: AppColorPalette.error.withValues(alpha: 0.1),
-                    foregroundColor: AppColorPalette.error,
+                    backgroundColor: BiometricHardwareDetectionPanelTokens.error.withValues(alpha: 0.1),
+                    foregroundColor: BiometricHardwareDetectionPanelTokens.error,
                   ),
                   child: const Text('Probe: Unavailable'),
                 ),
@@ -556,7 +554,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
 
   Widget _buildRenderTokenQueue(ColorScheme colorScheme, ThemeData theme) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: BiometricHardwareDetectionPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -567,12 +565,12 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
         children: [
           Text('Downstream UI Render Queue (q_client_render_queue)',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          BiometricHardwareDetectionPanelTokens.vGapSm,
           Text(
             'Tokens dispatched to client layout engine determining whether to render `<BiometricAuthButton>` or fallback PIN entry.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          BiometricHardwareDetectionPanelTokens.vGapMd,
 
           Container(
             padding: const EdgeInsets.all(12),
@@ -617,7 +615,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
     required bool isExpanded,
   }) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: BiometricHardwareDetectionPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -628,7 +626,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          BiometricHardwareDetectionPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -643,19 +641,19 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                BiometricHardwareDetectionPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Reliability', '${r.measuredReliabilityRate}% (Pass)', AppColorPalette.success),
+                    _buildMetricTile('Reliability', '${r.measuredReliabilityRate}% (Pass)', BiometricHardwareDetectionPanelTokens.success),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          BiometricHardwareDetectionPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -721,7 +719,7 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, BiometricHardwareDetectionRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: BiometricHardwareDetectionPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10),
@@ -741,9 +739,120 @@ class _BiometricHardwareDetectionPanelState extends State<BiometricHardwareDetec
               ],
             ),
           ),
-          const Icon(Icons.security, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.security, size: 16, color: BiometricHardwareDetectionPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class BiometricHardwareDetectionPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: BiometricHardwareDetectionPanel(
+        record: BiometricHardwareDetectionRecord(
+          actionTimestamp: '2026-09-02 10:25:00 UTC',
+          userSessionId: 'USR-BIODETECT-33570',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

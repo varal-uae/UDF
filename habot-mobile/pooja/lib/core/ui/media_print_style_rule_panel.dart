@@ -40,8 +40,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-007-A02 Record Data Model.
 class MediaPrintStyleRuleRecord {
@@ -269,7 +267,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                 ? '@media print compiled locally: Tab preview launched at $nowIso (${elapsedMs}ms)'
                 : '@media print style rule declared & compiled cleanly in ${elapsedMs}ms ($nowIso)',
           ),
-          backgroundColor: AppColorPalette.success,
+          backgroundColor: MediaPrintStyleRulePanelTokens.success,
           duration: const Duration(seconds: 3),
         ),
       );
@@ -287,8 +285,8 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? MediaPrintStyleRulePanelTokens.xs : (isExpanded ? MediaPrintStyleRulePanelTokens.md : MediaPrintStyleRulePanelTokens.sm),
+          vertical: MediaPrintStyleRulePanelTokens.xs,
         );
 
         return Card(
@@ -297,7 +295,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? MediaPrintStyleRulePanelTokens.sm : (isExpanded ? MediaPrintStyleRulePanelTokens.lg : MediaPrintStyleRulePanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,7 +326,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                MediaPrintStyleRulePanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     '@media Print Style Rule Declaration & Optimization Engine',
@@ -339,22 +337,22 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: MediaPrintStyleRulePanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: MediaPrintStyleRulePanelTokens.success),
                   ),
                   child: Text(
                     'COMPLIANCE: ${record.completionStatus.toUpperCase()}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: MediaPrintStyleRulePanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            MediaPrintStyleRulePanelTokens.vGapMd,
 
             // Overview Details Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: MediaPrintStyleRulePanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -365,7 +363,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                   Row(
                     children: [
                       Icon(Icons.rule_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      MediaPrintStyleRulePanelTokens.hGapSm,
                       Text(
                         'Assigned Team: ${record.assignedGroupTeam} | Decision Group: ${record.decisionGroup}',
                         style: theme.textTheme.labelMedium?.copyWith(
@@ -380,12 +378,12 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  MediaPrintStyleRulePanelTokens.vGapXs,
                   Text(
                     'Setup Step: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  MediaPrintStyleRulePanelTokens.vGapXs,
                   Text(
                     'UX Translation: ${record.uxTranslation}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -393,7 +391,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            MediaPrintStyleRulePanelTokens.vGapLg,
 
             // Device Viewport & CSS Inspection Controls
             SingleChildScrollView(
@@ -410,7 +408,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                       });
                     },
                   ),
-                  AppSpacingTokens.hGapSm,
+                  MediaPrintStyleRulePanelTokens.hGapSm,
                   FilterChip(
                     avatar: Icon(_showRawCssCode ? Icons.code : Icons.visibility_outlined, size: 16),
                     label: Text(_showRawCssCode ? 'View @media CSS Rule Block' : 'View Visual Print Preview'),
@@ -421,7 +419,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                       });
                     },
                   ),
-                  AppSpacingTokens.hGapSm,
+                  MediaPrintStyleRulePanelTokens.hGapSm,
                   FilterChip(
                     avatar: Icon(_enableWhiteBgInkSaver ? Icons.format_color_fill : Icons.format_paint_outlined, size: 16),
                     label: Text(_enableWhiteBgInkSaver ? 'Poka-Yoke White BG (#FFFFFF)' : 'Preserve Theme Canvas'),
@@ -435,11 +433,11 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            MediaPrintStyleRulePanelTokens.vGapLg,
 
             // Main Print Rule Canvas & Side-by-Side Viewport
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: MediaPrintStyleRulePanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
@@ -462,19 +460,19 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColorPalette.brandPrimary.withValues(alpha: 0.10),
+                            color: MediaPrintStyleRulePanelTokens.brandPrimary.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text(
                             'FRAMEWORK: theme-print-styles',
-                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: MediaPrintStyleRulePanelTokens.brandPrimary),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapMd,
+                  MediaPrintStyleRulePanelTokens.vGapMd,
 
                   if (_isMobileView)
                     // Mobile View: Large centered action button with mobile preview
@@ -482,7 +480,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                       children: [
                         Container(
                           width: double.infinity,
-                          padding: AppSpacingTokens.paddingMd,
+                          padding: MediaPrintStyleRulePanelTokens.paddingMd,
                           decoration: BoxDecoration(
                             color: colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
@@ -490,19 +488,19 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                           ),
                           child: Column(
                             children: [
-                              const Icon(Icons.picture_as_pdf_outlined, size: 36, color: AppColorPalette.brandPrimary),
-                              AppSpacingTokens.vGapSm,
+                              const Icon(Icons.picture_as_pdf_outlined, size: 36, color: MediaPrintStyleRulePanelTokens.brandPrimary),
+                              MediaPrintStyleRulePanelTokens.vGapSm,
                               Text(
                                 'Mobile Print Engine (@media print Ready)',
                                 style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                               ),
-                              AppSpacingTokens.vGapXs,
+                              MediaPrintStyleRulePanelTokens.vGapXs,
                               Text(
                                 'Compiles CSS rules directly inside browser engine. Launches print layout preview in dedicated clean tab.',
                                 style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                                 textAlign: TextAlign.center,
                               ),
-                              AppSpacingTokens.vGapMd,
+                              MediaPrintStyleRulePanelTokens.vGapMd,
                               SizedBox(
                                 width: double.infinity,
                                 height: 48,
@@ -513,7 +511,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                                       : const Icon(Icons.tab_outlined),
                                   label: Text(_isAssemblingPrintStyles ? 'Compiling Rules...' : 'Launch Print Preview in Tab'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColorPalette.brandPrimary,
+                                    backgroundColor: MediaPrintStyleRulePanelTokens.brandPrimary,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   ),
@@ -528,7 +526,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                     // Raw CSS Code Display
                     Container(
                       width: double.infinity,
-                      padding: AppSpacingTokens.paddingMd,
+                      padding: MediaPrintStyleRulePanelTokens.paddingMd,
                       decoration: BoxDecoration(
                         color: const Color(0xFF1E1E1E),
                         borderRadius: BorderRadius.circular(12),
@@ -576,7 +574,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                         Expanded(
                           flex: 5,
                           child: Container(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: MediaPrintStyleRulePanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
@@ -586,9 +584,9 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('@media Rule Options', style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                                AppSpacingTokens.vGapXs,
+                                MediaPrintStyleRulePanelTokens.vGapXs,
                                 Text('Configured rules applied at document print phase:', style: theme.textTheme.bodySmall),
-                                AppSpacingTokens.vGapSm,
+                                MediaPrintStyleRulePanelTokens.vGapSm,
                                 Material(
                                   color: Colors.transparent,
                                   child: SwitchListTile(
@@ -619,7 +617,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                                     onChanged: (val) => setState(() => _enableWhiteBgInkSaver = val),
                                   ),
                                 ),
-                                AppSpacingTokens.vGapMd,
+                                MediaPrintStyleRulePanelTokens.vGapMd,
                                 SizedBox(
                                   width: double.infinity,
                                   height: 44,
@@ -628,7 +626,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                                     icon: const Icon(Icons.sync_outlined),
                                     label: const Text('Apply & Recompile @media Rules'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColorPalette.brandPrimary,
+                                      backgroundColor: MediaPrintStyleRulePanelTokens.brandPrimary,
                                       foregroundColor: Colors.white,
                                     ),
                                   ),
@@ -637,13 +635,13 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                             ),
                           ),
                         ),
-                        AppSpacingTokens.hGapMd,
+                        MediaPrintStyleRulePanelTokens.hGapMd,
 
                         // Right Live Document Sheet Preview
                         Expanded(
                           flex: 6,
                           child: Container(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: MediaPrintStyleRulePanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: _enableWhiteBgInkSaver ? Colors.white : colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(12),
@@ -666,14 +664,14 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    AppSpacingTokens.hGapXs,
+                                    MediaPrintStyleRulePanelTokens.hGapXs,
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: AppColorPalette.success.withValues(alpha: 0.12),
+                                        color: MediaPrintStyleRulePanelTokens.success.withValues(alpha: 0.12),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: const Text('PAGE-BREAK PROTECTED', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                                      child: const Text('PAGE-BREAK PROTECTED', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: MediaPrintStyleRulePanelTokens.success)),
                                     ),
                                   ],
                                 ),
@@ -683,7 +681,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                                   Container(
                                     padding: const EdgeInsets.all(6),
                                     margin: const EdgeInsets.only(bottom: 6),
-                                    color: AppColorPalette.warningContainer,
+                                    color: MediaPrintStyleRulePanelTokens.warningContainer,
                                     child: const Text('⚠️ Interactive elements visible in print (enable hide rule to suppress)', style: TextStyle(fontSize: 10)),
                                   ),
 
@@ -726,7 +724,7 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                                     children: [
                                       Text('Analytics Widgets & KPI Matrices', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black87)),
                                       SizedBox(height: 2),
-                                      Text('[Page-Break Safe: Widget vector rendered without margin cut-offs]', style: TextStyle(fontSize: 9, color: AppColorPalette.brandPrimary, fontWeight: FontWeight.bold)),
+                                      Text('[Page-Break Safe: Widget vector rendered without margin cut-offs]', style: TextStyle(fontSize: 9, color: MediaPrintStyleRulePanelTokens.brandPrimary, fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -739,11 +737,11 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            MediaPrintStyleRulePanelTokens.vGapLg,
 
             // Telemetry & Atomic Lock Audit Details
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: MediaPrintStyleRulePanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -762,35 +760,35 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      AppSpacingTokens.hGapXs,
+                      MediaPrintStyleRulePanelTokens.hGapXs,
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: MediaPrintStyleRulePanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('LIGHTWEIGHT CLIENT COMPILER', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('LIGHTWEIGHT CLIENT COMPILER', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: MediaPrintStyleRulePanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  MediaPrintStyleRulePanelTokens.vGapXs,
                   Text(
                     'Last Rule Declaration Timestamp: $_lastRuleExecutionTimestamp',
                     style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  MediaPrintStyleRulePanelTokens.vGapXs,
                   Text(
                     'Compilation Latency: ${_cssCompilationLatencyMs}ms | Lock: ${record.lockType} (${record.lockStatus})',
-                    style: theme.textTheme.bodySmall?.copyWith(color: AppColorPalette.success),
+                    style: theme.textTheme.bodySmall?.copyWith(color: MediaPrintStyleRulePanelTokens.success),
                   ),
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            MediaPrintStyleRulePanelTokens.vGapLg,
 
             // Audit Gate Metrics Grid
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: MediaPrintStyleRulePanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -803,13 +801,13 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  MediaPrintStyleRulePanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Compliance Status', 'COMPLETE', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, MediaPrintStyleRulePanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, MediaPrintStyleRulePanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, MediaPrintStyleRulePanelTokens.success),
+                      _buildMetricTile(context, 'Compliance Status', 'COMPLETE', MediaPrintStyleRulePanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -843,4 +841,115 @@ class _MediaPrintStyleRulePanelState extends State<MediaPrintStyleRulePanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class MediaPrintStyleRulePanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: MediaPrintStyleRulePanel(
+        record: MediaPrintStyleRuleRecord(
+          actionTimestamp: '2026-08-29 08:30:00 UTC',
+          userSessionId: 'USR-PRINT-16430',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

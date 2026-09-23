@@ -29,8 +29,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// AEETE-020 Record Data Model.
 class ComponentBlueprintCatalogRecord {
@@ -248,7 +246,7 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Accessibility Hit Target Verified: ${_testedHitTargetSize.toInt()}dp x ${_testedHitTargetSize.toInt()}dp meets Google Material Design regulations (>=48dp).'),
-        backgroundColor: AppColorPalette.success,
+        backgroundColor: ComponentBlueprintCatalogPanelTokens.success,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -267,7 +265,7 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Design & Engineering Verification Gate Passed! Zero linter/static-analysis warnings found across docs/components/atoms/button.md.'),
-            backgroundColor: AppColorPalette.success,
+            backgroundColor: ComponentBlueprintCatalogPanelTokens.success,
             duration: Duration(seconds: 3),
           ),
         );
@@ -291,11 +289,11 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
           elevation: 1,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacingTokens.xs : AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: isCompact ? ComponentBlueprintCatalogPanelTokens.xs : ComponentBlueprintCatalogPanelTokens.sm,
+            vertical: ComponentBlueprintCatalogPanelTokens.xs,
           ),
           child: Padding(
-            padding: EdgeInsets.all(isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md)),
+            padding: EdgeInsets.all(isCompact ? ComponentBlueprintCatalogPanelTokens.sm : (isExpanded ? ComponentBlueprintCatalogPanelTokens.lg : ComponentBlueprintCatalogPanelTokens.md)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -325,7 +323,7 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    ComponentBlueprintCatalogPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Component Blueprint Catalog & Review Gate',
@@ -336,22 +334,22 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: ComponentBlueprintCatalogPanelTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: ComponentBlueprintCatalogPanelTokens.success),
                       ),
                       child: Text(
                         'STATUS: ${record.completionStatus}',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: ComponentBlueprintCatalogPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                ComponentBlueprintCatalogPanelTokens.vGapMd,
 
                 // Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: ComponentBlueprintCatalogPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -361,18 +359,18 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.check_circle_outline, color: AppColorPalette.success, size: 20),
-                          AppSpacingTokens.hGapSm,
+                          const Icon(Icons.check_circle_outline, color: ComponentBlueprintCatalogPanelTokens.success, size: 20),
+                          ComponentBlueprintCatalogPanelTokens.hGapSm,
                           Text(
                             'Design System Blueprint Catalog | docs/components/atoms/button.md',
                             style: theme.textTheme.labelMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColorPalette.success,
+                              color: ComponentBlueprintCatalogPanelTokens.success,
                             ),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      ComponentBlueprintCatalogPanelTokens.vGapXs,
                       Text(
                         record.setupAction,
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -380,14 +378,14 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                ComponentBlueprintCatalogPanelTokens.vGapLg,
 
                 // Section Selector Tabs (8 Sections)
                 Text(
                   '8 Mandatory Blueprint Sections (Tap to inspect):',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                ComponentBlueprintCatalogPanelTokens.vGapSm,
                 Wrap(
                   spacing: 6,
                   runSpacing: 6,
@@ -404,11 +402,11 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                     );
                   }),
                 ),
-                AppSpacingTokens.vGapMd,
+                ComponentBlueprintCatalogPanelTokens.vGapMd,
 
                 // Active Section Detail Card
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: ComponentBlueprintCatalogPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -429,17 +427,17 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.success.withValues(alpha: 0.15),
+                              color: ComponentBlueprintCatalogPanelTokens.success.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
                               currentSection.validationStatus,
-                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: ComponentBlueprintCatalogPanelTokens.success),
                             ),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      ComponentBlueprintCatalogPanelTokens.vGapSm,
                       Text(
                         currentSection.description,
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -447,11 +445,11 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                ComponentBlueprintCatalogPanelTokens.vGapLg,
 
                 // Accessibility Hit Target Testing Tool (>=48dp)
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: ComponentBlueprintCatalogPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -470,22 +468,22 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.success.withValues(alpha: 0.15),
+                              color: ComponentBlueprintCatalogPanelTokens.success.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
                               '${_testedHitTargetSize.toInt()}dp x ${_testedHitTargetSize.toInt()}dp',
-                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: ComponentBlueprintCatalogPanelTokens.success),
                             ),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      ComponentBlueprintCatalogPanelTokens.vGapSm,
                       Text(
                         'Material Design 3 mandates minimum 48x48dp interactive bounding targets for touchscreen usability.',
                         style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                       ),
-                      AppSpacingTokens.vGapMd,
+                      ComponentBlueprintCatalogPanelTokens.vGapMd,
                       Center(
                         child: InkWell(
                           onTap: _verifyHitTarget,
@@ -494,38 +492,38 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                             width: _testedHitTargetSize,
                             height: _testedHitTargetSize,
                             decoration: BoxDecoration(
-                              color: _isHitTargetVerified ? AppColorPalette.success : AppColorPalette.brandPrimary,
+                              color: _isHitTargetVerified ? ComponentBlueprintCatalogPanelTokens.success : ComponentBlueprintCatalogPanelTokens.brandPrimary,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(_isHitTargetVerified ? Icons.check : Icons.touch_app, color: Colors.white, size: 24),
                           ),
                         ),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      ComponentBlueprintCatalogPanelTokens.vGapSm,
                       Center(
                         child: Text(
                           _isHitTargetVerified
                               ? 'Target Verified (48dp x 48dp Pass)'
                               : 'Tap test target (Currently ${_testedHitTargetSize.toInt()}dp x ${_testedHitTargetSize.toInt()}dp)',
-                          style: TextStyle(fontSize: 11, color: _isHitTargetVerified ? AppColorPalette.success : colorScheme.onSurfaceVariant),
+                          style: TextStyle(fontSize: 11, color: _isHitTargetVerified ? ComponentBlueprintCatalogPanelTokens.success : colorScheme.onSurfaceVariant),
                         ),
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                ComponentBlueprintCatalogPanelTokens.vGapLg,
 
                 // Do's and Don'ts Rules Matrix
                 Text(
                   'Component Governance: Do\'s and Don\'ts Reference',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                ComponentBlueprintCatalogPanelTokens.vGapSm,
                 Column(
                   children: _dosAndDontsRules.map((rule) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 6),
-                      padding: AppSpacingTokens.paddingSm,
+                      padding: ComponentBlueprintCatalogPanelTokens.paddingSm,
                       decoration: BoxDecoration(
                         color: colorScheme.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(8),
@@ -536,14 +534,14 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                         children: [
                           Text(rule.category, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
                           const SizedBox(height: 2),
-                          Text('• ${rule.doRule}', style: const TextStyle(fontSize: 10, color: AppColorPalette.success)),
+                          Text('• ${rule.doRule}', style: const TextStyle(fontSize: 10, color: ComponentBlueprintCatalogPanelTokens.success)),
                           Text('• ${rule.dontRule}', style: TextStyle(fontSize: 10, color: colorScheme.error)),
                         ],
                       ),
                     );
                   }).toList(),
                 ),
-                AppSpacingTokens.vGapLg,
+                ComponentBlueprintCatalogPanelTokens.vGapLg,
 
                 // Review Approval Status Chips
                 Row(
@@ -551,43 +549,43 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: (_designReviewApproved ? AppColorPalette.success : AppColorPalette.warning).withValues(alpha: 0.15),
+                        color: (_designReviewApproved ? ComponentBlueprintCatalogPanelTokens.success : ComponentBlueprintCatalogPanelTokens.warning).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: _designReviewApproved ? AppColorPalette.success : AppColorPalette.warning),
+                        border: Border.all(color: _designReviewApproved ? ComponentBlueprintCatalogPanelTokens.success : ComponentBlueprintCatalogPanelTokens.warning),
                       ),
                       child: Text(
                         'Design Review: ${_designReviewApproved ? "Approved" : "Pending"}',
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _designReviewApproved ? AppColorPalette.success : AppColorPalette.warning),
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _designReviewApproved ? ComponentBlueprintCatalogPanelTokens.success : ComponentBlueprintCatalogPanelTokens.warning),
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    ComponentBlueprintCatalogPanelTokens.hGapSm,
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: (_engineeringReviewApproved ? AppColorPalette.success : AppColorPalette.warning).withValues(alpha: 0.15),
+                        color: (_engineeringReviewApproved ? ComponentBlueprintCatalogPanelTokens.success : ComponentBlueprintCatalogPanelTokens.warning).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: _engineeringReviewApproved ? AppColorPalette.success : AppColorPalette.warning),
+                        border: Border.all(color: _engineeringReviewApproved ? ComponentBlueprintCatalogPanelTokens.success : ComponentBlueprintCatalogPanelTokens.warning),
                       ),
                       child: Text(
                         'Engineering Review: ${_engineeringReviewApproved ? "Approved" : "Pending"}',
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _engineeringReviewApproved ? AppColorPalette.success : AppColorPalette.warning),
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: _engineeringReviewApproved ? ComponentBlueprintCatalogPanelTokens.success : ComponentBlueprintCatalogPanelTokens.warning),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapLg,
+                ComponentBlueprintCatalogPanelTokens.vGapLg,
 
                 // Design & Engineering Review Feedback Reconciled Matrix
                 Text(
                   'Design & Engineering Review Reconciled Feedback:',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                ComponentBlueprintCatalogPanelTokens.vGapSm,
                 Column(
                   children: _reviewFeedbackList.map((item) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 8),
-                      padding: AppSpacingTokens.paddingSm,
+                      padding: ComponentBlueprintCatalogPanelTokens.paddingSm,
                       decoration: BoxDecoration(
                         color: colorScheme.surfaceContainer,
                         borderRadius: BorderRadius.circular(8),
@@ -603,10 +601,10 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: AppColorPalette.success.withValues(alpha: 0.15),
+                                  color: ComponentBlueprintCatalogPanelTokens.success.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                                child: Text(item.resolutionStatus, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                                child: Text(item.resolutionStatus, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: ComponentBlueprintCatalogPanelTokens.success)),
                               ),
                             ],
                           ),
@@ -614,13 +612,13 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                           Text('Topic: ${item.feedbackTopic}', style: TextStyle(fontSize: 11, color: colorScheme.primary, fontWeight: FontWeight.w600)),
                           Text('Issue: ${item.originalIssue}', style: TextStyle(fontSize: 10, color: colorScheme.onSurfaceVariant)),
                           const SizedBox(height: 2),
-                          Text('Fix: ${item.verificationDetails}', style: const TextStyle(fontSize: 10, color: AppColorPalette.success, fontWeight: FontWeight.w500)),
+                          Text('Fix: ${item.verificationDetails}', style: const TextStyle(fontSize: 10, color: ComponentBlueprintCatalogPanelTokens.success, fontWeight: FontWeight.w500)),
                         ],
                       ),
                     );
                   }).toList(),
                 ),
-                AppSpacingTokens.vGapLg,
+                ComponentBlueprintCatalogPanelTokens.vGapLg,
 
                 // Static Analysis & Lint Gate Runner (Button >=48dp)
                 SizedBox(
@@ -629,7 +627,7 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
                   child: FilledButton.icon(
                     onPressed: _isLinterRunning ? null : _runStaticAnalysisLinter,
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColorPalette.brandPrimary,
+                      backgroundColor: ComponentBlueprintCatalogPanelTokens.brandPrimary,
                       minimumSize: const Size(48, 48),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
@@ -649,4 +647,115 @@ class _ComponentBlueprintCatalogPanelState extends State<ComponentBlueprintCatal
       },
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class ComponentBlueprintCatalogPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: ComponentBlueprintCatalogPanel(
+        record: ComponentBlueprintCatalogRecord(
+          actionTimestamp: '2026-08-25 12:52:00 UTC',
+          userSessionId: 'USR-GOVERNANCE-9140',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

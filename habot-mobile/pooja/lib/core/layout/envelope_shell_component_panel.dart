@@ -196,3 +196,19 @@ class _EnvelopeShellComponentPanelState
     );
   }
 }
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: EnvelopeShellComponentPanel(),
+          ),
+        ),
+      ),
+    ),
+  );
+}

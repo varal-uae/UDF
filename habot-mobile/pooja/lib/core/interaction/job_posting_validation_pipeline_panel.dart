@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Row 236 - FEBFL-017-A12 (Seq 15128)
 /// Action: Integrate the atomic validation execution pipeline directly into the mobile job posting submission path.
@@ -69,20 +67,20 @@ class _JobPostingValidationPipelinePanelState
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: AppSpacingTokens.paddingMd,
+      padding: JobPostingValidationPipelinePanelTokens.paddingMd,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildHeaderCard(),
-          AppSpacingTokens.vGapMd,
+          JobPostingValidationPipelinePanelTokens.vGapMd,
           _buildCategorySelectorCard(),
-          AppSpacingTokens.vGapMd,
+          JobPostingValidationPipelinePanelTokens.vGapMd,
           _buildDurationSelectorCard(),
-          AppSpacingTokens.vGapMd,
+          JobPostingValidationPipelinePanelTokens.vGapMd,
           _buildBudgetSelectorCard(),
-          AppSpacingTokens.vGapMd,
+          JobPostingValidationPipelinePanelTokens.vGapMd,
           _buildPipelineOutcomeCard(),
-          AppSpacingTokens.vGapMd,
+          JobPostingValidationPipelinePanelTokens.vGapMd,
           _buildTelemetryCard(),
         ],
       ),
@@ -93,10 +91,10 @@ class _JobPostingValidationPipelinePanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: JobPostingValidationPipelinePanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: JobPostingValidationPipelinePanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,24 +102,24 @@ class _JobPostingValidationPipelinePanelState
               children: [
                 const Icon(
                   Icons.verified_outlined,
-                  color: AppColorPalette.brandPrimary,
+                  color: JobPostingValidationPipelinePanelTokens.brandPrimary,
                   size: 22,
                 ),
-                AppSpacingTokens.hGapSm,
+                JobPostingValidationPipelinePanelTokens.hGapSm,
                 const Expanded(
                   child: Text(
                     'Job Posting Validation Pipeline',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColorPalette.brandPrimary,
+                      color: JobPostingValidationPipelinePanelTokens.brandPrimary,
                     ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.successContainer,
+                    color: JobPostingValidationPipelinePanelTokens.successContainer,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Text(
@@ -129,13 +127,13 @@ class _JobPostingValidationPipelinePanelState
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColorPalette.onSuccessContainer,
+                      color: JobPostingValidationPipelinePanelTokens.onSuccessContainer,
                     ),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapSm,
+            JobPostingValidationPipelinePanelTokens.vGapSm,
             Text(
               'Enforces tap-driven card selection for mobile job postings, preventing unformatted text entries with an atomic validation execution pipeline.',
               style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
@@ -150,18 +148,18 @@ class _JobPostingValidationPipelinePanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: JobPostingValidationPipelinePanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: JobPostingValidationPipelinePanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               '1. Select Subject Category (Tap Driven)',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: JobPostingValidationPipelinePanelTokens.brandPrimary),
             ),
-            AppSpacingTokens.vGapSm,
+            JobPostingValidationPipelinePanelTokens.vGapSm,
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -170,11 +168,11 @@ class _JobPostingValidationPipelinePanelState
                 return ChoiceChip(
                   label: Text(_categoryOptions[index]),
                   selected: isSelected,
-                  selectedColor: AppColorPalette.brandPrimaryContainer,
+                  selectedColor: JobPostingValidationPipelinePanelTokens.brandPrimaryContainer,
                   labelStyle: TextStyle(
                     fontSize: 12,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? AppColorPalette.brandPrimary : Colors.grey.shade800,
+                    color: isSelected ? JobPostingValidationPipelinePanelTokens.brandPrimary : Colors.grey.shade800,
                   ),
                   onSelected: (selected) {
                     if (selected) {
@@ -197,18 +195,18 @@ class _JobPostingValidationPipelinePanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: JobPostingValidationPipelinePanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: JobPostingValidationPipelinePanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               '2. Select Session Duration',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: JobPostingValidationPipelinePanelTokens.brandPrimary),
             ),
-            AppSpacingTokens.vGapSm,
+            JobPostingValidationPipelinePanelTokens.vGapSm,
             Row(
               children: List.generate(_durationOptions.length, (index) {
                 final isSelected = _selectedDurationIndex == index;
@@ -217,9 +215,9 @@ class _JobPostingValidationPipelinePanelState
                     padding: EdgeInsets.only(right: index < _durationOptions.length - 1 ? 6 : 0),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: isSelected ? AppColorPalette.brandPrimaryContainer : Colors.transparent,
+                        backgroundColor: isSelected ? JobPostingValidationPipelinePanelTokens.brandPrimaryContainer : Colors.transparent,
                         side: BorderSide(
-                          color: isSelected ? AppColorPalette.brandPrimary : Colors.grey.shade300,
+                          color: isSelected ? JobPostingValidationPipelinePanelTokens.brandPrimary : Colors.grey.shade300,
                           width: isSelected ? 1.5 : 1,
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -235,7 +233,7 @@ class _JobPostingValidationPipelinePanelState
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? AppColorPalette.brandPrimary : Colors.grey.shade800,
+                          color: isSelected ? JobPostingValidationPipelinePanelTokens.brandPrimary : Colors.grey.shade800,
                         ),
                       ),
                     ),
@@ -253,18 +251,18 @@ class _JobPostingValidationPipelinePanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: JobPostingValidationPipelinePanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: JobPostingValidationPipelinePanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               '3. Target Hourly Rate Bracket',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: JobPostingValidationPipelinePanelTokens.brandPrimary),
             ),
-            AppSpacingTokens.vGapSm,
+            JobPostingValidationPipelinePanelTokens.vGapSm,
             Row(
               children: List.generate(_budgetOptions.length, (index) {
                 final isSelected = _selectedBudgetIndex == index;
@@ -273,9 +271,9 @@ class _JobPostingValidationPipelinePanelState
                     padding: EdgeInsets.only(right: index < _budgetOptions.length - 1 ? 6 : 0),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: isSelected ? AppColorPalette.brandPrimaryContainer : Colors.transparent,
+                        backgroundColor: isSelected ? JobPostingValidationPipelinePanelTokens.brandPrimaryContainer : Colors.transparent,
                         side: BorderSide(
-                          color: isSelected ? AppColorPalette.brandPrimary : Colors.grey.shade300,
+                          color: isSelected ? JobPostingValidationPipelinePanelTokens.brandPrimary : Colors.grey.shade300,
                           width: isSelected ? 1.5 : 1,
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -291,7 +289,7 @@ class _JobPostingValidationPipelinePanelState
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? AppColorPalette.brandPrimary : Colors.grey.shade800,
+                          color: isSelected ? JobPostingValidationPipelinePanelTokens.brandPrimary : Colors.grey.shade800,
                         ),
                       ),
                     ),
@@ -307,24 +305,24 @@ class _JobPostingValidationPipelinePanelState
 
   Widget _buildPipelineOutcomeCard() {
     return Card(
-      color: _pipelinePassed ? AppColorPalette.successContainer.withValues(alpha: 0.5) : AppColorPalette.errorContainer,
+      color: _pipelinePassed ? JobPostingValidationPipelinePanelTokens.successContainer.withValues(alpha: 0.5) : JobPostingValidationPipelinePanelTokens.errorContainer,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         side: BorderSide(
-          color: _pipelinePassed ? AppColorPalette.success : AppColorPalette.error,
+          color: _pipelinePassed ? JobPostingValidationPipelinePanelTokens.success : JobPostingValidationPipelinePanelTokens.error,
           width: 1.2,
         ),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: JobPostingValidationPipelinePanelTokens.paddingMd,
         child: Row(
           children: [
             Icon(
               _pipelinePassed ? Icons.check_circle : Icons.error_outline,
-              color: _pipelinePassed ? AppColorPalette.onSuccessContainer : AppColorPalette.onErrorContainer,
+              color: _pipelinePassed ? JobPostingValidationPipelinePanelTokens.onSuccessContainer : JobPostingValidationPipelinePanelTokens.onErrorContainer,
               size: 22,
             ),
-            AppSpacingTokens.hGapSm,
+            JobPostingValidationPipelinePanelTokens.hGapSm,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,7 +334,7 @@ class _JobPostingValidationPipelinePanelState
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: _pipelinePassed ? AppColorPalette.onSuccessContainer : AppColorPalette.onErrorContainer,
+                      color: _pipelinePassed ? JobPostingValidationPipelinePanelTokens.onSuccessContainer : JobPostingValidationPipelinePanelTokens.onErrorContainer,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -344,7 +342,7 @@ class _JobPostingValidationPipelinePanelState
                     'Zero freeform text input required. All criteria met via tap selectors.',
                     style: TextStyle(
                       fontSize: 11,
-                      color: _pipelinePassed ? AppColorPalette.onSuccessContainer : AppColorPalette.onErrorContainer,
+                      color: _pipelinePassed ? JobPostingValidationPipelinePanelTokens.onSuccessContainer : JobPostingValidationPipelinePanelTokens.onErrorContainer,
                     ),
                   ),
                 ],
@@ -361,10 +359,10 @@ class _JobPostingValidationPipelinePanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: JobPostingValidationPipelinePanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: JobPostingValidationPipelinePanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -373,10 +371,10 @@ class _JobPostingValidationPipelinePanelState
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: AppColorPalette.brandPrimary,
+                color: JobPostingValidationPipelinePanelTokens.brandPrimary,
               ),
             ),
-            AppSpacingTokens.vGapSm,
+            JobPostingValidationPipelinePanelTokens.vGapSm,
             ...telemetry.entries.map((e) {
               final val = e.value.toString();
               return Padding(
@@ -413,4 +411,133 @@ class _JobPostingValidationPipelinePanelState
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class JobPostingValidationPipelinePanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color lightPrimary = Color(0xFF6750A4);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFEADDFF);
+  static const Color lightOnPrimaryContainer = Color(0xFF21005D);
+
+  static const Color lightSecondary = Color(0xFF625B71);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightSecondaryContainer = Color(0xFFE8DEF8);
+  static const Color lightOnSecondaryContainer = Color(0xFF1D192B);
+
+  static const Color lightTertiary = Color(0xFF7D5260);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
+  static const Color lightOnTertiaryContainer = Color(0xFF31111D);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+  static const Color lightErrorContainer = Color(0xFFF9DEDC);
+  static const Color lightOnErrorContainer = Color(0xFF410E0B);
+
+  static const Color lightBackground = Color(0xFFFEF7FF);
+  static const Color lightOnBackground = Color(0xFF1D1B20);
+  static const Color lightSurface = Color(0xFFFEF7FF);
+  static const Color lightOnSurface = Color(0xFF1D1B20);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOnSurfaceVariant = Color(0xFF49454F);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: JobPostingValidationPipelinePanel(),
+          ),
+        ),
+      ),
+    ),
+  );
 }

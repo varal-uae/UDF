@@ -30,8 +30,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-006-A15 Record Data Model.
 class SearchBlurListenerRecord {
@@ -205,7 +203,7 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('BLUR LISTENER DETECTED: Focus shifted outside search area. Overlay dismissed cleanly at $nowIso.'),
-          backgroundColor: AppColorPalette.info,
+          backgroundColor: SearchBlurListenerPanelTokens.info,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -228,8 +226,8 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? SearchBlurListenerPanelTokens.xs : (isExpanded ? SearchBlurListenerPanelTokens.md : SearchBlurListenerPanelTokens.sm),
+          vertical: SearchBlurListenerPanelTokens.xs,
         );
 
         return Card(
@@ -238,7 +236,7 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? SearchBlurListenerPanelTokens.sm : (isExpanded ? SearchBlurListenerPanelTokens.lg : SearchBlurListenerPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +267,7 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                SearchBlurListenerPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Search Blur Listener & Focus Shift Handler',
@@ -280,22 +278,22 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: SearchBlurListenerPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: SearchBlurListenerPanelTokens.success),
                   ),
                   child: Text(
                     'STATUS: ${record.completionStatus}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: SearchBlurListenerPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            SearchBlurListenerPanelTokens.vGapMd,
 
             // Overview Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SearchBlurListenerPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -306,7 +304,7 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                   Row(
                     children: [
                       Icon(Icons.gavel_outlined, color: colorScheme.primary, size: 20),
-                      AppSpacingTokens.hGapSm,
+                      SearchBlurListenerPanelTokens.hGapSm,
                       Text(
                         'Assigned Team: ${record.assignedGroupTeam}',
                         style: theme.textTheme.labelMedium?.copyWith(
@@ -321,7 +319,7 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SearchBlurListenerPanelTokens.vGapXs,
                   Text(
                     'Store Location: ${record.commonLibraryToStore} | ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -329,21 +327,21 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SearchBlurListenerPanelTokens.vGapLg,
 
             // Interactive Focus & Blur Tester Shell
             Text(
               'Interactive Focus / Blur Listener Test Canvas',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            AppSpacingTokens.vGapSm,
+            SearchBlurListenerPanelTokens.vGapSm,
 
             // Outside Tap Listener Wrapper (GestureDetector outside search area)
             GestureDetector(
               onTap: _unfocusSearch,
               behavior: HitTestBehavior.opaque,
               child: Container(
-                padding: AppSpacingTokens.paddingMd,
+                padding: SearchBlurListenerPanelTokens.paddingMd,
                 decoration: BoxDecoration(
                   color: _isSearchFocused
                       ? colorScheme.primaryContainer.withValues(alpha: 0.12)
@@ -364,7 +362,7 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: _isSearchFocused ? AppColorPalette.brandPrimary.withValues(alpha: 0.12) : AppColorPalette.info.withValues(alpha: 0.12),
+                            color: _isSearchFocused ? SearchBlurListenerPanelTokens.brandPrimary.withValues(alpha: 0.12) : SearchBlurListenerPanelTokens.info.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -372,13 +370,13 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: _isSearchFocused ? AppColorPalette.brandPrimary : AppColorPalette.info,
+                              color: _isSearchFocused ? SearchBlurListenerPanelTokens.brandPrimary : SearchBlurListenerPanelTokens.info,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    AppSpacingTokens.vGapSm,
+                    SearchBlurListenerPanelTokens.vGapSm,
 
                     // Search TextField bound to FocusNode
                     TextField(
@@ -400,12 +398,12 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                         border: const OutlineInputBorder(),
                       ),
                     ),
-                    AppSpacingTokens.vGapSm,
+                    SearchBlurListenerPanelTokens.vGapSm,
 
                     // Simulated Search Dropdown Panel (Dismissed instantly on blur)
                     if (_isDropdownVisible) ...[
                       Container(
-                        padding: AppSpacingTokens.paddingSm,
+                        padding: SearchBlurListenerPanelTokens.paddingSm,
                         decoration: BoxDecoration(
                           color: colorScheme.surfaceContainerHigh,
                           borderRadius: BorderRadius.circular(8),
@@ -415,14 +413,14 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Active Quick Matches (Dismisses automatically on blur):', style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold)),
-                            AppSpacingTokens.vGapXs,
+                            SearchBlurListenerPanelTokens.vGapXs,
                             ..._sampleResults.map((item) {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 4),
                                 child: Row(
                                   children: [
                                     const Icon(Icons.subdirectory_arrow_right, size: 14),
-                                    AppSpacingTokens.hGapXs,
+                                    SearchBlurListenerPanelTokens.hGapXs,
                                     Expanded(child: Text(item, style: theme.textTheme.bodySmall)),
                                   ],
                                 ),
@@ -433,11 +431,11 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                       ),
                     ],
 
-                    AppSpacingTokens.vGapLg,
+                    SearchBlurListenerPanelTokens.vGapLg,
 
                     // Outside Tap Indicator Notice
                     Container(
-                      padding: AppSpacingTokens.paddingSm,
+                      padding: SearchBlurListenerPanelTokens.paddingSm,
                       decoration: BoxDecoration(
                         color: colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(8),
@@ -445,7 +443,7 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                       child: Row(
                         children: [
                           Icon(Icons.touch_app_outlined, size: 16, color: colorScheme.onSurfaceVariant),
-                          AppSpacingTokens.hGapSm,
+                          SearchBlurListenerPanelTokens.hGapSm,
                           Expanded(
                             child: Text(
                               'Tap anywhere in this box (outside the TextField) to shift focus and trigger the blur listener loop.',
@@ -459,11 +457,11 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                 ),
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SearchBlurListenerPanelTokens.vGapLg,
 
             // Blur Event Telemetry & ISO 8601 Timestamp Validation
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SearchBlurListenerPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -482,31 +480,31 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: SearchBlurListenerPanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('ISO 8601 UTC VALIDATED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('ISO 8601 UTC VALIDATED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SearchBlurListenerPanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SearchBlurListenerPanelTokens.vGapXs,
                   Text(
                     'Last Focus/Blur Event UTC Timestamp: $_lastIsoTimestamp',
                     style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SearchBlurListenerPanelTokens.vGapXs,
                   Text(
                     'Blur Event Response Latency: ${_lastBlurLatencyMs}ms (Nielsen Norman <100ms Rule)',
-                    style: theme.textTheme.bodySmall?.copyWith(color: AppColorPalette.success),
+                    style: theme.textTheme.bodySmall?.copyWith(color: SearchBlurListenerPanelTokens.success),
                   ),
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SearchBlurListenerPanelTokens.vGapLg,
 
             // Audit Metric Boundary Grid (Event Handler Coverage & Responsiveness)
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SearchBlurListenerPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -519,13 +517,13 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
                     'Audit Metric: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  SearchBlurListenerPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Current Quality', '${_lastBlurLatencyMs}ms GOOD', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, SearchBlurListenerPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, SearchBlurListenerPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, SearchBlurListenerPanelTokens.success),
+                      _buildMetricTile(context, 'Current Quality', '${_lastBlurLatencyMs}ms GOOD', SearchBlurListenerPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -559,4 +557,115 @@ class _SearchBlurListenerPanelState extends State<SearchBlurListenerPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class SearchBlurListenerPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SearchBlurListenerPanel(
+        record: SearchBlurListenerRecord(
+          actionTimestamp: '2026-08-26 11:37:00 UTC',
+          userSessionId: 'USR-BLUR-16390',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

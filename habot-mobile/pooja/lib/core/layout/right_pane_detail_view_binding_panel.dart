@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Row 243 - FEBFL-025-A08 (Seq 15216)
 /// Action: Bind right pane containers to display detailed selected item views.
@@ -100,14 +98,14 @@ class _RightPaneDetailViewBindingPanelState
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: AppSpacingTokens.paddingMd,
+      padding: RightPaneDetailViewBindingPanelTokens.paddingMd,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildHeaderCard(),
-          AppSpacingTokens.vGapMd,
+          RightPaneDetailViewBindingPanelTokens.vGapMd,
           _buildSplitLayoutView(),
-          AppSpacingTokens.vGapMd,
+          RightPaneDetailViewBindingPanelTokens.vGapMd,
           _buildTelemetryCard(),
         ],
       ),
@@ -118,10 +116,10 @@ class _RightPaneDetailViewBindingPanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: RightPaneDetailViewBindingPanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: RightPaneDetailViewBindingPanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -129,24 +127,24 @@ class _RightPaneDetailViewBindingPanelState
               children: [
                 const Icon(
                   Icons.vertical_split_outlined,
-                  color: AppColorPalette.brandPrimary,
+                  color: RightPaneDetailViewBindingPanelTokens.brandPrimary,
                   size: 22,
                 ),
-                AppSpacingTokens.hGapSm,
+                RightPaneDetailViewBindingPanelTokens.hGapSm,
                 const Expanded(
                   child: Text(
                     'Right Pane Detail View Binding',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColorPalette.brandPrimary,
+                      color: RightPaneDetailViewBindingPanelTokens.brandPrimary,
                     ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.successContainer,
+                    color: RightPaneDetailViewBindingPanelTokens.successContainer,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Text(
@@ -154,13 +152,13 @@ class _RightPaneDetailViewBindingPanelState
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColorPalette.onSuccessContainer,
+                      color: RightPaneDetailViewBindingPanelTokens.onSuccessContainer,
                     ),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapSm,
+            RightPaneDetailViewBindingPanelTokens.vGapSm,
             Text(
               'Binds responsive marketplace list items to a sticky right detail pane container, eliminating choice friction through instant visual synchronization.',
               style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
@@ -177,9 +175,9 @@ class _RightPaneDetailViewBindingPanelState
       children: [
         const Text(
           'Master-Detail Split View (Tappable Cards -> Bound Pane)',
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: RightPaneDetailViewBindingPanelTokens.brandPrimary),
         ),
-        AppSpacingTokens.vGapSm,
+        RightPaneDetailViewBindingPanelTokens.vGapSm,
         LayoutBuilder(
           builder: (context, constraints) {
             final isWide = constraints.maxWidth >= 600;
@@ -188,7 +186,7 @@ class _RightPaneDetailViewBindingPanelState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(flex: 5, child: _buildItemsList()),
-                  AppSpacingTokens.hGapMd,
+                  RightPaneDetailViewBindingPanelTokens.hGapMd,
                   Expanded(flex: 6, child: _buildRightDetailPane()),
                 ],
               );
@@ -196,7 +194,7 @@ class _RightPaneDetailViewBindingPanelState
               return Column(
                 children: [
                   _buildItemsList(),
-                  AppSpacingTokens.vGapMd,
+                  RightPaneDetailViewBindingPanelTokens.vGapMd,
                   _buildRightDetailPane(),
                 ],
               );
@@ -224,14 +222,14 @@ class _RightPaneDetailViewBindingPanelState
             borderRadius: BorderRadius.circular(8.0),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: AppSpacingTokens.paddingMd,
+              padding: RightPaneDetailViewBindingPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColorPalette.brandPrimaryContainer.withValues(alpha: 0.35)
+                    ? RightPaneDetailViewBindingPanelTokens.brandPrimaryContainer.withValues(alpha: 0.35)
                     : Colors.white,
                 borderRadius: BorderRadius.circular(8.0),
                 border: Border.all(
-                  color: isSelected ? AppColorPalette.brandPrimary : Colors.grey.shade300,
+                  color: isSelected ? RightPaneDetailViewBindingPanelTokens.brandPrimary : Colors.grey.shade300,
                   width: isSelected ? 1.5 : 1,
                 ),
               ),
@@ -239,10 +237,10 @@ class _RightPaneDetailViewBindingPanelState
                 children: [
                   Icon(
                     isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                    color: isSelected ? AppColorPalette.brandPrimary : Colors.grey.shade500,
+                    color: isSelected ? RightPaneDetailViewBindingPanelTokens.brandPrimary : Colors.grey.shade500,
                     size: 18,
                   ),
-                  AppSpacingTokens.hGapSm,
+                  RightPaneDetailViewBindingPanelTokens.hGapSm,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +250,7 @@ class _RightPaneDetailViewBindingPanelState
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                            color: isSelected ? AppColorPalette.brandPrimary : Colors.black87,
+                            color: isSelected ? RightPaneDetailViewBindingPanelTokens.brandPrimary : Colors.black87,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -297,11 +295,11 @@ class _RightPaneDetailViewBindingPanelState
         elevation: 1,
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-          side: BorderSide(color: AppColorPalette.brandPrimary.withValues(alpha: 0.4)),
+          side: BorderSide(color: RightPaneDetailViewBindingPanelTokens.brandPrimary.withValues(alpha: 0.4)),
         ),
         color: Colors.grey.shade50,
         child: Padding(
-          padding: AppSpacingTokens.paddingMd,
+          padding: RightPaneDetailViewBindingPanelTokens.paddingMd,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -311,7 +309,7 @@ class _RightPaneDetailViewBindingPanelState
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.brandPrimary,
+                      color: RightPaneDetailViewBindingPanelTokens.brandPrimary,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -321,36 +319,36 @@ class _RightPaneDetailViewBindingPanelState
                   ),
                   Text(
                     item.price,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: RightPaneDetailViewBindingPanelTokens.brandPrimary),
                   ),
                 ],
               ),
-              AppSpacingTokens.vGapSm,
+              RightPaneDetailViewBindingPanelTokens.vGapSm,
               Text(
                 item.title,
-                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: RightPaneDetailViewBindingPanelTokens.brandPrimary),
               ),
               const SizedBox(height: 2),
               Text('Instructor: ${item.instructor}', style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
-              AppSpacingTokens.vGapSm,
+              RightPaneDetailViewBindingPanelTokens.vGapSm,
               Text(item.description, style: TextStyle(fontSize: 12, color: Colors.grey.shade800)),
-              AppSpacingTokens.vGapMd,
+              RightPaneDetailViewBindingPanelTokens.vGapMd,
               const Text(
                 'Key Package Features (Col AA Tab-Ordered):',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
               ),
-              AppSpacingTokens.vGapSm,
+              RightPaneDetailViewBindingPanelTokens.vGapSm,
               ...item.highlights.map((h) => Padding(
                     padding: const EdgeInsets.only(bottom: 4.0),
                     child: Row(
                       children: [
-                        const Icon(Icons.check, size: 14, color: AppColorPalette.success),
-                        AppSpacingTokens.hGapSm,
+                        const Icon(Icons.check, size: 14, color: RightPaneDetailViewBindingPanelTokens.success),
+                        RightPaneDetailViewBindingPanelTokens.hGapSm,
                         Expanded(child: Text(h, style: const TextStyle(fontSize: 11))),
                       ],
                     ),
                   )),
-              AppSpacingTokens.vGapMd,
+              RightPaneDetailViewBindingPanelTokens.vGapMd,
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -362,7 +360,7 @@ class _RightPaneDetailViewBindingPanelState
                   icon: const Icon(Icons.shopping_cart_outlined, size: 16),
                   label: const Text('Book Package Session'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColorPalette.brandPrimary,
+                    backgroundColor: RightPaneDetailViewBindingPanelTokens.brandPrimary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -380,10 +378,10 @@ class _RightPaneDetailViewBindingPanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: RightPaneDetailViewBindingPanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: RightPaneDetailViewBindingPanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -392,10 +390,10 @@ class _RightPaneDetailViewBindingPanelState
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: AppColorPalette.brandPrimary,
+                color: RightPaneDetailViewBindingPanelTokens.brandPrimary,
               ),
             ),
-            AppSpacingTokens.vGapSm,
+            RightPaneDetailViewBindingPanelTokens.vGapSm,
             ...telemetry.entries.map((e) {
               final val = e.value.toString();
               return Padding(
@@ -432,4 +430,133 @@ class _RightPaneDetailViewBindingPanelState
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class RightPaneDetailViewBindingPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color lightPrimary = Color(0xFF6750A4);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFEADDFF);
+  static const Color lightOnPrimaryContainer = Color(0xFF21005D);
+
+  static const Color lightSecondary = Color(0xFF625B71);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightSecondaryContainer = Color(0xFFE8DEF8);
+  static const Color lightOnSecondaryContainer = Color(0xFF1D192B);
+
+  static const Color lightTertiary = Color(0xFF7D5260);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
+  static const Color lightOnTertiaryContainer = Color(0xFF31111D);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+  static const Color lightErrorContainer = Color(0xFFF9DEDC);
+  static const Color lightOnErrorContainer = Color(0xFF410E0B);
+
+  static const Color lightBackground = Color(0xFFFEF7FF);
+  static const Color lightOnBackground = Color(0xFF1D1B20);
+  static const Color lightSurface = Color(0xFFFEF7FF);
+  static const Color lightOnSurface = Color(0xFF1D1B20);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOnSurfaceVariant = Color(0xFF49454F);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: RightPaneDetailViewBindingPanel(),
+          ),
+        ),
+      ),
+    ),
+  );
 }

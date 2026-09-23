@@ -25,8 +25,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Data record holding 49-column metadata and ADFA specification parameters.
 class MD3StrictBooleanSwitchRecord {
@@ -316,7 +314,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('CAST SUCCESS: Raw input "$testVal" successfully cast to boolean: $result'),
-          backgroundColor: AppColorPalette.success,
+          backgroundColor: Md3StrictBooleanSwitchPanelTokens.success,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -326,7 +324,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('POKA-YOKE REJECT: Raw input "$testVal" is non-boolean! Quarantined to q_dead_letter_queue (ERR_INVALID_BOOLEAN_STATE).'),
-          backgroundColor: AppColorPalette.error,
+          backgroundColor: Md3StrictBooleanSwitchPanelTokens.error,
           duration: const Duration(seconds: 3),
         ),
       );
@@ -344,8 +342,8 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? Md3StrictBooleanSwitchPanelTokens.paddingSm
+            : (isExpanded ? Md3StrictBooleanSwitchPanelTokens.paddingLg : Md3StrictBooleanSwitchPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -354,11 +352,11 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
             children: [
               // Header Card
               _buildHeaderCard(context, colorScheme, theme, r, isCompact: isCompact, isExpanded: isExpanded),
-              AppSpacingTokens.vGapMd,
+              Md3StrictBooleanSwitchPanelTokens.vGapMd,
 
               // Navigation Segment Bar
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              Md3StrictBooleanSwitchPanelTokens.vGapMd,
 
               // Active Tab Content
               if (_activeTab == 'switches') ...[
@@ -368,7 +366,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r, isExpanded: isExpanded),
               ],
-              AppSpacingTokens.vGapLg,
+              Md3StrictBooleanSwitchPanelTokens.vGapLg,
 
               // Lineage Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -388,7 +386,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
     required bool isExpanded,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? Md3StrictBooleanSwitchPanelTokens.paddingSm : Md3StrictBooleanSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -423,18 +421,18 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.brandPrimary.withValues(alpha: 0.1),
+                      color: Md3StrictBooleanSwitchPanelTokens.brandPrimary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.brandPrimary.withValues(alpha: 0.3)),
+                      border: Border.all(color: Md3StrictBooleanSwitchPanelTokens.brandPrimary.withValues(alpha: 0.3)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.toggle_on, size: 14, color: AppColorPalette.brandPrimary),
+                        Icon(Icons.toggle_on, size: 14, color: Md3StrictBooleanSwitchPanelTokens.brandPrimary),
                         SizedBox(width: 4),
                         Text(
                           'STRICT BOOLEAN CAST',
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Md3StrictBooleanSwitchPanelTokens.brandPrimary),
                         ),
                       ],
                     ),
@@ -449,12 +447,12 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          Md3StrictBooleanSwitchPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          AppSpacingTokens.vGapXs,
+          Md3StrictBooleanSwitchPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -470,9 +468,9 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
       child: Row(
         children: [
           _buildSegmentButton('switches', 'MD3 Switch Components', Icons.toggle_on_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          Md3StrictBooleanSwitchPanelTokens.hGapSm,
           _buildSegmentButton('harness', 'Strict Boolean Test Harness & Audit Log', Icons.science_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          Md3StrictBooleanSwitchPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -505,7 +503,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
     required bool isCompact,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? Md3StrictBooleanSwitchPanelTokens.paddingSm : Md3StrictBooleanSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -516,12 +514,12 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
         children: [
           Text('MD3 Switch Group — Strict Binary State Output',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          Md3StrictBooleanSwitchPanelTokens.vGapSm,
           Text(
             'Each switch returns an immutable, strongly-typed boolean value (true or false). State is dispatched to q_navigation_controller_queue.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          Md3StrictBooleanSwitchPanelTokens.vGapMd,
 
           _buildSwitchCard(
             context,
@@ -593,7 +591,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
               color: value ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
             ),
           ),
-          AppSpacingTokens.hGapMd,
+          Md3StrictBooleanSwitchPanelTokens.hGapMd,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -605,7 +603,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: (value ? AppColorPalette.success : colorScheme.onSurfaceVariant).withValues(alpha: 0.1),
+                        color: (value ? Md3StrictBooleanSwitchPanelTokens.success : colorScheme.onSurfaceVariant).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
@@ -613,7 +611,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
                         style: TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.bold,
-                          color: value ? AppColorPalette.success : colorScheme.onSurfaceVariant,
+                          color: value ? Md3StrictBooleanSwitchPanelTokens.success : colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -627,14 +625,14 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
               ],
             ),
           ),
-          AppSpacingTokens.hGapSm,
+          Md3StrictBooleanSwitchPanelTokens.hGapSm,
           SizedBox(
             width: 48,
             height: 48,
             child: Center(
               child: Switch.adaptive(
                 value: value,
-                activeThumbColor: AppColorPalette.brandPrimary,
+                activeThumbColor: Md3StrictBooleanSwitchPanelTokens.brandPrimary,
                 onChanged: onChanged,
               ),
             ),
@@ -646,7 +644,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
 
   Widget _buildStrictBooleanHarness(ColorScheme colorScheme, ThemeData theme) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: Md3StrictBooleanSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -657,12 +655,12 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
         children: [
           Text('Strict Boolean Validation & Cast Test Harness',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          Md3StrictBooleanSwitchPanelTokens.vGapSm,
           Text(
             'Test the validator against valid and malformed payload values to verify Poka-Yoke DLQ isolation.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          Md3StrictBooleanSwitchPanelTokens.vGapMd,
 
           // Test Value Buttons
           Wrap(
@@ -699,8 +697,8 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
                   onPressed: () => _testMalformedInput('maybe'),
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(48, 48),
-                    backgroundColor: AppColorPalette.error.withValues(alpha: 0.1),
-                    foregroundColor: AppColorPalette.error,
+                    backgroundColor: Md3StrictBooleanSwitchPanelTokens.error.withValues(alpha: 0.1),
+                    foregroundColor: Md3StrictBooleanSwitchPanelTokens.error,
                   ),
                   child: const Text('Test "maybe" (invalid)'),
                 ),
@@ -711,19 +709,19 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
                   onPressed: () => _testMalformedInput(null),
                   style: FilledButton.styleFrom(
                     minimumSize: const Size(48, 48),
-                    backgroundColor: AppColorPalette.error.withValues(alpha: 0.1),
-                    foregroundColor: AppColorPalette.error,
+                    backgroundColor: Md3StrictBooleanSwitchPanelTokens.error.withValues(alpha: 0.1),
+                    foregroundColor: Md3StrictBooleanSwitchPanelTokens.error,
                   ),
                   child: const Text('Test null (invalid)'),
                 ),
               ),
             ],
           ),
-          AppSpacingTokens.vGapMd,
+          Md3StrictBooleanSwitchPanelTokens.vGapMd,
 
           Text('Recent Switch Evaluation Audit Ledger (tbl_md3_switch_audit_log)',
               style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          Md3StrictBooleanSwitchPanelTokens.vGapSm,
 
           // Audit Table
           Container(
@@ -744,12 +742,12 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
                   leading: Icon(
                     log.isSuccess ? Icons.check_circle : Icons.error,
                     size: 18,
-                    color: log.isSuccess ? AppColorPalette.success : AppColorPalette.error,
+                    color: log.isSuccess ? Md3StrictBooleanSwitchPanelTokens.success : Md3StrictBooleanSwitchPanelTokens.error,
                   ),
                   title: Text('${log.componentId} -> Parsed: ${log.parsedBoolean} (Raw: "${log.rawInput}")',
                       style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                   subtitle: Text('Status: ${log.isSuccess ? "PERSISTED TO AUDIT" : "QUARANTINED TO DLQ"} (${log.errorCode})',
-                      style: TextStyle(fontSize: 10, color: log.isSuccess ? AppColorPalette.success : AppColorPalette.error)),
+                      style: TextStyle(fontSize: 10, color: log.isSuccess ? Md3StrictBooleanSwitchPanelTokens.success : Md3StrictBooleanSwitchPanelTokens.error)),
                   trailing: Text(log.timestamp, style: const TextStyle(fontSize: 10)),
                 );
               },
@@ -767,7 +765,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
     required bool isExpanded,
   }) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: Md3StrictBooleanSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -778,7 +776,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          Md3StrictBooleanSwitchPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -793,19 +791,19 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                Md3StrictBooleanSwitchPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Coverage', '${r.functionalCoveragePercent.toStringAsFixed(0)}% (100%)', AppColorPalette.success),
+                    _buildMetricTile('Coverage', '${r.functionalCoveragePercent.toStringAsFixed(0)}% (100%)', Md3StrictBooleanSwitchPanelTokens.success),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          Md3StrictBooleanSwitchPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -871,7 +869,7 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, MD3StrictBooleanSwitchRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: Md3StrictBooleanSwitchPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10),
@@ -891,9 +889,120 @@ class _MD3StrictBooleanSwitchPanelState extends State<MD3StrictBooleanSwitchPane
               ],
             ),
           ),
-          const Icon(Icons.security, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.security, size: 16, color: Md3StrictBooleanSwitchPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class Md3StrictBooleanSwitchPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: MD3StrictBooleanSwitchPanel(
+        record: MD3StrictBooleanSwitchRecord(
+          actionTimestamp: '2026-09-02 10:14:00 UTC',
+          userSessionId: 'USR-STRICTSW-32060',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

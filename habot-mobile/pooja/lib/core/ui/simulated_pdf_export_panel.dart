@@ -40,8 +40,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-007-A13 Record Data Model.
 class SimulatedPdfExportRecord {
@@ -248,7 +246,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('SIMULATED PDF EXPORT VERIFIED: 100% QA pass rate with 0 defects at $nowIso (${elapsedMs}ms).'),
-          backgroundColor: AppColorPalette.success,
+          backgroundColor: SimulatedPdfExportPanelTokens.success,
           duration: const Duration(seconds: 3),
         ),
       );
@@ -266,8 +264,8 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? SimulatedPdfExportPanelTokens.xs : (isExpanded ? SimulatedPdfExportPanelTokens.md : SimulatedPdfExportPanelTokens.sm),
+          vertical: SimulatedPdfExportPanelTokens.xs,
         );
 
         return Card(
@@ -276,7 +274,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? SimulatedPdfExportPanelTokens.sm : (isExpanded ? SimulatedPdfExportPanelTokens.lg : SimulatedPdfExportPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,7 +305,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                SimulatedPdfExportPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Stylesheet Save & Simulated PDF Export Verification',
@@ -318,22 +316,22 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: SimulatedPdfExportPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: SimulatedPdfExportPanelTokens.success),
                   ),
                   child: Text(
                     'GATE: ${record.completionStatus.toUpperCase()} (100%)',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: SimulatedPdfExportPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            SimulatedPdfExportPanelTokens.vGapMd,
 
             // Overview Details Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SimulatedPdfExportPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -344,7 +342,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                   Row(
                     children: [
                       Icon(Icons.checklist_rtl_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      SimulatedPdfExportPanelTokens.hGapSm,
                       Text(
                         'Assigned Team: ${record.assignedGroupTeam} | Decision Group: ${record.decisionGroup}',
                         style: theme.textTheme.labelMedium?.copyWith(
@@ -359,12 +357,12 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SimulatedPdfExportPanelTokens.vGapXs,
                   Text(
                     'Setup Step: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SimulatedPdfExportPanelTokens.vGapXs,
                   Text(
                     'UX Translation: ${record.uxTranslation}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -372,7 +370,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SimulatedPdfExportPanelTokens.vGapLg,
 
             // Device Viewport & Density Controls
             SingleChildScrollView(
@@ -389,7 +387,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                       });
                     },
                   ),
-                  AppSpacingTokens.hGapSm,
+                  SimulatedPdfExportPanelTokens.hGapSm,
                   FilterChip(
                     avatar: Icon(_includeHighDensityBranch ? Icons.high_quality : Icons.sd_card_outlined, size: 16),
                     label: Text(_includeHighDensityBranch ? 'High-Density Retina Isolation (Active)' : 'Standard Density'),
@@ -403,11 +401,11 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SimulatedPdfExportPanelTokens.vGapLg,
 
             // Main Verification Panel & Side-by-Side Test Shell
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SimulatedPdfExportPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
@@ -430,19 +428,19 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColorPalette.brandPrimary.withValues(alpha: 0.10),
+                            color: SimulatedPdfExportPanelTokens.brandPrimary.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             'FORMAT: ${record.exportFormat}',
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SimulatedPdfExportPanelTokens.brandPrimary),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapMd,
+                  SimulatedPdfExportPanelTokens.vGapMd,
 
                   if (_isMobileView)
                     // Mobile View: Large centered action button
@@ -450,7 +448,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                       children: [
                         Container(
                           width: double.infinity,
-                          padding: AppSpacingTokens.paddingMd,
+                          padding: SimulatedPdfExportPanelTokens.paddingMd,
                           decoration: BoxDecoration(
                             color: colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
@@ -458,19 +456,19 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                           ),
                           child: Column(
                             children: [
-                              const Icon(Icons.picture_as_pdf, size: 36, color: AppColorPalette.brandPrimary),
-                              AppSpacingTokens.vGapSm,
+                              const Icon(Icons.picture_as_pdf, size: 36, color: SimulatedPdfExportPanelTokens.brandPrimary),
+                              SimulatedPdfExportPanelTokens.vGapSm,
                               Text(
                                 'Mobile Client PDF Generator & Check',
                                 style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                               ),
-                              AppSpacingTokens.vGapXs,
+                              SimulatedPdfExportPanelTokens.vGapXs,
                               Text(
                                 'Executes simulated client-side PDF export checks on tablet/mobile screens before saving.',
                                 style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                                 textAlign: TextAlign.center,
                               ),
-                              AppSpacingTokens.vGapMd,
+                              SimulatedPdfExportPanelTokens.vGapMd,
                               SizedBox(
                                 width: double.infinity,
                                 height: 48,
@@ -481,7 +479,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                                       : const Icon(Icons.download_done_outlined),
                                   label: Text(_isExecutingExportCheck ? 'Verifying Export...' : 'Run Simulated PDF Export Check'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColorPalette.brandPrimary,
+                                    backgroundColor: SimulatedPdfExportPanelTokens.brandPrimary,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   ),
@@ -501,7 +499,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                         Expanded(
                           flex: 6,
                           child: Container(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: SimulatedPdfExportPanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
@@ -511,14 +509,14 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Simulated Export QA Checks (5/5)', style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                                AppSpacingTokens.vGapSm,
+                                SimulatedPdfExportPanelTokens.vGapSm,
                                 ..._qaVerificationChecks.map((item) {
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 4),
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.check_circle, color: AppColorPalette.success, size: 16),
-                                        AppSpacingTokens.hGapSm,
+                                        const Icon(Icons.check_circle, color: SimulatedPdfExportPanelTokens.success, size: 16),
+                                        SimulatedPdfExportPanelTokens.hGapSm,
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,16 +529,16 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                           decoration: BoxDecoration(
-                                            color: AppColorPalette.success.withValues(alpha: 0.10),
+                                            color: SimulatedPdfExportPanelTokens.success.withValues(alpha: 0.10),
                                             borderRadius: BorderRadius.circular(4),
                                           ),
-                                          child: Text(item['status']!, style: const TextStyle(color: AppColorPalette.success, fontSize: 9, fontWeight: FontWeight.bold)),
+                                          child: Text(item['status']!, style: const TextStyle(color: SimulatedPdfExportPanelTokens.success, fontSize: 9, fontWeight: FontWeight.bold)),
                                         ),
                                       ],
                                     ),
                                   );
                                 }),
-                                AppSpacingTokens.vGapMd,
+                                SimulatedPdfExportPanelTokens.vGapMd,
                                 SizedBox(
                                   width: double.infinity,
                                   height: 44,
@@ -549,7 +547,7 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                                     icon: const Icon(Icons.refresh),
                                     label: const Text('Re-execute PDF Simulation Checks'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColorPalette.brandPrimary,
+                                      backgroundColor: SimulatedPdfExportPanelTokens.brandPrimary,
                                       foregroundColor: Colors.white,
                                     ),
                                   ),
@@ -558,13 +556,13 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                             ),
                           ),
                         ),
-                        AppSpacingTokens.hGapMd,
+                        SimulatedPdfExportPanelTokens.hGapMd,
 
                         // Right File Metadata & Export Payload Preview
                         Expanded(
                           flex: 5,
                           child: Container(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: SimulatedPdfExportPanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
@@ -583,14 +581,14 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    AppSpacingTokens.hGapXs,
+                                    SimulatedPdfExportPanelTokens.hGapXs,
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: AppColorPalette.success.withValues(alpha: 0.12),
+                                        color: SimulatedPdfExportPanelTokens.success.withValues(alpha: 0.12),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: Text(record.exportStatus, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                                      child: Text(record.exportStatus, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: SimulatedPdfExportPanelTokens.success)),
                                     ),
                                   ],
                                 ),
@@ -600,21 +598,21 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                                 _buildMetadataRow('Storage Path', record.exportPath),
                                 _buildMetadataRow('Timestamp', record.exportTimestamp),
                                 _buildMetadataRow('QA Pass Rate', '${(_qaPassRate * 100).toInt()}% with 0 defects'),
-                                AppSpacingTokens.vGapSm,
+                                SimulatedPdfExportPanelTokens.vGapSm,
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: AppColorPalette.successContainer.withValues(alpha: 0.27),
+                                    color: SimulatedPdfExportPanelTokens.successContainer.withValues(alpha: 0.27),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: const Row(
                                     children: [
-                                      Icon(Icons.verified_user_outlined, size: 16, color: AppColorPalette.success),
+                                      Icon(Icons.verified_user_outlined, size: 16, color: SimulatedPdfExportPanelTokens.success),
                                       SizedBox(width: 6),
                                       Expanded(
                                         child: Text(
                                           'Release Gate Passed: All widgets aligned perfectly without clipping.',
-                                          style: TextStyle(fontSize: 10, color: AppColorPalette.onSuccessContainer, fontWeight: FontWeight.bold),
+                                          style: TextStyle(fontSize: 10, color: SimulatedPdfExportPanelTokens.onSuccessContainer, fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                     ],
@@ -629,11 +627,11 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SimulatedPdfExportPanelTokens.vGapLg,
 
             // Telemetry & BigQuery Verification Log
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SimulatedPdfExportPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -652,35 +650,35 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      AppSpacingTokens.hGapXs,
+                      SimulatedPdfExportPanelTokens.hGapXs,
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: SimulatedPdfExportPanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('TELEMETRY VERIFIED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('TELEMETRY VERIFIED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SimulatedPdfExportPanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SimulatedPdfExportPanelTokens.vGapXs,
                   Text(
                     'Last Simulation Check: $_lastVerificationTimestamp',
                     style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  SimulatedPdfExportPanelTokens.vGapXs,
                   Text(
                     'Execution Latency: ${_verificationDurationMs}ms | Quality: ${_simulatedChecksPassed ? "OPTIMAL (0 DEFECTS)" : "DEFECT DETECTED"}',
-                    style: theme.textTheme.bodySmall?.copyWith(color: AppColorPalette.success),
+                    style: theme.textTheme.bodySmall?.copyWith(color: SimulatedPdfExportPanelTokens.success),
                   ),
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            SimulatedPdfExportPanelTokens.vGapLg,
 
             // Audit Gate Metrics Grid
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: SimulatedPdfExportPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -693,13 +691,13 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  SimulatedPdfExportPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Release Gate', '100% PASS', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, SimulatedPdfExportPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, SimulatedPdfExportPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, SimulatedPdfExportPanelTokens.success),
+                      _buildMetricTile(context, 'Release Gate', '100% PASS', SimulatedPdfExportPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -746,4 +744,115 @@ class _SimulatedPdfExportPanelState extends State<SimulatedPdfExportPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class SimulatedPdfExportPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SimulatedPdfExportPanel(
+        record: SimulatedPdfExportRecord(
+          actionTimestamp: '2026-08-29 08:35:00 UTC',
+          userSessionId: 'USR-PDF-16540',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

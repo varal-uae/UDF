@@ -23,8 +23,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ACRAE-025 Specification Record Data Model.
 class VpcServerlessIngressRecord {
@@ -144,9 +142,9 @@ class VpcServerlessIngressRecord {
 }
 
 enum IngressSecurityState {
-  isolated('Security Perimeter Enforced (Least Privilege IAM Active)', AppColorPalette.success, Icons.security),
-  simulatedBreach('Container Breach Isolated (Database Direct Access Blocked)', AppColorPalette.warning, Icons.shield_outlined),
-  rollbackDaemon('Nightly Daemon Rollback Triggered (Wildcard IAM Revoked)', AppColorPalette.info, Icons.autorenew);
+  isolated('Security Perimeter Enforced (Least Privilege IAM Active)', VpcServerlessIngressPanelTokens.success, Icons.security),
+  simulatedBreach('Container Breach Isolated (Database Direct Access Blocked)', VpcServerlessIngressPanelTokens.warning, Icons.shield_outlined),
+  rollbackDaemon('Nightly Daemon Rollback Triggered (Wildcard IAM Revoked)', VpcServerlessIngressPanelTokens.info, Icons.autorenew);
 
   final String label;
   final Color color;
@@ -211,9 +209,9 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
         return Card(
           elevation: 1,
           clipBehavior: Clip.antiAlias,
-          margin: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.sm, vertical: AppSpacingTokens.xs),
+          margin: const EdgeInsets.symmetric(horizontal: VpcServerlessIngressPanelTokens.sm, vertical: VpcServerlessIngressPanelTokens.xs),
           child: Padding(
-            padding: AppSpacingTokens.paddingMd,
+            padding: VpcServerlessIngressPanelTokens.paddingMd,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -243,7 +241,7 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    VpcServerlessIngressPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'VPC Serverless Ingress Connector Subnet Sizing',
@@ -254,7 +252,7 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: record.meetsOptimalTarget ? AppColorPalette.success.withValues(alpha: 0.15) : AppColorPalette.lightError.withValues(alpha: 0.15),
+                        color: record.meetsOptimalTarget ? VpcServerlessIngressPanelTokens.success.withValues(alpha: 0.15) : VpcServerlessIngressPanelTokens.lightError.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -262,25 +260,25 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: record.meetsOptimalTarget ? AppColorPalette.success : AppColorPalette.lightError,
+                          color: record.meetsOptimalTarget ? VpcServerlessIngressPanelTokens.success : VpcServerlessIngressPanelTokens.lightError,
                         ),
                       ),
                     ),
                   ],
                 ),
 
-                AppSpacingTokens.vGapSm,
+                VpcServerlessIngressPanelTokens.vGapSm,
                 Text(
                   record.setupAction,
                   style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
 
-                AppSpacingTokens.vGapMd,
+                VpcServerlessIngressPanelTokens.vGapMd,
 
                 // Security Perimeter Status Card
                 Container(
                   width: double.infinity,
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: VpcServerlessIngressPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: _currentState.color.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(8),
@@ -289,7 +287,7 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                   child: Row(
                     children: [
                       Icon(_currentState.icon, color: _currentState.color, size: 28),
-                      AppSpacingTokens.hGapMd,
+                      VpcServerlessIngressPanelTokens.hGapMd,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +307,7 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                   ),
                 ),
 
-                AppSpacingTokens.vGapMd,
+                VpcServerlessIngressPanelTokens.vGapMd,
 
                 // Metrics Row (Responsive)
                 if (isCompact)
@@ -317,15 +315,15 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                     children: [
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Measured Latency', '${_simulatedLatencyMs.toStringAsFixed(0)} ms', AppColorPalette.brandPrimary),
-                          _buildMetricTile(context, 'Optimal Target', '<= ${record.optimalTarget.toInt()} ms', AppColorPalette.success),
+                          _buildMetricTile(context, 'Measured Latency', '${_simulatedLatencyMs.toStringAsFixed(0)} ms', VpcServerlessIngressPanelTokens.brandPrimary),
+                          _buildMetricTile(context, 'Optimal Target', '<= ${record.optimalTarget.toInt()} ms', VpcServerlessIngressPanelTokens.success),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      VpcServerlessIngressPanelTokens.vGapXs,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Poka-Yoke IaC', _isIaCLocked ? 'LOCKED' : 'DRIFT', AppColorPalette.info),
-                          _buildMetricTile(context, 'Nightly Daemon', _isPipelineChecked ? 'ACTIVE' : 'IDLE', AppColorPalette.success),
+                          _buildMetricTile(context, 'Poka-Yoke IaC', _isIaCLocked ? 'LOCKED' : 'DRIFT', VpcServerlessIngressPanelTokens.info),
+                          _buildMetricTile(context, 'Nightly Daemon', _isPipelineChecked ? 'ACTIVE' : 'IDLE', VpcServerlessIngressPanelTokens.success),
                         ],
                       ),
                     ],
@@ -333,14 +331,14 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                 else
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Measured Latency', '${_simulatedLatencyMs.toStringAsFixed(0)} ms', AppColorPalette.brandPrimary),
-                      _buildMetricTile(context, 'Optimal Target', '<= ${record.optimalTarget.toInt()} ms', AppColorPalette.success),
-                      _buildMetricTile(context, 'Poka-Yoke IaC', _isIaCLocked ? 'LOCKED' : 'DRIFT', AppColorPalette.info),
-                      _buildMetricTile(context, 'Nightly Daemon', _isPipelineChecked ? 'ACTIVE' : 'IDLE', AppColorPalette.success),
+                      _buildMetricTile(context, 'Measured Latency', '${_simulatedLatencyMs.toStringAsFixed(0)} ms', VpcServerlessIngressPanelTokens.brandPrimary),
+                      _buildMetricTile(context, 'Optimal Target', '<= ${record.optimalTarget.toInt()} ms', VpcServerlessIngressPanelTokens.success),
+                      _buildMetricTile(context, 'Poka-Yoke IaC', _isIaCLocked ? 'LOCKED' : 'DRIFT', VpcServerlessIngressPanelTokens.info),
+                      _buildMetricTile(context, 'Nightly Daemon', _isPipelineChecked ? 'ACTIVE' : 'IDLE', VpcServerlessIngressPanelTokens.success),
                     ],
                   ),
 
-                AppSpacingTokens.vGapMd,
+                VpcServerlessIngressPanelTokens.vGapMd,
 
                 // Interactive Buttons (>= 48x48dp touch targets)
                 Wrap(
@@ -350,8 +348,8 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(48, 48),
-                        backgroundColor: AppColorPalette.warning.withValues(alpha: 0.15),
-                        foregroundColor: AppColorPalette.warning,
+                        backgroundColor: VpcServerlessIngressPanelTokens.warning.withValues(alpha: 0.15),
+                        foregroundColor: VpcServerlessIngressPanelTokens.warning,
                       ),
                       icon: const Icon(Icons.security_update_warning_outlined, size: 18),
                       label: const Text('Simulate Breach Attempt'),
@@ -360,8 +358,8 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(48, 48),
-                        backgroundColor: AppColorPalette.info.withValues(alpha: 0.15),
-                        foregroundColor: AppColorPalette.info,
+                        backgroundColor: VpcServerlessIngressPanelTokens.info.withValues(alpha: 0.15),
+                        foregroundColor: VpcServerlessIngressPanelTokens.info,
                       ),
                       icon: const Icon(Icons.restore_page_outlined, size: 18),
                       label: const Text('Trigger Daemon Rollback'),
@@ -379,9 +377,9 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
                 ),
 
                 if (isExpanded) ...[
-                  AppSpacingTokens.vGapMd,
+                  VpcServerlessIngressPanelTokens.vGapMd,
                   Container(
-                    padding: AppSpacingTokens.paddingSm,
+                    padding: VpcServerlessIngressPanelTokens.paddingSm,
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
@@ -423,4 +421,115 @@ class _VpcServerlessIngressPanelState extends State<VpcServerlessIngressPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class VpcServerlessIngressPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: VpcServerlessIngressPanel(
+        record: VpcServerlessIngressRecord(
+          actionTimestamp: '2026-08-24 15:08:00 UTC',
+          userSessionId: 'USR-SEC-4219',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

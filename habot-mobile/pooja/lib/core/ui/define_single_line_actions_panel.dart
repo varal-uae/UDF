@@ -18,8 +18,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Step BLGTA-001-12: Single-Line Action Record Data Model.
 class SingleLineActionRecord {
@@ -261,8 +259,8 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? DefineSingleLineActionsPanelTokens.paddingSm
+            : (isExpanded ? DefineSingleLineActionsPanelTokens.paddingLg : DefineSingleLineActionsPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -275,7 +273,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 color: Theme.of(context).colorScheme.surface,
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? DefineSingleLineActionsPanelTokens.paddingMd : DefineSingleLineActionsPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -293,7 +291,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                               size: 28,
                             ),
                           ),
-                          AppSpacingTokens.hGapMd,
+                          DefineSingleLineActionsPanelTokens.hGapMd,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,7 +302,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                                         fontWeight: FontWeight.bold,
                                       ),
                                 ),
-                                AppSpacingTokens.vGapXs,
+                                DefineSingleLineActionsPanelTokens.vGapXs,
                                 Text(
                                   isExpanded
                                       ? 'Code: BLGTA-001-12 | Level 12 | Phase: SETUP-12 | Standard: ${widget.record.qualityStandard}'
@@ -334,7 +332,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapMd,
+                      DefineSingleLineActionsPanelTokens.vGapMd,
                       Text(
                         'Style the mobile execution controls using Material 3 Filled Buttons for high emphasis.',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -346,14 +344,14 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                 ),
               ),
 
-              AppSpacingTokens.vGapMd,
+              DefineSingleLineActionsPanelTokens.vGapMd,
 
               // Main Form Card with M3 Outlined TextFields & Filled Buttons
               Card(
                 elevation: 1,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? DefineSingleLineActionsPanelTokens.paddingMd : DefineSingleLineActionsPanelTokens.paddingLg,
                   child: Form(
                     key: _formKey,
                     onChanged: () => setState(() {}),
@@ -364,17 +362,17 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           'Welcoming Mobile Action Execution Form',
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: AppColorPalette.brandPrimary,
+                                color: DefineSingleLineActionsPanelTokens.brandPrimary,
                               ),
                         ),
-                        AppSpacingTokens.vGapSm,
+                        DefineSingleLineActionsPanelTokens.vGapSm,
                         Text(
                           'Clear initial input form with Outlined TextFields, autofocus on first input, logical tab order, and keyboard optimization.',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.grey.shade700,
                               ),
                         ),
-                        AppSpacingTokens.vGapLg,
+                        DefineSingleLineActionsPanelTokens.vGapLg,
 
                         // Field 1: Action Name (Autofocus, Text)
                         TextFormField(
@@ -403,7 +401,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           },
                         ),
 
-                        AppSpacingTokens.vGapMd,
+                        DefineSingleLineActionsPanelTokens.vGapMd,
 
                         // Field 2: Operator Email (Email Keyboard)
                         TextFormField(
@@ -431,7 +429,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           },
                         ),
 
-                        AppSpacingTokens.vGapMd,
+                        DefineSingleLineActionsPanelTokens.vGapMd,
 
                         // Field 3: Mobile Phone (Phone Keyboard)
                         TextFormField(
@@ -459,7 +457,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           },
                         ),
 
-                        AppSpacingTokens.vGapMd,
+                        DefineSingleLineActionsPanelTokens.vGapMd,
 
                         // Field 4: Execution Notes (Text Keyboard)
                         TextFormField(
@@ -476,11 +474,11 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           ),
                         ),
 
-                        AppSpacingTokens.vGapLg,
+                        DefineSingleLineActionsPanelTokens.vGapLg,
 
                         // Poka-Yoke Status Banner
                         Container(
-                          padding: AppSpacingTokens.paddingMd,
+                          padding: DefineSingleLineActionsPanelTokens.paddingMd,
                           decoration: BoxDecoration(
                             color: isFormValid ? Colors.green.shade50 : Colors.amber.shade50,
                             borderRadius: BorderRadius.circular(10),
@@ -494,7 +492,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                                 isFormValid ? Icons.check_circle_outline : Icons.warning_amber_rounded,
                                 color: isFormValid ? Colors.green.shade800 : Colors.amber.shade900,
                               ),
-                              AppSpacingTokens.hGapMd,
+                              DefineSingleLineActionsPanelTokens.hGapMd,
                               Expanded(
                                 child: Text(
                                   validationMessage,
@@ -509,7 +507,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           ),
                         ),
 
-                        AppSpacingTokens.vGapLg,
+                        DefineSingleLineActionsPanelTokens.vGapLg,
 
                         // Material 3 Execution Controls (High Emphasis Filled Buttons)
                         Text(
@@ -519,7 +517,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                                 color: Colors.grey.shade800,
                               ),
                         ),
-                        AppSpacingTokens.vGapMd,
+                        DefineSingleLineActionsPanelTokens.vGapMd,
 
                         // Button Bar
                         Wrap(
@@ -589,9 +587,9 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                         ),
 
                         if (_executionCount > 0) ...[
-                          AppSpacingTokens.vGapMd,
+                          DefineSingleLineActionsPanelTokens.vGapMd,
                           Container(
-                            padding: AppSpacingTokens.paddingSm,
+                            padding: DefineSingleLineActionsPanelTokens.paddingSm,
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(8),
@@ -617,14 +615,14 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                 ),
               ),
 
-              AppSpacingTokens.vGapMd,
+              DefineSingleLineActionsPanelTokens.vGapMd,
 
               // Process Execution Quality Metrics Card
               Card(
                 elevation: 1,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? DefineSingleLineActionsPanelTokens.paddingMd : DefineSingleLineActionsPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -647,7 +645,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      DefineSingleLineActionsPanelTokens.vGapSm,
                       ClipRRect(
                         borderRadius: BorderRadius.circular(6),
                         child: LinearProgressIndicator(
@@ -657,7 +655,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           valueColor: AlwaysStoppedAnimation<Color>(qualityGrade.color),
                         ),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      DefineSingleLineActionsPanelTokens.vGapSm,
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -666,11 +664,11 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                           Text('Ceiling: 100%', style: TextStyle(fontSize: 11, color: Colors.grey)),
                         ],
                       ),
-                      AppSpacingTokens.vGapMd,
+                      DefineSingleLineActionsPanelTokens.vGapMd,
                       Row(
                         children: [
                           const Icon(Icons.verified, size: 16, color: Colors.blue),
-                          AppSpacingTokens.hGapXs,
+                          DefineSingleLineActionsPanelTokens.hGapXs,
                           Expanded(
                             child: Text(
                               'Reference Standard: ${widget.record.qualityStandard}',
@@ -684,14 +682,14 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                 ),
               ),
 
-              AppSpacingTokens.vGapMd,
+              DefineSingleLineActionsPanelTokens.vGapMd,
 
               // Technical Specification & AL-AQ Analysis Table
               Card(
                 elevation: 1,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? DefineSingleLineActionsPanelTokens.paddingMd : DefineSingleLineActionsPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -701,7 +699,7 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
                               fontWeight: FontWeight.bold,
                             ),
                       ),
-                      AppSpacingTokens.vGapMd,
+                      DefineSingleLineActionsPanelTokens.vGapMd,
                       Table(
                         border: TableBorder.all(color: Colors.grey.shade300, width: 1),
                         columnWidths: isExpanded
@@ -754,4 +752,120 @@ class _DefineSingleLineActionsPanelState extends State<DefineSingleLineActionsPa
       ],
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class DefineSingleLineActionsPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: DefineSingleLineActionsPanel(
+        record: SingleLineActionRecord(
+          mobilePlatform: 'Flutter Android/iOS',
+          osVersion: 'Android 14 / iOS 17',
+          deviceType: 'Mobile Handset',
+          screenDimensions: '412 x 915 dp',
+          mobileConfiguration: 'M3 High-Emphasis Filled Buttons Form',
+          actionTimestamp: '2026-09-02 10:45:00 UTC',
+          userSessionId: 'USR-ACTBTN-36150',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

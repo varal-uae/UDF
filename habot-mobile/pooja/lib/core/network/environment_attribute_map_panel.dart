@@ -24,8 +24,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// AEETE-017-07 Record Data Model.
 class EnvironmentAttributeMapRecord {
@@ -142,7 +140,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Environment Attributes Ingested: Screen dimensions and logical density refreshed.'),
-        backgroundColor: AppColorPalette.brandPrimary,
+        backgroundColor: EnvironmentAttributeMapPanelTokens.brandPrimary,
         duration: Duration(seconds: 2),
       ),
     );
@@ -169,11 +167,11 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
           elevation: 1,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacingTokens.xs : AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: isCompact ? EnvironmentAttributeMapPanelTokens.xs : EnvironmentAttributeMapPanelTokens.sm,
+            vertical: EnvironmentAttributeMapPanelTokens.xs,
           ),
           child: Padding(
-            padding: EdgeInsets.all(isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md)),
+            padding: EdgeInsets.all(isCompact ? EnvironmentAttributeMapPanelTokens.sm : (isExpanded ? EnvironmentAttributeMapPanelTokens.lg : EnvironmentAttributeMapPanelTokens.md)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -203,7 +201,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    EnvironmentAttributeMapPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Environment Attribute Map & Density Engine',
@@ -214,22 +212,22 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: EnvironmentAttributeMapPanelTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: EnvironmentAttributeMapPanelTokens.success),
                       ),
                       child: Text(
                         'QUALITY: ${record.completionStatus}',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: EnvironmentAttributeMapPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                EnvironmentAttributeMapPanelTokens.vGapMd,
 
                 // Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: EnvironmentAttributeMapPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -240,7 +238,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                       Row(
                         children: [
                           Icon(Icons.perm_device_information_outlined, color: colorScheme.primary, size: 20),
-                          AppSpacingTokens.hGapSm,
+                          EnvironmentAttributeMapPanelTokens.hGapSm,
                           Text(
                             'Assigned Team: ${record.assignedGroupTeam}',
                             style: theme.textTheme.labelMedium?.copyWith(
@@ -250,7 +248,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      EnvironmentAttributeMapPanelTokens.vGapXs,
                       Text(
                         record.setupAction,
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -258,14 +256,14 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                EnvironmentAttributeMapPanelTokens.vGapLg,
 
                 // Environment Attributes Ingest Grid
                 Text(
                   'Real-Time Ingested Device Environment Attributes',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                EnvironmentAttributeMapPanelTokens.vGapSm,
                 if (isCompact)
                   Column(
                     children: [
@@ -275,7 +273,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                           _buildAttributeTile(context, 'screen_height_pixels', '${screenHeightPixels.toInt()} px', Icons.swap_vert),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      EnvironmentAttributeMapPanelTokens.vGapXs,
                       Row(
                         children: [
                           _buildAttributeTile(context, 'logical_density_factor', '${logicalDensityFactor.toStringAsFixed(2)}x', Icons.density_medium),
@@ -291,11 +289,11 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                       _buildAttributeTile(context, 'logical_density_factor', '${logicalDensityFactor.toStringAsFixed(2)}x', Icons.density_medium),
                     ],
                   ),
-                AppSpacingTokens.vGapLg,
+                EnvironmentAttributeMapPanelTokens.vGapLg,
 
                 // Scalable Relative Coordinate Composition Preview
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: EnvironmentAttributeMapPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -319,7 +317,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      EnvironmentAttributeMapPanelTokens.vGapSm,
                       LayoutBuilder(
                         builder: (ctx, innerConstraints) {
                           final containerWidth = innerConstraints.maxWidth;
@@ -341,9 +339,9 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                                   height: 80,
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: AppColorPalette.brandPrimary.withValues(alpha: 0.12),
+                                    color: EnvironmentAttributeMapPanelTokens.brandPrimary.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(color: AppColorPalette.brandPrimary),
+                                    border: Border.all(color: EnvironmentAttributeMapPanelTokens.brandPrimary),
                                   ),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,7 +351,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                                         'Adaptive Composition',
                                         style: theme.textTheme.labelMedium?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          color: AppColorPalette.brandPrimary,
+                                          color: EnvironmentAttributeMapPanelTokens.brandPrimary,
                                         ),
                                       ),
                                       Text(
@@ -371,11 +369,11 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                EnvironmentAttributeMapPanelTokens.vGapLg,
 
                 // Build Telemetry & CI/CD Pipeline Status
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: EnvironmentAttributeMapPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -394,7 +392,7 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: _isBuildPipelinePassing ? AppColorPalette.success : AppColorPalette.warning,
+                              color: _isBuildPipelinePassing ? EnvironmentAttributeMapPanelTokens.success : EnvironmentAttributeMapPanelTokens.warning,
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -404,12 +402,12 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      EnvironmentAttributeMapPanelTokens.vGapSm,
                       Text('Build Duration: ${record.buildDuration}', style: theme.textTheme.bodySmall),
                       Text('Artifacts Path: ${record.buildArtifactsPath}', style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
-                      AppSpacingTokens.vGapSm,
+                      EnvironmentAttributeMapPanelTokens.vGapSm,
                       Divider(color: colorScheme.outlineVariant, height: 1),
-                      AppSpacingTokens.vGapSm,
+                      EnvironmentAttributeMapPanelTokens.vGapSm,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -426,11 +424,11 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                EnvironmentAttributeMapPanelTokens.vGapLg,
 
                 // Audit Metric Boundary Grid
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: EnvironmentAttributeMapPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -443,13 +441,13 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                         'Audit Metric: ${record.metricName} (ISO 9001:2015 Standard)',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      EnvironmentAttributeMapPanelTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', '>=90%', AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', '>=98%', AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', '100%', AppColorPalette.success),
-                          _buildMetricTile(context, 'Current Score', '${(record.currentQualityScore * 100).toStringAsFixed(1)}%', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', '>=90%', EnvironmentAttributeMapPanelTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', '>=98%', EnvironmentAttributeMapPanelTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', '100%', EnvironmentAttributeMapPanelTokens.success),
+                          _buildMetricTile(context, 'Current Score', '${(record.currentQualityScore * 100).toStringAsFixed(1)}%', EnvironmentAttributeMapPanelTokens.brandPrimary),
                         ],
                       ),
                     ],
@@ -457,10 +455,10 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
                 ),
 
                 if (isExpanded) ...[
-                  AppSpacingTokens.vGapLg,
+                  EnvironmentAttributeMapPanelTokens.vGapLg,
                   Container(
                     width: double.infinity,
-                    padding: AppSpacingTokens.paddingSm,
+                    padding: EnvironmentAttributeMapPanelTokens.paddingSm,
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
@@ -526,4 +524,115 @@ class _EnvironmentAttributeMapPanelState extends State<EnvironmentAttributeMapPa
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class EnvironmentAttributeMapPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: EnvironmentAttributeMapPanel(
+        record: EnvironmentAttributeMapRecord(
+          actionTimestamp: '2026-08-25 10:31:00 UTC',
+          userSessionId: 'USR-VIEWPORT-8720',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

@@ -25,8 +25,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Step CCBPB-011-A06: Interactive Panel
 class BudgetAlertThreshold70Panel extends StatefulWidget {
@@ -114,8 +112,8 @@ class _BudgetAlertThreshold70PanelState
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardPadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? BudgetAlertThreshold70PanelTokens.paddingSm
+            : (isExpanded ? BudgetAlertThreshold70PanelTokens.paddingLg : BudgetAlertThreshold70PanelTokens.paddingMd);
 
         return Card(
           elevation: 2,
@@ -132,13 +130,13 @@ class _BudgetAlertThreshold70PanelState
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.warning.withValues(alpha: 0.12),
+                        color: BudgetAlertThreshold70PanelTokens.warning.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.notifications_active_rounded,
-                          color: AppColorPalette.warning, size: 22),
+                          color: BudgetAlertThreshold70PanelTokens.warning, size: 22),
                     ),
-                    AppSpacingTokens.hGapMd,
+                    BudgetAlertThreshold70PanelTokens.hGapMd,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +145,7 @@ class _BudgetAlertThreshold70PanelState
                             '${widget.globalRefId} / ${widget.atomicStepRefId}',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColorPalette.brandPrimary,
+                              color: BudgetAlertThreshold70PanelTokens.brandPrimary,
                               fontSize: isExpanded ? 16 : 14,
                             ),
                           ),
@@ -165,8 +163,8 @@ class _BudgetAlertThreshold70PanelState
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: isTriggered
-                            ? AppColorPalette.warningContainer
-                            : AppColorPalette.successContainer,
+                            ? BudgetAlertThreshold70PanelTokens.warningContainer
+                            : BudgetAlertThreshold70PanelTokens.successContainer,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -175,26 +173,26 @@ class _BudgetAlertThreshold70PanelState
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                           color: isTriggered
-                              ? AppColorPalette.onWarningContainer
-                              : AppColorPalette.onSuccessContainer,
+                              ? BudgetAlertThreshold70PanelTokens.onWarningContainer
+                              : BudgetAlertThreshold70PanelTokens.onSuccessContainer,
                         ),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold70PanelTokens.vGapMd,
 
                 // Architectural Directive
                 Text(
                   'Threshold Parameter Tier 1 Gate (70% Early Warning Intercept):',
                   style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapXs,
+                BudgetAlertThreshold70PanelTokens.vGapXs,
                 Text(
                   'Sets the initial condition parameter at exactly 70.0% variance to proactively warn FinOps teams before reaching critical budgetary limits.',
                   style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant),
                 ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold70PanelTokens.vGapMd,
 
                 // Spend Simulation Slider
                 Container(
@@ -218,7 +216,7 @@ class _BudgetAlertThreshold70PanelState
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w800,
-                              color: isTriggered ? AppColorPalette.warning : AppColorPalette.success,
+                              color: isTriggered ? BudgetAlertThreshold70PanelTokens.warning : BudgetAlertThreshold70PanelTokens.success,
                             ),
                           ),
                         ],
@@ -229,33 +227,33 @@ class _BudgetAlertThreshold70PanelState
                         max: 84.9,
                         divisions: 35,
                         label: '${_currentSpendingPercentage.toStringAsFixed(1)}%',
-                        activeColor: isTriggered ? AppColorPalette.warning : AppColorPalette.brandPrimary,
+                        activeColor: isTriggered ? BudgetAlertThreshold70PanelTokens.warning : BudgetAlertThreshold70PanelTokens.brandPrimary,
                         onChanged: _updateSpending,
                       ),
                       LinearProgressIndicator(
                         value: _currentSpendingPercentage / 100.0,
                         backgroundColor: Colors.grey.withValues(alpha: 0.2),
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          isTriggered ? AppColorPalette.warning : AppColorPalette.brandPrimary,
+                          isTriggered ? BudgetAlertThreshold70PanelTokens.warning : BudgetAlertThreshold70PanelTokens.brandPrimary,
                         ),
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold70PanelTokens.vGapMd,
 
                 // 70% Alert Banner
                 if (isTriggered)
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.warningContainer.withValues(alpha: 0.6),
+                      color: BudgetAlertThreshold70PanelTokens.warningContainer.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.warning),
+                      border: Border.all(color: BudgetAlertThreshold70PanelTokens.warning),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.info_outline_rounded, color: AppColorPalette.warning, size: 22),
+                        const Icon(Icons.info_outline_rounded, color: BudgetAlertThreshold70PanelTokens.warning, size: 22),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
@@ -266,12 +264,12 @@ class _BudgetAlertThreshold70PanelState
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColorPalette.onWarningContainer,
+                                  color: BudgetAlertThreshold70PanelTokens.onWarningContainer,
                                 ),
                               ),
                               Text(
                                 'Variance: +${thresholdDelta.toStringAsFixed(1)}% above 70% limit. Non-blocking advisory notice.',
-                                style: const TextStyle(fontSize: 10, color: AppColorPalette.onWarningContainer),
+                                style: const TextStyle(fontSize: 10, color: BudgetAlertThreshold70PanelTokens.onWarningContainer),
                               ),
                             ],
                           ),
@@ -285,11 +283,11 @@ class _BudgetAlertThreshold70PanelState
                             ),
                           )
                         else
-                          const Icon(Icons.check, size: 18, color: AppColorPalette.success),
+                          const Icon(Icons.check, size: 18, color: BudgetAlertThreshold70PanelTokens.success),
                       ],
                     ),
                   ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold70PanelTokens.vGapMd,
 
                 // 49-Columns Audit Alignment Container
                 Container(
@@ -333,4 +331,133 @@ class _BudgetAlertThreshold70PanelState
       },
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class BudgetAlertThreshold70PanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color lightPrimary = Color(0xFF6750A4);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFEADDFF);
+  static const Color lightOnPrimaryContainer = Color(0xFF21005D);
+
+  static const Color lightSecondary = Color(0xFF625B71);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightSecondaryContainer = Color(0xFFE8DEF8);
+  static const Color lightOnSecondaryContainer = Color(0xFF1D192B);
+
+  static const Color lightTertiary = Color(0xFF7D5260);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
+  static const Color lightOnTertiaryContainer = Color(0xFF31111D);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+  static const Color lightErrorContainer = Color(0xFFF9DEDC);
+  static const Color lightOnErrorContainer = Color(0xFF410E0B);
+
+  static const Color lightBackground = Color(0xFFFEF7FF);
+  static const Color lightOnBackground = Color(0xFF1D1B20);
+  static const Color lightSurface = Color(0xFFFEF7FF);
+  static const Color lightOnSurface = Color(0xFF1D1B20);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOnSurfaceVariant = Color(0xFF49454F);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: BudgetAlertThreshold70Panel(),
+          ),
+        ),
+      ),
+    ),
+  );
 }

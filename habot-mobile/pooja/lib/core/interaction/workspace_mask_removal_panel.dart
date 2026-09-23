@@ -39,8 +39,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-006-A16 Record Data Model.
 class WorkspaceMaskRemovalRecord {
@@ -268,7 +266,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('CANVAS MASK REMOVED INSTANTLY ($reason) at $nowIso. Latency: ${_maskRemovalLatencyMs}ms.'),
-        backgroundColor: AppColorPalette.success,
+        backgroundColor: WorkspaceMaskRemovalPanelTokens.success,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -307,8 +305,8 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? WorkspaceMaskRemovalPanelTokens.xs : (isExpanded ? WorkspaceMaskRemovalPanelTokens.md : WorkspaceMaskRemovalPanelTokens.sm),
+          vertical: WorkspaceMaskRemovalPanelTokens.xs,
         );
 
         return Card(
@@ -317,7 +315,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? WorkspaceMaskRemovalPanelTokens.sm : (isExpanded ? WorkspaceMaskRemovalPanelTokens.lg : WorkspaceMaskRemovalPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,7 +346,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                WorkspaceMaskRemovalPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Workspace Darkening Mask Removal & Instant Blur Handler',
@@ -359,22 +357,22 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: WorkspaceMaskRemovalPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: WorkspaceMaskRemovalPanelTokens.success),
                   ),
                   child: Text(
                     'STATUS: ${record.completionStatus.toUpperCase()}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: WorkspaceMaskRemovalPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            WorkspaceMaskRemovalPanelTokens.vGapMd,
 
             // Overview Details Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: WorkspaceMaskRemovalPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -385,7 +383,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                   Row(
                     children: [
                       Icon(Icons.verified_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      WorkspaceMaskRemovalPanelTokens.hGapSm,
                       Text(
                         'Assigned Team: ${record.assignedGroupTeam} | Decision Group: ${record.decisionGroup}',
                         style: theme.textTheme.labelMedium?.copyWith(
@@ -400,12 +398,12 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  WorkspaceMaskRemovalPanelTokens.vGapXs,
                   Text(
                     'Atomic Action: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  WorkspaceMaskRemovalPanelTokens.vGapXs,
                   Text(
                     'UX Translation: ${record.uxTranslation}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -413,7 +411,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            WorkspaceMaskRemovalPanelTokens.vGapLg,
 
             // Device Viewport & Simulation Mode Toggles
             Row(
@@ -428,7 +426,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                     });
                   },
                 ),
-                AppSpacingTokens.hGapSm,
+                WorkspaceMaskRemovalPanelTokens.hGapSm,
                 FilterChip(
                   avatar: Icon(_isOfflineFallbackActive ? Icons.wifi_off : Icons.wifi, size: 16),
                   label: Text(_isOfflineFallbackActive ? 'Cached Offline Data' : 'Server Live Query'),
@@ -441,14 +439,14 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                 ),
               ],
             ),
-            AppSpacingTokens.vGapLg,
+            WorkspaceMaskRemovalPanelTokens.vGapLg,
 
             // Workspace Layout Container with Dynamic Darkening Canvas Mask
             Stack(
               children: [
                 // Underlying Workspace Canvas Layout
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: WorkspaceMaskRemovalPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(16),
@@ -469,12 +467,12 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: _isMaskActive ? AppColorPalette.warning : AppColorPalette.success,
+                              color: _isMaskActive ? WorkspaceMaskRemovalPanelTokens.warning : WorkspaceMaskRemovalPanelTokens.success,
                             ),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      WorkspaceMaskRemovalPanelTokens.vGapSm,
 
                       // Header / Search Bar Surface (Mobile vs Desktop Design Decision)
                       if (_isMobileView)
@@ -487,7 +485,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                                 _searchFocusNode.requestFocus();
                               },
                             ),
-                            AppSpacingTokens.hGapSm,
+                            WorkspaceMaskRemovalPanelTokens.hGapSm,
                             Expanded(
                               child: Text(
                                 'Mobile collapsed search icon view (Tap icon to expand full-screen input)',
@@ -523,11 +521,11 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                           ],
                         ),
 
-                      AppSpacingTokens.vGapLg,
+                      WorkspaceMaskRemovalPanelTokens.vGapLg,
 
                       // Simulated Workspace Content Charts & Data Grid
                       Container(
-                        padding: AppSpacingTokens.paddingMd,
+                        padding: WorkspaceMaskRemovalPanelTokens.paddingMd,
                         decoration: BoxDecoration(
                           color: colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
@@ -540,17 +538,17 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                               'Active Project Assets & Analytics Widgets',
                               style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
                             ),
-                            AppSpacingTokens.vGapSm,
+                            WorkspaceMaskRemovalPanelTokens.vGapSm,
                             Row(
                               children: [
                                 _buildSimulatedCard(context, 'Workspace Name', 'Global Enterprise AISS'),
-                                AppSpacingTokens.hGapSm,
+                                WorkspaceMaskRemovalPanelTokens.hGapSm,
                                 _buildSimulatedCard(context, 'Workspace ID', 'WS-8849-ANSA'),
-                                AppSpacingTokens.hGapSm,
+                                WorkspaceMaskRemovalPanelTokens.hGapSm,
                                 _buildSimulatedCard(context, 'Status', 'ACTIVE'),
                               ],
                             ),
-                            AppSpacingTokens.vGapSm,
+                            WorkspaceMaskRemovalPanelTokens.vGapSm,
                             Text(
                               'Tap outside the search overlay or press blur to instantly remove darkening canvas layout mask.',
                               style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant, fontSize: 11),
@@ -576,7 +574,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                           color: Colors.black.withValues(alpha: 0.55),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        padding: AppSpacingTokens.paddingMd,
+                        padding: WorkspaceMaskRemovalPanelTokens.paddingMd,
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -599,7 +597,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                                     ),
                                   ],
                                 ),
-                                AppSpacingTokens.vGapSm,
+                                WorkspaceMaskRemovalPanelTokens.vGapSm,
                                 TextField(
                                   focusNode: _searchFocusNode,
                                   controller: _searchController,
@@ -619,7 +617,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                                   ),
                                 ),
-                                AppSpacingTokens.vGapMd,
+                                WorkspaceMaskRemovalPanelTokens.vGapMd,
                               ],
 
                               Row(
@@ -628,7 +626,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: AppColorPalette.brandPrimary,
+                                      color: WorkspaceMaskRemovalPanelTokens.brandPrimary,
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: const Text(
@@ -645,7 +643,7 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                                   ),
                                 ],
                               ),
-                              AppSpacingTokens.vGapSm,
+                              WorkspaceMaskRemovalPanelTokens.vGapSm,
 
                               // Search Category Filters & Results Grouped by Type
                               SingleChildScrollView(
@@ -672,11 +670,11 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                                   }).toList(),
                                 ),
                               ),
-                              AppSpacingTokens.vGapSm,
+                              WorkspaceMaskRemovalPanelTokens.vGapSm,
 
                               // Quick Filtered Result Lists Grouped by Type
                               Container(
-                                padding: AppSpacingTokens.paddingSm,
+                                padding: WorkspaceMaskRemovalPanelTokens.paddingSm,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -689,17 +687,17 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                                         margin: const EdgeInsets.only(bottom: 8),
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
-                                          color: AppColorPalette.warningContainer,
+                                          color: WorkspaceMaskRemovalPanelTokens.warningContainer,
                                           borderRadius: BorderRadius.circular(6),
                                         ),
                                         child: Row(
                                           children: [
-                                            const Icon(Icons.cached, size: 14, color: AppColorPalette.onWarningContainer),
-                                            AppSpacingTokens.hGapXs,
+                                            const Icon(Icons.cached, size: 14, color: WorkspaceMaskRemovalPanelTokens.onWarningContainer),
+                                            WorkspaceMaskRemovalPanelTokens.hGapXs,
                                             Expanded(
                                               child: Text(
                                                 'Self-Chasing Fallback: Parsing locally cached workspace data (Offline Mode).',
-                                                style: theme.textTheme.bodySmall?.copyWith(color: AppColorPalette.onWarningContainer, fontSize: 10, fontWeight: FontWeight.bold),
+                                                style: theme.textTheme.bodySmall?.copyWith(color: WorkspaceMaskRemovalPanelTokens.onWarningContainer, fontSize: 10, fontWeight: FontWeight.bold),
                                               ),
                                             ),
                                           ],
@@ -755,11 +753,11 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                   ),
               ],
             ),
-            AppSpacingTokens.vGapLg,
+            WorkspaceMaskRemovalPanelTokens.vGapLg,
 
             // Telemetry & Blur Event Latency Box
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: WorkspaceMaskRemovalPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -778,31 +776,31 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.10),
+                          color: WorkspaceMaskRemovalPanelTokens.success.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('BIGQUERY INDEX SYNCED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                        child: const Text('BIGQUERY INDEX SYNCED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: WorkspaceMaskRemovalPanelTokens.success)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  WorkspaceMaskRemovalPanelTokens.vGapXs,
                   Text(
                     'Confirmed Blur Timestamp: $_lastBlurTimestamp',
                     style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  WorkspaceMaskRemovalPanelTokens.vGapXs,
                   Text(
                     'Instant Mask Removal Latency: ${_maskRemovalLatencyMs}ms (Measure Target <350ms verified)',
-                    style: theme.textTheme.bodySmall?.copyWith(color: AppColorPalette.success),
+                    style: theme.textTheme.bodySmall?.copyWith(color: WorkspaceMaskRemovalPanelTokens.success),
                   ),
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            WorkspaceMaskRemovalPanelTokens.vGapLg,
 
             // Audit Boundaries Grid
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: WorkspaceMaskRemovalPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -815,13 +813,13 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  WorkspaceMaskRemovalPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Current Latency', '${_maskRemovalLatencyMs}ms GOOD', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, WorkspaceMaskRemovalPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, WorkspaceMaskRemovalPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, WorkspaceMaskRemovalPanelTokens.success),
+                      _buildMetricTile(context, 'Current Latency', '${_maskRemovalLatencyMs}ms GOOD', WorkspaceMaskRemovalPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -876,4 +874,115 @@ class _WorkspaceMaskRemovalPanelState extends State<WorkspaceMaskRemovalPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class WorkspaceMaskRemovalPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: WorkspaceMaskRemovalPanel(
+        record: WorkspaceMaskRemovalRecord(
+          actionTimestamp: '2026-08-27 10:45:00 UTC',
+          userSessionId: 'USR-MASK-16400',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

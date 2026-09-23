@@ -18,9 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
-import '../utils/db_identifier_linter.dart';
 
 /// Step CBSV-005-10 (Row 122 / Seq 1803): DB Linter & Entity Record Data Model.
 class DbLinterEntityRecord {
@@ -141,7 +138,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Copied "$name" Reference Token ($token) to Clipboard!'),
-        backgroundColor: AppColorPalette.brandPrimary,
+        backgroundColor: DbLinterEntityPanelTokens.brandPrimary,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -187,8 +184,8 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardPadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? DbLinterEntityPanelTokens.paddingSm
+            : (isExpanded ? DbLinterEntityPanelTokens.paddingLg : DbLinterEntityPanelTokens.paddingMd);
 
         return Card(
           clipBehavior: Clip.antiAlias,
@@ -223,7 +220,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    DbLinterEntityPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'CBSV-005-10 (Row 122 / Seq 1803)',
@@ -238,11 +235,11 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                DbLinterEntityPanelTokens.vGapMd,
 
                 // UI Design-System Adherence Rate KPI Card
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: DbLinterEntityPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.secondaryContainer.withValues(alpha: 0.45),
                     borderRadius: BorderRadius.circular(12),
@@ -258,7 +255,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                             child: Row(
                               children: [
                                 Icon(Icons.rule, color: colorScheme.secondary, size: 20),
-                                AppSpacingTokens.hGapXs,
+                                DbLinterEntityPanelTokens.hGapXs,
                                 Expanded(
                                   child: Text(
                                     'UI Design-System Adherence Rate',
@@ -272,13 +269,13 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                               ],
                             ),
                           ),
-                          AppSpacingTokens.hGapSm,
+                          DbLinterEntityPanelTokens.hGapSm,
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: record.meetsOptimalTarget
-                                  ? AppColorPalette.success
-                                  : AppColorPalette.warning,
+                                  ? DbLinterEntityPanelTokens.success
+                                  : DbLinterEntityPanelTokens.warning,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -292,7 +289,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      DbLinterEntityPanelTokens.vGapSm,
                       Row(
                         children: [
                           Text(
@@ -302,7 +299,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                               color: colorScheme.secondary,
                             ),
                           ),
-                          AppSpacingTokens.hGapMd,
+                          DbLinterEntityPanelTokens.hGapMd,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,7 +313,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                                     valueColor: AlwaysStoppedAnimation<Color>(colorScheme.secondary),
                                   ),
                                 ),
-                                AppSpacingTokens.vGapXs,
+                                DbLinterEntityPanelTokens.vGapXs,
                                 Text(
                                   'Floor: ≥85% | Optimal: ≥95% | Ceiling: 100% (Strict _ID Linter Enforced)',
                                   style: theme.textTheme.labelSmall?.copyWith(
@@ -328,7 +325,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      DbLinterEntityPanelTokens.vGapXs,
                       Text(
                         'Standard: Material Design 3 Guidelines / Nielsen Norman Group Heuristic Evaluation.',
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -339,16 +336,16 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                DbLinterEntityPanelTokens.vGapLg,
 
                 // Live Strict Linter Suffix Enforcement Validator Simulator
                 Text(
                   'Strict Linter Rule Validator Simulator (_ID Suffix Required)',
                   style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                DbLinterEntityPanelTokens.vGapSm,
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: DbLinterEntityPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -369,29 +366,29 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                             suffixIcon: Icon(
                               _validationResult.isValid ? Icons.check_circle : Icons.error,
                               color: _validationResult.isValid
-                                  ? AppColorPalette.success
-                                  : AppColorPalette.lightError,
+                                  ? DbLinterEntityPanelTokens.success
+                                  : DbLinterEntityPanelTokens.lightError,
                             ),
                             border: const OutlineInputBorder(),
                           ),
                         ),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      DbLinterEntityPanelTokens.vGapSm,
                       Container(
                         width: double.infinity,
-                        padding: AppSpacingTokens.paddingSm,
+                        padding: DbLinterEntityPanelTokens.paddingSm,
                         decoration: BoxDecoration(
                           color: _validationResult.isValid
-                              ? AppColorPalette.successContainer.withValues(alpha: 0.6)
-                              : AppColorPalette.lightErrorContainer.withValues(alpha: 0.6),
+                              ? DbLinterEntityPanelTokens.successContainer.withValues(alpha: 0.6)
+                              : DbLinterEntityPanelTokens.lightErrorContainer.withValues(alpha: 0.6),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           _validationResult.message,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: _validationResult.isValid
-                                ? AppColorPalette.onSuccessContainer
-                                : AppColorPalette.lightOnErrorContainer,
+                                ? DbLinterEntityPanelTokens.onSuccessContainer
+                                : DbLinterEntityPanelTokens.lightOnErrorContainer,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -399,14 +396,14 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                DbLinterEntityPanelTokens.vGapLg,
 
                 // Atomic Data Fields Table
                 Text(
                   'Atomic Data Fields (Data Dictionary Mapped)',
                   style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                DbLinterEntityPanelTokens.vGapSm,
                 Table(
                   border: TableBorder.all(
                     color: colorScheme.outlineVariant,
@@ -429,14 +426,14 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                     _buildTableRow('User/Session ID', record.userSessionId, theme, colorScheme),
                   ],
                 ),
-                AppSpacingTokens.vGapLg,
+                DbLinterEntityPanelTokens.vGapLg,
 
                 // Entity Layout List with Masked Tokens & Long-Press Copy
                 Text(
                   'Entity Record Layouts (Scannable User Tokens • Press & Hold to Copy)',
                   style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                DbLinterEntityPanelTokens.vGapSm,
                 Column(
                   children: widget.entities.map((item) {
                     final linterCheck = DbIdentifierLinter.validateIdentifier(item.entityIdKey);
@@ -449,7 +446,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                           borderRadius: BorderRadius.circular(12),
                           onLongPress: () => _copyToClipboard(item.fullInternalReferenceKey, item.entityName),
                           child: Ink(
-                            padding: AppSpacingTokens.paddingMd,
+                            padding: DbLinterEntityPanelTokens.paddingMd,
                             decoration: BoxDecoration(
                               color: colorScheme.surfaceContainerHigh,
                               borderRadius: BorderRadius.circular(12),
@@ -462,7 +459,7 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                                   backgroundColor: colorScheme.secondaryContainer,
                                   child: Icon(Icons.dataset, color: colorScheme.onSecondaryContainer, size: 20),
                                 ),
-                                AppSpacingTokens.hGapMd,
+                                DbLinterEntityPanelTokens.hGapMd,
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -475,13 +472,13 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          AppSpacingTokens.hGapSm,
+                                          DbLinterEntityPanelTokens.hGapSm,
                                           Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                             decoration: BoxDecoration(
                                               color: linterCheck.isValid
-                                                  ? AppColorPalette.successContainer
-                                                  : AppColorPalette.lightErrorContainer,
+                                                  ? DbLinterEntityPanelTokens.successContainer
+                                                  : DbLinterEntityPanelTokens.lightErrorContainer,
                                               borderRadius: BorderRadius.circular(4),
                                             ),
                                             child: Text(
@@ -490,14 +487,14 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
                                                 color: linterCheck.isValid
-                                                    ? AppColorPalette.onSuccessContainer
-                                                    : AppColorPalette.lightOnErrorContainer,
+                                                    ? DbLinterEntityPanelTokens.onSuccessContainer
+                                                    : DbLinterEntityPanelTokens.lightOnErrorContainer,
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                      AppSpacingTokens.vGapXs,
+                                      DbLinterEntityPanelTokens.vGapXs,
                                       // Low-contrast typography for key labels
                                       Text(
                                         'Scannable Token: ${item.maskedUserToken}',
@@ -556,13 +553,13 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
               ? Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.successContainer,
+                    color: DbLinterEntityPanelTokens.successContainer,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     value,
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: AppColorPalette.onSuccessContainer,
+                      color: DbLinterEntityPanelTokens.onSuccessContainer,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -577,4 +574,203 @@ class _DbLinterEntityPanelState extends State<DbLinterEntityPanel> {
       ],
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class DbLinterEntityPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color lightPrimary = Color(0xFF6750A4);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFEADDFF);
+  static const Color lightOnPrimaryContainer = Color(0xFF21005D);
+
+  static const Color lightSecondary = Color(0xFF625B71);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightSecondaryContainer = Color(0xFFE8DEF8);
+  static const Color lightOnSecondaryContainer = Color(0xFF1D192B);
+
+  static const Color lightTertiary = Color(0xFF7D5260);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
+  static const Color lightOnTertiaryContainer = Color(0xFF31111D);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+  static const Color lightErrorContainer = Color(0xFFF9DEDC);
+  static const Color lightOnErrorContainer = Color(0xFF410E0B);
+
+  static const Color lightBackground = Color(0xFFFEF7FF);
+  static const Color lightOnBackground = Color(0xFF1D1B20);
+  static const Color lightSurface = Color(0xFFFEF7FF);
+  static const Color lightOnSurface = Color(0xFF1D1B20);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOnSurfaceVariant = Color(0xFF49454F);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+// ============================================================================
+// File-Local Standalone Utility: DbIdentifierLinter
+// ============================================================================
+class DbIdentifierLinter {
+  static DbLinterValidationResult validateIdentifier(String fieldKey) {
+    final trimmed = fieldKey.trim();
+    if (trimmed.isEmpty) {
+      return const DbLinterValidationResult(
+        isValid: false,
+        fieldKey: '',
+        message: 'Identifier field key cannot be empty.',
+      );
+    }
+
+    final isValid = trimmed.endsWith('_ID');
+    final suggestedFix = isValid
+        ? trimmed
+        : '${trimmed.replaceAll(RegExp(r'(_pk|_id|_key|id|pk)$', caseSensitive: false), '')}_ID';
+
+    return DbLinterValidationResult(
+      isValid: isValid,
+      fieldKey: trimmed,
+      suggestedFix: suggestedFix.toUpperCase(),
+      message: isValid
+          ? 'Valid DB Identifier: Terminates in uppercase _ID'
+          : 'LINT ERROR (LINT_ERR_SUFFIX_ID): Key "$trimmed" must terminate in uppercase "_ID". Suggested: "$suggestedFix"',
+    );
+  }
+}
+
+class DbLinterValidationResult {
+  final bool isValid;
+  final String fieldKey;
+  final String suggestedFix;
+  final String message;
+
+  const DbLinterValidationResult({
+    required this.isValid,
+    required this.fieldKey,
+    this.suggestedFix = '',
+    required this.message,
+  });
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: DbLinterEntityPanel(
+              record: DbLinterEntityRecord(
+                libraryName: '@habot-core/db-linter-rules',
+                libraryVersion: 'v1.8.0-linter',
+                componentCount: '16 Entity Components',
+                installationStatus: 'Active Linter Enforced',
+                dependencyList: 'analysis_options, custom_lint',
+                libraryLocationPath: 'lib/src/core/utils/db_identifier_linter.dart',
+                completionStatus: 'Good (100%)',
+                actionTimestamp: '2026-08-12 16:51:00 UTC',
+                userSessionId: 'USR-JOHN-6619',
+              ),
+              entities: [
+                EntityRecordItem(
+                  entityIdKey: 'USER_ID',
+                  entityName: 'Registered Customer User',
+                  maskedUserToken: 'USR-TOK-8891',
+                  fullInternalReferenceKey: '0x88a29910-user-pk-guid-991',
+                ),
+                EntityRecordItem(
+                  entityIdKey: 'VENDOR_ID',
+                  entityName: 'Global Enterprise Logistics',
+                  maskedUserToken: 'VND-TOK-9921',
+                  fullInternalReferenceKey: '0x77b38821-vendor-pk-guid-882',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

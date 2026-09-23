@@ -25,8 +25,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Data record holding 49-column metadata and ADFA specification parameters.
 class MobileChecklistSwitchRecord {
@@ -276,7 +274,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('POKA-YOKE GATE: Switch locked! Upstream dependency ${item.upstreamDependencyId} is not fulfilled (ERR-38-002).'),
-          backgroundColor: AppColorPalette.error,
+          backgroundColor: MobileChecklistSwitchPanelTokens.error,
           duration: const Duration(seconds: 3),
         ),
       );
@@ -300,8 +298,8 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? MobileChecklistSwitchPanelTokens.paddingSm
+            : (isExpanded ? MobileChecklistSwitchPanelTokens.paddingLg : MobileChecklistSwitchPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -310,11 +308,11 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
             children: [
               // Header
               _buildHeaderCard(context, colorScheme, theme, r, isCompact: isCompact, isExpanded: isExpanded),
-              AppSpacingTokens.vGapMd,
+              MobileChecklistSwitchPanelTokens.vGapMd,
 
               // Navigation Segment Bar
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              MobileChecklistSwitchPanelTokens.vGapMd,
 
               // Active Tab Content
               if (_activeTab == 'checklist') ...[
@@ -324,7 +322,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r, isExpanded: isExpanded),
               ],
-              AppSpacingTokens.vGapLg,
+              MobileChecklistSwitchPanelTokens.vGapLg,
 
               // Lineage Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -346,7 +344,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
     final ratePercent = (_currentCompletionRate * 100).toStringAsFixed(0);
 
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? MobileChecklistSwitchPanelTokens.paddingSm : MobileChecklistSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -381,18 +379,18 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.brandPrimary.withValues(alpha: 0.1),
+                      color: MobileChecklistSwitchPanelTokens.brandPrimary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.brandPrimary.withValues(alpha: 0.3)),
+                      border: Border.all(color: MobileChecklistSwitchPanelTokens.brandPrimary.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.check_circle_outline, size: 12, color: AppColorPalette.brandPrimary),
+                        const Icon(Icons.check_circle_outline, size: 12, color: MobileChecklistSwitchPanelTokens.brandPrimary),
                         const SizedBox(width: 4),
                         Text(
                           'Completion: $ratePercent%',
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: MobileChecklistSwitchPanelTokens.brandPrimary),
                         ),
                       ],
                     ),
@@ -407,12 +405,12 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          MobileChecklistSwitchPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          AppSpacingTokens.vGapXs,
+          MobileChecklistSwitchPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -428,9 +426,9 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
       child: Row(
         children: [
           _buildSegmentButton('checklist', 'Material Switch Checklist', Icons.checklist, colorScheme),
-          AppSpacingTokens.hGapSm,
+          MobileChecklistSwitchPanelTokens.hGapSm,
           _buildSegmentButton('dependencies', 'Upstream Gate State (BCDLD-037-015)', Icons.lock_clock, colorScheme),
-          AppSpacingTokens.hGapSm,
+          MobileChecklistSwitchPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -464,7 +462,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
     required bool isCompact,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? MobileChecklistSwitchPanelTokens.paddingSm : MobileChecklistSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -486,7 +484,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               children: [
                 const Row(
                   children: [
-                    Icon(Icons.push_pin, size: 14, color: AppColorPalette.brandPrimary),
+                    Icon(Icons.push_pin, size: 14, color: MobileChecklistSwitchPanelTokens.brandPrimary),
                     SizedBox(width: 4),
                     Text('Sticky Header: BigQuery Checklist Chunk Stream', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                   ],
@@ -505,7 +503,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          MobileChecklistSwitchPanelTokens.vGapMd,
 
           // Checklist Switch Items
           ..._items.map((item) {
@@ -518,8 +516,8 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isLocked
-                      ? AppColorPalette.error.withValues(alpha: 0.24)
-                      : (item.isCompleted ? AppColorPalette.success.withValues(alpha: 0.31) : colorScheme.outlineVariant.withValues(alpha: 0.24)),
+                      ? MobileChecklistSwitchPanelTokens.error.withValues(alpha: 0.24)
+                      : (item.isCompleted ? MobileChecklistSwitchPanelTokens.success.withValues(alpha: 0.31) : colorScheme.outlineVariant.withValues(alpha: 0.24)),
                 ),
               ),
               child: Row(
@@ -527,9 +525,9 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
                   Icon(
                     isLocked ? Icons.lock_outline : (item.isCompleted ? Icons.check_circle : Icons.radio_button_unchecked),
                     size: 18,
-                    color: isLocked ? AppColorPalette.error : (item.isCompleted ? AppColorPalette.success : colorScheme.onSurfaceVariant),
+                    color: isLocked ? MobileChecklistSwitchPanelTokens.error : (item.isCompleted ? MobileChecklistSwitchPanelTokens.success : colorScheme.onSurfaceVariant),
                   ),
-                  AppSpacingTokens.hGapSm,
+                  MobileChecklistSwitchPanelTokens.hGapSm,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -546,7 +544,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
                         const SizedBox(height: 2),
                         Text(
                           'Category: ${item.category} • Dependency: ${item.upstreamDependencyId}',
-                          style: TextStyle(fontSize: 10, color: isLocked ? AppColorPalette.error : colorScheme.onSurfaceVariant),
+                          style: TextStyle(fontSize: 10, color: isLocked ? MobileChecklistSwitchPanelTokens.error : colorScheme.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -557,7 +555,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
                     child: Center(
                       child: Switch.adaptive(
                         value: item.isCompleted,
-                        activeThumbColor: AppColorPalette.brandPrimary,
+                        activeThumbColor: MobileChecklistSwitchPanelTokens.brandPrimary,
                         onChanged: isLocked ? null : (val) => _toggleItem(item, val),
                       ),
                     ),
@@ -567,7 +565,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
             );
           }),
 
-          AppSpacingTokens.vGapSm,
+          MobileChecklistSwitchPanelTokens.vGapSm,
 
           // Pagination Controls
           Row(
@@ -586,7 +584,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               ),
               Text(
                 'Self-Chasing: Page $_currentPage / $_totalPages',
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: MobileChecklistSwitchPanelTokens.brandPrimary),
               ),
               ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 48),
@@ -608,7 +606,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
 
   Widget _buildDependencyGatesViewer(ColorScheme colorScheme, ThemeData theme) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: MobileChecklistSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -619,12 +617,12 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
         children: [
           Text('Upstream Dependency Gates (tbl_checklist_dependency_state)',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          MobileChecklistSwitchPanelTokens.vGapSm,
           Text(
             'Interactivity is strictly gated by upstream reference BCDLD-037-015. Pending items trigger ERR-38-002 and are isolated to DLQ.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          MobileChecklistSwitchPanelTokens.vGapMd,
 
           Container(
             padding: const EdgeInsets.all(12),
@@ -637,19 +635,19 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               children: [
                 Row(
                   children: [
-                    Icon(Icons.check_circle, size: 16, color: AppColorPalette.success),
+                    Icon(Icons.check_circle, size: 16, color: MobileChecklistSwitchPanelTokens.success),
                     SizedBox(width: 8),
                     Expanded(child: Text('Gate 1: BCDLD-037-015 (Upstream Predecessor State = COMPLETED)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
-                    Text('UNLOCKED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                    Text('UNLOCKED', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: MobileChecklistSwitchPanelTokens.success)),
                   ],
                 ),
                 Divider(height: 16),
                 Row(
                   children: [
-                    Icon(Icons.lock, size: 16, color: AppColorPalette.error),
+                    Icon(Icons.lock, size: 16, color: MobileChecklistSwitchPanelTokens.error),
                     SizedBox(width: 8),
                     Expanded(child: Text('Gate 2: BCDLD-037-016 (MFA Biometric Pre-Validation = PENDING)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold))),
-                    Text('LOCKED (Poka-Yoke)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.error)),
+                    Text('LOCKED (Poka-Yoke)', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: MobileChecklistSwitchPanelTokens.error)),
                   ],
                 ),
               ],
@@ -667,7 +665,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
     required bool isExpanded,
   }) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: MobileChecklistSwitchPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -678,7 +676,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          MobileChecklistSwitchPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -693,19 +691,19 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                MobileChecklistSwitchPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Current Rate', '${(_currentCompletionRate * 100).toStringAsFixed(0)}%', AppColorPalette.brandPrimary),
+                    _buildMetricTile('Current Rate', '${(_currentCompletionRate * 100).toStringAsFixed(0)}%', MobileChecklistSwitchPanelTokens.brandPrimary),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          MobileChecklistSwitchPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -771,7 +769,7 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, MobileChecklistSwitchRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: MobileChecklistSwitchPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10),
@@ -791,9 +789,120 @@ class _MobileChecklistSwitchPanelState extends State<MobileChecklistSwitchPanel>
               ],
             ),
           ),
-          const Icon(Icons.security, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.security, size: 16, color: MobileChecklistSwitchPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class MobileChecklistSwitchPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: MobileChecklistSwitchPanel(
+        record: MobileChecklistSwitchRecord(
+          actionTimestamp: '2026-09-01 19:24:00 UTC',
+          userSessionId: 'USR-CHECKLIST-30530',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

@@ -29,8 +29,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// AEETE-021 Record Data Model.
 class E2eNavigationTestRecord {
@@ -208,7 +206,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('E2E Playwright Suite Executed Successfully! 4/4 Navigation Scenarios PASSED (100% Coverage). Log: $_latestLogPath'),
-            backgroundColor: AppColorPalette.success,
+            backgroundColor: E2eNavigationTestPanelTokens.success,
             duration: const Duration(seconds: 3),
           ),
         );
@@ -231,11 +229,11 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
           elevation: 1,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacingTokens.xs : AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: isCompact ? E2eNavigationTestPanelTokens.xs : E2eNavigationTestPanelTokens.sm,
+            vertical: E2eNavigationTestPanelTokens.xs,
           ),
           child: Padding(
-            padding: EdgeInsets.all(isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md)),
+            padding: EdgeInsets.all(isCompact ? E2eNavigationTestPanelTokens.sm : (isExpanded ? E2eNavigationTestPanelTokens.lg : E2eNavigationTestPanelTokens.md)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -265,7 +263,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    E2eNavigationTestPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'E2E Navigation & Multi-Viewport Test Engine',
@@ -276,22 +274,22 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: E2eNavigationTestPanelTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: E2eNavigationTestPanelTokens.success),
                       ),
                       child: Text(
                         'STATUS: ${record.completionStatus}',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: E2eNavigationTestPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                E2eNavigationTestPanelTokens.vGapMd,
 
                 // Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: E2eNavigationTestPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -302,7 +300,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                       Row(
                         children: [
                           Icon(Icons.gavel_outlined, color: colorScheme.primary, size: 20),
-                          AppSpacingTokens.hGapSm,
+                          E2eNavigationTestPanelTokens.hGapSm,
                           Text(
                             'Assigned Team: ${record.assignedGroupTeam}',
                             style: theme.textTheme.labelMedium?.copyWith(
@@ -317,7 +315,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      E2eNavigationTestPanelTokens.vGapXs,
                       Text(
                         'Store Location: ${record.commonLibraryToStore} | ${record.setupAction}',
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -325,7 +323,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                E2eNavigationTestPanelTokens.vGapLg,
 
                 // Viewport Simulation & Navigation Flow Inspector
                 Row(
@@ -338,21 +336,21 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                     Row(
                       children: [
                         _buildViewportChip(360, '360px Mobile'),
-                        AppSpacingTokens.hGapXs,
+                        E2eNavigationTestPanelTokens.hGapXs,
                         _buildViewportChip(600, '600px Tablet'),
-                        AppSpacingTokens.hGapXs,
+                        E2eNavigationTestPanelTokens.hGapXs,
                         _buildViewportChip(840, '840px Desktop'),
                       ],
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapSm,
+                E2eNavigationTestPanelTokens.vGapSm,
 
                 // Simulated Device Canvas Shell
                 Center(
                   child: Container(
                     width: _selectedViewportWidth.toDouble().clamp(280.0, 520.0),
-                    padding: AppSpacingTokens.paddingMd,
+                    padding: E2eNavigationTestPanelTokens.paddingMd,
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceContainerLow,
                       borderRadius: BorderRadius.circular(12),
@@ -374,7 +372,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                             Row(
                               children: [
                                 const Icon(Icons.phonelink, size: 16),
-                                AppSpacingTokens.hGapXs,
+                                E2eNavigationTestPanelTokens.hGapXs,
                                 Text(
                                   'Simulated Viewport: ${_selectedViewportWidth}px',
                                   style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -384,10 +382,10 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: AppColorPalette.success.withValues(alpha: 0.15),
+                                color: E2eNavigationTestPanelTokens.success.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: const Text('RESPONSIVE 100%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                              child: const Text('RESPONSIVE 100%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: E2eNavigationTestPanelTokens.success)),
                             ),
                           ],
                         ),
@@ -396,10 +394,10 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                           children: [
                             Icon(
                               _isFocusLoopClean ? Icons.check_circle : Icons.warning_amber,
-                              color: _isFocusLoopClean ? AppColorPalette.success : colorScheme.error,
+                              color: _isFocusLoopClean ? E2eNavigationTestPanelTokens.success : colorScheme.error,
                               size: 16,
                             ),
-                            AppSpacingTokens.hGapXs,
+                            E2eNavigationTestPanelTokens.hGapXs,
                             Expanded(
                               child: Text(
                                 'Form Focus Loop: ${_isFocusLoopClean ? 'Sequential & Clean' : 'Skipped Field Error'}',
@@ -408,15 +406,15 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                             ),
                           ],
                         ),
-                        AppSpacingTokens.vGapXs,
+                        E2eNavigationTestPanelTokens.vGapXs,
                         Row(
                           children: [
                             Icon(
                               _isModalScrollLocked ? Icons.check_circle : Icons.warning_amber,
-                              color: _isModalScrollLocked ? AppColorPalette.success : colorScheme.error,
+                              color: _isModalScrollLocked ? E2eNavigationTestPanelTokens.success : colorScheme.error,
                               size: 16,
                             ),
-                            AppSpacingTokens.hGapXs,
+                            E2eNavigationTestPanelTokens.hGapXs,
                             Expanded(
                               child: Text(
                                 'Modal Scroll Lock: ${_isModalScrollLocked ? 'Locked (No Background Scroll)' : 'Overflow Leak'}',
@@ -425,15 +423,15 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                             ),
                           ],
                         ),
-                        AppSpacingTokens.vGapXs,
+                        E2eNavigationTestPanelTokens.vGapXs,
                         Row(
                           children: [
                             Icon(
                               _isTouchTargetCompliant ? Icons.check_circle : Icons.warning_amber,
-                              color: _isTouchTargetCompliant ? AppColorPalette.success : colorScheme.error,
+                              color: _isTouchTargetCompliant ? E2eNavigationTestPanelTokens.success : colorScheme.error,
                               size: 16,
                             ),
-                            AppSpacingTokens.hGapXs,
+                            E2eNavigationTestPanelTokens.hGapXs,
                             Expanded(
                               child: Text(
                                 'Touch Target Compliance: ${_isTouchTargetCompliant ? 'Passed (>=48dp)' : 'Violation (<48dp)'}',
@@ -446,20 +444,20 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                     ),
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                E2eNavigationTestPanelTokens.vGapLg,
 
                 // E2E Test Cases List
                 Text(
                   'Automated Test Suite Scenarios (tests/e2e/MobileLayoutResponsiveCheck.spec.ts)',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                E2eNavigationTestPanelTokens.vGapSm,
 
                 Column(
                   children: _testCases.map((tc) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 8),
-                      padding: AppSpacingTokens.paddingMd,
+                      padding: E2eNavigationTestPanelTokens.paddingMd,
                       decoration: BoxDecoration(
                         color: colorScheme.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(12),
@@ -483,7 +481,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                               ),
                             ),
                           ),
-                          AppSpacingTokens.hGapMd,
+                          E2eNavigationTestPanelTokens.hGapMd,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,7 +490,7 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                                   tc.testName,
                                   style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
                                 ),
-                                AppSpacingTokens.vGapXs,
+                                E2eNavigationTestPanelTokens.vGapXs,
                                 Text(
                                   tc.expectedBehavior,
                                   style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -500,17 +498,17 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                               ],
                             ),
                           ),
-                          AppSpacingTokens.hGapSm,
+                          E2eNavigationTestPanelTokens.hGapSm,
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.success.withValues(alpha: 0.15),
+                              color: E2eNavigationTestPanelTokens.success.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: AppColorPalette.success, width: 0.8),
+                              border: Border.all(color: E2eNavigationTestPanelTokens.success, width: 0.8),
                             ),
                             child: Text(
                               tc.status,
-                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: E2eNavigationTestPanelTokens.success),
                             ),
                           ),
                         ],
@@ -518,11 +516,11 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                     );
                   }).toList(),
                 ),
-                AppSpacingTokens.vGapLg,
+                E2eNavigationTestPanelTokens.vGapLg,
 
                 // Execution & Audit Metric Boundary Grid
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: E2eNavigationTestPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -566,13 +564,13 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      E2eNavigationTestPanelTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', 'Functionally Present', AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', 'Passes Static Analysis', AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', 'Zero Warnings (100%)', AppColorPalette.success),
-                          _buildMetricTile(context, 'Current Quality', 'COMPLETE (100%)', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', 'Functionally Present', E2eNavigationTestPanelTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', 'Passes Static Analysis', E2eNavigationTestPanelTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', 'Zero Warnings (100%)', E2eNavigationTestPanelTokens.success),
+                          _buildMetricTile(context, 'Current Quality', 'COMPLETE (100%)', E2eNavigationTestPanelTokens.brandPrimary),
                         ],
                       ),
                     ],
@@ -617,4 +615,115 @@ class _E2eNavigationTestPanelState extends State<E2eNavigationTestPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class E2eNavigationTestPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: E2eNavigationTestPanel(
+        record: E2eNavigationTestRecord(
+          actionTimestamp: '2026-08-25 14:22:00 UTC',
+          userSessionId: 'USR-QA-9370',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

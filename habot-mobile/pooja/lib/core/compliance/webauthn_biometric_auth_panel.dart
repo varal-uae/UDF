@@ -31,8 +31,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Step BDAE-011 Record Data Model.
 class WebAuthnBiometricAuthRecord {
@@ -125,10 +123,10 @@ class WebAuthnBiometricAuthRecord {
 }
 
 enum BiometricReliabilityGrade {
-  ceiling('Ceiling Target (99.9% Auth Rate, False-Accept <0.01%)', AppColorPalette.success, Icons.stars),
-  optimal('Optimal Target (98.0%–99.0% FIDO2 Auth Rate)', AppColorPalette.info, Icons.check_circle),
-  floor('Floor Boundary (95.0% Auth Rate - FIDO2 False-Reject Limit)', AppColorPalette.warning, Icons.warning_amber),
-  failing('Failing Reliability (<95.0% Unacceptable Biometric Rejections)', AppColorPalette.error, Icons.cancel);
+  ceiling('Ceiling Target (99.9% Auth Rate, False-Accept <0.01%)', WebauthnBiometricAuthPanelTokens.success, Icons.stars),
+  optimal('Optimal Target (98.0%–99.0% FIDO2 Auth Rate)', WebauthnBiometricAuthPanelTokens.info, Icons.check_circle),
+  floor('Floor Boundary (95.0% Auth Rate - FIDO2 False-Reject Limit)', WebauthnBiometricAuthPanelTokens.warning, Icons.warning_amber),
+  failing('Failing Reliability (<95.0% Unacceptable Biometric Rejections)', WebauthnBiometricAuthPanelTokens.error, Icons.cancel);
 
   final String label;
   final Color color;
@@ -286,8 +284,8 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? WebauthnBiometricAuthPanelTokens.paddingSm
+            : (isExpanded ? WebauthnBiometricAuthPanelTokens.paddingLg : WebauthnBiometricAuthPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -300,7 +298,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 color: colorScheme.surface,
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? WebauthnBiometricAuthPanelTokens.paddingMd : WebauthnBiometricAuthPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -316,13 +314,13 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: AppColorPalette.brandPrimaryContainer,
+                                    color: WebauthnBiometricAuthPanelTokens.brandPrimaryContainer,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     '${widget.record.globalRefId} / ${widget.record.atomicStepRefId}',
                                     style: theme.textTheme.labelMedium?.copyWith(
-                                      color: AppColorPalette.onBrandPrimaryContainer,
+                                      color: WebauthnBiometricAuthPanelTokens.onBrandPrimaryContainer,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -367,7 +365,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapMd,
+                      WebauthnBiometricAuthPanelTokens.vGapMd,
                       Text(
                         widget.record.setupAction,
                         style: theme.textTheme.headlineSmall?.copyWith(
@@ -375,14 +373,14 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                           color: colorScheme.onSurface,
                         ),
                       ),
-                      AppSpacingTokens.vGapXs,
+                      WebauthnBiometricAuthPanelTokens.vGapXs,
                       Text(
                         widget.record.setupDescription,
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                       ),
-                      AppSpacingTokens.vGapMd,
+                      WebauthnBiometricAuthPanelTokens.vGapMd,
                       Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
-                      AppSpacingTokens.vGapSm,
+                      WebauthnBiometricAuthPanelTokens.vGapSm,
                       Wrap(
                         spacing: 16,
                         runSpacing: 8,
@@ -399,7 +397,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 ),
               ),
 
-              AppSpacingTokens.vGapLg,
+              WebauthnBiometricAuthPanelTokens.vGapLg,
 
               // DEDICATED AUDIT BOUNDARIES EVALUATOR CARD (Floor, Optimal, Ceiling)
               Card(
@@ -407,14 +405,14 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 color: colorScheme.surface,
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? WebauthnBiometricAuthPanelTokens.paddingMd : WebauthnBiometricAuthPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.security_update_good_outlined, color: AppColorPalette.brandPrimary),
-                          AppSpacingTokens.hGapSm,
+                          const Icon(Icons.security_update_good_outlined, color: WebauthnBiometricAuthPanelTokens.brandPrimary),
+                          WebauthnBiometricAuthPanelTokens.hGapSm,
                           Expanded(
                             child: Text(
                               'Biometric Authentication Reliability Rate Metric Boundary Evaluator',
@@ -426,21 +424,21 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      WebauthnBiometricAuthPanelTokens.vGapXs,
                       Text(
                         'Benchmarked to the FIDO2 / WebAuthn specification setting acceptable false-rejection and false-acceptance tolerances.',
                         style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                       ),
-                      AppSpacingTokens.vGapMd,
+                      WebauthnBiometricAuthPanelTokens.vGapMd,
                       Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.4)),
-                      AppSpacingTokens.vGapSm,
+                      WebauthnBiometricAuthPanelTokens.vGapSm,
 
                       // Preset Switcher for Floor, Optimal, Ceiling Boundaries
                       Text(
                         'Test Biometric Authentication Reliability Targets:',
                         style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                       ),
-                      AppSpacingTokens.vGapXs,
+                      WebauthnBiometricAuthPanelTokens.vGapXs,
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -450,7 +448,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                             child: ChoiceChip(
                               label: const Text('Floor Boundary (95.0% Auth Rate)'),
                               selected: _simulatedSuccessRate == 95.0,
-                              selectedColor: AppColorPalette.warningContainer,
+                              selectedColor: WebauthnBiometricAuthPanelTokens.warningContainer,
                               onSelected: (selected) {
                                 if (selected) {
                                   setState(() {
@@ -466,7 +464,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                             child: ChoiceChip(
                               label: const Text('Optimal Target (98%–99% Auth Rate)'),
                               selected: _simulatedSuccessRate == 98.5,
-                              selectedColor: AppColorPalette.infoContainer,
+                              selectedColor: WebauthnBiometricAuthPanelTokens.infoContainer,
                               onSelected: (selected) {
                                 if (selected) {
                                   setState(() {
@@ -482,7 +480,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                             child: ChoiceChip(
                               label: const Text('Ceiling Target (99.9% Auth Rate, False-Accept <0.01%)'),
                               selected: _simulatedSuccessRate == 99.9,
-                              selectedColor: AppColorPalette.successContainer,
+                              selectedColor: WebauthnBiometricAuthPanelTokens.successContainer,
                               onSelected: (selected) {
                                 if (selected) {
                                   setState(() {
@@ -496,11 +494,11 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                         ],
                       ),
 
-                      AppSpacingTokens.vGapMd,
+                      WebauthnBiometricAuthPanelTokens.vGapMd,
 
                       // Detailed Boundary Rows Display
                       Container(
-                        padding: AppSpacingTokens.paddingMd,
+                        padding: WebauthnBiometricAuthPanelTokens.paddingMd,
                         decoration: BoxDecoration(
                           color: reliabilityGrade.color.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(12),
@@ -512,21 +510,21 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                               title: 'Floor Boundary (95% Auth Rate - FIDO2 Ceiling)',
                               description: '95% successful authentication rate baseline.',
                               isMet: _simulatedSuccessRate >= 95.0,
-                              badgeColor: AppColorPalette.warning,
+                              badgeColor: WebauthnBiometricAuthPanelTokens.warning,
                             ),
                             const Divider(height: 16),
                             _buildBoundaryRow(
                               title: 'Optimal Target (98%–99% Auth Rate)',
                               description: '98-99% high-efficiency authentication reliability.',
                               isMet: _simulatedSuccessRate >= 98.0,
-                              badgeColor: AppColorPalette.info,
+                              badgeColor: WebauthnBiometricAuthPanelTokens.info,
                             ),
                             const Divider(height: 16),
                             _buildBoundaryRow(
                               title: 'Ceiling Boundary (99.9% Auth Rate, False-Accept <0.01%)',
                               description: '99.9% success rate with ultra-low false-acceptance (<0.01%).',
                               isMet: _simulatedSuccessRate >= 99.9 && _simulatedFalseAcceptanceRate < 0.01,
-                              badgeColor: AppColorPalette.success,
+                              badgeColor: WebauthnBiometricAuthPanelTokens.success,
                             ),
                           ],
                         ),
@@ -536,7 +534,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 ),
               ),
 
-              AppSpacingTokens.vGapLg,
+              WebauthnBiometricAuthPanelTokens.vGapLg,
 
               // SUBSTEPS 1-4 STANDARDIZED WEBAUTHN BIOMETRIC AUTHENTICATION INTERFACE
               Card(
@@ -544,13 +542,13 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 color: colorScheme.surface,
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? WebauthnBiometricAuthPanelTokens.paddingMd : WebauthnBiometricAuthPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Substep 1: Device Hardware Availability Banner
                       Container(
-                        padding: AppSpacingTokens.paddingSm,
+                        padding: WebauthnBiometricAuthPanelTokens.paddingSm,
                         decoration: BoxDecoration(
                           color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(10),
@@ -558,8 +556,8 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.phonelink_lock, size: 18, color: AppColorPalette.brandPrimary),
-                            AppSpacingTokens.hGapSm,
+                            const Icon(Icons.phonelink_lock, size: 18, color: WebauthnBiometricAuthPanelTokens.brandPrimary),
+                            WebauthnBiometricAuthPanelTokens.hGapSm,
                             Expanded(
                               child: Text(
                                 'Substep 1 Hardware Check: WebAuthn=${_isWebAuthnSupported ? "PASS" : "FAIL"} | Hardware=${_isBiometricHardwarePresent ? "PRESENT" : "NONE"} | TouchID/Fingerprint=${_isTouchIdOrFingerprintAvailable ? "READY" : "NONE"} | FaceID=${_isFaceIdAvailable ? "READY" : "NONE"}',
@@ -570,21 +568,21 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                         ),
                       ),
 
-                      AppSpacingTokens.vGapLg,
+                      WebauthnBiometricAuthPanelTokens.vGapLg,
 
                       // CENTERED MD3 BIOMETRIC TRIGGER ACTION (Substep 2 & UX Implementation)
                       Center(
                         child: Container(
                           constraints: BoxConstraints(maxWidth: isExpanded ? 480 : 380),
-                          padding: AppSpacingTokens.paddingLg,
+                          padding: WebauthnBiometricAuthPanelTokens.paddingLg,
                           decoration: BoxDecoration(
                             color: _isAuthenticatedSuccess
-                                ? AppColorPalette.successContainer.withValues(alpha: 0.3)
+                                ? WebauthnBiometricAuthPanelTokens.successContainer.withValues(alpha: 0.3)
                                 : colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: _isAuthenticatedSuccess
-                                  ? AppColorPalette.success
+                                  ? WebauthnBiometricAuthPanelTokens.success
                                   : colorScheme.outlineVariant.withValues(alpha: 0.4),
                               width: _isAuthenticatedSuccess ? 2 : 1,
                             ),
@@ -601,11 +599,11 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: _isAuthenticatedSuccess
-                                        ? AppColorPalette.success
-                                        : AppColorPalette.brandPrimaryContainer,
+                                        ? WebauthnBiometricAuthPanelTokens.success
+                                        : WebauthnBiometricAuthPanelTokens.brandPrimaryContainer,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColorPalette.brandPrimary.withValues(alpha: 0.25),
+                                        color: WebauthnBiometricAuthPanelTokens.brandPrimary.withValues(alpha: 0.25),
                                         blurRadius: 16,
                                         spreadRadius: 2,
                                       ),
@@ -618,12 +616,12 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                     size: 54,
                                     color: _isAuthenticatedSuccess
                                         ? Colors.white
-                                        : AppColorPalette.brandPrimary,
+                                        : WebauthnBiometricAuthPanelTokens.brandPrimary,
                                   ),
                                 ),
                               ),
 
-                              AppSpacingTokens.vGapMd,
+                              WebauthnBiometricAuthPanelTokens.vGapMd,
 
                               Text(
                                 _isAuthenticatedSuccess ? 'Access Granted' : 'Biometric Security Gate',
@@ -633,18 +631,18 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                 ),
                               ),
 
-                              AppSpacingTokens.vGapXs,
+                              WebauthnBiometricAuthPanelTokens.vGapXs,
 
                               Text(
                                 _handshakeStatusMessage,
                                 textAlign: TextAlign.center,
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: _isAuthenticatedSuccess ? AppColorPalette.success : colorScheme.onSurfaceVariant,
+                                  color: _isAuthenticatedSuccess ? WebauthnBiometricAuthPanelTokens.success : colorScheme.onSurfaceVariant,
                                   fontWeight: _isAuthenticatedSuccess ? FontWeight.bold : FontWeight.normal,
                                 ),
                               ),
 
-                              AppSpacingTokens.vGapLg,
+                              WebauthnBiometricAuthPanelTokens.vGapLg,
 
                               // Substep 2 & 3: Primary MD3 Biometric Trigger Button with Ripple Effect
                               if (!_isPinFallbackActive && !_isAuthenticatedSuccess)
@@ -655,7 +653,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                     onPressed: _isAuthenticating ? null : _triggerWebAuthnDialog,
                                     style: FilledButton.styleFrom(
                                       minimumSize: const Size(48, 48),
-                                      backgroundColor: AppColorPalette.brandPrimary,
+                                      backgroundColor: WebauthnBiometricAuthPanelTokens.brandPrimary,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                                     ),
                                     icon: _isAuthenticating
@@ -679,7 +677,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                   ),
                                 ),
 
-                              AppSpacingTokens.vGapSm,
+                              WebauthnBiometricAuthPanelTokens.vGapSm,
 
                               // Simulation Failure Button for Testing Fallback
                               if (!_isPinFallbackActive && !_isAuthenticatedSuccess)
@@ -687,10 +685,10 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                   constraints: const BoxConstraints(minHeight: 48),
                                   child: TextButton.icon(
                                     onPressed: _simulateBiometricFailure,
-                                    icon: const Icon(Icons.error_outline, size: 14, color: AppColorPalette.warning),
+                                    icon: const Icon(Icons.error_outline, size: 14, color: WebauthnBiometricAuthPanelTokens.warning),
                                     label: Text(
                                       'Simulate Biometric Fail (Attempt $_failedAttempts/$_maxAllowedFailedAttempts)',
-                                      style: const TextStyle(fontSize: 11, color: AppColorPalette.warning),
+                                      style: const TextStyle(fontSize: 11, color: WebauthnBiometricAuthPanelTokens.warning),
                                     ),
                                   ),
                                 ),
@@ -701,21 +699,21 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
 
                       // SUBSTEP 4: SECURE FALLBACK ACCESS ROUTE (SINGLE-USE PIN ENTRY CODES)
                       if (_isPinFallbackActive) ...[
-                        AppSpacingTokens.vGapLg,
+                        WebauthnBiometricAuthPanelTokens.vGapLg,
                         Container(
-                          padding: AppSpacingTokens.paddingMd,
+                          padding: WebauthnBiometricAuthPanelTokens.paddingMd,
                           decoration: BoxDecoration(
-                            color: AppColorPalette.warningContainer.withValues(alpha: 0.3),
+                            color: WebauthnBiometricAuthPanelTokens.warningContainer.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: AppColorPalette.warning.withValues(alpha: 0.5)),
+                            border: Border.all(color: WebauthnBiometricAuthPanelTokens.warning.withValues(alpha: 0.5)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.pin_outlined, color: AppColorPalette.warning),
-                                  AppSpacingTokens.hGapSm,
+                                  const Icon(Icons.pin_outlined, color: WebauthnBiometricAuthPanelTokens.warning),
+                                  WebauthnBiometricAuthPanelTokens.hGapSm,
                                   Text(
                                     'Substep 4: Secure Fallback Single-Use PIN Entry Route',
                                     style: theme.textTheme.titleSmall?.copyWith(
@@ -725,12 +723,12 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                   ),
                                 ],
                               ),
-                              AppSpacingTokens.vGapXs,
+                              WebauthnBiometricAuthPanelTokens.vGapXs,
                               const Text(
                                 'Biometric verification unavailable or max 3 attempts exceeded. Enter 4-digit Single-Use PIN (Test Code: 9901):',
                                 style: TextStyle(fontSize: 11),
                               ),
-                              AppSpacingTokens.vGapSm,
+                              WebauthnBiometricAuthPanelTokens.vGapSm,
                               Row(
                                 children: [
                                   Expanded(
@@ -746,7 +744,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                       ),
                                     ),
                                   ),
-                                  AppSpacingTokens.hGapSm,
+                                  WebauthnBiometricAuthPanelTokens.hGapSm,
                                   ConstrainedBox(
                                     constraints: const BoxConstraints(minHeight: 48),
                                     child: FilledButton(
@@ -758,10 +756,10 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                 ],
                               ),
                               if (_pinVerificationStatus.isNotEmpty) ...[
-                                AppSpacingTokens.vGapXs,
+                                WebauthnBiometricAuthPanelTokens.vGapXs,
                                 Text(
                                   _pinVerificationStatus,
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: WebauthnBiometricAuthPanelTokens.brandPrimary),
                                 ),
                               ],
                             ],
@@ -773,7 +771,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 ),
               ),
 
-              AppSpacingTokens.vGapLg,
+              WebauthnBiometricAuthPanelTokens.vGapLg,
 
               // Mistake-Proofing (Poka-Yoke) & Self-Chasing Panel
               Card(
@@ -781,14 +779,14 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 color: colorScheme.surface,
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? WebauthnBiometricAuthPanelTokens.paddingMd : WebauthnBiometricAuthPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.shield_outlined, color: AppColorPalette.success),
-                          AppSpacingTokens.hGapSm,
+                          const Icon(Icons.shield_outlined, color: WebauthnBiometricAuthPanelTokens.success),
+                          WebauthnBiometricAuthPanelTokens.hGapSm,
                           Text(
                             'Mistake-Proofing (Poka-Yoke) & Synchronized Revocation',
                             style: theme.textTheme.titleMedium?.copyWith(
@@ -798,15 +796,15 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      WebauthnBiometricAuthPanelTokens.vGapSm,
                       Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
-                      AppSpacingTokens.vGapSm,
+                      WebauthnBiometricAuthPanelTokens.vGapSm,
 
                       SwitchListTile(
                         title: const Text('Data Check Revocation Rollback (Poka-Yoke)'),
                         subtitle: const Text('Immediately rolls back database transactions if Data Check (A - B != 0) fails, guaranteeing synchronized revocation across all microservices.'),
                         value: _pokaYokeSynchronizedRevocationActive,
-                        activeThumbColor: AppColorPalette.success,
+                        activeThumbColor: WebauthnBiometricAuthPanelTokens.success,
                         onChanged: (val) => setState(() => _pokaYokeSynchronizedRevocationActive = val),
                       ),
 
@@ -814,7 +812,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                         title: const Text('Governed Exception Table Routing (Self-Chasing)'),
                         subtitle: const Text('Validation failure triggers forced accountability loop, instantly routing unmatched records to governed exception tables.'),
                         value: _selfChasingExceptionQueueActive,
-                        activeThumbColor: AppColorPalette.success,
+                        activeThumbColor: WebauthnBiometricAuthPanelTokens.success,
                         onChanged: (val) => setState(() => _selfChasingExceptionQueueActive = val),
                       ),
                     ],
@@ -822,7 +820,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 ),
               ),
 
-              AppSpacingTokens.vGapLg,
+              WebauthnBiometricAuthPanelTokens.vGapLg,
 
               // Vitality & Prosperity (VAP) Section
               Card(
@@ -830,14 +828,14 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 child: Padding(
-                  padding: isCompact ? AppSpacingTokens.paddingMd : AppSpacingTokens.paddingLg,
+                  padding: isCompact ? WebauthnBiometricAuthPanelTokens.paddingMd : WebauthnBiometricAuthPanelTokens.paddingLg,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
                           const Icon(Icons.auto_awesome, color: Colors.amber),
-                          AppSpacingTokens.hGapSm,
+                          WebauthnBiometricAuthPanelTokens.hGapSm,
                           Text(
                             'Vitality & Prosperity (VAP) Business & Security Impact',
                             style: theme.textTheme.titleMedium?.copyWith(
@@ -847,9 +845,9 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      WebauthnBiometricAuthPanelTokens.vGapSm,
                       Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
-                      AppSpacingTokens.vGapSm,
+                      WebauthnBiometricAuthPanelTokens.vGapSm,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -861,10 +859,10 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                   'What Creates VAP For Us:',
                                   style: theme.textTheme.labelMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: AppColorPalette.brandPrimary,
+                                    color: WebauthnBiometricAuthPanelTokens.brandPrimary,
                                   ),
                                 ),
-                                AppSpacingTokens.vGapXs,
+                                WebauthnBiometricAuthPanelTokens.vGapXs,
                                 Text(
                                   'Dramatically reduces password reset requests and account recovery work for internal support desks.',
                                   style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -872,7 +870,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                               ],
                             ),
                           ),
-                          AppSpacingTokens.hGapMd,
+                          WebauthnBiometricAuthPanelTokens.hGapMd,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -881,10 +879,10 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
                                   'What Creates VAP For Customer:',
                                   style: theme.textTheme.labelMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: AppColorPalette.success,
+                                    color: WebauthnBiometricAuthPanelTokens.success,
                                   ),
                                 ),
-                                AppSpacingTokens.vGapXs,
+                                WebauthnBiometricAuthPanelTokens.vGapXs,
                                 Text(
                                   'Provides instant, secure enterprise tool access with a single touch, maintaining momentum throughout the workday.',
                                   style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -918,7 +916,7 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
           color: isMet ? badgeColor : Colors.grey,
           size: 20,
         ),
-        AppSpacingTokens.hGapSm,
+        WebauthnBiometricAuthPanelTokens.hGapSm,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -971,4 +969,116 @@ class _WebAuthnBiometricAuthPanelState extends State<WebAuthnBiometricAuthPanel>
       ],
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class WebauthnBiometricAuthPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: WebAuthnBiometricAuthPanel(
+        record: WebAuthnBiometricAuthRecord(
+          executionTimestamp: '2026-09-02 10:25:00 UTC',
+          userId: 'usr_fido2_pooja',
+          userSessionId: 'USR-WEBAUTHN-33550',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

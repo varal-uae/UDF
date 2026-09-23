@@ -25,8 +25,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Step CCBPB-011-A08: Interactive Panel
 class BudgetAlertThreshold100Panel extends StatefulWidget {
@@ -68,7 +66,7 @@ class _BudgetAlertThreshold100PanelState
           content: Text(
             'POKA-YOKE HARD STOP: Purchases locked! Budget is at or above 100% limit.',
           ),
-          backgroundColor: AppColorPalette.error,
+          backgroundColor: BudgetAlertThreshold100PanelTokens.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -78,7 +76,7 @@ class _BudgetAlertThreshold100PanelState
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Purchase order authorized (spend < 100%).'),
-        backgroundColor: AppColorPalette.success,
+        backgroundColor: BudgetAlertThreshold100PanelTokens.success,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -123,8 +121,8 @@ class _BudgetAlertThreshold100PanelState
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardPadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? BudgetAlertThreshold100PanelTokens.paddingSm
+            : (isExpanded ? BudgetAlertThreshold100PanelTokens.paddingLg : BudgetAlertThreshold100PanelTokens.paddingMd);
 
         return Card(
           elevation: 2,
@@ -141,13 +139,13 @@ class _BudgetAlertThreshold100PanelState
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.error.withValues(alpha: 0.12),
+                        color: BudgetAlertThreshold100PanelTokens.error.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.block_rounded,
-                          color: AppColorPalette.error, size: 22),
+                          color: BudgetAlertThreshold100PanelTokens.error, size: 22),
                     ),
-                    AppSpacingTokens.hGapMd,
+                    BudgetAlertThreshold100PanelTokens.hGapMd,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +154,7 @@ class _BudgetAlertThreshold100PanelState
                             '${widget.globalRefId} / ${widget.atomicStepRefId}',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColorPalette.brandPrimary,
+                              color: BudgetAlertThreshold100PanelTokens.brandPrimary,
                               fontSize: isExpanded ? 16 : 14,
                             ),
                           ),
@@ -174,8 +172,8 @@ class _BudgetAlertThreshold100PanelState
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: isHardStop
-                            ? AppColorPalette.errorContainer
-                            : AppColorPalette.successContainer,
+                            ? BudgetAlertThreshold100PanelTokens.errorContainer
+                            : BudgetAlertThreshold100PanelTokens.successContainer,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -184,26 +182,26 @@ class _BudgetAlertThreshold100PanelState
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                           color: isHardStop
-                              ? AppColorPalette.onErrorContainer
-                              : AppColorPalette.onSuccessContainer,
+                              ? BudgetAlertThreshold100PanelTokens.onErrorContainer
+                              : BudgetAlertThreshold100PanelTokens.onSuccessContainer,
                         ),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold100PanelTokens.vGapMd,
 
                 // Architectural Directive
                 Text(
                   'Threshold Parameter Tier 3 Hard-Stop (Col AD Poka-Yoke Mandate):',
                   style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapXs,
+                BudgetAlertThreshold100PanelTokens.vGapXs,
                 Text(
                   'Sets the final alert condition parameter at exactly 100.0% variance to physically block new purchase submissions and freeze budget overruns.',
                   style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant),
                 ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold100PanelTokens.vGapMd,
 
                 // Spend Simulation Slider
                 Container(
@@ -227,7 +225,7 @@ class _BudgetAlertThreshold100PanelState
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w800,
-                              color: isHardStop ? AppColorPalette.error : const Color(0xFFED6C02),
+                              color: isHardStop ? BudgetAlertThreshold100PanelTokens.error : const Color(0xFFED6C02),
                             ),
                           ),
                         ],
@@ -238,33 +236,33 @@ class _BudgetAlertThreshold100PanelState
                         max: 120.0,
                         divisions: 35,
                         label: '${_currentSpendingPercentage.toStringAsFixed(1)}%',
-                        activeColor: isHardStop ? AppColorPalette.error : const Color(0xFFED6C02),
+                        activeColor: isHardStop ? BudgetAlertThreshold100PanelTokens.error : const Color(0xFFED6C02),
                         onChanged: _updateSpending,
                       ),
                       LinearProgressIndicator(
                         value: (_currentSpendingPercentage / 100.0).clamp(0.0, 1.0),
                         backgroundColor: Colors.grey.withValues(alpha: 0.2),
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          isHardStop ? AppColorPalette.error : const Color(0xFFED6C02),
+                          isHardStop ? BudgetAlertThreshold100PanelTokens.error : const Color(0xFFED6C02),
                         ),
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold100PanelTokens.vGapMd,
 
                 // 100% Critical Banner (md.sys.color.errorContainer)
                 if (isHardStop)
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.errorContainer,
+                      color: BudgetAlertThreshold100PanelTokens.errorContainer,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.error, width: 1.5),
+                      border: Border.all(color: BudgetAlertThreshold100PanelTokens.error, width: 1.5),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.gpp_bad_rounded, color: AppColorPalette.error, size: 24),
+                        const Icon(Icons.gpp_bad_rounded, color: BudgetAlertThreshold100PanelTokens.error, size: 24),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
@@ -275,12 +273,12 @@ class _BudgetAlertThreshold100PanelState
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w900,
-                                  color: AppColorPalette.onErrorContainer,
+                                  color: BudgetAlertThreshold100PanelTokens.onErrorContainer,
                                 ),
                               ),
                               Text(
                                 'Overrun: +${overrunDelta.toStringAsFixed(1)}% above allocation limit. Purchase submission controls physically locked.',
-                                style: const TextStyle(fontSize: 10, color: AppColorPalette.onErrorContainer),
+                                style: const TextStyle(fontSize: 10, color: BudgetAlertThreshold100PanelTokens.onErrorContainer),
                               ),
                             ],
                           ),
@@ -288,7 +286,7 @@ class _BudgetAlertThreshold100PanelState
                       ],
                     ),
                   ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold100PanelTokens.vGapMd,
 
                 // Purchase Order Action Button (Locked if >=100%) with min 48dp target
                 ConstrainedBox(
@@ -300,7 +298,7 @@ class _BudgetAlertThreshold100PanelState
                       icon: Icon(isHardStop ? Icons.lock_outline_rounded : Icons.shopping_cart_checkout_rounded, size: 18),
                       label: Text(isHardStop ? 'Purchases Blocked (100% Limit Reached)' : 'Submit Purchase Order'),
                       style: FilledButton.styleFrom(
-                        backgroundColor: isHardStop ? theme.colorScheme.surfaceContainerHighest : AppColorPalette.brandPrimary,
+                        backgroundColor: isHardStop ? theme.colorScheme.surfaceContainerHighest : BudgetAlertThreshold100PanelTokens.brandPrimary,
                         foregroundColor: isHardStop ? theme.colorScheme.onSurface.withValues(alpha: 0.38) : Colors.white,
                         minimumSize: const Size.fromHeight(48),
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -308,7 +306,7 @@ class _BudgetAlertThreshold100PanelState
                     ),
                   ),
                 ),
-                AppSpacingTokens.vGapMd,
+                BudgetAlertThreshold100PanelTokens.vGapMd,
 
                 // 49-Columns Audit Alignment Container
                 Container(
@@ -352,4 +350,133 @@ class _BudgetAlertThreshold100PanelState
       },
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class BudgetAlertThreshold100PanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color lightPrimary = Color(0xFF6750A4);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFEADDFF);
+  static const Color lightOnPrimaryContainer = Color(0xFF21005D);
+
+  static const Color lightSecondary = Color(0xFF625B71);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightSecondaryContainer = Color(0xFFE8DEF8);
+  static const Color lightOnSecondaryContainer = Color(0xFF1D192B);
+
+  static const Color lightTertiary = Color(0xFF7D5260);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
+  static const Color lightOnTertiaryContainer = Color(0xFF31111D);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+  static const Color lightErrorContainer = Color(0xFFF9DEDC);
+  static const Color lightOnErrorContainer = Color(0xFF410E0B);
+
+  static const Color lightBackground = Color(0xFFFEF7FF);
+  static const Color lightOnBackground = Color(0xFF1D1B20);
+  static const Color lightSurface = Color(0xFFFEF7FF);
+  static const Color lightOnSurface = Color(0xFF1D1B20);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOnSurfaceVariant = Color(0xFF49454F);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: BudgetAlertThreshold100Panel(),
+          ),
+        ),
+      ),
+    ),
+  );
 }

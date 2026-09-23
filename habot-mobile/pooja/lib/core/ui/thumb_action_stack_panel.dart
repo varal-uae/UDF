@@ -36,8 +36,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// ANSA-015-A06 Record Data Model
 class ThumbActionStackRecord {
@@ -226,7 +224,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
       SnackBar(
         content: Text(_lastActionStatus),
         duration: const Duration(seconds: 2),
-        backgroundColor: AppColorPalette.success,
+        backgroundColor: ThumbActionStackPanelTokens.success,
       ),
     );
   }
@@ -242,8 +240,8 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? ThumbActionStackPanelTokens.xs : (isExpanded ? ThumbActionStackPanelTokens.md : ThumbActionStackPanelTokens.sm),
+          vertical: ThumbActionStackPanelTokens.xs,
         );
 
         return Card(
@@ -252,7 +250,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
           clipBehavior: Clip.antiAlias,
           child: Padding(
             padding: EdgeInsets.all(
-              isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md),
+              isCompact ? ThumbActionStackPanelTokens.sm : (isExpanded ? ThumbActionStackPanelTokens.lg : ThumbActionStackPanelTokens.md),
             ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,7 +281,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.hGapSm,
+                ThumbActionStackPanelTokens.hGapSm,
                 Expanded(
                   child: Text(
                     'Vertical Thumb-Stack Lower Action Container',
@@ -294,22 +292,22 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.success.withValues(alpha: 0.14),
+                    color: ThumbActionStackPanelTokens.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColorPalette.success),
+                    border: Border.all(color: ThumbActionStackPanelTokens.success),
                   ),
                   child: Text(
                     'GATE: ${record.completionStatus.toUpperCase()} (100%)',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: ThumbActionStackPanelTokens.success),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapMd,
+            ThumbActionStackPanelTokens.vGapMd,
 
             // Architectural Overview Banner
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: ThumbActionStackPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(12),
@@ -320,7 +318,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                   Row(
                     children: [
                       Icon(Icons.pan_tool_alt_outlined, color: colorScheme.primary, size: 18),
-                      AppSpacingTokens.hGapSm,
+                      ThumbActionStackPanelTokens.hGapSm,
                       Expanded(
                         child: Text(
                           'Assigned: ${record.assignedTeamMember} (${record.assignedGroupTeam}) | Seq: ${record.sequenceOrder}',
@@ -334,19 +332,19 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColorPalette.brandPrimary.withValues(alpha: 0.10),
+                          color: ThumbActionStackPanelTokens.brandPrimary.withValues(alpha: 0.10),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text('THUMB REACH ZONE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary)),
+                        child: const Text('THUMB REACH ZONE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: ThumbActionStackPanelTokens.brandPrimary)),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapXs,
+                  ThumbActionStackPanelTokens.vGapXs,
                   Text(
                     'Setup Action: ${record.setupAction}',
                     style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  AppSpacingTokens.vGapXs,
+                  ThumbActionStackPanelTokens.vGapXs,
                   Text(
                     'Why This Matters: ${record.whyThisMatters}',
                     style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -354,7 +352,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            ThumbActionStackPanelTokens.vGapLg,
 
             // Interactive Smartphone Mockup with Bottom 40% Thumb Reach Zone
             Container(
@@ -367,7 +365,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                 children: [
                   // Upper Content Zone (Top 60% - Read Only / Content Display)
                   Container(
-                    padding: AppSpacingTokens.paddingMd,
+                    padding: ThumbActionStackPanelTokens.paddingMd,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -384,7 +382,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                             ),
                           ],
                         ),
-                        AppSpacingTokens.vGapSm,
+                        ThumbActionStackPanelTokens.vGapSm,
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
@@ -399,7 +397,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                               const SizedBox(height: 4),
                               Text('Patient: Noah Vance (Age 6) • Specialty: Sensory Integration OT', style: TextStyle(fontSize: 10, color: colorScheme.onSurfaceVariant)),
                               const SizedBox(height: 4),
-                              Text('Status: $_lastActionStatus', style: const TextStyle(fontSize: 10, color: AppColorPalette.brandPrimary, fontWeight: FontWeight.w600)),
+                              Text('Status: $_lastActionStatus', style: const TextStyle(fontSize: 10, color: ThumbActionStackPanelTokens.brandPrimary, fontWeight: FontWeight.w600)),
                             ],
                           ),
                         ),
@@ -409,15 +407,15 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
 
                   // Lower Action Bar (Bottom 40% - Vertically Stacked Primary Multi-Button Container)
                   Container(
-                    padding: AppSpacingTokens.paddingMd,
+                    padding: ThumbActionStackPanelTokens.paddingMd,
                     decoration: BoxDecoration(
                       color: _showThumbReachZone
-                          ? AppColorPalette.success.withValues(alpha: 0.08)
+                          ? ThumbActionStackPanelTokens.success.withValues(alpha: 0.08)
                           : colorScheme.surfaceContainerHighest,
                       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                       border: Border(
                         top: BorderSide(
-                          color: _showThumbReachZone ? AppColorPalette.success : colorScheme.outlineVariant,
+                          color: _showThumbReachZone ? ThumbActionStackPanelTokens.success : colorScheme.outlineVariant,
                           width: _showThumbReachZone ? 2.0 : 1.0,
                         ),
                       ),
@@ -430,11 +428,11 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                           children: [
                             const Row(
                               children: [
-                                Icon(Icons.thumb_up_alt_outlined, size: 16, color: AppColorPalette.success),
+                                Icon(Icons.thumb_up_alt_outlined, size: 16, color: ThumbActionStackPanelTokens.success),
                                 SizedBox(width: 6),
                                 Text(
                                   'Lower Action Bar (Thumb Ergonomics Zone: Bottom 40%)',
-                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: ThumbActionStackPanelTokens.success),
                                 ),
                               ],
                             ),
@@ -444,7 +442,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                             ),
                           ],
                         ),
-                        AppSpacingTokens.vGapSm,
+                        ThumbActionStackPanelTokens.vGapSm,
 
                         // Vertically Stacked Multi-Button Options
                         SizedBox(
@@ -460,7 +458,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                             label: const Text('Confirm & Sign Treatment Plan (Primary)', style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
                         ),
-                        AppSpacingTokens.vGapXs,
+                        ThumbActionStackPanelTokens.vGapXs,
 
                         SizedBox(
                           width: double.infinity,
@@ -474,7 +472,7 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                             label: const Text('Save Draft to Clinical Sandbox (Secondary)'),
                           ),
                         ),
-                        AppSpacingTokens.vGapXs,
+                        ThumbActionStackPanelTokens.vGapXs,
 
                         SizedBox(
                           width: double.infinity,
@@ -484,8 +482,8 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                             onPressed: () => _triggerAction('Reject & Return to Intake Queue'),
-                            icon: const Icon(Icons.close, size: 18, color: AppColorPalette.warning),
-                            label: const Text('Reject & Return (Tertiary)', style: TextStyle(color: AppColorPalette.warning, fontWeight: FontWeight.bold)),
+                            icon: const Icon(Icons.close, size: 18, color: ThumbActionStackPanelTokens.warning),
+                            label: const Text('Reject & Return (Tertiary)', style: TextStyle(color: ThumbActionStackPanelTokens.warning, fontWeight: FontWeight.bold)),
                           ),
                         ),
                       ],
@@ -494,11 +492,11 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            ThumbActionStackPanelTokens.vGapLg,
 
             // Specifications & Poka-Yoke Rule
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: ThumbActionStackPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -510,14 +508,14 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                   Row(
                     children: [
                       Icon(Icons.accessibility_new, size: 16, color: colorScheme.primary),
-                      AppSpacingTokens.hGapXs,
+                      ThumbActionStackPanelTokens.hGapXs,
                       Text(
                         'Ergonomic Layout Specifications',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  AppSpacingTokens.vGapSm,
+                  ThumbActionStackPanelTokens.vGapSm,
                   _buildSpecRow(context, 'Layout Type', record.layoutType),
                   _buildSpecRow(context, 'Fluid Grid System', record.layoutGridDimensions),
                   _buildSpecRow(context, 'Spacing Parameters', record.spacingRules),
@@ -525,11 +523,11 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                 ],
               ),
             ),
-            AppSpacingTokens.vGapLg,
+            ThumbActionStackPanelTokens.vGapLg,
 
             // Audit Gate Metrics Matrix
             Container(
-              padding: AppSpacingTokens.paddingMd,
+              padding: ThumbActionStackPanelTokens.paddingMd,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
@@ -542,13 +540,13 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
                     'Audit Metric Standard: ${record.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  AppSpacingTokens.vGapSm,
+                  ThumbActionStackPanelTokens.vGapSm,
                   Row(
                     children: [
-                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                      _buildMetricTile(context, 'Gate Status', 'PASS (48-56dp)', AppColorPalette.brandPrimary),
+                      _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, ThumbActionStackPanelTokens.warning),
+                      _buildMetricTile(context, 'Optimal Target', record.optimalTarget, ThumbActionStackPanelTokens.info),
+                      _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, ThumbActionStackPanelTokens.success),
+                      _buildMetricTile(context, 'Gate Status', 'PASS (48-56dp)', ThumbActionStackPanelTokens.brandPrimary),
                     ],
                   ),
                 ],
@@ -607,4 +605,115 @@ class _ThumbActionStackPanelState extends State<ThumbActionStackPanel> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class ThumbActionStackPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: ThumbActionStackPanel(
+        record: ThumbActionStackRecord(
+          actionTimestamp: '2026-08-31 13:05:00 UTC',
+          userSessionId: 'USR-THUMB-17440',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

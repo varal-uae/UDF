@@ -27,8 +27,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Data record holding 49-column metadata and ADFA specification parameters.
 class SegmentedToggleCardRecord {
@@ -291,8 +289,8 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final pagePadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? SegmentedToggleCardPanelTokens.paddingSm
+            : (isExpanded ? SegmentedToggleCardPanelTokens.paddingLg : SegmentedToggleCardPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: pagePadding,
@@ -301,11 +299,11 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
             children: [
               // Header Card
               _buildHeaderCard(context, colorScheme, theme, r, isCompact: isCompact, isExpanded: isExpanded),
-              AppSpacingTokens.vGapMd,
+              SegmentedToggleCardPanelTokens.vGapMd,
 
               // Segment Bar
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              SegmentedToggleCardPanelTokens.vGapMd,
 
               // Active Tab Content
               if (_activeTab == 'cards') ...[
@@ -315,7 +313,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r, isExpanded: isExpanded),
               ],
-              AppSpacingTokens.vGapLg,
+              SegmentedToggleCardPanelTokens.vGapLg,
 
               // Lineage Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -335,7 +333,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
     required bool isExpanded,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? SegmentedToggleCardPanelTokens.paddingSm : SegmentedToggleCardPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -370,18 +368,18 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.success.withValues(alpha: 0.1),
+                      color: SegmentedToggleCardPanelTokens.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.success.withValues(alpha: 0.3)),
+                      border: Border.all(color: SegmentedToggleCardPanelTokens.success.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.speed, size: 12, color: AppColorPalette.success),
+                        const Icon(Icons.speed, size: 12, color: SegmentedToggleCardPanelTokens.success),
                         const SizedBox(width: 4),
                         Text(
                           'INP: ${_simulatedLatency}ms (GOOD)',
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: SegmentedToggleCardPanelTokens.success),
                         ),
                       ],
                     ),
@@ -396,12 +394,12 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          SegmentedToggleCardPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          AppSpacingTokens.vGapXs,
+          SegmentedToggleCardPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -417,9 +415,9 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
       child: Row(
         children: [
           _buildSegmentButton('cards', 'Segmented Toggle Cards', Icons.view_agenda_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          SegmentedToggleCardPanelTokens.hGapSm,
           _buildSegmentButton('revocation', 'Access Denied State (${_isSessionActive ? "Active" : "Revoked"})', Icons.block, colorScheme),
-          AppSpacingTokens.hGapSm,
+          SegmentedToggleCardPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -453,7 +451,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
     required bool isCompact,
   }) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? SegmentedToggleCardPanelTokens.paddingSm : SegmentedToggleCardPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -478,18 +476,18 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
                     minimumSize: const Size(48, 48),
                   ),
                   onPressed: _simulateRevocation,
-                  icon: const Icon(Icons.gavel, size: 14, color: AppColorPalette.error),
-                  label: const Text('Simulate Prune', style: TextStyle(fontSize: 10, color: AppColorPalette.error)),
+                  icon: const Icon(Icons.gavel, size: 14, color: SegmentedToggleCardPanelTokens.error),
+                  label: const Text('Simulate Prune', style: TextStyle(fontSize: 10, color: SegmentedToggleCardPanelTokens.error)),
                 ),
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          SegmentedToggleCardPanelTokens.vGapSm,
           Text(
             'Gestalt proximity card grouping with >=48dp touch targets and distinct Material 3 on/off visual states.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          SegmentedToggleCardPanelTokens.vGapMd,
 
           // Toggle Cards List
           ..._toggles.map((item) {
@@ -527,7 +525,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
                         color: isChecked ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
                       ),
                     ),
-                    AppSpacingTokens.hGapMd,
+                    SegmentedToggleCardPanelTokens.hGapMd,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,14 +542,14 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    SegmentedToggleCardPanelTokens.hGapSm,
                     SizedBox(
                       width: 48,
                       height: 48,
                       child: Center(
                         child: Switch.adaptive(
                           value: item.isEnabled,
-                          activeThumbColor: AppColorPalette.brandPrimary,
+                          activeThumbColor: SegmentedToggleCardPanelTokens.brandPrimary,
                           onChanged: (val) => _handleToggleChange(item, val),
                         ),
                       ),
@@ -572,7 +570,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColorPalette.error.withValues(alpha: 0.31)),
+        border: Border.all(color: SegmentedToggleCardPanelTokens.error.withValues(alpha: 0.31)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -581,18 +579,18 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColorPalette.error.withValues(alpha: 0.08),
+              color: SegmentedToggleCardPanelTokens.error.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.lock_person_outlined, size: 48, color: AppColorPalette.error),
+            child: const Icon(Icons.lock_person_outlined, size: 48, color: SegmentedToggleCardPanelTokens.error),
           ),
-          AppSpacingTokens.vGapMd,
+          SegmentedToggleCardPanelTokens.vGapMd,
           Text(
             'Access Revoked — Automated Pruning Protocol',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColorPalette.error),
+            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: SegmentedToggleCardPanelTokens.error),
             textAlign: TextAlign.center,
           ),
-          AppSpacingTokens.vGapSm,
+          SegmentedToggleCardPanelTokens.vGapSm,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
@@ -601,7 +599,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
               textAlign: TextAlign.center,
             ),
           ),
-          AppSpacingTokens.vGapLg,
+          SegmentedToggleCardPanelTokens.vGapLg,
           ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
             child: FilledButton.tonal(
@@ -624,7 +622,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
     required bool isExpanded,
   }) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: SegmentedToggleCardPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -635,7 +633,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          SegmentedToggleCardPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -650,19 +648,19 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                SegmentedToggleCardPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Actual Latency', '${_simulatedLatency}ms', AppColorPalette.success),
+                    _buildMetricTile('Actual Latency', '${_simulatedLatency}ms', SegmentedToggleCardPanelTokens.success),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          SegmentedToggleCardPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -728,7 +726,7 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, SegmentedToggleCardRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: SegmentedToggleCardPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10),
@@ -748,9 +746,120 @@ class _SegmentedToggleCardPanelState extends State<SegmentedToggleCardPanel> {
               ],
             ),
           ),
-          const Icon(Icons.security, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.security, size: 16, color: SegmentedToggleCardPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class SegmentedToggleCardPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SegmentedToggleCardPanel(
+        record: SegmentedToggleCardRecord(
+          actionTimestamp: '2026-09-01 19:24:00 UTC',
+          userSessionId: 'USR-SEGMENT-27670',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

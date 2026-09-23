@@ -30,8 +30,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Data record holding 49-column metadata and ADFA specification parameters.
 class NativeSwitchMigrationRecord {
@@ -315,7 +313,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                 ? 'ADFA Pipeline: Free-text fields successfully mutated to MD3 Native Switch Toggles (MATCH_PARENT).'
                 : 'Schema reset to Legacy Free-Text inputs.',
           ),
-          backgroundColor: _isMigratedToNativeSwitches ? AppColorPalette.success : AppColorPalette.warning,
+          backgroundColor: _isMigratedToNativeSwitches ? NativeSwitchToggleMigrationPanelTokens.success : NativeSwitchToggleMigrationPanelTokens.warning,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -338,7 +336,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('POKA-YOKE: Unstructured text injection trapped & quarantined in Dead Letter Queue (DLQ).'),
-        backgroundColor: AppColorPalette.error,
+        backgroundColor: NativeSwitchToggleMigrationPanelTokens.error,
         duration: Duration(seconds: 3),
       ),
     );
@@ -363,11 +361,11 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
             children: [
               // Header Badge Banner
               _buildHeaderCard(context, colorScheme, theme, r),
-              AppSpacingTokens.vGapMd,
+              NativeSwitchToggleMigrationPanelTokens.vGapMd,
 
               // Navigation Segment Controls
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              NativeSwitchToggleMigrationPanelTokens.vGapMd,
 
               // Main View Content
               if (_activeTab == 'sandbox') ...[
@@ -379,7 +377,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r),
               ],
-              AppSpacingTokens.vGapLg,
+              NativeSwitchToggleMigrationPanelTokens.vGapLg,
 
               // ADFA Lineage & Cryptographic Hash Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -392,7 +390,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
 
   Widget _buildHeaderCard(BuildContext context, ColorScheme colorScheme, ThemeData theme, NativeSwitchMigrationRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: NativeSwitchToggleMigrationPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -423,22 +421,22 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                       ),
                     ),
                   ),
-                  AppSpacingTokens.hGapSm,
+                  NativeSwitchToggleMigrationPanelTokens.hGapSm,
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColorPalette.success.withValues(alpha: 0.1),
+                      color: NativeSwitchToggleMigrationPanelTokens.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColorPalette.success.withValues(alpha: 0.3)),
+                      border: Border.all(color: NativeSwitchToggleMigrationPanelTokens.success.withValues(alpha: 0.3)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.verified, size: 12, color: AppColorPalette.success),
+                        Icon(Icons.verified, size: 12, color: NativeSwitchToggleMigrationPanelTokens.success),
                         SizedBox(width: 4),
                         Text(
                           'ISO 9001:2015 PASSED',
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: NativeSwitchToggleMigrationPanelTokens.success),
                         ),
                       ],
                     ),
@@ -451,12 +449,12 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          NativeSwitchToggleMigrationPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          AppSpacingTokens.vGapXs,
+          NativeSwitchToggleMigrationPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -472,11 +470,11 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
       child: Row(
         children: [
           _buildSegmentButton('sandbox', 'Live Interactive Sandbox', Icons.touch_app, colorScheme),
-          AppSpacingTokens.hGapSm,
+          NativeSwitchToggleMigrationPanelTokens.hGapSm,
           _buildSegmentButton('schema', 'ADFA Schema JSON Payload', Icons.code, colorScheme),
-          AppSpacingTokens.hGapSm,
+          NativeSwitchToggleMigrationPanelTokens.hGapSm,
           _buildSegmentButton('dlq', 'Dead Letter Queue (${_dlqLogs.length})', Icons.report_problem_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          NativeSwitchToggleMigrationPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -501,7 +499,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
 
   Widget _buildInteractiveSandbox(BuildContext context, ColorScheme colorScheme, ThemeData theme, NativeSwitchMigrationRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: NativeSwitchToggleMigrationPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -523,7 +521,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: _isMigratedToNativeSwitches ? AppColorPalette.brandPrimary : AppColorPalette.warning,
+                          color: _isMigratedToNativeSwitches ? NativeSwitchToggleMigrationPanelTokens.brandPrimary : NativeSwitchToggleMigrationPanelTokens.warning,
                         )),
                   ],
                 ),
@@ -538,11 +536,11 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
               ),
             ],
           ),
-          AppSpacingTokens.vGapMd,
+          NativeSwitchToggleMigrationPanelTokens.vGapMd,
 
           // Mobile Viewport Frame
           Container(
-            padding: AppSpacingTokens.paddingMd,
+            padding: NativeSwitchToggleMigrationPanelTokens.paddingMd,
             decoration: BoxDecoration(
               color: colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
@@ -563,7 +561,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.smartphone, size: 16, color: AppColorPalette.brandPrimary),
+                        Icon(Icons.smartphone, size: 16, color: NativeSwitchToggleMigrationPanelTokens.brandPrimary),
                         SizedBox(width: 6),
                         Text('Target Device: Mobile Viewport (<600dp)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                       ],
@@ -571,11 +569,11 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.brandPrimary.withValues(alpha: 0.1),
+                        color: NativeSwitchToggleMigrationPanelTokens.brandPrimary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Text('Strict Boolean Schema Active',
-                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary)),
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: NativeSwitchToggleMigrationPanelTokens.brandPrimary)),
                     ),
                   ],
                 ),
@@ -614,7 +612,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                                 alignment: Alignment.center,
                                 child: Switch.adaptive(
                                   value: node.toggleValue,
-                                  activeThumbColor: AppColorPalette.brandPrimary,
+                                  activeThumbColor: NativeSwitchToggleMigrationPanelTokens.brandPrimary,
                                   onChanged: (val) {
                                     HapticFeedback.selectionClick();
                                     setState(() {
@@ -631,7 +629,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                               Text(node.label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
                               const SizedBox(height: 4),
                               Text('Legacy Type: ${node.originalType} (Unstructured String Risk)',
-                                  style: const TextStyle(fontSize: 10, color: AppColorPalette.warning)),
+                                  style: const TextStyle(fontSize: 10, color: NativeSwitchToggleMigrationPanelTokens.warning)),
                               const SizedBox(height: 6),
                               TextField(
                                 decoration: InputDecoration(
@@ -648,19 +646,19 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                   );
                 }),
 
-                AppSpacingTokens.vGapSm,
+                NativeSwitchToggleMigrationPanelTokens.vGapSm,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
                       onPressed: _testDlqTrap,
-                      icon: const Icon(Icons.shield_outlined, size: 14, color: AppColorPalette.error),
-                      label: const Text('Test Unstructured Text Injection Trap', style: TextStyle(fontSize: 11, color: AppColorPalette.error)),
+                      icon: const Icon(Icons.shield_outlined, size: 14, color: NativeSwitchToggleMigrationPanelTokens.error),
+                      label: const Text('Test Unstructured Text Injection Trap', style: TextStyle(fontSize: 11, color: NativeSwitchToggleMigrationPanelTokens.error)),
                     ),
                     const Text(
                       'Poka-Yoke Strict Type Rule: ACTIVE',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: NativeSwitchToggleMigrationPanelTokens.success),
                     ),
                   ],
                 ),
@@ -706,7 +704,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
     final prettyJson = encoder.convert(payload);
 
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: NativeSwitchToggleMigrationPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -733,7 +731,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          NativeSwitchToggleMigrationPanelTokens.vGapSm,
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
@@ -757,7 +755,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
 
   Widget _buildDlqQuarantinePanel(ColorScheme colorScheme, ThemeData theme) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: NativeSwitchToggleMigrationPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -775,12 +773,12 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                   style: TextStyle(fontSize: 10, fontFamily: 'monospace', color: colorScheme.onSurfaceVariant)),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          NativeSwitchToggleMigrationPanelTokens.vGapSm,
           Text(
             'Captures unrecoverable schema validation anomalies, non-boolean values, or malformed payloads for offline audit.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          NativeSwitchToggleMigrationPanelTokens.vGapMd,
 
           ..._dlqLogs.map((entry) {
             return Container(
@@ -789,12 +787,12 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
               decoration: BoxDecoration(
                 color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColorPalette.error.withValues(alpha: 0.24)),
+                border: Border.all(color: NativeSwitchToggleMigrationPanelTokens.error.withValues(alpha: 0.24)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.warning_amber_rounded, size: 18, color: AppColorPalette.error),
-                  AppSpacingTokens.hGapSm,
+                  const Icon(Icons.warning_amber_rounded, size: 18, color: NativeSwitchToggleMigrationPanelTokens.error),
+                  NativeSwitchToggleMigrationPanelTokens.hGapSm,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -803,7 +801,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('${entry.errorCode} (${entry.id})',
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColorPalette.error)),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: NativeSwitchToggleMigrationPanelTokens.error)),
                             Text(entry.timestamp, style: const TextStyle(fontSize: 9, color: Colors.grey)),
                           ],
                         ),
@@ -823,7 +821,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
 
   Widget _build49ColumnAuditMatrix(ColorScheme colorScheme, ThemeData theme, NativeSwitchMigrationRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: NativeSwitchToggleMigrationPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -834,7 +832,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          NativeSwitchToggleMigrationPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -849,19 +847,19 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                NativeSwitchToggleMigrationPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Actual Quality', '${(r.qualityScore * 100).toStringAsFixed(1)}%', AppColorPalette.success),
+                    _buildMetricTile('Actual Quality', '${(r.qualityScore * 100).toStringAsFixed(1)}%', NativeSwitchToggleMigrationPanelTokens.success),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          NativeSwitchToggleMigrationPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -928,7 +926,7 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, NativeSwitchMigrationRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: NativeSwitchToggleMigrationPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(10),
@@ -948,9 +946,120 @@ class _NativeSwitchToggleMigrationPanelState extends State<NativeSwitchToggleMig
               ],
             ),
           ),
-          const Icon(Icons.security, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.security, size: 16, color: NativeSwitchToggleMigrationPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class NativeSwitchToggleMigrationPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: NativeSwitchToggleMigrationPanel(
+        record: NativeSwitchMigrationRecord(
+          actionTimestamp: '2026-09-01 19:10:00 UTC',
+          userSessionId: 'USR-SWITCH-25170',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

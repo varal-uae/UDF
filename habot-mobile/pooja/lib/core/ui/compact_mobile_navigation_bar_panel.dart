@@ -25,8 +25,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Navigation Target Model for ANSA-021-A08
 class MobileNavTargetItem {
@@ -225,8 +223,8 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardMargin = EdgeInsets.symmetric(
-          horizontal: isCompact ? AppSpacingTokens.xs : (isExpanded ? AppSpacingTokens.md : AppSpacingTokens.sm),
-          vertical: AppSpacingTokens.xs,
+          horizontal: isCompact ? CompactMobileNavigationBarPanelTokens.xs : (isExpanded ? CompactMobileNavigationBarPanelTokens.md : CompactMobileNavigationBarPanelTokens.sm),
+          vertical: CompactMobileNavigationBarPanelTokens.xs,
         );
 
         return Card(
@@ -265,7 +263,7 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    CompactMobileNavigationBarPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Compact Mobile Navigation Bar Framework (3-5 Items)',
@@ -279,22 +277,22 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.14),
+                        color: CompactMobileNavigationBarPanelTokens.success.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: CompactMobileNavigationBarPanelTokens.success),
                       ),
                       child: Text(
                         'STATUS: ${record.completionStatus.toUpperCase()} (100%)',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: CompactMobileNavigationBarPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                CompactMobileNavigationBarPanelTokens.vGapMd,
 
                 // Architectural Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: CompactMobileNavigationBarPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -305,7 +303,7 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                       Row(
                         children: [
                           Icon(Icons.swap_horiz, color: colorScheme.primary, size: 18),
-                          AppSpacingTokens.hGapSm,
+                          CompactMobileNavigationBarPanelTokens.hGapSm,
                           Expanded(
                             child: Text(
                               'Assigned: ${record.assignedTeamMember} (${record.assignedGroupTeam}) | Seq: ${record.sequenceOrder}',
@@ -319,19 +317,19 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.info.withValues(alpha: 0.1),
+                              color: CompactMobileNavigationBarPanelTokens.info.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: const Text('POKA-YOKE: 4 ITEMS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.info)),
+                            child: const Text('POKA-YOKE: 4 ITEMS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: CompactMobileNavigationBarPanelTokens.info)),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      CompactMobileNavigationBarPanelTokens.vGapXs,
                       Text(
                         'Setup Action: ${record.setupAction}',
                         style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                       ),
-                      AppSpacingTokens.vGapXs,
+                      CompactMobileNavigationBarPanelTokens.vGapXs,
                       Text(
                         'UX Rule: ${record.uxTranslation}',
                         style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -339,7 +337,7 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                CompactMobileNavigationBarPanelTokens.vGapLg,
 
                 // Interactive Navigation Simulation with Smooth Layout Shift
                 Container(
@@ -357,13 +355,13 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                         child: Container(
                           key: ValueKey<int>(_selectedTargetIndex),
                           height: isCompact ? 120 : 140,
-                          padding: AppSpacingTokens.paddingMd,
+                          padding: CompactMobileNavigationBarPanelTokens.paddingMd,
                           alignment: Alignment.center,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(activeItem.filledIcon, size: 32, color: colorScheme.primary),
-                              AppSpacingTokens.vGapXs,
+                              CompactMobileNavigationBarPanelTokens.vGapXs,
                               Text('Active Destination: ${activeItem.label}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                               Text('Route: ${activeItem.routePath} • Single-tap structural shift', style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant)),
                             ],
@@ -403,11 +401,11 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                CompactMobileNavigationBarPanelTokens.vGapLg,
 
                 // Specifications Matrix
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: CompactMobileNavigationBarPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -419,25 +417,25 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                       Row(
                         children: [
                           Icon(Icons.inventory, size: 16, color: colorScheme.primary),
-                          AppSpacingTokens.hGapXs,
+                          CompactMobileNavigationBarPanelTokens.hGapXs,
                           Text(
                             'Component Manifest & Poka-Yoke Parameters',
                             style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      CompactMobileNavigationBarPanelTokens.vGapSm,
                       _buildSpecRow(context, 'Common Library', record.commonLibraryToStore),
                       _buildSpecRow(context, 'Poka-Yoke Guard', record.mistakeProofingPokaYoke),
                       _buildSpecRow(context, 'Active Item Rule', 'Forces filled icon swap and text label bolding on select'),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                CompactMobileNavigationBarPanelTokens.vGapLg,
 
                 // Audit Gate Metrics Matrix
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: CompactMobileNavigationBarPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -450,13 +448,13 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
                         'Audit Metric Standard: ${record.metricName}',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      CompactMobileNavigationBarPanelTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', record.optimalTarget, AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, AppColorPalette.success),
-                          _buildMetricTile(context, 'Gate Status', 'COMPLETE (0.98)', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', record.floorBoundary, CompactMobileNavigationBarPanelTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', record.optimalTarget, CompactMobileNavigationBarPanelTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', record.ceilingBoundary, CompactMobileNavigationBarPanelTokens.success),
+                          _buildMetricTile(context, 'Gate Status', 'COMPLETE (0.98)', CompactMobileNavigationBarPanelTokens.brandPrimary),
                         ],
                       ),
                     ],
@@ -515,4 +513,115 @@ class _CompactMobileNavigationBarPanelState extends State<CompactMobileNavigatio
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class CompactMobileNavigationBarPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: CompactMobileNavigationBarPanel(
+        record: CompactMobileNavigationBarRecord(
+          actionTimestamp: '2026-08-31 13:45:00 UTC',
+          userSessionId: 'USR-MOBILENAV-18310',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

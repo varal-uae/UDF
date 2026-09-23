@@ -26,8 +26,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Data record holding 49-column metadata and ADFA specification parameters.
 class TitleMediumTopAppBarRecord {
@@ -212,7 +210,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('TOP APP BAR EXIT: Task exit triggered via standard MD3 escape route. (Exits: $_taskExitCounter)'),
-        backgroundColor: AppColorPalette.brandPrimary,
+        backgroundColor: TitleMediumTopAppBarPanelTokens.brandPrimary,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -265,8 +263,8 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final padding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? TitleMediumTopAppBarPanelTokens.paddingSm
+            : (isExpanded ? TitleMediumTopAppBarPanelTokens.paddingLg : TitleMediumTopAppBarPanelTokens.paddingMd);
 
         return SingleChildScrollView(
           padding: padding,
@@ -275,11 +273,11 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
             children: [
               // Header Card
               _buildHeaderCard(context, colorScheme, theme, r, isCompact, isExpanded),
-              AppSpacingTokens.vGapMd,
+              TitleMediumTopAppBarPanelTokens.vGapMd,
 
               // Navigation Segment Bar
               _buildSegmentBar(colorScheme),
-              AppSpacingTokens.vGapMd,
+              TitleMediumTopAppBarPanelTokens.vGapMd,
 
               // Active Tab Content
               if (_activeTab == 'preview') ...[
@@ -289,7 +287,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
               ] else ...[
                 _build49ColumnAuditMatrix(colorScheme, theme, r),
               ],
-              AppSpacingTokens.vGapLg,
+              TitleMediumTopAppBarPanelTokens.vGapLg,
 
               // Lineage Footer
               _buildLineageFooterCard(colorScheme, theme, r),
@@ -309,7 +307,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
     bool isExpanded,
   ) {
     return Container(
-      padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+      padding: isCompact ? TitleMediumTopAppBarPanelTokens.paddingSm : TitleMediumTopAppBarPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -344,18 +342,18 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: TitleMediumTopAppBarPanelTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColorPalette.success.withValues(alpha: 0.4)),
+                        border: Border.all(color: TitleMediumTopAppBarPanelTokens.success.withValues(alpha: 0.4)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.check_circle_outline, size: 12, color: AppColorPalette.success),
+                          const Icon(Icons.check_circle_outline, size: 12, color: TitleMediumTopAppBarPanelTokens.success),
                           const SizedBox(width: 4),
                           Text(
                             'MD3 ADHERENCE: ${r.measuredAdherenceRate.toStringAsFixed(0)}% (PASS)',
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: TitleMediumTopAppBarPanelTokens.success),
                           ),
                         ],
                       ),
@@ -369,7 +367,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
               ),
             ],
           ),
-          AppSpacingTokens.vGapSm,
+          TitleMediumTopAppBarPanelTokens.vGapSm,
           Text(
             r.atomicStep,
             style: theme.textTheme.titleMedium?.copyWith(
@@ -377,7 +375,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
               fontSize: isCompact ? 14 : 16,
             ),
           ),
-          AppSpacingTokens.vGapXs,
+          TitleMediumTopAppBarPanelTokens.vGapXs,
           Text(
             r.whyThisMatters,
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -393,9 +391,9 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
       child: Row(
         children: [
           _buildSegmentButton('preview', 'MD3 Top App Bar & Title Medium Preview', Icons.view_headline_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          TitleMediumTopAppBarPanelTokens.hGapSm,
           _buildSegmentButton('telemetry', 'UI Telemetry Audit (tbl_ui_telemetry_audit_log)', Icons.history_edu_outlined, colorScheme),
-          AppSpacingTokens.hGapSm,
+          TitleMediumTopAppBarPanelTokens.hGapSm,
           _buildSegmentButton('audit', '49-Column Compliance Matrix', Icons.table_chart_outlined, colorScheme),
         ],
       ),
@@ -468,24 +466,24 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
                   tooltip: 'Exit Task (Escape Route)',
                   onPressed: _triggerTaskExit,
                 ),
-                AppSpacingTokens.hGapSm,
+                TitleMediumTopAppBarPanelTokens.hGapSm,
               ],
             ),
           ),
 
           Padding(
-            padding: isCompact ? AppSpacingTokens.paddingSm : AppSpacingTokens.paddingMd,
+            padding: isCompact ? TitleMediumTopAppBarPanelTokens.paddingSm : TitleMediumTopAppBarPanelTokens.paddingMd,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Material Design 3 Typography Token Verification',
                     style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                TitleMediumTopAppBarPanelTokens.vGapSm,
                 Text(
                   'The header renders directly in Material 3 "Title Medium" (font-size: 16-20sp, font-weight: 500/600, line-height: 24sp) ensuring optimal readability on mobile screens without overflow.',
                   style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
-                AppSpacingTokens.vGapMd,
+                TitleMediumTopAppBarPanelTokens.vGapMd,
 
                 // Typography Spec Table
                 Container(
@@ -531,7 +529,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
 
   Widget _buildTelemetryLogView(ColorScheme colorScheme, ThemeData theme) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: TitleMediumTopAppBarPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -542,12 +540,12 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
         children: [
           Text('UI Telemetry Audit Ledger (tbl_ui_telemetry_audit_log)',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          TitleMediumTopAppBarPanelTokens.vGapSm,
           Text(
             'Captures UTC ISO-8601 timestamps, adherence rate percentages, and cryptographic SHA-256 logic hashes.',
             style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
-          AppSpacingTokens.vGapMd,
+          TitleMediumTopAppBarPanelTokens.vGapMd,
 
           Container(
             padding: const EdgeInsets.all(12),
@@ -575,7 +573,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
 
   Widget _build49ColumnAuditMatrix(ColorScheme colorScheme, ThemeData theme, TitleMediumTopAppBarRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingMd,
+      padding: TitleMediumTopAppBarPanelTokens.paddingMd,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
@@ -586,7 +584,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
         children: [
           Text('49-Column Specification Audit Matrix',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          AppSpacingTokens.vGapSm,
+          TitleMediumTopAppBarPanelTokens.vGapSm,
 
           // Audit Metric Standards
           Container(
@@ -601,19 +599,19 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
               children: [
                 Text('Audit Metric Standard: ${r.metricName}',
                     style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)),
-                AppSpacingTokens.vGapSm,
+                TitleMediumTopAppBarPanelTokens.vGapSm,
                 Row(
                   children: [
                     _buildMetricTile('Floor Boundary', r.floorBoundary, const Color(0xFFED6C02)),
                     _buildMetricTile('Optimal Target', r.optimalTarget, const Color(0xFF0284C7)),
                     _buildMetricTile('Ceiling Boundary', r.ceilingBoundary, const Color(0xFF2E7D32)),
-                    _buildMetricTile('Adherence', '${r.measuredAdherenceRate.toStringAsFixed(0)}% (Good)', AppColorPalette.success),
+                    _buildMetricTile('Adherence', '${r.measuredAdherenceRate.toStringAsFixed(0)}% (Good)', TitleMediumTopAppBarPanelTokens.success),
                   ],
                 ),
               ],
             ),
           ),
-          AppSpacingTokens.vGapMd,
+          TitleMediumTopAppBarPanelTokens.vGapMd,
 
           // Key 49 Columns Breakdown
           Table(
@@ -680,7 +678,7 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
 
   Widget _buildLineageFooterCard(ColorScheme colorScheme, ThemeData theme, TitleMediumTopAppBarRecord r) {
     return Container(
-      padding: AppSpacingTokens.paddingSm,
+      padding: TitleMediumTopAppBarPanelTokens.paddingSm,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(10),
@@ -700,9 +698,120 @@ class _TitleMediumTopAppBarPanelState extends State<TitleMediumTopAppBarPanel> {
               ],
             ),
           ),
-          const Icon(Icons.shield, size: 16, color: AppColorPalette.brandPrimary),
+          const Icon(Icons.shield, size: 16, color: TitleMediumTopAppBarPanelTokens.brandPrimary),
         ],
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class TitleMediumTopAppBarPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: TitleMediumTopAppBarPanel(
+        record: TitleMediumTopAppBarRecord(
+          actionTimestamp: '2026-09-02 10:45:00 UTC',
+          userSessionId: 'USR-TOPAPPBAR-37020',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

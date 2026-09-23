@@ -25,8 +25,6 @@
  */
 
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Step CCBPB-014-A09: Interactive Panel
 class CloudSpendingWarningTokenPanel extends StatefulWidget {
@@ -61,7 +59,7 @@ class _CloudSpendingWarningTokenPanelState
   Map<String, dynamic> toExecutionLogJson() {
     return {
       'colorCode': '#ED6C02',
-      'colorName': 'AppColorPalette.warning',
+      'colorName': 'CloudSpendingWarningTokenPanelTokens.warning',
       'colorScheme': 'WarningContainer',
       'contrastRatio': _contrastRatio,
       'colorApplicationMap': 'Cloud Spend Utilization Indicator & Status Badges',
@@ -97,8 +95,8 @@ class _CloudSpendingWarningTokenPanelState
         final isCompact = constraints.maxWidth < 600;
         final isExpanded = constraints.maxWidth >= 840;
         final cardPadding = isCompact
-            ? AppSpacingTokens.paddingSm
-            : (isExpanded ? AppSpacingTokens.paddingLg : AppSpacingTokens.paddingMd);
+            ? CloudSpendingWarningTokenPanelTokens.paddingSm
+            : (isExpanded ? CloudSpendingWarningTokenPanelTokens.paddingLg : CloudSpendingWarningTokenPanelTokens.paddingMd);
 
         return Card(
           elevation: 2,
@@ -116,17 +114,17 @@ class _CloudSpendingWarningTokenPanelState
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: isWarningActive
-                            ? AppColorPalette.warning.withValues(alpha: 0.12)
-                            : AppColorPalette.brandPrimary.withValues(alpha: 0.12),
+                            ? CloudSpendingWarningTokenPanelTokens.warning.withValues(alpha: 0.12)
+                            : CloudSpendingWarningTokenPanelTokens.brandPrimary.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         isWarningActive ? Icons.cloud_off_rounded : Icons.cloud_done_rounded,
-                        color: isWarningActive ? AppColorPalette.warning : AppColorPalette.brandPrimary,
+                        color: isWarningActive ? CloudSpendingWarningTokenPanelTokens.warning : CloudSpendingWarningTokenPanelTokens.brandPrimary,
                         size: 22,
                       ),
                     ),
-                    AppSpacingTokens.hGapMd,
+                    CloudSpendingWarningTokenPanelTokens.hGapMd,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +133,7 @@ class _CloudSpendingWarningTokenPanelState
                             '${widget.globalRefId} / ${widget.atomicStepRefId}',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColorPalette.brandPrimary,
+                              color: CloudSpendingWarningTokenPanelTokens.brandPrimary,
                               fontSize: isExpanded ? 16 : 14,
                             ),
                           ),
@@ -153,8 +151,8 @@ class _CloudSpendingWarningTokenPanelState
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: isWarningActive
-                            ? AppColorPalette.warningContainer
-                            : AppColorPalette.successContainer,
+                            ? CloudSpendingWarningTokenPanelTokens.warningContainer
+                            : CloudSpendingWarningTokenPanelTokens.successContainer,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -163,26 +161,26 @@ class _CloudSpendingWarningTokenPanelState
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                           color: isWarningActive
-                              ? AppColorPalette.onWarningContainer
-                              : AppColorPalette.onSuccessContainer,
+                              ? CloudSpendingWarningTokenPanelTokens.onWarningContainer
+                              : CloudSpendingWarningTokenPanelTokens.onSuccessContainer,
                         ),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                CloudSpendingWarningTokenPanelTokens.vGapMd,
 
                 // Architectural Directive
                 Text(
                   '80% Cloud Spending Boundary Color Token (Col F & M3 Specs):',
                   style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapXs,
+                CloudSpendingWarningTokenPanelTokens.vGapXs,
                 Text(
                   'Applies informative warning token (#ED6C02 / warningContainer) from the shared design-token palette meeting WCAG AAA 7:1 contrast when cloud spend hits 80%.',
                   style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant),
                 ),
-                AppSpacingTokens.vGapMd,
+                CloudSpendingWarningTokenPanelTokens.vGapMd,
 
                 // Cloud Spend Simulation Slider
                 Container(
@@ -207,8 +205,8 @@ class _CloudSpendingWarningTokenPanelState
                               fontSize: 13,
                               fontWeight: FontWeight.w800,
                               color: isCriticalLock
-                                  ? AppColorPalette.error
-                                  : (isWarningActive ? AppColorPalette.warning : AppColorPalette.brandPrimary),
+                                  ? CloudSpendingWarningTokenPanelTokens.error
+                                  : (isWarningActive ? CloudSpendingWarningTokenPanelTokens.warning : CloudSpendingWarningTokenPanelTokens.brandPrimary),
                             ),
                           ),
                         ],
@@ -219,23 +217,23 @@ class _CloudSpendingWarningTokenPanelState
                         max: 105.0,
                         divisions: 55,
                         label: '${_cloudSpendUtilization.toStringAsFixed(1)}%',
-                        activeColor: isWarningActive ? AppColorPalette.warning : AppColorPalette.brandPrimary,
+                        activeColor: isWarningActive ? CloudSpendingWarningTokenPanelTokens.warning : CloudSpendingWarningTokenPanelTokens.brandPrimary,
                         onChanged: _updateSpend,
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapMd,
+                CloudSpendingWarningTokenPanelTokens.vGapMd,
 
                 // M3 Prominent Warning Chip Banner
                 if (isWarningActive)
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isCriticalLock ? AppColorPalette.errorContainer : AppColorPalette.warningContainer,
+                      color: isCriticalLock ? CloudSpendingWarningTokenPanelTokens.errorContainer : CloudSpendingWarningTokenPanelTokens.warningContainer,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isCriticalLock ? AppColorPalette.error : AppColorPalette.warning,
+                        color: isCriticalLock ? CloudSpendingWarningTokenPanelTokens.error : CloudSpendingWarningTokenPanelTokens.warning,
                         width: 1.5,
                       ),
                     ),
@@ -243,7 +241,7 @@ class _CloudSpendingWarningTokenPanelState
                       children: [
                         Icon(
                           isCriticalLock ? Icons.error_rounded : Icons.warning_amber_rounded,
-                          color: isCriticalLock ? AppColorPalette.error : AppColorPalette.warning,
+                          color: isCriticalLock ? CloudSpendingWarningTokenPanelTokens.error : CloudSpendingWarningTokenPanelTokens.warning,
                           size: 24,
                         ),
                         const SizedBox(width: 10),
@@ -258,17 +256,17 @@ class _CloudSpendingWarningTokenPanelState
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w900,
-                                  color: isCriticalLock ? AppColorPalette.onErrorContainer : AppColorPalette.onWarningContainer,
+                                  color: isCriticalLock ? CloudSpendingWarningTokenPanelTokens.onErrorContainer : CloudSpendingWarningTokenPanelTokens.onWarningContainer,
                                 ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 isCriticalLock
                                     ? 'Automated scaling halted. Code optimization mandatory.'
-                                    : 'Token: AppColorPalette.warning (#ED6C02) | Contrast: ${_contrastRatio.toStringAsFixed(1)}:1 AAA.',
+                                    : 'Token: CloudSpendingWarningTokenPanelTokens.warning (#ED6C02) | Contrast: ${_contrastRatio.toStringAsFixed(1)}:1 AAA.',
                                 style: TextStyle(
                                   fontSize: 10,
-                                  color: isCriticalLock ? AppColorPalette.onErrorContainer : AppColorPalette.onWarningContainer,
+                                  color: isCriticalLock ? CloudSpendingWarningTokenPanelTokens.onErrorContainer : CloudSpendingWarningTokenPanelTokens.onWarningContainer,
                                 ),
                               ),
                             ],
@@ -289,7 +287,7 @@ class _CloudSpendingWarningTokenPanelState
                       ],
                     ),
                   ),
-                AppSpacingTokens.vGapMd,
+                CloudSpendingWarningTokenPanelTokens.vGapMd,
 
                 // Governance Note on Budget Increase
                 Container(
@@ -311,7 +309,7 @@ class _CloudSpendingWarningTokenPanelState
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapMd,
+                CloudSpendingWarningTokenPanelTokens.vGapMd,
 
                 // 49-Columns Audit Alignment Container
                 Container(
@@ -355,4 +353,133 @@ class _CloudSpendingWarningTokenPanelState
       },
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class CloudSpendingWarningTokenPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color lightPrimary = Color(0xFF6750A4);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFEADDFF);
+  static const Color lightOnPrimaryContainer = Color(0xFF21005D);
+
+  static const Color lightSecondary = Color(0xFF625B71);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightSecondaryContainer = Color(0xFFE8DEF8);
+  static const Color lightOnSecondaryContainer = Color(0xFF1D192B);
+
+  static const Color lightTertiary = Color(0xFF7D5260);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
+  static const Color lightOnTertiaryContainer = Color(0xFF31111D);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+  static const Color lightErrorContainer = Color(0xFFF9DEDC);
+  static const Color lightOnErrorContainer = Color(0xFF410E0B);
+
+  static const Color lightBackground = Color(0xFFFEF7FF);
+  static const Color lightOnBackground = Color(0xFF1D1B20);
+  static const Color lightSurface = Color(0xFFFEF7FF);
+  static const Color lightOnSurface = Color(0xFF1D1B20);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOnSurfaceVariant = Color(0xFF49454F);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: CloudSpendingWarningTokenPanel(),
+          ),
+        ),
+      ),
+    ),
+  );
 }

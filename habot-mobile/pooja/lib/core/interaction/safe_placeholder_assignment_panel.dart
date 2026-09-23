@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// Row 229 - FEBFL-013-A09 (Seq 15072)
 /// Action: Assign the defined safe placeholder value to the form display variable if an exception is caught.
@@ -79,16 +77,16 @@ class _SafePlaceholderAssignmentPanelState
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: AppSpacingTokens.paddingMd,
+      padding: SafePlaceholderAssignmentPanelTokens.paddingMd,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildHeaderCard(),
-          AppSpacingTokens.vGapMd,
+          SafePlaceholderAssignmentPanelTokens.vGapMd,
           _buildDisplayVariableCard(),
-          AppSpacingTokens.vGapMd,
+          SafePlaceholderAssignmentPanelTokens.vGapMd,
           _buildSimulationControls(),
-          AppSpacingTokens.vGapMd,
+          SafePlaceholderAssignmentPanelTokens.vGapMd,
           _buildTelemetryCard(),
         ],
       ),
@@ -99,10 +97,10 @@ class _SafePlaceholderAssignmentPanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: SafePlaceholderAssignmentPanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: SafePlaceholderAssignmentPanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -110,24 +108,24 @@ class _SafePlaceholderAssignmentPanelState
               children: [
                 const Icon(
                   Icons.health_and_safety_outlined,
-                  color: AppColorPalette.brandPrimary,
+                  color: SafePlaceholderAssignmentPanelTokens.brandPrimary,
                   size: 22,
                 ),
-                AppSpacingTokens.hGapSm,
+                SafePlaceholderAssignmentPanelTokens.hGapSm,
                 const Expanded(
                   child: Text(
                     'Safe Placeholder Assignment Controller',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColorPalette.brandPrimary,
+                      color: SafePlaceholderAssignmentPanelTokens.brandPrimary,
                     ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColorPalette.successContainer,
+                    color: SafePlaceholderAssignmentPanelTokens.successContainer,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Text(
@@ -135,13 +133,13 @@ class _SafePlaceholderAssignmentPanelState
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColorPalette.onSuccessContainer,
+                      color: SafePlaceholderAssignmentPanelTokens.onSuccessContainer,
                     ),
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapSm,
+            SafePlaceholderAssignmentPanelTokens.vGapSm,
             Text(
               'Safely catches field-level parsing exceptions in real time and automatically swaps corrupt values with the defined safe placeholder to preserve UI stability.',
               style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
@@ -158,12 +156,12 @@ class _SafePlaceholderAssignmentPanelState
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         side: BorderSide(
-          color: _isExceptionCaught ? AppColorPalette.warning : AppColorPalette.success,
+          color: _isExceptionCaught ? SafePlaceholderAssignmentPanelTokens.warning : SafePlaceholderAssignmentPanelTokens.success,
           width: 1.5,
         ),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: SafePlaceholderAssignmentPanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -171,26 +169,26 @@ class _SafePlaceholderAssignmentPanelState
               children: [
                 Icon(
                   _isExceptionCaught ? Icons.warning_amber_rounded : Icons.check_circle_outline,
-                  color: _isExceptionCaught ? AppColorPalette.warning : AppColorPalette.success,
+                  color: _isExceptionCaught ? SafePlaceholderAssignmentPanelTokens.warning : SafePlaceholderAssignmentPanelTokens.success,
                   size: 20,
                 ),
-                AppSpacingTokens.hGapSm,
+                SafePlaceholderAssignmentPanelTokens.hGapSm,
                 Text(
                   _isExceptionCaught ? 'Fallback Value Assigned' : 'Normal Field Value',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: _isExceptionCaught ? AppColorPalette.warning : AppColorPalette.success,
+                    color: _isExceptionCaught ? SafePlaceholderAssignmentPanelTokens.warning : SafePlaceholderAssignmentPanelTokens.success,
                   ),
                 ),
               ],
             ),
-            AppSpacingTokens.vGapSm,
+            SafePlaceholderAssignmentPanelTokens.vGapSm,
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: _isExceptionCaught ? AppColorPalette.warningContainer.withValues(alpha: 0.2) : Colors.grey.shade50,
+                color: _isExceptionCaught ? SafePlaceholderAssignmentPanelTokens.warningContainer.withValues(alpha: 0.2) : Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -200,12 +198,12 @@ class _SafePlaceholderAssignmentPanelState
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'monospace',
-                  color: _isExceptionCaught ? AppColorPalette.onWarningContainer : Colors.black87,
+                  color: _isExceptionCaught ? SafePlaceholderAssignmentPanelTokens.onWarningContainer : Colors.black87,
                 ),
               ),
             ),
             if (_isExceptionCaught) ...[
-              AppSpacingTokens.vGapSm,
+              SafePlaceholderAssignmentPanelTokens.vGapSm,
               Text(
                 'Caught Exception: $_caughtExceptionDetail',
                 style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: Colors.grey.shade600),
@@ -226,13 +224,13 @@ class _SafePlaceholderAssignmentPanelState
             icon: const Icon(Icons.error_outline, color: Colors.white, size: 16),
             label: const Text('Trigger Exception Input'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColorPalette.warning,
+              backgroundColor: SafePlaceholderAssignmentPanelTokens.warning,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
         ),
-        AppSpacingTokens.hGapSm,
+        SafePlaceholderAssignmentPanelTokens.hGapSm,
         Expanded(
           child: OutlinedButton.icon(
             onPressed: _simulateValidInput,
@@ -252,10 +250,10 @@ class _SafePlaceholderAssignmentPanelState
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        side: BorderSide(color: AppColorPalette.lightOutline.withValues(alpha: 0.3)),
+        side: BorderSide(color: SafePlaceholderAssignmentPanelTokens.lightOutline.withValues(alpha: 0.3)),
       ),
       child: Padding(
-        padding: AppSpacingTokens.paddingMd,
+        padding: SafePlaceholderAssignmentPanelTokens.paddingMd,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -264,10 +262,10 @@ class _SafePlaceholderAssignmentPanelState
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: AppColorPalette.brandPrimary,
+                color: SafePlaceholderAssignmentPanelTokens.brandPrimary,
               ),
             ),
-            AppSpacingTokens.vGapSm,
+            SafePlaceholderAssignmentPanelTokens.vGapSm,
             ...telemetry.entries.map((e) {
               final val = e.value.toString();
               return Padding(
@@ -304,4 +302,133 @@ class _SafePlaceholderAssignmentPanelState
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class SafePlaceholderAssignmentPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color lightPrimary = Color(0xFF6750A4);
+  static const Color lightOnPrimary = Color(0xFFFFFFFF);
+  static const Color lightPrimaryContainer = Color(0xFFEADDFF);
+  static const Color lightOnPrimaryContainer = Color(0xFF21005D);
+
+  static const Color lightSecondary = Color(0xFF625B71);
+  static const Color lightOnSecondary = Color(0xFFFFFFFF);
+  static const Color lightSecondaryContainer = Color(0xFFE8DEF8);
+  static const Color lightOnSecondaryContainer = Color(0xFF1D192B);
+
+  static const Color lightTertiary = Color(0xFF7D5260);
+  static const Color lightOnTertiary = Color(0xFFFFFFFF);
+  static const Color lightTertiaryContainer = Color(0xFFFFD8E4);
+  static const Color lightOnTertiaryContainer = Color(0xFF31111D);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+  static const Color lightErrorContainer = Color(0xFFF9DEDC);
+  static const Color lightOnErrorContainer = Color(0xFF410E0B);
+
+  static const Color lightBackground = Color(0xFFFEF7FF);
+  static const Color lightOnBackground = Color(0xFF1D1B20);
+  static const Color lightSurface = Color(0xFFFEF7FF);
+  static const Color lightOnSurface = Color(0xFF1D1B20);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOnSurfaceVariant = Color(0xFF49454F);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: SafePlaceholderAssignmentPanel(),
+          ),
+        ),
+      ),
+    ),
+  );
 }

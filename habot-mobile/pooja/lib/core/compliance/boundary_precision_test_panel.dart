@@ -29,8 +29,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 /// AEETE-019 Record Data Model.
 class BoundaryPrecisionTestRecord {
@@ -185,7 +183,7 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Central CI Automated Regression Test Passed: 100% Environment Scenarios Verified (Duplicate_Test_Steps == 0)'),
-            backgroundColor: AppColorPalette.success,
+            backgroundColor: BoundaryPrecisionTestPanelTokens.success,
             duration: Duration(seconds: 3),
           ),
         );
@@ -220,11 +218,11 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
           elevation: 1,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacingTokens.xs : AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: isCompact ? BoundaryPrecisionTestPanelTokens.xs : BoundaryPrecisionTestPanelTokens.sm,
+            vertical: BoundaryPrecisionTestPanelTokens.xs,
           ),
           child: Padding(
-            padding: EdgeInsets.all(isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md)),
+            padding: EdgeInsets.all(isCompact ? BoundaryPrecisionTestPanelTokens.sm : (isExpanded ? BoundaryPrecisionTestPanelTokens.lg : BoundaryPrecisionTestPanelTokens.md)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -254,7 +252,7 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    BoundaryPrecisionTestPanelTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Real-Time Boundary Resizing & BDD Matrix',
@@ -265,22 +263,22 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: BoundaryPrecisionTestPanelTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: BoundaryPrecisionTestPanelTokens.success),
                       ),
                       child: Text(
                         'STATUS: ${record.completionStatus}',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: BoundaryPrecisionTestPanelTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                BoundaryPrecisionTestPanelTokens.vGapMd,
 
                 // Overview Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: BoundaryPrecisionTestPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -290,18 +288,18 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.check_circle_outline, color: AppColorPalette.success, size: 20),
-                          AppSpacingTokens.hGapSm,
+                          const Icon(Icons.check_circle_outline, color: BoundaryPrecisionTestPanelTokens.success, size: 20),
+                          BoundaryPrecisionTestPanelTokens.hGapSm,
                           Text(
                             'DRY BDD Architecture | Duplicate_Test_Steps == ${record.duplicateTestSteps}',
                             style: theme.textTheme.labelMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColorPalette.success,
+                              color: BoundaryPrecisionTestPanelTokens.success,
                             ),
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      BoundaryPrecisionTestPanelTokens.vGapXs,
                       Text(
                         record.setupAction,
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -309,7 +307,7 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                BoundaryPrecisionTestPanelTokens.vGapLg,
 
                 // Prominent Central Primary Call-to-Action (CTA) Button (>=48dp touch target)
                 Center(
@@ -321,7 +319,7 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                       child: FilledButton.icon(
                         onPressed: _isTestRunning ? null : _runBddTestSuite,
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColorPalette.brandPrimary,
+                          backgroundColor: BoundaryPrecisionTestPanelTokens.brandPrimary,
                           elevation: 2,
                           minimumSize: const Size(48, 48),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -337,11 +335,11 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                     ),
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                BoundaryPrecisionTestPanelTokens.vGapLg,
 
                 // Real-Time Layout Resizing Slider Across Canonical Class Boundaries
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: BoundaryPrecisionTestPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -370,7 +368,7 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      BoundaryPrecisionTestPanelTokens.vGapSm,
                       Slider(
                         value: _simulatedViewportWidth,
                         min: 300.0,
@@ -390,23 +388,23 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                         width: double.infinity,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: AppColorPalette.brandPrimary.withValues(alpha: 0.08),
+                          color: BoundaryPrecisionTestPanelTokens.brandPrimary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColorPalette.brandPrimary),
+                          border: Border.all(color: BoundaryPrecisionTestPanelTokens.brandPrimary),
                         ),
                         child: Text(
                           'Layout Boundary State: ${_getClassCategory(_simulatedViewportWidth)} (${_simulatedViewportWidth.toInt()}px)',
-                          style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: AppColorPalette.brandPrimary),
+                          style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: BoundaryPrecisionTestPanelTokens.brandPrimary),
                         ),
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                BoundaryPrecisionTestPanelTokens.vGapLg,
 
                 // Interactive Input Traversal Preview (testID="input_{variable}")
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: BoundaryPrecisionTestPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -432,7 +430,7 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      BoundaryPrecisionTestPanelTokens.vGapSm,
                       TextField(
                         key: const Key('input_width_val'),
                         controller: _testInputController,
@@ -440,20 +438,20 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                           border: OutlineInputBorder(),
                           isDense: true,
                           prefixIcon: Icon(Icons.code),
-                          suffixIcon: Icon(Icons.check, color: AppColorPalette.success),
+                          suffixIcon: Icon(Icons.check, color: BoundaryPrecisionTestPanelTokens.success),
                         ),
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                BoundaryPrecisionTestPanelTokens.vGapLg,
 
                 // BDD Data Table Scenario Test Matrix
                 Text(
                   'BDD Scenario Outline Data Table Matrix (5 Boundary Tests)',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                BoundaryPrecisionTestPanelTokens.vGapSm,
 
                 Column(
                   children: _bddTestCases.map((item) {
@@ -467,8 +465,8 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.verified, color: AppColorPalette.success, size: 18),
-                          AppSpacingTokens.hGapSm,
+                          const Icon(Icons.verified, color: BoundaryPrecisionTestPanelTokens.success, size: 18),
+                          BoundaryPrecisionTestPanelTokens.hGapSm,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -481,21 +479,21 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: AppColorPalette.success.withValues(alpha: 0.12),
+                              color: BoundaryPrecisionTestPanelTokens.success.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: Text(item.status, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success)),
+                            child: Text(item.status, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: BoundaryPrecisionTestPanelTokens.success)),
                           ),
                         ],
                       ),
                     );
                   }).toList(),
                 ),
-                AppSpacingTokens.vGapLg,
+                BoundaryPrecisionTestPanelTokens.vGapLg,
 
                 // Audit Metric Boundary Grid (Functional Test Pass Rate)
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: BoundaryPrecisionTestPanelTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -508,18 +506,18 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
                         'Audit Metric: ${record.metricName}',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      BoundaryPrecisionTestPanelTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', '1 Environment', AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', '100% Environments', AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', '100% + CI Regress', AppColorPalette.success),
-                          _buildMetricTile(context, 'Current Pass Rate', '${(record.currentCoverage * 100).toInt()}% Pass', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', '1 Environment', BoundaryPrecisionTestPanelTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', '100% Environments', BoundaryPrecisionTestPanelTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', '100% + CI Regress', BoundaryPrecisionTestPanelTokens.success),
+                          _buildMetricTile(context, 'Current Pass Rate', '${(record.currentCoverage * 100).toInt()}% Pass', BoundaryPrecisionTestPanelTokens.brandPrimary),
                         ],
                       ),
-                      AppSpacingTokens.vGapSm,
+                      BoundaryPrecisionTestPanelTokens.vGapSm,
                       Divider(color: colorScheme.outlineVariant, height: 1),
-                      AppSpacingTokens.vGapSm,
+                      BoundaryPrecisionTestPanelTokens.vGapSm,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -570,4 +568,115 @@ class _BoundaryPrecisionTestPanelState extends State<BoundaryPrecisionTestPanel>
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class BoundaryPrecisionTestPanelTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: BoundaryPrecisionTestPanel(
+        record: BoundaryPrecisionTestRecord(
+          actionTimestamp: '2026-08-25 12:33:00 UTC',
+          userSessionId: 'USR-QA-9040',
+        ),
+      ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

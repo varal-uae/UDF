@@ -23,8 +23,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/color_palette.dart';
-import '../tokens/spacing_tokens.dart';
 
 enum AbTestCompletionStatus {
   complete('Complete'),
@@ -197,7 +195,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('A/B Variant Switched to: $variantId (Pub/Sub Event Pushed)'),
-        backgroundColor: AppColorPalette.brandPrimary,
+        backgroundColor: AbTestingCardSwitchTokens.brandPrimary,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -221,11 +219,11 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
           elevation: 1,
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacingTokens.xs : AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: isCompact ? AbTestingCardSwitchTokens.xs : AbTestingCardSwitchTokens.sm,
+            vertical: AbTestingCardSwitchTokens.xs,
           ),
           child: Padding(
-            padding: EdgeInsets.all(isCompact ? AppSpacingTokens.sm : (isExpanded ? AppSpacingTokens.lg : AppSpacingTokens.md)),
+            padding: EdgeInsets.all(isCompact ? AbTestingCardSwitchTokens.sm : (isExpanded ? AbTestingCardSwitchTokens.lg : AbTestingCardSwitchTokens.md)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -255,7 +253,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                         ],
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    AbTestingCardSwitchTokens.hGapSm,
                     Expanded(
                       child: Text(
                         'Byte-Level A/B Testing Execution',
@@ -266,22 +264,22 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColorPalette.success.withValues(alpha: 0.15),
+                        color: AbTestingCardSwitchTokens.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColorPalette.success),
+                        border: Border.all(color: AbTestingCardSwitchTokens.success),
                       ),
                       child: Text(
                         record.completionStatus.label,
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColorPalette.success),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AbTestingCardSwitchTokens.success),
                       ),
                     ),
                   ],
                 ),
-                AppSpacingTokens.vGapMd,
+                AbTestingCardSwitchTokens.vGapMd,
 
                 // Description Banner
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: AbTestingCardSwitchTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
@@ -292,7 +290,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                       Row(
                         children: [
                           Icon(Icons.touch_app_outlined, color: colorScheme.primary, size: 20),
-                          AppSpacingTokens.hGapSm,
+                          AbTestingCardSwitchTokens.hGapSm,
                           Text(
                             'Touch Targets >= 48dp | Pub/Sub Analytics',
                             style: theme.textTheme.labelMedium?.copyWith(
@@ -302,7 +300,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                           ),
                         ],
                       ),
-                      AppSpacingTokens.vGapXs,
+                      AbTestingCardSwitchTokens.vGapXs,
                       Text(
                         record.whyThisMatters,
                         style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -310,14 +308,14 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                AbTestingCardSwitchTokens.vGapLg,
 
                 // Variant Selector Cards (Touch Targets >= 48dp)
                 Text(
                   'Select Experiment Variant (Adaptive Material Cards)',
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                AppSpacingTokens.vGapSm,
+                AbTestingCardSwitchTokens.vGapSm,
                 Column(
                   children: widget.variants.map((variant) {
                     final isSelected = variant.variantId == _selectedVariantId;
@@ -330,10 +328,10 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                         padding: const EdgeInsets.all(12),
                         constraints: const BoxConstraints(minHeight: 48),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColorPalette.brandPrimary.withValues(alpha: 0.08) : colorScheme.surfaceContainer,
+                          color: isSelected ? AbTestingCardSwitchTokens.brandPrimary.withValues(alpha: 0.08) : colorScheme.surfaceContainer,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isSelected ? AppColorPalette.brandPrimary : colorScheme.outlineVariant,
+                            color: isSelected ? AbTestingCardSwitchTokens.brandPrimary : colorScheme.outlineVariant,
                             width: isSelected ? 2 : 1,
                           ),
                         ),
@@ -341,9 +339,9 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                           children: [
                             Icon(
                               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-                              color: isSelected ? AppColorPalette.brandPrimary : colorScheme.onSurfaceVariant,
+                              color: isSelected ? AbTestingCardSwitchTokens.brandPrimary : colorScheme.onSurfaceVariant,
                             ),
-                            AppSpacingTokens.hGapSm,
+                            AbTestingCardSwitchTokens.hGapSm,
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,7 +350,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                                     variant.variantName,
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: isSelected ? AppColorPalette.brandPrimary : colorScheme.onSurface,
+                                      color: isSelected ? AbTestingCardSwitchTokens.brandPrimary : colorScheme.onSurface,
                                     ),
                                   ),
                                   Text(
@@ -365,7 +363,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
-                                color: isSelected ? AppColorPalette.brandPrimary : colorScheme.surfaceContainerHighest,
+                                color: isSelected ? AbTestingCardSwitchTokens.brandPrimary : colorScheme.surfaceContainerHighest,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -383,11 +381,11 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                     );
                   }).toList(),
                 ),
-                AppSpacingTokens.vGapLg,
+                AbTestingCardSwitchTokens.vGapLg,
 
                 // Single-Column Mandatory Login Wireframe (* Red Asterisk Poka-Yoke)
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: AbTestingCardSwitchTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -400,7 +398,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                         'Wireframe Form Gateway (Mandatory * Red Asterisk Standards)',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      AbTestingCardSwitchTokens.vGapSm,
                       RichText(
                         text: TextSpan(
                           text: 'Mobile User ID ',
@@ -418,7 +416,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                           contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      AbTestingCardSwitchTokens.vGapSm,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -435,11 +433,11 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                AbTestingCardSwitchTokens.vGapLg,
 
                 // Audit Metric Boundary Grid
                 Container(
-                  padding: AppSpacingTokens.paddingMd,
+                  padding: AbTestingCardSwitchTokens.paddingMd,
                   decoration: BoxDecoration(
                     color: colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(12),
@@ -452,24 +450,24 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                         'Audit Metric: ${record.metricName}',
                         style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      AppSpacingTokens.vGapSm,
+                      AbTestingCardSwitchTokens.vGapSm,
                       Row(
                         children: [
-                          _buildMetricTile(context, 'Floor Boundary', '${(record.floorBoundary * 100).toInt()}%', AppColorPalette.warning),
-                          _buildMetricTile(context, 'Optimal Target', '>=${(record.optimalTarget * 100).toInt()}%', AppColorPalette.info),
-                          _buildMetricTile(context, 'Ceiling Boundary', '${(record.ceilingBoundary * 100).toInt()}%', AppColorPalette.success),
-                          _buildMetricTile(context, 'Current Rate', '${(record.currentCoverageRate * 100).toInt()}%', AppColorPalette.brandPrimary),
+                          _buildMetricTile(context, 'Floor Boundary', '${(record.floorBoundary * 100).toInt()}%', AbTestingCardSwitchTokens.warning),
+                          _buildMetricTile(context, 'Optimal Target', '>=${(record.optimalTarget * 100).toInt()}%', AbTestingCardSwitchTokens.info),
+                          _buildMetricTile(context, 'Ceiling Boundary', '${(record.ceilingBoundary * 100).toInt()}%', AbTestingCardSwitchTokens.success),
+                          _buildMetricTile(context, 'Current Rate', '${(record.currentCoverageRate * 100).toInt()}%', AbTestingCardSwitchTokens.brandPrimary),
                         ],
                       ),
                     ],
                   ),
                 ),
-                AppSpacingTokens.vGapLg,
+                AbTestingCardSwitchTokens.vGapLg,
 
                 if (isExpanded) ...[
                   Container(
                     width: double.infinity,
-                    padding: AppSpacingTokens.paddingSm,
+                    padding: AbTestingCardSwitchTokens.paddingSm,
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(8),
@@ -482,7 +480,7 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                       ],
                     ),
                   ),
-                  AppSpacingTokens.vGapMd,
+                  AbTestingCardSwitchTokens.vGapMd,
                 ],
 
                 // Vitality & Prosperity Summary Grid
@@ -491,9 +489,9 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: AppSpacingTokens.paddingSm,
+                        padding: AbTestingCardSwitchTokens.paddingSm,
                         decoration: BoxDecoration(
-                          color: AppColorPalette.brandPrimary.withValues(alpha: 0.08),
+                          color: AbTestingCardSwitchTokens.brandPrimary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -503,21 +501,21 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                               'Vitality & Prosperity (Us)',
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: AppColorPalette.brandPrimary,
+                                color: AbTestingCardSwitchTokens.brandPrimary,
                               ),
                             ),
-                            AppSpacingTokens.vGapXs,
+                            AbTestingCardSwitchTokens.vGapXs,
                             Text(record.vitalityProsperityUs, style: theme.textTheme.bodySmall),
                           ],
                         ),
                       ),
                     ),
-                    AppSpacingTokens.hGapSm,
+                    AbTestingCardSwitchTokens.hGapSm,
                     Expanded(
                       child: Container(
-                        padding: AppSpacingTokens.paddingSm,
+                        padding: AbTestingCardSwitchTokens.paddingSm,
                         decoration: BoxDecoration(
-                          color: AppColorPalette.success.withValues(alpha: 0.08),
+                          color: AbTestingCardSwitchTokens.success.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -527,10 +525,10 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
                               'Vitality & Prosperity (Customer)',
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: AppColorPalette.success,
+                                color: AbTestingCardSwitchTokens.success,
                               ),
                             ),
-                            AppSpacingTokens.vGapXs,
+                            AbTestingCardSwitchTokens.vGapXs,
                             Text(record.vitalityProsperityCustomer, style: theme.textTheme.bodySmall),
                           ],
                         ),
@@ -566,4 +564,125 @@ class _AbTestingCardSwitchState extends State<AbTestingCardSwitch> {
       ),
     );
   }
+}
+
+// ============================================================================
+// File-Local Standalone Design Tokens & Constants
+// ============================================================================
+abstract final class AbTestingCardSwitchTokens {
+  // Brand & Semantic Color Tokens
+  static const Color brandPrimary = Color(0xFF2E86C1);
+  static const Color onBrandPrimary = Color(0xFFFFFFFF);
+  static const Color brandPrimaryContainer = Color(0xFFD6EAF8);
+  static const Color onBrandPrimaryContainer = Color(0xFF1B4F72);
+  static const Color brandPrimaryHoverOverlay = Color(0x1F2E86C1);
+  static const Color brandPrimaryActiveOverlay = Color(0x3D2E86C1);
+
+  static const Color primary = brandPrimary;
+  static const Color primarySeed = Color(0xFF6750A4);
+  static const Color secondarySeed = Color(0xFF625B71);
+  static const Color tertiarySeed = Color(0xFF7D5260);
+  static const Color neutralSeed = Color(0xFF605D62);
+
+  static const Color success = Color(0xFF2E7D32);
+  static const Color onSuccess = Color(0xFFFFFFFF);
+  static const Color successContainer = Color(0xFFD0F8CE);
+  static const Color onSuccessContainer = Color(0xFF002204);
+
+  static const Color warning = Color(0xFFED6C02);
+  static const Color onWarning = Color(0xFFFFFFFF);
+  static const Color warningContainer = Color(0xFFFFDCC6);
+  static const Color onWarningContainer = Color(0xFF341100);
+
+  static const Color info = Color(0xFF0288D1);
+  static const Color onInfo = Color(0xFFFFFFFF);
+  static const Color infoContainer = Color(0xFFCBE6FF);
+  static const Color onInfoContainer = Color(0xFF001E30);
+
+  static const Color error = Color(0xFFB3261E);
+  static const Color onError = Color(0xFFFFFFFF);
+  static const Color errorContainer = Color(0xFFF9DEDC);
+  static const Color onErrorContainer = Color(0xFF410E0B);
+  static const Color lightError = Color(0xFFB3261E);
+  static const Color lightOnError = Color(0xFFFFFFFF);
+
+  static const Color neutralLight = Color(0xFFF5F5F5);
+  static const Color neutralDark = Color(0xFF212121);
+  static const Color lightSurfaceVariant = Color(0xFFE7E0EC);
+  static const Color lightOutline = Color(0xFF79747E);
+  static const Color lightOutlineVariant = Color(0xFFCAC4D0);
+
+  // Elevation Tokens
+  static const double level0 = 0.0;
+  static const double level1 = 1.0;
+  static const double level2 = 3.0;
+  static const double level3 = 6.0;
+  static const double level4 = 8.0;
+  static const double level5 = 12.0;
+
+  // Spacing & Layout Tokens (4dp Metric Grid)
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double mdSm = 12.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 48.0;
+  static const double xxxl = 64.0;
+
+  static const EdgeInsets paddingXs = EdgeInsets.all(xs);
+  static const EdgeInsets paddingSm = EdgeInsets.all(sm);
+  static const EdgeInsets paddingMd = EdgeInsets.all(md);
+  static const EdgeInsets paddingLg = EdgeInsets.all(lg);
+  static const EdgeInsets paddingXl = EdgeInsets.all(xl);
+
+  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
+
+  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
+
+  static const Widget vGapXs = SizedBox(height: xs);
+  static const Widget vGapSm = SizedBox(height: sm);
+  static const Widget vGapMd = SizedBox(height: md);
+  static const Widget vGapLg = SizedBox(height: lg);
+  static const Widget vGapXl = SizedBox(height: xl);
+
+  static const Widget hGapXs = SizedBox(width: xs);
+  static const Widget hGapSm = SizedBox(width: sm);
+  static const Widget hGapMd = SizedBox(width: md);
+  static const Widget hGapLg = SizedBox(width: lg);
+  static const Widget hGapXl = SizedBox(width: xl);
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: const Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: AbTestingCardSwitch(
+              variants: [
+                AbTestVariant(
+                  variantId: 'VAR-A',
+                  variantName: 'Variant A (Compact)',
+                  description: 'Dense single-column layout',
+                  conversionRate: 0.048,
+                ),
+                AbTestVariant(
+                  variantId: 'VAR-B',
+                  variantName: 'Variant B (Fluid)',
+                  description: 'Expanded fluid grid layout',
+                  conversionRate: 0.062,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
