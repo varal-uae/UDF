@@ -19,7 +19,7 @@ Tap the grid icon in the header to overlay the live column/gutter/rhythm wirefra
 
 ```bash
 cd udf_setup
-./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,601 AISS gates, evidence roll-up
+./tool/verify_aiss.sh          # format, analyze, poka-yoke guard, 3,801 AISS gates, evidence roll-up
 ./tool/verify_aiss.sh --check  # CI mode: fails on unformatted code instead of formatting it
 ```
 
@@ -532,8 +532,28 @@ expansion around small icons, 8dp safety margin between neighbours, long-press f
 | 453 | GEN-05364 | Documented, not confirmed, so Partial | 10 |
 | 454 | GEN-05375 | Claimed savings are not savings | 10 |
 | 455 | GEN-03415 | A projection that tells you what you will lose | 10 |
+| 456 | GEN-04704 | A floor and a ceiling that are one number | 10 |
+| 457 | GEN-04792 | Verified is not signed | 10 |
+| 458 | GEN-04836 | "All four substeps above", on a flat sheet | 10 |
+| 459 | GEN-04847 | 95 per cent, and no exceptions | 10 |
+| 460 | GEN-04891 | A module named twice | 10 |
+| 461 | GEN-04924 | One comma, two records | 10 |
+| 462 | GEN-04935 | The lost comparison sign, confirmed | 10 |
+| 463 | GEN-04990 | A row that asked for its own fallback | 10 |
+| 464 | GEN-05001 | An instruction that fails its own metric | 10 |
+| 465 | GEN-05034 | Step 458 again, character for character | 10 |
+| 466 | GEN-05045 | One digit, and two stamped columns | 10 |
+| 467 | GEN-05056 | A band that claims to match, at three times the number | 10 |
+| 468 | GEN-05067 | A norm is a range, not a pass mark | 10 |
+| 469 | GEN-05078 | Every point opens the document it came from | 10 |
+| 470 | GEN-05089 | A version number inside a child's record | 10 |
+| 471 | GEN-05100 | What each role sees first | 10 |
+| 472 | GEN-05155 | A place, not a position | 10 |
+| 473 | GEN-05166 | "Real-time" given a number | 10 |
+| 474 | GEN-05199 | A 95 per cent floor on a safeguarding check | 10 |
+| 475 | GEN-05210 | Three instructions, two measures | 10 |
 
-**3,601 gates across 455 steps.** Every step reports Complete except the following, each of
+**3,801 gates across 475 steps.** Every step reports Complete except the following, each of
 which is the measurement the row asked for reported as it came out. RCGLA-012 Partial (2 deferred: zoom lock,
 CLS), IS38-SGTIM-018 Partial (1 deferred: physical-device feel), GEN-04363 Partial (1 deferred:
 displayLarge at 200% on a 320dp screen), GEN-03171 Partial (3 deferred: cold start on a handset),
@@ -586,6 +606,14 @@ Steps 436-455 report one **Fail** (GEN-05133: a response-rate target lost its co
 in export, and under the intended reading 27 per cent misses 30), one **Partial** (GEN-05364:
 the objective is documented but no stakeholder here can confirm it) and one **Average**
 (GEN-02161: an NPS of 14).
+
+Steps 456-475 report one **Fail** (GEN-04935: the second row in the track whose target lost
+its comparison sign in export, where an aggregate speech-recognition accuracy of 94.3 per cent
+misses a target that should read "at least 95") and four **Partial** (GEN-04792, GEN-04990,
+GEN-05155 and GEN-05210), each because the top of its band is a formal signature from an
+accountable owner and no such person exists in a build session. The four Partials are one
+finding rather than four: naming the owners turns all of them into Complete with no code
+changing. The other fifteen report clean.
 
 ### MTO worker screens
 
@@ -1714,6 +1742,79 @@ organisation, shown and not corrected (449). One quiz question in four flagged a
 question (450). AED 4,700 claimed against AED 1,150 verified (454). And 9.7 days of leave
 that will be lost unless booked, said plainly to the person they belong to (455).
 
+### The child's record, and a sheet copying itself
+
+Batch Q wrote a charter for scoring people. Steps 456-475 are about the record those scores
+would sit next to: what a service writes down about a child -- speech turned into notes, a
+drawing, a sensory map, an assessment plotted against a norm -- and who is allowed near it. The
+supporting rows decide how a child is identified (456), how somebody gets back into the
+application (457), what each role sees first (471), when a worker can work and where (472, 473),
+and which adults may be shown to a family at all (474).
+
+**Twelve of the twenty rows have a twin.** Six pairs inside one batch share a metric and its
+three band values: 456 with 471, 457 with 463, 458 with 465, 459 with 466, 460 with 470, 461
+with 468. One of those pairs, 458 and 465, shares its Atomic Step *character for character* --
+same words, same punctuation, same missing referent, seven rows apart. Another, 459 and 466,
+differs by a single digit: "(Step 2)" against "(Step 8)". Two further rows carry bands first
+seen in the previous batch. Batch Q recorded, as open decision 90, a suspicion that band blocks
+were being pasted onto rows by name; this batch is the evidence. The register lives at Step 458
+and both members of every pair are implemented, because skipping one of a pair would make the
+count of implemented steps a lie.
+
+**The lost comparison sign is confirmed as a class of defect.** Step 447 read "\30% user
+response rate"; Step 462 reads "\95% speech recognition accuracy" -- same column, different
+team, fifteen steps apart. Under the intended reading Step 462 fails, and the more useful
+finding is underneath it: the test set is 320 utterances of which 200 come from staff whose
+first language matches the recogniser's training data and 40 from children with speech and
+language differences, who score 97.1 and 84.2 per cent. Dropping the children lifts the
+aggregate above 95 immediately, which is the trade an aggregate target invites and the trade
+Step 447 refused. They stay, accuracy is reported per cohort, and low-confidence text is marked
+unverified rather than stored as something a child said.
+
+**Step 474 is the sharpest band defect in the track.** It puts a floor of 95 per cent on a
+check that verifies a support worker's certification before that worker is shown to a family.
+Read as the filter's accuracy, a 95 per cent floor is one uncertified adult in twenty reaching
+a family's screen -- which is the thing the filter exists to prevent, and which nobody would
+sign if it were written in words instead of a percentage. The filter is built as a hard gate
+instead: the flag, a verified certificate and an unexpired date, or the person is not shown.
+The band's 95 and 99 are re-read as the accuracy of the automated document reader, which is a
+thing a percentage can honestly describe, and everything the reader cannot confirm goes to a
+person rather than through. "Indisputable" is replaced by a decision that is recorded and
+reviewable, with a human override that can only exclude.
+
+**Two rows argue with themselves.** Step 464 instructs a "pulsing red recording indicator" on a
+row whose optimal is "100% token compliance, zero raw hex/pixel overrides" -- the first row in
+the track whose own words would break its own band; the error colour role is red in both themes
+and is a token, so both hold. Step 467 asks for a drawing stroke under 16 ms and offers an
+optimal of 50 ms that asserts, in its own parenthesis, that it "matches or exceeds the stated
+requirement". It is 3.13 times looser. Step 432 disagreed with its instruction by a factor of
+five and said nothing about it; this is the first row to state an agreement its numbers deny.
+
+**Four rows stop at a signature.** Steps 457, 463, 472 and 475 each reach their floor and stop
+short of their optimal because the optimal is a formal sign-off from an accountable owner or a
+stakeholder. A build can verify acceptance criteria; it cannot sign. The ledger opens at Step
+457, carries all four, and closes at Step 475 unsigned -- and one list of four named owners
+clears it.
+
+**Some rows arrive already right.** Step 463's expected output names an accessible list
+fallback without anybody asking, the second such row after Step 451, and the fallback is built
+equal rather than lighter: every place the map draws, the same two actions, one record behind
+both. Step 469 asks that tapping any data point open the exact assessment document from that
+date, which is Step 441's rule -- every figure carries its working -- arriving as a gesture
+instead of as a correction. Its one reliability percentage cannot tell a document that failed
+to open from the wrong document opening, so those are counted apart with a wrong-document floor
+of zero.
+
+Numbers worth carrying out of this batch: six paired bands over twelve of twenty rows (458).
+One character between Step 459 and Step 466. Two columns -- Mistake-Proofing and Self-Chasing
+-- holding one sentence each across all twenty rows (466). An aggregate speech accuracy of 94.3
+per cent hiding a cohort at 84.2 (462). A norm band drawn from a sample of 2,560 rather than as
+a line somebody can be below (468). Zero wrong documents in three source-open attempts (469).
+Three module versions inside one child's three-point chart (470). Four role defaults, none of
+which ranks anybody (471). Four service areas in place of a coordinate (472). A twenty-second
+lag budget where the row said "real-time" (473). Five worked credential records, two displayed
+and three excluded (474). And four rows closing unsigned, which is one sentence away from none.
+
 ### Open decisions
 
 1. **Brand palette** — `tokens.json` is `PROVISIONAL` pending Brand sign-off. All colours pass
@@ -2131,6 +2232,40 @@ that will be lost unless booked, said plainly to the person they belong to (455)
     theirs. Blocks are being pasted onto rows by name ("substep", "design the approach"); the
     remaining pool should be checked for more.
 
+
+
+91. **The Completion Measures column has lost comparison signs in at least two places** (Steps
+    447 and 462). This is now a confirmed class of defect rather than a one-off. Every cell in
+    that column should be scanned for a backslash before a digit and fixed at export, before
+    any row carrying one is scored.
+
+92. **Six metric-and-band pairs sit inside one batch of twenty** (456/471, 457/463, 458/465,
+    459/466, 460/470, 461/468), one of them sharing its Atomic Step character for character and
+    another differing by a single digit. The remaining 839 rows need the same check: where two
+    rows are indistinguishable, either one should be removed or they should be told apart.
+
+93. **Four rows top out at a human signature and nobody is named** (457, 463, 472, 475). A list
+    of accountable owners against those four rows turns four Partials into four Completes with
+    no code changing. This is the single highest-value item in this batch.
+
+94. **Step 474 puts a statistical floor on a safeguarding check.** A 95 per cent floor on
+    credential verification, read as the filter's accuracy, permits one uncertified adult in
+    twenty. The filter is built as a hard gate and the percentages re-read as reader accuracy,
+    but the band itself needs rewriting before anybody signs it.
+
+95. **Three abbreviations are used and never expanded** (ZII at 453, LSA at 472, DCYN at 474).
+    DCYN gates who is shown to a family, so what it stands for is not a documentation
+    nicety. Each is recorded with a named confirmer and none is guessed at.
+
+96. **The Mistake-Proofing and Self-Chasing columns are one sentence each across all twenty
+    rows** (466), promising a CI/CD block and a thirty-second rollback that cannot apply to
+    rows whose subject is an ordinal into a list the sheet does not contain. Either the columns
+    should say something per row or they should be dropped.
+
+97. **Two rows name two registries each** (460 and 470): @Universal-Library/... in the Atomic
+    Step and @habot/shared-library in the Common Library column. Both names are recorded and
+    neither is chosen over the other; where these modules actually publish is a decision for
+    the owner of the registries.
 
 Closed since Steps 1-20: the double-tap-correction telemetry TTMAC-014 was Partial for is
 now built (Steps 34-35). The rate is computed from recorded interactions; the production
