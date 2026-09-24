@@ -1,52 +1,47 @@
 // ============================================================
 // REF-046-A13 — Reference Implementation Framework
-// Atomic Step: Build an overlay card system that processes status updates.
-// Metric:      Layout Consistency Score · Floor=85.0 · Optimal=95.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     298 of 396
+// Atomic Step:  Build an overlay card system that processes status updates.
+// Metric:       Test Coverage
+// Floor:        85.0  ·  Optimal: 85.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      940 of 1073
 // ============================================================
-// Why this matters: Provides immediate, clear feedback for user actions without interrupting active workflows with heavy
-// Mobile impl:      Displays quiet status popups near screen borders, keeping the center workspace free and interactive.
-// Data requirement: Write unit tests for the status update listening service and queue management.
+// Why:          Provides immediate, clear feedback for user actions without interrupting active workflows with heavy
+// Mobile:       Displays quiet status popups near screen borders, keeping the center workspace free and interactive.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ref046A13ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ref046A13ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ref046A13ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for REF-046-A13.
-/// Fields derived from AISS sheet row — Reference Implementation Framework.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// REF-046-A13 — Reference Implementation Framework
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ref046A13Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String modalId;
   final String triggerEvent;
   final String contentType;
   final String dismissBehaviour;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Ref046A13Config {
     'triggerEvent': triggerEvent,
     'contentType': contentType,
     'dismissBehaviour': dismissBehaviour,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Ref046A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref046A13ConformanceLevel.complete:    return 'Pass';
-      case Ref046A13ConformanceLevel.partial:     return 'Partial';
-      case Ref046A13ConformanceLevel.notComplete: return 'Fail';
+      case Ref046A13ConformanceLevel.pass_: return 'Pass';
+      case Ref046A13ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// REF-046-A13: Build an overlay card system that processes status updates.
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Test Coverage
+/// Floor=85.0 · Output=Pass / Fail
 class Ref046A13Pipeline {
   static const double _floor   = 85.0;
-  static const double _optimal = 95.0;
+  static const double _optimal = 85.0;
 
   // EC:1 — Construct an overlay alert portal that mounts above main workspace rows
   static Ref046A13Config _ec1Execute(Ref046A13Config config) {
@@ -190,27 +183,23 @@ class Ref046A13Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Ref046A13ValidationResult calculateConformance({
     required List<Ref046A13Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ref046A13ValidationResult(
+      return Ref046A13ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ref046A13ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-REF046A13-VAL',
+        conformanceLevel: Ref046A13ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-REF046A13-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ref046A13ConformanceLevel.complete
-        : rate >= _floor
-            ? Ref046A13ConformanceLevel.partial
-            : Ref046A13ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ref046A13ConformanceLevel.pass_
+        : Ref046A13ConformanceLevel.fail_;
     return Ref046A13ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Ref046A13Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-REF046A13-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-REF046A13-000: configs must not be empty for REF-046-A13');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Ref046A13Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-REF046A13-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-REF046A13-TRI: triangular check failed for REF-046-A13');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-REF-046-A13',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Test Coverage',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Ref046A13Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ref_046_a13Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Ref046A13Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ref046A13Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Ref046A13Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('REF-046-A13',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Ref046A13Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${modalId} | ${triggerEvent}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Ref046A13Config(
       configId: 'ref046a13-cfg-001',
-      modalId: 'ref-046-a13_modalId_value',
-      triggerEvent: 'ref-046-a13_triggerEvent_value',
-      contentType: 'ref-046-a13_contentType_value',
-      dismissBehaviour: 'ref-046-a13_dismissBehaviour_value',
+      modalId: 'ref-046-a13_modalId',
+      triggerEvent: 'ref-046-a13_triggerEvent',
+      contentType: 'ref-046-a13_contentType',
+      dismissBehaviour: 'ref-046-a13_dismissBehaviour',
       traceId:                 'trace-ref046a13-001',
       originSourceId:          'origin-ref046a13',
       immediatePredecessorId:  'pred-ref046a13-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ref046A13Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('REF-046-A13 → $result');
+  final out = await Ref046A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('REF-046-A13 [Pass / Fail] → $out');
 }

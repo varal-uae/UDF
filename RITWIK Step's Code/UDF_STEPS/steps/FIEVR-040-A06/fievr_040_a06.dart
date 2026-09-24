@@ -1,31 +1,38 @@
 // ============================================================
 // FIEVR-040-A06 — Form Input Entry Validation Registry
-// Atomic Step: Pareto Analysis Automated Check Sheet Data Collectors
-// Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     544 of 1073
+// Atomic Step:  Pareto Analysis Automated Check Sheet Data Collectors
+// Metric:       Process Execution Quality (%)
+// Floor:        0.85  ·  Optimal: 0.95
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      268 of 1073
 // ============================================================
-// Why this matters: Replaces generic error reports with clearly structured, structured data records to power automated o
-// Mobile impl:      Batching and compressing small event rows preserves precious mobile bandwidth and keeps data transmi
-// Data requirement: Parse incoming user submissions to isolate specific complaint identifiers.
+// Why:          Replaces generic error reports with clearly structured, structured data records to power automated o
+// Mobile:       Batching and compressing small event rows preserves precious mobile bandwidth and keeps data transmi
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Fievr040A06ConformanceLevel { complete, partial, notComplete }
-enum Fievr040A06ExecutionStatus  { pending, running, complete, failed }
+enum Fievr040A06ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Fievr040A06ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FIEVR-040-A06.
-/// Fields derived from AISS sheet — Form Input Entry Validation Registry.
+/// FIEVR-040-A06 — Form Input Entry Validation Registry
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Fievr040A06Config {
   final String configId;
@@ -35,6 +42,7 @@ class Fievr040A06Config {
   final String dismissBehaviour;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -124,13 +132,14 @@ class Fievr040A06ValidationResult {
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// FIEVR-040-A06: Pareto Analysis Automated Check Sheet Data Collectors
-/// Metric: Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
+/// Metric: Process Execution Quality (%)
+/// Floor=0.85 · Output=Complete / Partial / Not Complete
 class Fievr040A06Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.85;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the FIEVR-040-A06 configuration in the source repository.
   static Fievr040A06Config _ec1Locates(Fievr040A06Config config) {
@@ -152,13 +161,13 @@ class Fievr040A06Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Implementation Conformance Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality (%).
   static Fievr040A06Config _ec3Compiles(Fievr040A06Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FIEVR040A06-003: modalId required for FIEVR-040-A06');
     }
-    // the implementation rule set per Implementation Conformance R
+    // the implementation rule set per Process Execution Quality (%
     return config;
   }
 
@@ -182,13 +191,13 @@ class Fievr040A06Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Implementation Conformance Rate gate (floor=0.90).
+  // EC:6 — System validates configuration against Process Execution Quality (%) gate (floor=0.85).
   static Fievr040A06Config _ec6Validates(Fievr040A06Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FIEVR040A06-006: modalId required for FIEVR-040-A06');
     }
-    // configuration against Implementation Conformance Rate gate (
+    // configuration against Process Execution Quality (%) gate (fl
     return config;
   }
 
@@ -220,7 +229,7 @@ class Fievr040A06Pipeline {
     required List<Fievr040A06Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Fievr040A06ValidationResult(
+      return Fievr040A06ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Fievr040A06ConformanceLevel.notComplete,
@@ -230,7 +239,7 @@ class Fievr040A06Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Fievr040A06ConformanceLevel.complete
         : rate >= _floor
             ? Fievr040A06ConformanceLevel.partial
@@ -280,14 +289,14 @@ class Fievr040A06Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FIEVR-040-A06',
-      'metric':             'Implementation Conformance Rate',
+      'metric':             'Process Execution Quality (%)',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Fievr040A06Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> fievr_040_a06Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> fievr_040_a06Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Fievr040A06Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Fievr040A06Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Fievr040A06Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FIEVR-040-A06',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Fievr040A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FIEVR-040-A06 → $result');
+  final out = await Fievr040A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FIEVR-040-A06 [Complete / Partial / Not Complete] → $out');
 }

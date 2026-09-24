@@ -1,52 +1,48 @@
 // ============================================================
 // TTMAC-025-A01 — Touch Target & Material Accessibility Compliance
-// Atomic Step: TTMAC-025 - Build Hardware-Accelerated Mobile Touch Ripple Feeds.
-// Metric:      Touch Target Compliance Rate · Floor=0.8 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     378 of 396
+// Atomic Step:  TTMAC-025 - Build Hardware-Accelerated Mobile Touch Ripple Feeds.
+// Metric:       Scope Coverage / Audit Completeness
+// Floor:        0.8  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1051 of 1073
 // ============================================================
-// Why this matters: Eliminates double-tapping anomalies caused by users thinking the interface did not register their cl
-// Mobile impl:      Replaces cursor dependencies with rapid feedback cues designed strictly for touch surfaces.
-// Data requirement: Review mobile touch targets requiring tactile visual feedback.
+// Why:          Eliminates double-tapping anomalies caused by users thinking the interface did not register their cl
+// Mobile:       Replaces cursor dependencies with rapid feedback cues designed strictly for touch surfaces.
+// col41:        Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Ttmac025A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Ttmac025A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttmac025A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTMAC-025-A01.
-/// Fields derived from AISS sheet row — Touch Target & Material Accessibility Compliance.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTMAC-025-A01 — Touch Target & Material Accessibility Compliance
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttmac025A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Ttmac025A01Config {
     'hexValue': hexValue,
     'wcagRatio': wcagRatio,
     'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,12 +132,11 @@ class Ttmac025A01ValidationResult {
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// TTMAC-025-A01: TTMAC-025 - Build Hardware-Accelerated Mobile Touch Ripple Feeds.
-///
-/// Metric: Touch Target Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Scope Coverage / Audit Completeness
+/// Floor=0.8 · Output=Complete / Partial / Not Complete
 class Ttmac025A01Pipeline {
   static const double _floor   = 0.8;
   static const double _optimal = 1.0;
@@ -160,23 +155,21 @@ class Ttmac025A01Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Ttmac025A01ValidationResult calculateConformance({
     required List<Ttmac025A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttmac025A01ValidationResult(
+      return Ttmac025A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ttmac025A01ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTMAC025A01-VAL',
+        gatePass: false, ecLineRef: 'EC-TTMAC025A01-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ttmac025A01ConformanceLevel.complete
         : rate >= _floor
             ? Ttmac025A01ConformanceLevel.partial
@@ -209,26 +202,24 @@ class Ttmac025A01Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTMAC025A01-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTMAC025A01-000: configs must not be empty for TTMAC-025-A01');
     }
     final p1 = configs.map(_ec1Execute).toList();
 
     if (!triangularCheck(configs.length, p1.length)) {
-      return {'error': 'EC-TTMAC025A01-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTMAC025A01-TRI: triangular check failed for TTMAC-025-A01');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMAC-025-A01',
-      'metric':             'Touch Target Compliance Rate',
+      'metric':             'Scope Coverage / Audit Completeness',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -238,9 +229,7 @@ class Ttmac025A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttmac_025_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -259,6 +248,7 @@ class Ttmac025A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttmac025A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -266,16 +256,13 @@ class Ttmac025A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTMAC-025-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -284,23 +271,22 @@ class Ttmac025A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${colorToken} | ${hexValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -316,17 +302,16 @@ void main() async {
   final configs = [
     Ttmac025A01Config(
       configId: 'ttmac025a01-cfg-001',
-      colorToken: 'ttmac-025-a01_colorToken_value',
-      hexValue: 'ttmac-025-a01_hexValue_value',
-      wcagRatio: 'ttmac-025-a01_wcagRatio_value',
-      usageContext: 'ttmac-025-a01_usageContext_value',
+      colorToken: 'ttmac-025-a01_colorToken',
+      hexValue: 'ttmac-025-a01_hexValue',
+      wcagRatio: 'ttmac-025-a01_wcagRatio',
+      usageContext: 'ttmac-025-a01_usageContext',
       traceId:                 'trace-ttmac025a01-001',
       originSourceId:          'origin-ttmac025a01',
       immediatePredecessorId:  'pred-ttmac025a01-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttmac025A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTMAC-025-A01 → $result');
+  final out = await Ttmac025A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTMAC-025-A01 [Complete / Partial / Not Complete] → $out');
 }

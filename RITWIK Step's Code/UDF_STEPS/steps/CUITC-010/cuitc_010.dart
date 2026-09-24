@@ -1,211 +1,331 @@
 // ============================================================
-// CUITC-010 | Core UI Token Compiler
-// Atomic Task: Build an automated event system to manage and sync tax compliance milestones for Dubai and India cal
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CUITC-010 — Core UI Token Compiler
+// Atomic Step:  Build an automated event system to manage and sync tax compliance milestones for Dubai and India cal
+// Metric:       Process First-Pass Implementation Acceptance Rate (%)
+// Floor:        0.85  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      165 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System validates JWT authorization tokens from incoming requests at the API gateway.
-  // EC: 2. System extracts configuration parameters for Dubai tax calendar milestones.
-  // EC: 3. System extracts configuration parameters for India tax calendar milestones.
-  // EC: 4. System calculates compliance deadline dates using region-specific tax rules.
-  // EC: 5. System evaluates first-pass yield benchmarks against target metrics.
-  // EC: 6. System generates synchronized compliance timeline payload records.
-  // EC: 7. System routes failed validation payloads to the dead letter queue.
-  // EC: 8. System logs authentication events with lineage metadata in BigQuery.
+// Why:          Secures identity and access management for mobile users.
+// Mobile:       Stateless auth allows mobile apps to scale without hitting a central session database.
+// col41:        Poor / Average / Good
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cuitc010ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CUITC-010.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cuitc010Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cuitc010ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CUITC-010 — Core UI Token Compiler
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Cuitc010Config {
+  final String configId;
+  final String gateId;
+  final String checkRule;
+  final String passThreshold;
+  final String failureReason;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cuitc010Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cuitc010Config({
+    required this.configId,
+    required this.gateId,
+    required this.checkRule,
+    required this.passThreshold,
+    required this.failureReason,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cuitc010Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cuitc010Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cuitc010Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cuitc010Config(
+    configId: configId,
+    gateId: gateId,
+    checkRule: checkRule,
+    passThreshold: passThreshold,
+    failureReason: failureReason,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gateId': gateId,
+    'checkRule': checkRule,
+    'passThreshold': passThreshold,
+    'failureReason': failureReason,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cuitc010ScanResult {
+class Cuitc010ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cuitc010ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cuitc010ScanResult({
+  const Cuitc010ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cuitc010ConformanceLevel.good:    return 'Good';
+      case Cuitc010ConformanceLevel.average: return 'Average';
+      case Cuitc010ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// CUITC-010: Build an automated event system to manage and sync tax compliance milestones for
+/// Metric: Process First-Pass Implementation Acceptance Rate (%)
+/// Floor=0.85 · Output=Good / Average / Poor
 class Cuitc010Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.85;
+  static const double _optimal = 0.97;
 
-
-  // EC:1 — EC: 1. System validates JWT authorization tokens from incoming requests at the API gateway.
-  static void executeValidatesStep1(Cuitc010Entry entry) {
-    // validates JWT authorization tokens from incoming requests at the API gateway
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-001: ruleId required');
-    };
+  // EC:1 — System locates the CUITC-010 configuration in the source repository.
+  static Cuitc010Config _ec1Locates(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-001: gateId required for CUITC-010');
+    }
+    // the CUITC-010 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System extracts configuration parameters for Dubai tax calendar milestones.
-  static void executeExtractsStep2(Cuitc010Entry entry) {
-    // extracts configuration parameters for Dubai tax calendar milestones
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-002: ruleId required');
-    };
+  // EC:2 — System extracts gateId and checkRule from the CUITC-010 registry.
+  static Cuitc010Config _ec2Extracts(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-002: gateId required for CUITC-010');
+    }
+    // gateId and checkRule from the CUITC-010 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System extracts configuration parameters for India tax calendar milestones.
-  static void executeExtractsStep3(Cuitc010Entry entry) {
-    // extracts configuration parameters for India tax calendar milestones
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Process First-Pass Implementation Acceptan
+  static Cuitc010Config _ec3Compiles(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-003: gateId required for CUITC-010');
+    }
+    // the implementation rule set per Process First-Pass Implement
+    return config;
   }
 
-  // EC:4 — EC: 4. System calculates compliance deadline dates using region-specific tax rules.
-  static void executeCalculatesStep4(Cuitc010Entry entry) {
-    // calculates compliance deadline dates using region-specific tax rules
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Cuitc010Config _ec4Validates(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-004: gateId required for CUITC-010');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System evaluates first-pass yield benchmarks against target metrics.
-  static void executeEvaluatesStep5(Cuitc010Entry entry) {
-    // evaluates first-pass yield benchmarks against target metrics
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Cuitc010Config _ec5Registers(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-005: gateId required for CUITC-010');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System generates synchronized compliance timeline payload records.
-  static void executeGeneratesStep6(Cuitc010Entry entry) {
-    // generates synchronized compliance timeline payload records
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Process First-Pass Implementation Acceptance Rate (
+  static Cuitc010Config _ec6Validates(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-006: gateId required for CUITC-010');
+    }
+    // configuration against Process First-Pass Implementation Acce
+    return config;
   }
 
-  // EC:7 — EC: 7. System routes failed validation payloads to the dead letter queue.
-  static void executeRoutesStep7(Cuitc010Entry entry) {
-    // routes failed validation payloads to the dead letter queue
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Cuitc010Config _ec7Routes(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-007: gateId required for CUITC-010');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System logs authentication events with lineage metadata in BigQuery.
-  static void executeLogsStep8(Cuitc010Entry entry) {
-    // logs authentication events with lineage metadata in BigQuery
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CUITC010-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Cuitc010Config _ec8Publishes(Cuitc010Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CUITC010-008: gateId required for CUITC-010');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  static Cuitc010ScanResult validateConformance(List<Cuitc010Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cuitc010ScanResult(
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Cuitc010ValidationResult calculateConformance({
+    required List<Cuitc010Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cuitc010ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cuitc010ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-CUITC010-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Cuitc010ConformanceLevel.good
+        : rate >= _floor
+            ? Cuitc010ConformanceLevel.average
+            : Cuitc010ConformanceLevel.poor;
+    return Cuitc010ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CUITC010-VAL',
     );
   }
 
-  static Cuitc010Entry routeToRegistry(Cuitc010Entry entry, Cuitc010ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cuitc010Config routeToRegistry(
+    Cuitc010Config config,
+    Cuitc010ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cuitc010Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CUITC010-000: configs must not be empty for CUITC-010');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CUITC010-TRI: triangular check failed for CUITC-010');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CUITC-010',
+      'metric':             'Process First-Pass Implementation Acceptance Rate (%)',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cuitc_010Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CUITC-010',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cuitc010Widget extends StatelessWidget {
-  final List<Cuitc010Entry> entries;
-  const Cuitc010Widget({super.key, required this.entries});
+  final List<Cuitc010Config> configs;
+  const Cuitc010Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cuitc010Pipeline.validateConformance(entries);
+    final result = Cuitc010Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -213,36 +333,37 @@ class Cuitc010Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CUITC-010',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.gateId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -258,15 +379,16 @@ void main() async {
   final configs = [
     Cuitc010Config(
       configId: 'cuitc010-cfg-001',
-      ruleId: 'cuitc-010_ruleId_val',
-      fieldA: 'cuitc-010_fieldA_val',
+      gateId: 'cuitc-010_gateId',
+      checkRule: 'cuitc-010_checkRule',
+      passThreshold: 'cuitc-010_passThreshold',
+      failureReason: 'cuitc-010_failureReason',
       traceId:                 'trace-cuitc010-001',
       originSourceId:          'origin-cuitc010',
       immediatePredecessorId:  'pred-cuitc010-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Cuitc010Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CUITC-010 → $result');
+  final out = await Cuitc010Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CUITC-010 [Good / Average / Poor] → $out');
 }

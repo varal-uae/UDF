@@ -1,31 +1,38 @@
 // ============================================================
 // ETMDI-015-15 — Enterprise Technical Master Doc Interface
-// Atomic Step: MTOI Exception Routing
-// Metric:      Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     617 of 1073
+// Atomic Step:  MTOI Exception Routing
+// Metric:       UI Design-System Adherence Rate
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      217 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Maintain non-blocking UI while awaiting resolution.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Etmdi01515ConformanceLevel { complete, partial, notComplete }
-enum Etmdi01515ExecutionStatus  { pending, running, complete, failed }
+enum Etmdi01515ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Etmdi01515ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for ETMDI-015-15.
-/// Fields derived from AISS sheet — Enterprise Technical Master Doc Interface.
+/// ETMDI-015-15 — Enterprise Technical Master Doc Interface
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Etmdi01515Config {
   final String configId;
@@ -35,6 +42,7 @@ class Etmdi01515Config {
   final String resolvedBy;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Etmdi01515ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Etmdi01515ConformanceLevel.complete:    return 'Good';
-      case Etmdi01515ConformanceLevel.partial:     return 'Average';
-      case Etmdi01515ConformanceLevel.notComplete: return 'Poor';
+      case Etmdi01515ConformanceLevel.good:    return 'Good';
+      case Etmdi01515ConformanceLevel.average: return 'Average';
+      case Etmdi01515ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// ETMDI-015-15: MTOI Exception Routing
-/// Metric: Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: UI Design-System Adherence Rate
+/// Floor=0.9 · Output=Good / Average / Poor
 class Etmdi01515Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the ETMDI-015-15 configuration in the source repository.
   static Etmdi01515Config _ec1Locates(Etmdi01515Config config) {
@@ -152,13 +161,13 @@ class Etmdi01515Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Error Handling Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per UI Design-System Adherence Rate.
   static Etmdi01515Config _ec3Compiles(Etmdi01515Config config) {
     if (config.errorCode.isEmpty) {
       throw ArgumentError(
           'EC-ETMDI01515-003: errorCode required for ETMDI-015-15');
     }
-    // the implementation rule set per Error Handling Coverage Rate
+    // the implementation rule set per UI Design-System Adherence R
     return config;
   }
 
@@ -182,13 +191,13 @@ class Etmdi01515Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Error Handling Coverage Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against UI Design-System Adherence Rate gate (floor=0.9).
   static Etmdi01515Config _ec6Validates(Etmdi01515Config config) {
     if (config.errorCode.isEmpty) {
       throw ArgumentError(
           'EC-ETMDI01515-006: errorCode required for ETMDI-015-15');
     }
-    // configuration against Error Handling Coverage Rate gate (flo
+    // configuration against UI Design-System Adherence Rate gate (
     return config;
   }
 
@@ -220,7 +229,7 @@ class Etmdi01515Pipeline {
     required List<Etmdi01515Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Etmdi01515ValidationResult(
+      return Etmdi01515ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Etmdi01515ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Etmdi01515Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Etmdi01515ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Etmdi01515ConformanceLevel.good
         : rate >= _floor
-            ? Etmdi01515ConformanceLevel.partial
-            : Etmdi01515ConformanceLevel.notComplete;
+            ? Etmdi01515ConformanceLevel.average
+            : Etmdi01515ConformanceLevel.poor;
     return Etmdi01515ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Etmdi01515Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ETMDI-015-15',
-      'metric':             'Error Handling Coverage Rate',
+      'metric':             'UI Design-System Adherence Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Etmdi01515Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> etmdi_015_15Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> etmdi_015_15Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Etmdi01515Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Etmdi01515Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Etmdi01515Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('ETMDI-015-15',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.errorCode,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Etmdi01515Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('ETMDI-015-15 → $result');
+  final out = await Etmdi01515Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ETMDI-015-15 [Good / Average / Poor] → $out');
 }

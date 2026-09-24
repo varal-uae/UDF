@@ -1,31 +1,38 @@
 // ============================================================
 // FIEVR-032-A09 — Form Input Entry Validation Registry
-// Atomic Step: FIEVR-032 - Code Dynamic Form Error Positioning Engine
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     564 of 1073
+// Atomic Step:  FIEVR-032 - Code Dynamic Form Error Positioning Engine
+// Metric:       Implementation Completeness & Code Quality
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      259 of 1073
 // ============================================================
-// Why this matters: Prevents user confusion on lengthy mobile layouts by immediately presenting the exact field causing 
-// Mobile impl:      Scroll tracks throttle acceleration profiles to prevent user disorientation on short screens.
-// Data requirement: Handle edge cases where the failed field is inside a collapsed/hidden section.
+// Why:          Prevents user confusion on lengthy mobile layouts by immediately presenting the exact field causing 
+// Mobile:       Scroll tracks throttle acceleration profiles to prevent user disorientation on short screens.
+// col41:        Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Fievr032A09ConformanceLevel { complete, partial, notComplete }
-enum Fievr032A09ExecutionStatus  { pending, running, complete, failed }
+enum Fievr032A09ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Fievr032A09ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FIEVR-032-A09.
-/// Fields derived from AISS sheet — Form Input Entry Validation Registry.
+/// FIEVR-032-A09 — Form Input Entry Validation Registry
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Fievr032A09Config {
   final String configId;
@@ -35,6 +42,7 @@ class Fievr032A09Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -124,12 +132,13 @@ class Fievr032A09ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FIEVR-032-A09: FIEVR-032 - Code Dynamic Form Error Positioning Engine
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Implementation Completeness & Code Quality
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Fievr032A09Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — Map exact coordinate metrics for all required input fields
@@ -180,7 +189,7 @@ class Fievr032A09Pipeline {
     required List<Fievr032A09Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Fievr032A09ValidationResult(
+      return Fievr032A09ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Fievr032A09ConformanceLevel.notComplete,
@@ -190,7 +199,7 @@ class Fievr032A09Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Fievr032A09ConformanceLevel.complete
         : rate >= _floor
             ? Fievr032A09ConformanceLevel.partial
@@ -236,14 +245,14 @@ class Fievr032A09Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FIEVR-032-A09',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Implementation Completeness & Code Quality',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Fievr032A09Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> fievr_032_a09Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> fievr_032_a09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Fievr032A09Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Fievr032A09Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Fievr032A09Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FIEVR-032-A09',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Fievr032A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FIEVR-032-A09 → $result');
+  final out = await Fievr032A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FIEVR-032-A09 [Complete / Partial / Not Complete] → $out');
 }

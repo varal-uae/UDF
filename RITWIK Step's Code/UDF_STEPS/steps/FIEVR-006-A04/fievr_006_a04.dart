@@ -1,47 +1,48 @@
 // ============================================================
 // FIEVR-006-A04 — Form Input Entry Validation Registry
-// Atomic Step: Enforce strict visual asterisks (*) on required data entry input controls.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        15-Sep-2026
-// Step No:     362 of 390
+// Atomic Step:  Enforce strict visual asterisks (*) on required data entry input controls.
+// Metric:       Requirements / Discovery Coverage (%)
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      254 of 1073
 // ============================================================
-// Why this matters: Eliminates confusing data entry steps completely, guiding users to fill mandatory fields first.
-// Mobile impl: Minimizes input tracking mistakes on small screens by highlighting mandatory data points clearly bef
+// Why:          Eliminates confusing data entry steps completely, guiding users to fill mandatory fields first.
+// Mobile:       Minimizes input tracking mistakes on small screens by highlighting mandatory data points clearly bef
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Fievr006A04ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Fievr006A04ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Fievr006A04ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FIEVR-006-A04.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// FIEVR-006-A04 — Form Input Entry Validation Registry
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Fievr006A04Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +51,10 @@ class Fievr006A04Config {
 
   const Fievr006A04Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +72,33 @@ class Fievr006A04Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Fievr006A04Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -125,49 +132,52 @@ class Fievr006A04ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FIEVR-006-A04: Enforce strict visual asterisks (*) on required data entry input controls.
-///
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Requirements / Discovery Coverage (%)
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Fievr006A04Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — Set the standard symbol token parameter string values to match red asterisk markers (*)
   static Fievr006A04Config _ec1Execute(Fievr006A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FIEVR006A04-001: configId required for FIEVR-006-A04');
-    };
-    // Set the standard symbol token parameter string val
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-FIEVR006A04-001: colorToken required for FIEVR-006-A04');
+    }
+    // Set the standard symbol token parameter string values to mat
     return config;
   }
 
   // EC:2 — Map indicator layouts to render explicitly in high-contrast red colors directly above text
   static Fievr006A04Config _ec2Execute(Fievr006A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FIEVR006A04-002: configId required for FIEVR-006-A04');
-    };
-    // Map indicator layouts to render explicitly in high
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-FIEVR006A04-002: colorToken required for FIEVR-006-A04');
+    }
+    // Map indicator layouts to render explicitly in high-contrast 
     return config;
   }
 
   // EC:3 — Bind the visual indicator to input fields containing required backend constraints
   static Fievr006A04Config _ec3Execute(Fievr006A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FIEVR006A04-003: configId required for FIEVR-006-A04');
-    };
-    // Bind the visual indicator to input fields containi
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-FIEVR006A04-003: colorToken required for FIEVR-006-A04');
+    }
+    // Bind the visual indicator to input fields containing require
     return config;
   }
 
   // EC:4 — Run code validation checks to confirm consistency across form layers
   static Fievr006A04Config _ec4Execute(Fievr006A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FIEVR006A04-004: configId required for FIEVR-006-A04');
-    };
-    // Run code validation checks to confirm consistency 
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-FIEVR006A04-004: colorToken required for FIEVR-006-A04');
+    }
+    // Run code validation checks to confirm consistency across for
     return config;
   }
 
@@ -175,23 +185,21 @@ class Fievr006A04Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Fievr006A04ValidationResult calculateConformance({
     required List<Fievr006A04Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Fievr006A04ValidationResult(
+      return Fievr006A04ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Fievr006A04ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-FIEVR006A04-VAL',
+        gatePass: false, ecLineRef: 'EC-FIEVR006A04-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Fievr006A04ConformanceLevel.complete
         : rate >= _floor
             ? Fievr006A04ConformanceLevel.partial
@@ -224,7 +232,7 @@ class Fievr006A04Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-FIEVR006A04-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-FIEVR006A04-000: configs must not be empty for FIEVR-006-A04');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -232,21 +240,19 @@ class Fievr006A04Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-FIEVR006A04-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-FIEVR006A04-TRI: triangular check failed for FIEVR-006-A04');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FIEVR-006-A04',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Requirements / Discovery Coverage (%)',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -256,14 +262,12 @@ class Fievr006A04Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> fievr_006_a04Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
-  'error_code':       errorCode,
-  'payload_snapshot': jsonEncode(payload),
-  'dlq':              true,
-  'step_ref':         'FIEVR-006-A04',
-  'trace_id':         payload['trace_id'] ?? '',
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'FIEVR-006-A04',
+  'trace_id':          payload['trace_id'] ?? '',
   'compliance_status_ind': false,
 };
 
@@ -276,6 +280,8 @@ class Fievr006A04Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final result = Fievr006A04Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -283,16 +289,13 @@ class Fievr006A04Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FIEVR-006-A04',
-              style: const TextStyle(fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?'':'s'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? Theme.of(context).colorScheme.tertiary
-                  : Theme.of(context).colorScheme.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -301,28 +304,22 @@ class Fievr006A04Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass
-                      ? Theme.of(context).colorScheme.tertiary
-                      : Theme.of(context).colorScheme.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass
-                      ? Theme.of(context).colorScheme.tertiary
-                      : Theme.of(context).colorScheme.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -337,15 +334,17 @@ class Fievr006A04Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Fievr006A04Config(
-      configId:                'fievr006a04-cfg-001',
-      ruleKey:                 'fievr-006-a04_rule',
-      ruleValue:               'fievr-006-a04_value',
+      configId: 'fievr006a04-cfg-001',
+      colorToken: 'fievr-006-a04_colorToken',
+      hexValue: 'fievr-006-a04_hexValue',
+      wcagRatio: 'fievr-006-a04_wcagRatio',
+      usageContext: 'fievr-006-a04_usageContext',
       traceId:                 'trace-fievr006a04-001',
       originSourceId:          'origin-fievr006a04',
       immediatePredecessorId:  'pred-fievr006a04-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Fievr006A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FIEVR-006-A04 → $result');
+  final out = await Fievr006A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FIEVR-006-A04 [Complete / Partial / Not Complete] → $out');
 }

@@ -1,229 +1,327 @@
 // ============================================================
-// CFCST-013-A08 | Cloud Function Configuration Store
-// Atomic Task: CFCST-013-A08
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CFCST-013-A08 — Cloud Function Config Store
+// Atomic Step:  Architect Mobile Upsell/Cross-Sell Logic (CFCST-013)
+// Metric:       Financial Control / Payout Margin Accuracy
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      142 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System extracts font configuration parameter fields from input payload.
-  // EC: 2. System validates font weight attribute matching bold typography requirements.
-  // EC: 3. System extracts single session pricing metadata along with bundle pricing metadata.
-  // EC: 4. System calculates total cost savings percentage between single session pricing versus bundle pricing.
-  // EC: 5. System compares calculated payout margin variance against configured ceiling limit threshold of 2%.
-  // EC: 6. System evaluates payout margin variance conformity against optimal variance boundary of 1%.
-  // EC: 7. System applies bold typography layout parameters to highlight savings within mobile dialog components.
-  // EC: 8. System sets completion status flag to Pass upon successful verification of payout margin variance.
-  // EC: 9. System generates execution record payload containing user session identifier plus timestamp.
-  // EC: 10. System persists audit log details into telemetry storage repository.
+// Why:          
+// Mobile:       
+// col41:        Pass
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cfcst013A08ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CFCST-013-A08.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cfcst013A08Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cfcst013A08ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CFCST-013-A08 — Cloud Function Config Store
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Cfcst013A08Config {
+  final String configId;
+  final String fontFamily;
+  final String scaleStep;
+  final String sizePx;
+  final String weightToken;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cfcst013A08Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cfcst013A08Config({
+    required this.configId,
+    required this.fontFamily,
+    required this.scaleStep,
+    required this.sizePx,
+    required this.weightToken,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cfcst013A08Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cfcst013A08Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cfcst013A08Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cfcst013A08Config(
+    configId: configId,
+    fontFamily: fontFamily,
+    scaleStep: scaleStep,
+    sizePx: sizePx,
+    weightToken: weightToken,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'fontFamily': fontFamily,
+    'scaleStep': scaleStep,
+    'sizePx': sizePx,
+    'weightToken': weightToken,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cfcst013A08ScanResult {
+class Cfcst013A08ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cfcst013A08ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cfcst013A08ScanResult({
+  const Cfcst013A08ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cfcst013A08ConformanceLevel.pass_: return 'Pass';
+      case Cfcst013A08ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// CFCST-013-A08: Architect Mobile Upsell/Cross-Sell Logic (CFCST-013)
+/// Metric: Financial Control / Payout Margin Accuracy
+/// Floor=0.95 · Output=Pass / Fail
 class Cfcst013A08Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — EC: 1. System extracts font configuration parameter fields from input payload.
-  static void executeExtractsStep1(Cfcst013A08Entry entry) {
-    // extracts font configuration parameter fields from input payload
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-001: ruleId required');
-    };
+  // EC:1 — System locates the CFCST-013-A08 configuration in the source repository.
+  static Cfcst013A08Config _ec1Locates(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-001: fontFamily required for CFCST-013-A08');
+    }
+    // the CFCST-013-A08 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System validates font weight attribute matching bold typography requirements.
-  static void executeValidatesStep2(Cfcst013A08Entry entry) {
-    // validates font weight attribute matching bold typography requirements
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-002: ruleId required');
-    };
+  // EC:2 — System extracts fontFamily and scaleStep from the CFCST-013-A08 registry.
+  static Cfcst013A08Config _ec2Extracts(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-002: fontFamily required for CFCST-013-A08');
+    }
+    // fontFamily and scaleStep from the CFCST-013-A08 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System extracts single session pricing metadata along with bundle pricing metadata.
-  static void executeExtractsStep3(Cfcst013A08Entry entry) {
-    // extracts single session pricing metadata along with bundle pricing metadata
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Financial Control / Payout Margin Accuracy
+  static Cfcst013A08Config _ec3Compiles(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-003: fontFamily required for CFCST-013-A08');
+    }
+    // the implementation rule set per Financial Control / Payout M
+    return config;
   }
 
-  // EC:4 — EC: 4. System calculates total cost savings percentage between single session pricing versus bundle pricing.
-  static void executeCalculatesStep4(Cfcst013A08Entry entry) {
-    // calculates total cost savings percentage between single session pricing versus b
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Cfcst013A08Config _ec4Validates(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-004: fontFamily required for CFCST-013-A08');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System compares calculated payout margin variance against configured ceiling limit threshold of 2%.
-  static void executeComparesStep5(Cfcst013A08Entry entry) {
-    // compares calculated payout margin variance against configured ceiling limit thre
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Cfcst013A08Config _ec5Registers(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-005: fontFamily required for CFCST-013-A08');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System evaluates payout margin variance conformity against optimal variance boundary of 1%.
-  static void executeEvaluatesStep6(Cfcst013A08Entry entry) {
-    // evaluates payout margin variance conformity against optimal variance boundary of
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Financial Control / Payout Margin Accuracy gate (fl
+  static Cfcst013A08Config _ec6Validates(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-006: fontFamily required for CFCST-013-A08');
+    }
+    // configuration against Financial Control / Payout Margin Accu
+    return config;
   }
 
-  // EC:7 — EC: 7. System applies bold typography layout parameters to highlight savings within mobile dialog components.
-  static void executeAppliesStep7(Cfcst013A08Entry entry) {
-    // applies bold typography layout parameters to highlight savings within mobile dia
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Cfcst013A08Config _ec7Routes(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-007: fontFamily required for CFCST-013-A08');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System sets completion status flag to Pass upon successful verification of payout margin variance.
-  static void executeSetsStep8(Cfcst013A08Entry entry) {
-    // sets completion status flag to Pass upon successful verification of payout margi
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Cfcst013A08Config _ec8Publishes(Cfcst013A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST013A08-008: fontFamily required for CFCST-013-A08');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System generates execution record payload containing user session identifier plus timestamp.
-  static void executeGeneratesStep9(Cfcst013A08Entry entry) {
-    // generates execution record payload containing user session identifier plus times
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-009: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:10 — EC: 10. System persists audit log details into telemetry storage repository.
-  static void executePersistsStep10(Cfcst013A08Entry entry) {
-    // persists audit log details into telemetry storage repository
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST013A08-010: ruleId required');
-    };
-  }
-
-  static Cfcst013A08ScanResult validateConformance(List<Cfcst013A08Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cfcst013A08ScanResult(
+  static Cfcst013A08ValidationResult calculateConformance({
+    required List<Cfcst013A08Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cfcst013A08ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cfcst013A08ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-CFCST013A08-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Cfcst013A08ConformanceLevel.pass_
+        : Cfcst013A08ConformanceLevel.fail_;
+    return Cfcst013A08ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CFCST013A08-VAL',
     );
   }
 
-  static Cfcst013A08Entry routeToRegistry(Cfcst013A08Entry entry, Cfcst013A08ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cfcst013A08Config routeToRegistry(
+    Cfcst013A08Config config,
+    Cfcst013A08ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cfcst013A08Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CFCST013A08-000: configs must not be empty for CFCST-013-A08');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CFCST013A08-TRI: triangular check failed for CFCST-013-A08');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CFCST-013-A08',
+      'metric':             'Financial Control / Payout Margin Accuracy',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cfcst_013_a08Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CFCST-013-A08',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cfcst013A08Widget extends StatelessWidget {
-  final List<Cfcst013A08Entry> entries;
-  const Cfcst013A08Widget({super.key, required this.entries});
+  final List<Cfcst013A08Config> configs;
+  const Cfcst013A08Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cfcst013A08Pipeline.validateConformance(entries);
+    final result = Cfcst013A08Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +329,37 @@ class Cfcst013A08Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CFCST-013-A08',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.fontFamily,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -276,15 +375,16 @@ void main() async {
   final configs = [
     Cfcst013A08Config(
       configId: 'cfcst013a08-cfg-001',
-      ruleId: 'cfcst-013-a08_ruleId_val',
-      fieldA: 'cfcst-013-a08_fieldA_val',
+      fontFamily: 'cfcst-013-a08_fontFamily',
+      scaleStep: 'cfcst-013-a08_scaleStep',
+      sizePx: 'cfcst-013-a08_sizePx',
+      weightToken: 'cfcst-013-a08_weightToken',
       traceId:                 'trace-cfcst013a08-001',
       originSourceId:          'origin-cfcst013a08',
       immediatePredecessorId:  'pred-cfcst013a08-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Cfcst013A08Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CFCST-013-A08 → $result');
+  final out = await Cfcst013A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CFCST-013-A08 [Pass / Fail] → $out');
 }

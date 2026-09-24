@@ -1,52 +1,47 @@
 // ============================================================
-// PELCE-018-A16 — Platform Element Logic & Config Engine
-// Atomic Step: PELCE-018 - Configure Tooltip Logic Registries.
-// Metric:      Layout Consistency Score · Floor=0.7 · Optimal=0.85
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     281 of 396
+// PELCE-018-A16 — PELCE System Module
+// Atomic Step:  PELCE-018 - Configure Tooltip Logic Registries.
+// Metric:       Unit Test Coverage
+// Floor:        0.7  ·  Optimal: 0.7
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      902 of 1073
 // ============================================================
-// Why this matters: Provides complete operational visibility over system formulas calculating corporate stats.
-// Mobile impl:      Replaces desktop mouse hover checks with touch long-press gestures, launching focused modal sheets o
-// Data requirement: Add unit tests for the registry lookup and trigger logic.
+// Why:          Provides complete operational visibility over system formulas calculating corporate stats.
+// Mobile:       Replaces desktop mouse hover checks with touch long-press gestures, launching focused modal sheets o
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Pelce018A16ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Pelce018A16ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Pelce018A16ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for PELCE-018-A16.
-/// Fields derived from AISS sheet row — Platform Element Logic & Config Engine.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// PELCE-018-A16 — PELCE System Module
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Pelce018A16Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Pelce018A16Config {
     'validationRule': validationRule,
     'errorMessage': errorMessage,
     'inputType': inputType,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Pelce018A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Pelce018A16ConformanceLevel.complete:    return 'Pass';
-      case Pelce018A16ConformanceLevel.partial:     return 'Partial';
-      case Pelce018A16ConformanceLevel.notComplete: return 'Fail';
+      case Pelce018A16ConformanceLevel.pass_: return 'Pass';
+      case Pelce018A16ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// PELCE-018-A16: PELCE-018 - Configure Tooltip Logic Registries.
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Unit Test Coverage
+/// Floor=0.7 · Output=Pass / Fail
 class Pelce018A16Pipeline {
   static const double _floor   = 0.7;
-  static const double _optimal = 0.85;
+  static const double _optimal = 0.7;
 
   // EC:1 — Bind event-listener triggers (onHover / long-press) to data metrics
   static Pelce018A16Config _ec1Execute(Pelce018A16Config config) {
@@ -190,27 +183,23 @@ class Pelce018A16Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Pelce018A16ValidationResult calculateConformance({
     required List<Pelce018A16Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Pelce018A16ValidationResult(
+      return Pelce018A16ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Pelce018A16ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-PELCE018A16-VAL',
+        conformanceLevel: Pelce018A16ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-PELCE018A16-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Pelce018A16ConformanceLevel.complete
-        : rate >= _floor
-            ? Pelce018A16ConformanceLevel.partial
-            : Pelce018A16ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Pelce018A16ConformanceLevel.pass_
+        : Pelce018A16ConformanceLevel.fail_;
     return Pelce018A16ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Pelce018A16Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-PELCE018A16-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-PELCE018A16-000: configs must not be empty for PELCE-018-A16');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Pelce018A16Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-PELCE018A16-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-PELCE018A16-TRI: triangular check failed for PELCE-018-A16');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-PELCE-018-A16',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Unit Test Coverage',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Pelce018A16Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> pelce_018_a16Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Pelce018A16Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Pelce018A16Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Pelce018A16Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('PELCE-018-A16',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Pelce018A16Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${fieldId} | ${validationRule}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Pelce018A16Config(
       configId: 'pelce018a16-cfg-001',
-      fieldId: 'pelce-018-a16_fieldId_value',
-      validationRule: 'pelce-018-a16_validationRule_value',
-      errorMessage: 'pelce-018-a16_errorMessage_value',
-      inputType: 'pelce-018-a16_inputType_value',
+      fieldId: 'pelce-018-a16_fieldId',
+      validationRule: 'pelce-018-a16_validationRule',
+      errorMessage: 'pelce-018-a16_errorMessage',
+      inputType: 'pelce-018-a16_inputType',
       traceId:                 'trace-pelce018a16-001',
       originSourceId:          'origin-pelce018a16',
       immediatePredecessorId:  'pred-pelce018a16-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Pelce018A16Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('PELCE-018-A16 → $result');
+  final out = await Pelce018A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('PELCE-018-A16 [Pass / Fail] → $out');
 }

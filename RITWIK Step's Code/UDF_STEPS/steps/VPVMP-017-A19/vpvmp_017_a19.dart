@@ -1,51 +1,47 @@
 // ============================================================
-// VPVMP-017-A19 — Viewport & Visual Media Positioning Module
-// Atomic Step: Position high-contrast persistent action buttons inside the lower right viewport quadrant.
+// VPVMP-017-A19 — VPVMP System Module
+// Atomic Step:  Position high-contrast persistent action buttons inside the lower right viewport quadrant.
   Deploy 
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     507 of 530
+// Metric:       Implementation Conformance Rate
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1073 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Produce and confirm the expected output: Floating button interaction interface definition code snipp
+// Why:          
+// Mobile:       
+// col41:        Poor / Average / Good
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Vpvmp017A19ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Vpvmp017A19ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Vpvmp017A19ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for VPVMP-017-A19.
-/// Fields derived from AISS sheet — Viewport & Visual Media Positioning Module.
+/// VPVMP-017-A19 — VPVMP System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Vpvmp017A19Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
-  final String layoutId;
-  final String splitRatio;
-  final String containerWidth;
-  final String breakpointKey;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -56,10 +52,10 @@ class Vpvmp017A19Config {
 
   const Vpvmp017A19Config({
     required this.configId,
-    required this.layoutId,
-    required this.splitRatio,
-    required this.containerWidth,
-    required this.breakpointKey,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -78,10 +74,10 @@ class Vpvmp017A19Config {
     bool?   complianceStatusInd,
   }) => Vpvmp017A19Config(
     configId: configId,
-    layoutId: layoutId,
-    splitRatio: splitRatio,
-    containerWidth: containerWidth,
-    breakpointKey: breakpointKey,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -93,10 +89,10 @@ class Vpvmp017A19Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'layoutId': layoutId,
-    'splitRatio': splitRatio,
-    'containerWidth': containerWidth,
-    'breakpointKey': breakpointKey,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -130,87 +126,87 @@ class Vpvmp017A19ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Vpvmp017A19ConformanceLevel.complete:    return 'Good';
-      case Vpvmp017A19ConformanceLevel.partial:     return 'Average';
-      case Vpvmp017A19ConformanceLevel.notComplete: return 'Poor';
+      case Vpvmp017A19ConformanceLevel.good:    return 'Good';
+      case Vpvmp017A19ConformanceLevel.average: return 'Average';
+      case Vpvmp017A19ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// VPVMP-017-A19: Position high-contrast persistent action buttons inside the lower right viewport
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Implementation Conformance Rate
+/// Floor=0.9 · Output=Good / Average / Poor
 class Vpvmp017A19Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — System locates the VPVMP-017-A19 configuration in the source repository.
   static Vpvmp017A19Config _ec1Locates(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-001: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-001: colorToken required for VPVMP-017-A19');
     }
     // the VPVMP-017-A19 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts layoutId and splitRatio from the VPVMP-017-A19 registry.
+  // EC:2 — System extracts colorToken and hexValue from the VPVMP-017-A19 registry.
   static Vpvmp017A19Config _ec2Extracts(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-002: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-002: colorToken required for VPVMP-017-A19');
     }
-    // layoutId and splitRatio from the VPVMP-017-A19 registry
+    // colorToken and hexValue from the VPVMP-017-A19 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per WCAG 2.1 Accessibility Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Implementation Conformance Rate.
   static Vpvmp017A19Config _ec3Compiles(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-003: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-003: colorToken required for VPVMP-017-A19');
     }
-    // the implementation rule set per WCAG 2.1 Accessibility Compl
+    // the implementation rule set per Implementation Conformance R
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Vpvmp017A19Config _ec4Validates(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-004: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-004: colorToken required for VPVMP-017-A19');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Vpvmp017A19Config _ec5Registers(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-005: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-005: colorToken required for VPVMP-017-A19');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against WCAG 2.1 Accessibility Compliance Rate gate (floor=
+  // EC:6 — System validates configuration against Implementation Conformance Rate gate (floor=0.9).
   static Vpvmp017A19Config _ec6Validates(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-006: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-006: colorToken required for VPVMP-017-A19');
     }
-    // configuration against WCAG 2.1 Accessibility Compliance Rate
+    // configuration against Implementation Conformance Rate gate (
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Vpvmp017A19Config _ec7Routes(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-007: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-007: colorToken required for VPVMP-017-A19');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -218,9 +214,9 @@ class Vpvmp017A19Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Vpvmp017A19Config _ec8Publishes(Vpvmp017A19Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-VPVMP017A19-008: layoutId required for VPVMP-017-A19');
+          'EC-VPVMP017A19-008: colorToken required for VPVMP-017-A19');
     }
     // validated configuration to the rule registry
     return config;
@@ -234,7 +230,7 @@ class Vpvmp017A19Pipeline {
     required List<Vpvmp017A19Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Vpvmp017A19ValidationResult(
+      return Vpvmp017A19ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Vpvmp017A19ConformanceLevel.notComplete,
@@ -244,11 +240,11 @@ class Vpvmp017A19Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Vpvmp017A19ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Vpvmp017A19ConformanceLevel.good
         : rate >= _floor
-            ? Vpvmp017A19ConformanceLevel.partial
-            : Vpvmp017A19ConformanceLevel.notComplete;
+            ? Vpvmp017A19ConformanceLevel.average
+            : Vpvmp017A19ConformanceLevel.poor;
     return Vpvmp017A19ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -291,19 +287,17 @@ class Vpvmp017A19Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-VPVMP017A19-TRI: triangular check failed for VPVMP-017-A19');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-VPVMP-017-A19',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Implementation Conformance Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -313,9 +307,7 @@ class Vpvmp017A19Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> vpvmp_017_a19Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -334,6 +326,7 @@ class Vpvmp017A19Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Vpvmp017A19Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -341,15 +334,13 @@ class Vpvmp017A19Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('VPVMP-017-A19',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -358,23 +349,22 @@ class Vpvmp017A19Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.layoutId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -390,17 +380,16 @@ void main() async {
   final configs = [
     Vpvmp017A19Config(
       configId: 'vpvmp017a19-cfg-001',
-      layoutId: 'vpvmp-017-a19_layoutId',
-      splitRatio: 'vpvmp-017-a19_splitRatio',
-      containerWidth: 'vpvmp-017-a19_containerWidth',
-      breakpointKey: 'vpvmp-017-a19_breakpointKey',
+      colorToken: 'vpvmp-017-a19_colorToken',
+      hexValue: 'vpvmp-017-a19_hexValue',
+      wcagRatio: 'vpvmp-017-a19_wcagRatio',
+      usageContext: 'vpvmp-017-a19_usageContext',
       traceId:                 'trace-vpvmp017a19-001',
       originSourceId:          'origin-vpvmp017a19',
       immediatePredecessorId:  'pred-vpvmp017a19-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Vpvmp017A19Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('VPVMP-017-A19 → $result');
+  final out = await Vpvmp017A19Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('VPVMP-017-A19 [Good / Average / Poor] → $out');
 }

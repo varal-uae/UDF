@@ -1,40 +1,47 @@
 // ============================================================
 // FEBFL-001-A18 — Frontend Element Build & Feature Library
-// Atomic Step: Code non-blocking status panels to track file export tasks.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     628 of 1073
+// Atomic Step:  Code non-blocking status panels to track file export tasks.
+// Metric:       Verification / QA Pass Rate
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      228 of 1073
 // ============================================================
-// Why this matters: Allows users to run major history reports and continue working on other tasks within the application
-// Mobile impl:      Handles heavy data formatting steps on background servers to prevent the mobile app from slowing dow
-// Data requirement: Write unit tests for each status state transition and the dismiss/retry actions.
+// Why:          Allows users to run major history reports and continue working on other tasks within the application
+// Mobile:       Handles heavy data formatting steps on background servers to prevent the mobile app from slowing dow
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Febfl001A18ConformanceLevel { complete, partial, notComplete }
-enum Febfl001A18ExecutionStatus  { pending, running, complete, failed }
+enum Febfl001A18ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Febfl001A18ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FEBFL-001-A18.
-/// Fields derived from AISS sheet — Frontend Element Build & Feature Library.
+/// FEBFL-001-A18 — Frontend Element Build & Feature Library
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Febfl001A18Config {
   final String configId;
-  final String animationId;
-  final String durationMs;
-  final String easingCurve;
-  final String triggerState;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +50,10 @@ class Febfl001A18Config {
 
   const Febfl001A18Config({
     required this.configId,
-    required this.animationId,
-    required this.durationMs,
-    required this.easingCurve,
-    required this.triggerState,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +72,10 @@ class Febfl001A18Config {
     bool?   complianceStatusInd,
   }) => Febfl001A18Config(
     configId: configId,
-    animationId: animationId,
-    durationMs: durationMs,
-    easingCurve: easingCurve,
-    triggerState: triggerState,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +87,10 @@ class Febfl001A18Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'animationId': animationId,
-    'durationMs': durationMs,
-    'easingCurve': easingCurve,
-    'triggerState': triggerState,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +124,26 @@ class Febfl001A18ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Febfl001A18ConformanceLevel.complete:    return 'Pass';
-      case Febfl001A18ConformanceLevel.partial:     return 'Partial';
-      case Febfl001A18ConformanceLevel.notComplete: return 'Fail';
+      case Febfl001A18ConformanceLevel.pass_: return 'Pass';
+      case Febfl001A18ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FEBFL-001-A18: Code non-blocking status panels to track file export tasks.
-/// Metric: WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Verification / QA Pass Rate
+/// Floor=0.9 · Output=Pass / Fail
 class Febfl001A18Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — Route heavy report data queries to background cloud processing lanes
   static Febfl001A18Config _ec1Execute(Febfl001A18Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL001A18-001: animationId required for FEBFL-001-A18');
+          'EC-FEBFL001A18-001: ruleKey required for FEBFL-001-A18');
     }
     // Route heavy report data queries to background cloud processi
     return config;
@@ -144,9 +151,9 @@ class Febfl001A18Pipeline {
 
   // EC:2 — Open non-blocking progress trackers within lower layout frame corners
   static Febfl001A18Config _ec2Execute(Febfl001A18Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL001A18-002: animationId required for FEBFL-001-A18');
+          'EC-FEBFL001A18-002: ruleKey required for FEBFL-001-A18');
     }
     // Open non-blocking progress trackers within lower layout fram
     return config;
@@ -154,9 +161,9 @@ class Febfl001A18Pipeline {
 
   // EC:3 — Update active file generation percentages cleanly based on task tracking files
   static Febfl001A18Config _ec3Execute(Febfl001A18Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL001A18-003: animationId required for FEBFL-001-A18');
+          'EC-FEBFL001A18-003: ruleKey required for FEBFL-001-A18');
     }
     // Update active file generation percentages cleanly based on t
     return config;
@@ -164,9 +171,9 @@ class Febfl001A18Pipeline {
 
   // EC:4 — Render accessible, clear file download buttons inside notification panels when files save
   static Febfl001A18Config _ec4Execute(Febfl001A18Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL001A18-004: animationId required for FEBFL-001-A18');
+          'EC-FEBFL001A18-004: ruleKey required for FEBFL-001-A18');
     }
     // Render accessible, clear file download buttons inside notifi
     return config;
@@ -180,21 +187,19 @@ class Febfl001A18Pipeline {
     required List<Febfl001A18Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Febfl001A18ValidationResult(
+      return Febfl001A18ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Febfl001A18ConformanceLevel.notComplete,
+        conformanceLevel: Febfl001A18ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-FEBFL001A18-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Febfl001A18ConformanceLevel.complete
-        : rate >= _floor
-            ? Febfl001A18ConformanceLevel.partial
-            : Febfl001A18ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Febfl001A18ConformanceLevel.pass_
+        : Febfl001A18ConformanceLevel.fail_;
     return Febfl001A18ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Febfl001A18Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FEBFL-001-A18',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Verification / QA Pass Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Febfl001A18Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> febfl_001_a18Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> febfl_001_a18Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Febfl001A18Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Febfl001A18Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Febfl001A18Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FEBFL-001-A18',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.animationId,
+                title: Text(c.ruleKey,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +331,16 @@ void main() async {
   final configs = [
     Febfl001A18Config(
       configId: 'febfl001a18-cfg-001',
-      animationId: 'febfl-001-a18_animationId',
-      durationMs: 'febfl-001-a18_durationMs',
-      easingCurve: 'febfl-001-a18_easingCurve',
-      triggerState: 'febfl-001-a18_triggerState',
+      ruleKey: 'febfl-001-a18_ruleKey',
+      ruleValue: 'febfl-001-a18_ruleValue',
+      metricLabel: 'febfl-001-a18_metricLabel',
+      complianceTarget: 'febfl-001-a18_complianceTarget',
       traceId:                 'trace-febfl001a18-001',
       originSourceId:          'origin-febfl001a18',
       immediatePredecessorId:  'pred-febfl001a18-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Febfl001A18Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FEBFL-001-A18 → $result');
+  final out = await Febfl001A18Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FEBFL-001-A18 [Pass / Fail] → $out');
 }

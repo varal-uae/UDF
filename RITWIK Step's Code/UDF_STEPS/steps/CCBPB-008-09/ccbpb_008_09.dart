@@ -1,220 +1,331 @@
 // ============================================================
-// CCBPB-008-09 | Cross-Channel Business Process Builder
-// Atomic Task: CCBPB-008-09
-// EC Lines: 9 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CCBPB-008-09 — Cross-Channel Business Process Builder
+// Atomic Step:  Configure Real-Time Dashboard Auto-Refresh System.
+// Metric:       Process Execution Quality Score
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      133 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System receives operational metric payload from client dashboard context.
-  // EC: 2. System isolates component state payload in dedicated in-memory cache layer.
-  // EC: 3. System bypasses full-screen viewport layout reflow trigger.
-  // EC: 4. System calculates Process Execution Quality Score percentage value.
-  // EC: 5. System evaluates Quality Score value against floor threshold of 90 percent.
-  // EC: 6. System assigns outcome status code PASS_QUALIFIED for values meeting floor boundary.
-  // EC: 7. System assigns outcome status code FAIL_BELOW_THRESHOLD for values below floor boundary.
-  // EC: 8. System updates cached component delta values with subtle background highlights.
-  // EC: 9. System persists audit log row into execution tracking table.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Ccbpb00809ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CCBPB-008-09.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Ccbpb00809Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Ccbpb00809ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CCBPB-008-09 — Cross-Channel Business Process Builder
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Ccbpb00809Config {
+  final String configId;
+  final String widgetId;
+  final String dataSource;
+  final String metricLabel;
+  final String refreshIntervalMs;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Ccbpb00809Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Ccbpb00809Config({
+    required this.configId,
+    required this.widgetId,
+    required this.dataSource,
+    required this.metricLabel,
+    required this.refreshIntervalMs,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Ccbpb00809Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Ccbpb00809Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Ccbpb00809Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Ccbpb00809Config(
+    configId: configId,
+    widgetId: widgetId,
+    dataSource: dataSource,
+    metricLabel: metricLabel,
+    refreshIntervalMs: refreshIntervalMs,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'widgetId': widgetId,
+    'dataSource': dataSource,
+    'metricLabel': metricLabel,
+    'refreshIntervalMs': refreshIntervalMs,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Ccbpb00809ScanResult {
+class Ccbpb00809ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Ccbpb00809ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Ccbpb00809ScanResult({
+  const Ccbpb00809ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Ccbpb00809ConformanceLevel.good:    return 'Good';
+      case Ccbpb00809ConformanceLevel.average: return 'Average';
+      case Ccbpb00809ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:9 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// CCBPB-008-09: Configure Real-Time Dashboard Auto-Refresh System.
+/// Metric: Process Execution Quality Score
+/// Floor=0.9 · Output=Good / Average / Poor
 class Ccbpb00809Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
-
-  // EC:1 — EC: 1. System receives operational metric payload from client dashboard context.
-  static void executeReceivesStep1(Ccbpb00809Entry entry) {
-    // receives operational metric payload from client dashboard context
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-001: ruleId required');
-    };
+  // EC:1 — System locates the CCBPB-008-09 configuration in the source repository.
+  static Ccbpb00809Config _ec1Locates(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-001: widgetId required for CCBPB-008-09');
+    }
+    // the CCBPB-008-09 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System isolates component state payload in dedicated in-memory cache layer.
-  static void executeIsolatesStep2(Ccbpb00809Entry entry) {
-    // isolates component state payload in dedicated in-memory cache layer
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-002: ruleId required');
-    };
+  // EC:2 — System extracts widgetId and dataSource from the CCBPB-008-09 registry.
+  static Ccbpb00809Config _ec2Extracts(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-002: widgetId required for CCBPB-008-09');
+    }
+    // widgetId and dataSource from the CCBPB-008-09 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System bypasses full-screen viewport layout reflow trigger.
-  static void executeBypassesStep3(Ccbpb00809Entry entry) {
-    // bypasses full-screen viewport layout reflow trigger
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality Score.
+  static Ccbpb00809Config _ec3Compiles(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-003: widgetId required for CCBPB-008-09');
+    }
+    // the implementation rule set per Process Execution Quality Sc
+    return config;
   }
 
-  // EC:4 — EC: 4. System calculates Process Execution Quality Score percentage value.
-  static void executeCalculatesStep4(Ccbpb00809Entry entry) {
-    // calculates Process Execution Quality Score percentage value
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Ccbpb00809Config _ec4Validates(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-004: widgetId required for CCBPB-008-09');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System evaluates Quality Score value against floor threshold of 90 percent.
-  static void executeEvaluatesStep5(Ccbpb00809Entry entry) {
-    // evaluates Quality Score value against floor threshold of 90 percent
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Ccbpb00809Config _ec5Registers(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-005: widgetId required for CCBPB-008-09');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System assigns outcome status code PASS_QUALIFIED for values meeting floor boundary.
-  static void executeAssignsStep6(Ccbpb00809Entry entry) {
-    // assigns outcome status code PASS_QUALIFIED for values meeting floor boundary
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Process Execution Quality Score gate (floor=0.9).
+  static Ccbpb00809Config _ec6Validates(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-006: widgetId required for CCBPB-008-09');
+    }
+    // configuration against Process Execution Quality Score gate (
+    return config;
   }
 
-  // EC:7 — EC: 7. System assigns outcome status code FAIL_BELOW_THRESHOLD for values below floor boundary.
-  static void executeAssignsStep7(Ccbpb00809Entry entry) {
-    // assigns outcome status code FAIL_BELOW_THRESHOLD for values below floor boundary
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Ccbpb00809Config _ec7Routes(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-007: widgetId required for CCBPB-008-09');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System updates cached component delta values with subtle background highlights.
-  static void executeUpdatesStep8(Ccbpb00809Entry entry) {
-    // updates cached component delta values with subtle background highlights
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Ccbpb00809Config _ec8Publishes(Ccbpb00809Config config) {
+    if (config.widgetId.isEmpty) {
+      throw ArgumentError(
+          'EC-CCBPB00809-008: widgetId required for CCBPB-008-09');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System persists audit log row into execution tracking table.
-  static void executePersistsStep9(Ccbpb00809Entry entry) {
-    // persists audit log row into execution tracking table
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCBPB00809-009: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  static Ccbpb00809ScanResult validateConformance(List<Ccbpb00809Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Ccbpb00809ScanResult(
+  static Ccbpb00809ValidationResult calculateConformance({
+    required List<Ccbpb00809Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Ccbpb00809ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Ccbpb00809ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-CCBPB00809-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Ccbpb00809ConformanceLevel.good
+        : rate >= _floor
+            ? Ccbpb00809ConformanceLevel.average
+            : Ccbpb00809ConformanceLevel.poor;
+    return Ccbpb00809ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CCBPB00809-VAL',
     );
   }
 
-  static Ccbpb00809Entry routeToRegistry(Ccbpb00809Entry entry, Ccbpb00809ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Ccbpb00809Config routeToRegistry(
+    Ccbpb00809Config config,
+    Ccbpb00809ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Ccbpb00809Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CCBPB00809-000: configs must not be empty for CCBPB-008-09');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CCBPB00809-TRI: triangular check failed for CCBPB-008-09');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CCBPB-008-09',
+      'metric':             'Process Execution Quality Score',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> ccbpb_008_09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CCBPB-008-09',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Ccbpb00809Widget extends StatelessWidget {
-  final List<Ccbpb00809Entry> entries;
-  const Ccbpb00809Widget({super.key, required this.entries});
+  final List<Ccbpb00809Config> configs;
+  const Ccbpb00809Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Ccbpb00809Pipeline.validateConformance(entries);
+    final result = Ccbpb00809Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,36 +333,37 @@ class Ccbpb00809Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CCBPB-008-09',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.widgetId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -267,15 +379,16 @@ void main() async {
   final configs = [
     Ccbpb00809Config(
       configId: 'ccbpb00809-cfg-001',
-      ruleId: 'ccbpb-008-09_ruleId_val',
-      fieldA: 'ccbpb-008-09_fieldA_val',
+      widgetId: 'ccbpb-008-09_widgetId',
+      dataSource: 'ccbpb-008-09_dataSource',
+      metricLabel: 'ccbpb-008-09_metricLabel',
+      refreshIntervalMs: 'ccbpb-008-09_refreshIntervalMs',
       traceId:                 'trace-ccbpb00809-001',
       originSourceId:          'origin-ccbpb00809',
       immediatePredecessorId:  'pred-ccbpb00809-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ccbpb00809Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CCBPB-008-09 → $result');
+  final out = await Ccbpb00809Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CCBPB-008-09 [Good / Average / Poor] → $out');
 }

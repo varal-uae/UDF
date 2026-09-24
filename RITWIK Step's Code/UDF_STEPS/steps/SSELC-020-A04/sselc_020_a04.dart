@@ -1,50 +1,45 @@
 // ============================================================
 // SSELC-020-A04 — Split-Screen Element Layout Controller
-// Atomic Step: SSELC-020 - Define Consensus Split-Pane Ratios.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     444 of 530
+// Atomic Step:  SSELC-020 - Define Consensus Split-Pane Ratios.
+// Metric:       Layout Grid / Breakpoint Adherence (Material Design responsive grid)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1001 of 1073
 // ============================================================
-// Why this matters: If evidence pane is too small, voters cannot make informed decisions.
-// Mobile impl:      Stacks panes vertically (Evidence top, Action bottom) ensuring the voting CTA is always reachable.
-// Data requirement: Configure responsive CSS Grid and Flexbox rules for split-pane containers.
+// Why:          If evidence pane is too small, voters cannot make informed decisions.
+// Mobile:       Stacks panes vertically (Evidence top, Action bottom) ensuring the voting CTA is always reachable.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Sselc020A04ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Sselc020A04ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sselc020A04ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SSELC-020-A04.
-/// Fields derived from AISS sheet — Split-Screen Element Layout Controller.
+/// SSELC-020-A04 — Split-Screen Element Layout Controller
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sselc020A04Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String gridColumns;
   final String gutterSizePx;
   final String maxWidthPx;
   final String breakpointLabel;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Sselc020A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc020A04ConformanceLevel.complete:    return 'Pass';
-      case Sselc020A04ConformanceLevel.partial:     return 'Partial';
-      case Sselc020A04ConformanceLevel.notComplete: return 'Fail';
+      case Sselc020A04ConformanceLevel.pass_: return 'Pass';
+      case Sselc020A04ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SSELC-020-A04: SSELC-020 - Define Consensus Split-Pane Ratios.
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Layout Grid / Breakpoint Adherence (Material Design responsi
+/// Floor=0.95 · Output=Pass / Fail
 class Sselc020A04Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Set desktop ratio (e.g., 60/40)
   static Sselc020A04Config _ec1Execute(Sselc020A04Config config) {
@@ -193,21 +187,19 @@ class Sselc020A04Pipeline {
     required List<Sselc020A04Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sselc020A04ValidationResult(
+      return Sselc020A04ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Sselc020A04ConformanceLevel.notComplete,
+        conformanceLevel: Sselc020A04ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-SSELC020A04-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sselc020A04ConformanceLevel.complete
-        : rate >= _floor
-            ? Sselc020A04ConformanceLevel.partial
-            : Sselc020A04ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Sselc020A04ConformanceLevel.pass_
+        : Sselc020A04ConformanceLevel.fail_;
     return Sselc020A04ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Sselc020A04Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-SSELC020A04-TRI: triangular check failed for SSELC-020-A04');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SSELC-020-A04',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Layout Grid / Breakpoint Adherence (Material Design responsi',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Sselc020A04Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sselc_020_a04Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Sselc020A04Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sselc020A04Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Sselc020A04Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SSELC-020-A04',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Sselc020A04Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sselc020A04Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SSELC-020-A04 → $result');
+  final out = await Sselc020A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SSELC-020-A04 [Pass / Fail] → $out');
 }

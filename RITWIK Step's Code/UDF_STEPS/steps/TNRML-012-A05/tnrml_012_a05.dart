@@ -1,50 +1,45 @@
 // ============================================================
 // TNRML-012-A05 — Theme Navigation Rail Module Layer
-// Atomic Step: TNRML-012 - Configure 1-Column Mobile Stacking Grid.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     480 of 530
+// Atomic Step:  TNRML-012 - Configure 1-Column Mobile Stacking Grid.
+// Metric:       Layout Grid / Breakpoint Adherence (Material Design responsive grid)
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1027 of 1073
 // ============================================================
-// Why this matters: Eliminates breaking horizontal gestures that disrupt application usability on smaller touchscreens.
-// Mobile impl:      Sets the absolute baseline for the mobile-first hierarchy, optimizing the layout for thumb reachabil
-// Data requirement: Set strict 16dp mobile layout outer margins around card containers.
+// Why:          Eliminates breaking horizontal gestures that disrupt application usability on smaller touchscreens.
+// Mobile:       Sets the absolute baseline for the mobile-first hierarchy, optimizing the layout for thumb reachabil
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Tnrml012A05ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Tnrml012A05ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Tnrml012A05ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TNRML-012-A05.
-/// Fields derived from AISS sheet — Theme Navigation Rail Module Layer.
+/// TNRML-012-A05 — Theme Navigation Rail Module Layer
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Tnrml012A05Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String gridColumns;
   final String gutterSizePx;
   final String maxWidthPx;
   final String breakpointLabel;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Tnrml012A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Tnrml012A05ConformanceLevel.complete:    return 'Pass';
-      case Tnrml012A05ConformanceLevel.partial:     return 'Partial';
-      case Tnrml012A05ConformanceLevel.notComplete: return 'Fail';
+      case Tnrml012A05ConformanceLevel.pass_: return 'Pass';
+      case Tnrml012A05ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// TNRML-012-A05: TNRML-012 - Configure 1-Column Mobile Stacking Grid.
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Layout Grid / Breakpoint Adherence (Material Design responsi
+/// Floor=0.9 · Output=Pass / Fail
 class Tnrml012A05Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — Force Critical Data Elements (CDEs) to top index position
   static Tnrml012A05Config _ec1Execute(Tnrml012A05Config config) {
@@ -193,21 +187,19 @@ class Tnrml012A05Pipeline {
     required List<Tnrml012A05Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Tnrml012A05ValidationResult(
+      return Tnrml012A05ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Tnrml012A05ConformanceLevel.notComplete,
+        conformanceLevel: Tnrml012A05ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-TNRML012A05-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Tnrml012A05ConformanceLevel.complete
-        : rate >= _floor
-            ? Tnrml012A05ConformanceLevel.partial
-            : Tnrml012A05ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Tnrml012A05ConformanceLevel.pass_
+        : Tnrml012A05ConformanceLevel.fail_;
     return Tnrml012A05ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Tnrml012A05Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-TNRML012A05-TRI: triangular check failed for TNRML-012-A05');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TNRML-012-A05',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Layout Grid / Breakpoint Adherence (Material Design responsi',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Tnrml012A05Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> tnrml_012_a05Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Tnrml012A05Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Tnrml012A05Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Tnrml012A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TNRML-012-A05',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Tnrml012A05Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Tnrml012A05Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TNRML-012-A05 → $result');
+  final out = await Tnrml012A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TNRML-012-A05 [Pass / Fail] → $out');
 }

@@ -1,50 +1,45 @@
 // ============================================================
-// SSITI-010-A01 — Split-Screen Input Template Interface
-// Atomic Step: Design the fields layout configuration contract for incoming value-added tax invoices.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     513 of 530
+// SSITI-010-A01 — SSITI System Module
+// Atomic Step:  Design the fields layout configuration contract for incoming value-added tax invoices.
+// Metric:       Query Performance & Schema Integrity (BigQuery Best Practice)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1007 of 1073
 // ============================================================
-// Why this matters: Blocks incorrect financial values at data entry level, ensuring clean ledger records.
-// Mobile impl:      Touch-friendly camera capture interfaces for fast invoice snapshot processing.
-// Data requirement: Open the schema definition file gacl_shared_schemas.ingress.vat_invoice.
+// Why:          Blocks incorrect financial values at data entry level, ensuring clean ledger records.
+// Mobile:       Touch-friendly camera capture interfaces for fast invoice snapshot processing.
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ssiti010A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ssiti010A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ssiti010A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SSITI-010-A01.
-/// Fields derived from AISS sheet — Split-Screen Input Template Interface.
+/// SSITI-010-A01 — SSITI System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ssiti010A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Ssiti010A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ssiti010A01ConformanceLevel.complete:    return 'Pass';
-      case Ssiti010A01ConformanceLevel.partial:     return 'Partial';
-      case Ssiti010A01ConformanceLevel.notComplete: return 'Fail';
+      case Ssiti010A01ConformanceLevel.pass_: return 'Pass';
+      case Ssiti010A01ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SSITI-010-A01: Design the fields layout configuration contract for incoming value-added tax inv
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Query Performance & Schema Integrity (BigQuery Best Practice
+/// Floor=0.95 · Output=Pass / Fail
 class Ssiti010A01Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Set string constraints for merchant profile metadata validation
   static Ssiti010A01Config _ec1Execute(Ssiti010A01Config config) {
@@ -193,21 +187,19 @@ class Ssiti010A01Pipeline {
     required List<Ssiti010A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ssiti010A01ValidationResult(
+      return Ssiti010A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ssiti010A01ConformanceLevel.notComplete,
+        conformanceLevel: Ssiti010A01ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-SSITI010A01-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ssiti010A01ConformanceLevel.complete
-        : rate >= _floor
-            ? Ssiti010A01ConformanceLevel.partial
-            : Ssiti010A01ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ssiti010A01ConformanceLevel.pass_
+        : Ssiti010A01ConformanceLevel.fail_;
     return Ssiti010A01ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Ssiti010A01Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-SSITI010A01-TRI: triangular check failed for SSITI-010-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SSITI-010-A01',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Query Performance & Schema Integrity (BigQuery Best Practice',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Ssiti010A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ssiti_010_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Ssiti010A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ssiti010A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Ssiti010A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SSITI-010-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Ssiti010A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ssiti010A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SSITI-010-A01 → $result');
+  final out = await Ssiti010A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SSITI-010-A01 [Pass / Fail] → $out');
 }

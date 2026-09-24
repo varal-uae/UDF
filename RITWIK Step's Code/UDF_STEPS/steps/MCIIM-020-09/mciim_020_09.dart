@@ -1,40 +1,48 @@
 // ============================================================
 // MCIIM-020-09 — Mobile Context Isolation & Image Module
-// Atomic Step: Map Contextual Modifier Visual Tags for Targets
-// Metric:      Touch Target Compliance Rate · Floor=· Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     569 of 1073
+// Atomic Step:  Map Contextual Modifier Visual Tags for Targets
+// Metric:       Touch Target Size & Accessibility Compliance
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      860 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Map data inputs to render text flags showing modified values (e.g., Target x0.5).
+// Why:          
+// Mobile:       
+// col41:        Good (Scale: Good/Average/Poor)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Mciim02009ConformanceLevel { complete, partial, notComplete }
-enum Mciim02009ExecutionStatus  { pending, running, complete, failed }
+enum Mciim02009ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Mciim02009ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MCIIM-020-09.
-/// Fields derived from AISS sheet — Mobile Context Isolation & Image Module.
+/// MCIIM-020-09 — Mobile Context Isolation & Image Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mciim02009Config {
   final String configId;
-  final String fieldId;
-  final String validationRule;
-  final String errorMessage;
-  final String inputType;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Mciim02009Config {
 
   const Mciim02009Config({
     required this.configId,
-    required this.fieldId,
-    required this.validationRule,
-    required this.errorMessage,
-    required this.inputType,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Mciim02009Config {
     bool?   complianceStatusInd,
   }) => Mciim02009Config(
     configId: configId,
-    fieldId: fieldId,
-    validationRule: validationRule,
-    errorMessage: errorMessage,
-    inputType: inputType,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Mciim02009Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'fieldId': fieldId,
-    'validationRule': validationRule,
-    'errorMessage': errorMessage,
-    'inputType': inputType,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,56 +125,57 @@ class Mciim02009ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mciim02009ConformanceLevel.complete:    return 'Good';
-      case Mciim02009ConformanceLevel.partial:     return 'Average';
-      case Mciim02009ConformanceLevel.notComplete: return 'Poor';
+      case Mciim02009ConformanceLevel.good:    return 'Good';
+      case Mciim02009ConformanceLevel.average: return 'Average';
+      case Mciim02009ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MCIIM-020-09: Map Contextual Modifier Visual Tags for Targets
-/// Metric: Touch Target Compliance Rate
+/// Metric: Touch Target Size & Accessibility Compliance
+/// Floor=0.9 · Output=Good / Average / Poor
 class Mciim02009Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the MCIIM-020-09 configuration in the source repository.
   static Mciim02009Config _ec1Locates(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-001: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-001: componentId required for MCIIM-020-09');
     }
     // the MCIIM-020-09 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts fieldId and validationRule from the MCIIM-020-09 registry.
+  // EC:2 — System extracts componentId and targetSizeDp from the MCIIM-020-09 registry.
   static Mciim02009Config _ec2Extracts(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-002: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-002: componentId required for MCIIM-020-09');
     }
-    // fieldId and validationRule from the MCIIM-020-09 registry
+    // componentId and targetSizeDp from the MCIIM-020-09 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Input Validation Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Touch Target Size & Accessibility Complian
   static Mciim02009Config _ec3Compiles(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-003: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-003: componentId required for MCIIM-020-09');
     }
-    // the implementation rule set per Input Validation Coverage Ra
+    // the implementation rule set per Touch Target Size & Accessib
     return config;
   }
 
   // EC:4 — System validates configuration against required constraints.
   static Mciim02009Config _ec4Validates(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-004: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-004: componentId required for MCIIM-020-09');
     }
     // configuration against required constraints
     return config;
@@ -174,29 +183,29 @@ class Mciim02009Pipeline {
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Mciim02009Config _ec5Registers(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-005: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-005: componentId required for MCIIM-020-09');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against Input Validation Coverage Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Touch Target Size & Accessibility Compliance gate (
   static Mciim02009Config _ec6Validates(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-006: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-006: componentId required for MCIIM-020-09');
     }
-    // configuration against Input Validation Coverage Rate gate (f
+    // configuration against Touch Target Size & Accessibility Comp
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Mciim02009Config _ec7Routes(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-007: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-007: componentId required for MCIIM-020-09');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -204,9 +213,9 @@ class Mciim02009Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Mciim02009Config _ec8Publishes(Mciim02009Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-MCIIM02009-008: fieldId required for MCIIM-020-09');
+          'EC-MCIIM02009-008: componentId required for MCIIM-020-09');
     }
     // validated configuration to the rule registry
     return config;
@@ -220,7 +229,7 @@ class Mciim02009Pipeline {
     required List<Mciim02009Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mciim02009ValidationResult(
+      return Mciim02009ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Mciim02009ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Mciim02009Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Mciim02009ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Mciim02009ConformanceLevel.good
         : rate >= _floor
-            ? Mciim02009ConformanceLevel.partial
-            : Mciim02009ConformanceLevel.notComplete;
+            ? Mciim02009ConformanceLevel.average
+            : Mciim02009ConformanceLevel.poor;
     return Mciim02009ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Mciim02009Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MCIIM-020-09',
-      'metric':             'Touch Target Compliance Rate',
+      'metric':             'Touch Target Size & Accessibility Compliance',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Mciim02009Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> mciim_020_09Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> mciim_020_09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Mciim02009Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mciim02009Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Mciim02009Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MCIIM-020-09',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.fieldId,
+                title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -363,16 +379,16 @@ void main() async {
   final configs = [
     Mciim02009Config(
       configId: 'mciim02009-cfg-001',
-      fieldId: 'mciim-020-09_fieldId',
-      validationRule: 'mciim-020-09_validationRule',
-      errorMessage: 'mciim-020-09_errorMessage',
-      inputType: 'mciim-020-09_inputType',
+      componentId: 'mciim-020-09_componentId',
+      targetSizeDp: 'mciim-020-09_targetSizeDp',
+      actualSizeDp: 'mciim-020-09_actualSizeDp',
+      complianceStatus: 'mciim-020-09_complianceStatus',
       traceId:                 'trace-mciim02009-001',
       originSourceId:          'origin-mciim02009',
       immediatePredecessorId:  'pred-mciim02009-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mciim02009Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('MCIIM-020-09 → $result');
+  final out = await Mciim02009Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MCIIM-020-09 [Good / Average / Poor] → $out');
 }

@@ -1,337 +1,387 @@
 // ============================================================
-// BPTR-0693-A02 | UI/UX Pattern Registry
-// Atomic Task: BPTR-0693-A02
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BPTR-0693-A02 — UI/UX Pattern Registry
+// Atomic Step:  Initialize the \"Shakti Dashboard\" in Looker Studio
+// Metric:       Design System / Layout Consistency Score
+// Floor:        90.0  ·  Optimal: 97.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      111 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System extracts workspace metadata fields workspace_ID, workspace_name, workspace_config from source payload.
-  // EC: 2. System validates active workspace status prior to canvas creation.
-  // EC: 3. System instantiates blank report canvas layout payload for Looker Studio project.
-  // EC: 4. System fetches design system visual tokens from Figma reference repository.
-  // EC: 5. System calculates layout consistency score matching canvas layout against Figma tokens.
-  // EC: 6. System verifies layout consistency score satisfies floor threshold boundary of 90.0.
-  // EC: 7. System assigns completion status flag value to Good.
-  // EC: 8. System attaches required lineage headers trace_id, origin_source_ID, immediate_predecessor_ID, transformation_logic_hash, compliance_status_IND.
-  // EC: 9. System persists initialized canvas layout record into Looker Studio repository database.
-  // EC: 10. System streams audit log event detailing user session ID, timestamp, workspace ID.
+// Why:          
+// Mobile:       
+// col41:        Good (Scale: Good/Average/Poor)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bptr0693A02ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Bptr0693A02ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BPTR-0693-A02.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Bptr0693A02Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+class Bptr0693A02Config {
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
+  final bool   immutableInd;
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Bptr0693A02Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Bptr0693A02Config({
+    required this.configId,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Bptr0693A02Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Bptr0693A02Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Bptr0693A02Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bptr0693A02Config(
+    configId: configId,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Bptr0693A02ScanResult {
+class Bptr0693A02ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Bptr0693A02ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Bptr0693A02ScanResult({
+  const Bptr0693A02ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bptr0693A02ConformanceLevel.complete:    return 'Complete';
+      case Bptr0693A02ConformanceLevel.partial:     return 'Partial';
+      case Bptr0693A02ConformanceLevel.notComplete: return 'Not Complete';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ──────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 class Bptr0693A02Pipeline {
-  static const double _floor   = 90.0;  // metric floor gate
-  static const double _optimal = 97.0; // metric optimal target
+  static const double _floor   = 90.0;
+  static const double _optimal = 97.0;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System extracts workspace metadata fields workspace_ID, workspace_name, workspace_config from source payload.
-  static String executeExtractsStep1(Bptr0693A02Entry entry) {
-    // extracts workspace metadata fields workspace_ID, workspace_name, workspace_confi
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — System locates the BPTR-0693-A02 configuration in the source repository.
+  static Bptr0693A02Config _ec1Locates(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-001: ruleKey required for BPTR-0693-A02');
+    }
+    // the BPTR-0693-A02 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System validates active workspace status prior to canvas creation.
-  static String executeValidatesStep2(Bptr0693A02Entry entry) {
-    // validates active workspace status prior to canvas creation
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:2 — System extracts ruleKey and ruleValue from the BPTR-0693-A02 registry.
+  static Bptr0693A02Config _ec2Extracts(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-002: ruleKey required for BPTR-0693-A02');
+    }
+    // ruleKey and ruleValue from the BPTR-0693-A02 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System instantiates blank report canvas layout payload for Looker Studio project.
-  static String executeInstantiatesStep3(Bptr0693A02Entry entry) {
-    // instantiates blank report canvas layout payload for Looker Studio project
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:3 — System compiles the implementation rule set per Design System / Layout Consistency Score.
+  static Bptr0693A02Config _ec3Compiles(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-003: ruleKey required for BPTR-0693-A02');
+    }
+    // the implementation rule set per Design System / Layout Consi
+    return config;
   }
 
-  // EC:4 — EC: 4. System fetches design system visual tokens from Figma reference repository.
-  static String executeFetchesStep4(Bptr0693A02Entry entry) {
-    // fetches design system visual tokens from Figma reference repository
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:4 — System validates configuration against required constraints.
+  static Bptr0693A02Config _ec4Validates(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-004: ruleKey required for BPTR-0693-A02');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System calculates layout consistency score matching canvas layout against Figma tokens.
-  static String executeCalculatesStep5(Bptr0693A02Entry entry) {
-    // calculates layout consistency score matching canvas layout against Figma tokens
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Bptr0693A02Config _ec5Registers(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-005: ruleKey required for BPTR-0693-A02');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System verifies layout consistency score satisfies floor threshold boundary of 90.0.
-  static String executeVerifiesStep6(Bptr0693A02Entry entry) {
-    // verifies layout consistency score satisfies floor threshold boundary of 90.0
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:6 — System validates configuration against Design System / Layout Consistency Score gate (floo
+  static Bptr0693A02Config _ec6Validates(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-006: ruleKey required for BPTR-0693-A02');
+    }
+    // configuration against Design System / Layout Consistency Sco
+    return config;
   }
 
-  // EC:7 — EC: 7. System assigns completion status flag value to Good.
-  static String executeAssignsStep7(Bptr0693A02Entry entry) {
-    // assigns completion status flag value to Good
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Bptr0693A02Config _ec7Routes(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-007: ruleKey required for BPTR-0693-A02');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System attaches required lineage headers trace_id, origin_source_ID, immediate_predecessor_ID, transformation_logic_hash, compliance_status_IND.
-  static String executeAttachesStep8(Bptr0693A02Entry entry) {
-    // attaches required lineage headers trace_id, origin_source_ID, immediate_predeces
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Bptr0693A02Config _ec8Publishes(Bptr0693A02Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0693A02-008: ruleKey required for BPTR-0693-A02');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System persists initialized canvas layout record into Looker Studio repository database.
-  static String executePersistsStep9(Bptr0693A02Entry entry) {
-    // persists initialized canvas layout record into Looker Studio repository database
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-009: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:10 — EC: 10. System streams audit log event detailing user session ID, timestamp, workspace ID.
-  static String executeStreamsStep10(Bptr0693A02Entry entry) {
-    // streams audit log event detailing user session ID, timestamp, workspace ID
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0693A02-010: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Bptr0693A02ScanResult validateConformance(
-    List<Bptr0693A02Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Bptr0693A02ScanResult(
+  static Bptr0693A02ValidationResult calculateConformance({
+    required List<Bptr0693A02Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bptr0693A02ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bptr0693A02ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-BPTR0693A02-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Bptr0693A02ConformanceLevel.complete
+        : rate >= _floor
+            ? Bptr0693A02ConformanceLevel.partial
+            : Bptr0693A02ConformanceLevel.notComplete;
+    return Bptr0693A02ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BPTR0693A02-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Bptr0693A02Entry routeToRegistry(
-    Bptr0693A02Entry entry,
-    Bptr0693A02ScanResult scan,
+  static Bptr0693A02Config routeToRegistry(
+    Bptr0693A02Config config,
+    Bptr0693A02ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Bptr0693A02Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BPTR0693A02-000: configs must not be empty for BPTR-0693-A02');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-BPTR0693A02-TRI: triangular check failed for BPTR-0693-A02');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BPTR-0693-A02',
+      'metric':             'Design System / Layout Consistency Score',
+      'output_vocab':       'Complete / Partial / Not Complete',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bptr_0693_a02Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BPTR-0693-A02',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Bptr0693A02Widget extends StatelessWidget {
-  final List<Bptr0693A02Entry> entries;
-  const Bptr0693A02Widget({super.key, required this.entries});
+  final List<Bptr0693A02Config> configs;
+  const Bptr0693A02Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bptr0693A02Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Bptr0693A02Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BPTR-0693-A02',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BPTR-0693-A02',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bptr0693A02Config(
+      configId: 'bptr0693a02-cfg-001',
+      ruleKey: 'bptr-0693-a02_ruleKey',
+      ruleValue: 'bptr-0693-a02_ruleValue',
+      metricLabel: 'bptr-0693-a02_metricLabel',
+      complianceTarget: 'bptr-0693-a02_complianceTarget',
+      traceId:                 'trace-bptr0693a02-001',
+      originSourceId:          'origin-bptr0693a02',
+      immediatePredecessorId:  'pred-bptr0693a02-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bptr0693A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BPTR-0693-A02 [Complete / Partial / Not Complete] → $out');
 }

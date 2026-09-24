@@ -1,31 +1,38 @@
 // ============================================================
 // ETMDI-001-11 — Enterprise Technical Master Doc Interface
-// Atomic Step: Hard-code the EndDocument metadata structure inside the mobile client state manager.
-// Metric:      UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     583 of 1073
+// Atomic Step:  Hard-code the EndDocument metadata structure inside the mobile client state manager.
+// Metric:       Process Execution Quality Score
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      213 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Configure the navigation controller to block transitions to intermediate views if anchor fields are 
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Etmdi00111ConformanceLevel { complete, partial, notComplete }
-enum Etmdi00111ExecutionStatus  { pending, running, complete, failed }
+enum Etmdi00111ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Etmdi00111ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for ETMDI-001-11.
-/// Fields derived from AISS sheet — Enterprise Technical Master Doc Interface.
+/// ETMDI-001-11 — Enterprise Technical Master Doc Interface
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Etmdi00111Config {
   final String configId;
@@ -35,6 +42,7 @@ class Etmdi00111Config {
   final String labelText;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,19 +125,20 @@ class Etmdi00111ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Etmdi00111ConformanceLevel.complete:    return 'Good';
-      case Etmdi00111ConformanceLevel.partial:     return 'Average';
-      case Etmdi00111ConformanceLevel.notComplete: return 'Poor';
+      case Etmdi00111ConformanceLevel.good:    return 'Good';
+      case Etmdi00111ConformanceLevel.average: return 'Average';
+      case Etmdi00111ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// ETMDI-001-11: Hard-code the EndDocument metadata structure inside the mobile client state mana
-/// Metric: UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
+/// Metric: Process Execution Quality Score
+/// Floor=0.9 · Output=Good / Average / Poor
 class Etmdi00111Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — System locates the ETMDI-001-11 configuration in the source repository.
@@ -152,13 +161,13 @@ class Etmdi00111Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per UI Animation Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality Score.
   static Etmdi00111Config _ec3Compiles(Etmdi00111Config config) {
     if (config.navItemId.isEmpty) {
       throw ArgumentError(
           'EC-ETMDI00111-003: navItemId required for ETMDI-001-11');
     }
-    // the implementation rule set per UI Animation Compliance Rate
+    // the implementation rule set per Process Execution Quality Sc
     return config;
   }
 
@@ -182,13 +191,13 @@ class Etmdi00111Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against UI Animation Compliance Rate gate (floor=0.90).
+  // EC:6 — System validates configuration against Process Execution Quality Score gate (floor=0.9).
   static Etmdi00111Config _ec6Validates(Etmdi00111Config config) {
     if (config.navItemId.isEmpty) {
       throw ArgumentError(
           'EC-ETMDI00111-006: navItemId required for ETMDI-001-11');
     }
-    // configuration against UI Animation Compliance Rate gate (flo
+    // configuration against Process Execution Quality Score gate (
     return config;
   }
 
@@ -220,7 +229,7 @@ class Etmdi00111Pipeline {
     required List<Etmdi00111Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Etmdi00111ValidationResult(
+      return Etmdi00111ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Etmdi00111ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Etmdi00111Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Etmdi00111ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Etmdi00111ConformanceLevel.good
         : rate >= _floor
-            ? Etmdi00111ConformanceLevel.partial
-            : Etmdi00111ConformanceLevel.notComplete;
+            ? Etmdi00111ConformanceLevel.average
+            : Etmdi00111ConformanceLevel.poor;
     return Etmdi00111ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Etmdi00111Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ETMDI-001-11',
-      'metric':             'UI Animation Compliance Rate',
+      'metric':             'Process Execution Quality Score',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Etmdi00111Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> etmdi_001_11Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> etmdi_001_11Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Etmdi00111Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Etmdi00111Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Etmdi00111Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('ETMDI-001-11',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.navItemId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Etmdi00111Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('ETMDI-001-11 → $result');
+  final out = await Etmdi00111Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ETMDI-001-11 [Good / Average / Poor] → $out');
 }

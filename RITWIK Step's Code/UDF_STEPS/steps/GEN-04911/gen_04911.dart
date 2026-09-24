@@ -1,40 +1,47 @@
 // ============================================================
 // GEN-04911 — GEN Backend Utility Module
-// Atomic Step: Apply the mobile-first UI decision: M3 Surface Container with 2px stroke border for signature canvas
-// Metric:      Security Compliance Rate · Floor=0.99 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     1016 of 1073
+// Atomic Step:  Apply the mobile-first UI decision: M3 Surface Container with 2px stroke border for signature canvas
+// Metric:       UI Design Token Compliance Rate
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      729 of 1073
 // ============================================================
-// Why this matters: Apply the mobile-first UI decision: M3 Surface Container with 2px stroke border for signature canvas
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Apply the mobile-first UI decision: M3 Surface Container with 2px stroke border for signature canvas
+// Why:          Apply the mobile-first UI decision: M3 Surface Container with 2px stroke border for signature canvas
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen04911ConformanceLevel { complete, partial, notComplete }
-enum Gen04911ExecutionStatus  { pending, running, complete, failed }
+enum Gen04911ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen04911ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-04911.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-04911 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen04911Config {
   final String configId;
-  final String resourceId;
-  final String principalId;
-  final String permissionScope;
-  final String grantedAt;
+  final String documentId;
+  final String predecessorId;
+  final String lineageHash;
+  final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +50,10 @@ class Gen04911Config {
 
   const Gen04911Config({
     required this.configId,
-    required this.resourceId,
-    required this.principalId,
-    required this.permissionScope,
-    required this.grantedAt,
+    required this.documentId,
+    required this.predecessorId,
+    required this.lineageHash,
+    required this.complianceRef,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +72,10 @@ class Gen04911Config {
     bool?   complianceStatusInd,
   }) => Gen04911Config(
     configId: configId,
-    resourceId: resourceId,
-    principalId: principalId,
-    permissionScope: permissionScope,
-    grantedAt: grantedAt,
+    documentId: documentId,
+    predecessorId: predecessorId,
+    lineageHash: lineageHash,
+    complianceRef: complianceRef,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +87,10 @@ class Gen04911Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'resourceId': resourceId,
-    'principalId': principalId,
-    'permissionScope': permissionScope,
-    'grantedAt': grantedAt,
+    'documentId': documentId,
+    'predecessorId': predecessorId,
+    'lineageHash': lineageHash,
+    'complianceRef': complianceRef,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +124,26 @@ class Gen04911ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen04911ConformanceLevel.complete:    return 'Complete';
-      case Gen04911ConformanceLevel.partial:     return 'Partial';
-      case Gen04911ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen04911ConformanceLevel.pass_: return 'Pass';
+      case Gen04911ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-04911: Apply the mobile-first UI decision: M3 Surface Container with 2px stroke border 
-/// Metric: Security Compliance Rate · Floor=0.99 · Optimal=1.0
+/// Metric: UI Design Token Compliance Rate
+/// Floor=0.95 · Output=Pass / Fail
 class Gen04911Pipeline {
-  static const double _floor   = 0.99;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen04911Config _ec1Execute(Gen04911Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04911-001: resourceId required for GEN-04911');
+          'EC-GEN04911-001: documentId required for GEN-04911');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +151,9 @@ class Gen04911Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen04911Config _ec2Execute(Gen04911Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04911-002: resourceId required for GEN-04911');
+          'EC-GEN04911-002: documentId required for GEN-04911');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +161,9 @@ class Gen04911Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen04911Config _ec3Execute(Gen04911Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04911-003: resourceId required for GEN-04911');
+          'EC-GEN04911-003: documentId required for GEN-04911');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +171,9 @@ class Gen04911Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen04911Config _ec4Execute(Gen04911Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04911-004: resourceId required for GEN-04911');
+          'EC-GEN04911-004: documentId required for GEN-04911');
     }
     // Document and commit to runbook
     return config;
@@ -180,21 +187,19 @@ class Gen04911Pipeline {
     required List<Gen04911Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen04911ValidationResult(
+      return Gen04911ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen04911ConformanceLevel.notComplete,
+        conformanceLevel: Gen04911ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN04911-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen04911ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen04911ConformanceLevel.partial
-            : Gen04911ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen04911ConformanceLevel.pass_
+        : Gen04911ConformanceLevel.fail_;
     return Gen04911ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen04911Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-04911',
-      'metric':             'Security Compliance Rate',
+      'metric':             'UI Design Token Compliance Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen04911Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_04911Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_04911Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen04911Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen04911Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen04911Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-04911',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.resourceId,
+                title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +331,16 @@ void main() async {
   final configs = [
     Gen04911Config(
       configId: 'gen04911-cfg-001',
-      resourceId: 'gen-04911_resourceId',
-      principalId: 'gen-04911_principalId',
-      permissionScope: 'gen-04911_permissionScope',
-      grantedAt: 'gen-04911_grantedAt',
+      documentId: 'gen-04911_documentId',
+      predecessorId: 'gen-04911_predecessorId',
+      lineageHash: 'gen-04911_lineageHash',
+      complianceRef: 'gen-04911_complianceRef',
       traceId:                 'trace-gen04911-001',
       originSourceId:          'origin-gen04911',
       immediatePredecessorId:  'pred-gen04911-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen04911Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-04911 → $result');
+  final out = await Gen04911Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-04911 [Pass / Fail] → $out');
 }

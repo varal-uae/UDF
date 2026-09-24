@@ -1,50 +1,46 @@
 // ============================================================
 // RRCVG-049-A06 — Release Readiness & Compliance Validation Gate
-// Atomic Step: Enforce the Final Mobile Release Readiness Gate (RRCVG-049)
-// Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     486 of 530
+// Atomic Step:  Enforce the Final Mobile Release Readiness Gate (RRCVG-049)
+// Metric:       UI/UX Design System Conformity (Material 3)
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      956 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Apply the MUI Button disabled prop to reflect unready states.
+// Why:          
+// Mobile:       
+// col41:        Good
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Rrcvg049A06ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Rrcvg049A06ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Rrcvg049A06ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for RRCVG-049-A06.
-/// Fields derived from AISS sheet — Release Readiness & Compliance Validation Gate.
+/// RRCVG-049-A06 — Release Readiness & Compliance Validation Gate
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Rrcvg049A06Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String gateId;
   final String checkRule;
   final String passThreshold;
   final String failureReason;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +125,21 @@ class Rrcvg049A06ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rrcvg049A06ConformanceLevel.complete:    return 'Good';
-      case Rrcvg049A06ConformanceLevel.partial:     return 'Average';
-      case Rrcvg049A06ConformanceLevel.notComplete: return 'Poor';
+      case Rrcvg049A06ConformanceLevel.good:    return 'Good';
+      case Rrcvg049A06ConformanceLevel.average: return 'Average';
+      case Rrcvg049A06ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// RRCVG-049-A06: Enforce the Final Mobile Release Readiness Gate (RRCVG-049)
-/// Metric: Release Gate Pass Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: UI/UX Design System Conformity (Material 3)
+/// Floor=0.9 · Output=Good / Average / Poor
 class Rrcvg049A06Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the RRCVG-049-A06 configuration in the source repository.
   static Rrcvg049A06Config _ec1Locates(Rrcvg049A06Config config) {
@@ -165,23 +161,23 @@ class Rrcvg049A06Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Release Gate Pass Rate.
+  // EC:3 — System compiles the implementation rule set per UI/UX Design System Conformity (Material 3
   static Rrcvg049A06Config _ec3Compiles(Rrcvg049A06Config config) {
     if (config.gateId.isEmpty) {
       throw ArgumentError(
           'EC-RRCVG049A06-003: gateId required for RRCVG-049-A06');
     }
-    // the implementation rule set per Release Gate Pass Rate
+    // the implementation rule set per UI/UX Design System Conformi
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Rrcvg049A06Config _ec4Validates(Rrcvg049A06Config config) {
     if (config.gateId.isEmpty) {
       throw ArgumentError(
           'EC-RRCVG049A06-004: gateId required for RRCVG-049-A06');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +191,13 @@ class Rrcvg049A06Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Release Gate Pass Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against UI/UX Design System Conformity (Material 3) gate (f
   static Rrcvg049A06Config _ec6Validates(Rrcvg049A06Config config) {
     if (config.gateId.isEmpty) {
       throw ArgumentError(
           'EC-RRCVG049A06-006: gateId required for RRCVG-049-A06');
     }
-    // configuration against Release Gate Pass Rate gate (floor=0.9
+    // configuration against UI/UX Design System Conformity (Materi
     return config;
   }
 
@@ -233,7 +229,7 @@ class Rrcvg049A06Pipeline {
     required List<Rrcvg049A06Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Rrcvg049A06ValidationResult(
+      return Rrcvg049A06ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Rrcvg049A06ConformanceLevel.notComplete,
@@ -243,11 +239,11 @@ class Rrcvg049A06Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Rrcvg049A06ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Rrcvg049A06ConformanceLevel.good
         : rate >= _floor
-            ? Rrcvg049A06ConformanceLevel.partial
-            : Rrcvg049A06ConformanceLevel.notComplete;
+            ? Rrcvg049A06ConformanceLevel.average
+            : Rrcvg049A06ConformanceLevel.poor;
     return Rrcvg049A06ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +286,17 @@ class Rrcvg049A06Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-RRCVG049A06-TRI: triangular check failed for RRCVG-049-A06');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-RRCVG-049-A06',
-      'metric':             'Release Gate Pass Rate',
+      'metric':             'UI/UX Design System Conformity (Material 3)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Rrcvg049A06Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> rrcvg_049_a06Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Rrcvg049A06Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Rrcvg049A06Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Rrcvg049A06Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('RRCVG-049-A06',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Rrcvg049A06Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gateId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Rrcvg049A06Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('RRCVG-049-A06 → $result');
+  final out = await Rrcvg049A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('RRCVG-049-A06 [Good / Average / Poor] → $out');
 }

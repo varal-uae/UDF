@@ -1,50 +1,46 @@
 // ============================================================
 // MUFCE-027 — Mobile UX Flow & Content Engine
-// Atomic Step: Mandate Hiring Project Form (HPF) Attachment.
-// Metric:      Input Validation Coverage Rate · Floor=95.0 · Optimal=99.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     529 of 530
+// Atomic Step:  Mandate Hiring Project Form (HPF) Attachment.
+// Metric:       Event Listener Coverage Rate (%)
+// Floor:        95.0  ·  Optimal: 99.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      884 of 1073
 // ============================================================
-// Why this matters: Eliminates human error in key management and prevents accidental credential leaks in code repositori
-// Mobile impl:      Secures third-party API keys (like Push Notification services) communicating with the mobile fronten
-// Data requirement: Update the frontend UI to indicate the mandatory attachment.
+// Why:          Eliminates human error in key management and prevents accidental credential leaks in code repositori
+// Mobile:       Secures third-party API keys (like Push Notification services) communicating with the mobile fronten
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Mufce027ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Mufce027ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Mufce027ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MUFCE-027.
-/// Fields derived from AISS sheet — Mobile UX Flow & Content Engine.
+/// MUFCE-027 — Mobile UX Flow & Content Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mufce027Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,11 +132,11 @@ class Mufce027ValidationResult {
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MUFCE-027: Mandate Hiring Project Form (HPF) Attachment.
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Event Listener Coverage Rate (%)
+/// Floor=95.0 · Output=Complete / Partial / Not Complete
 class Mufce027Pipeline {
   static const double _floor   = 95.0;
   static const double _optimal = 99.0;
@@ -165,23 +161,23 @@ class Mufce027Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Input Validation Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Event Listener Coverage Rate (%).
   static Mufce027Config _ec3Compiles(Mufce027Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-MUFCE027-003: fieldId required for MUFCE-027');
     }
-    // the implementation rule set per Input Validation Coverage Ra
+    // the implementation rule set per Event Listener Coverage Rate
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Mufce027Config _ec4Validates(Mufce027Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-MUFCE027-004: fieldId required for MUFCE-027');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +191,13 @@ class Mufce027Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Input Validation Coverage Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Event Listener Coverage Rate (%) gate (floor=95.0).
   static Mufce027Config _ec6Validates(Mufce027Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-MUFCE027-006: fieldId required for MUFCE-027');
     }
-    // configuration against Input Validation Coverage Rate gate (f
+    // configuration against Event Listener Coverage Rate (%) gate 
     return config;
   }
 
@@ -233,7 +229,7 @@ class Mufce027Pipeline {
     required List<Mufce027Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mufce027ValidationResult(
+      return Mufce027ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Mufce027ConformanceLevel.notComplete,
@@ -243,7 +239,7 @@ class Mufce027Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Mufce027ConformanceLevel.complete
         : rate >= _floor
             ? Mufce027ConformanceLevel.partial
@@ -290,19 +286,17 @@ class Mufce027Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-MUFCE027-TRI: triangular check failed for MUFCE-027');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MUFCE-027',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Event Listener Coverage Rate (%)',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Mufce027Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> mufce_027Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Mufce027Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mufce027Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Mufce027Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MUFCE-027',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Mufce027Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mufce027Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('MUFCE-027 → $result');
+  final out = await Mufce027Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MUFCE-027 [Complete / Partial / Not Complete] → $out');
 }

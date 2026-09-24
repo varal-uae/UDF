@@ -1,32 +1,37 @@
 // ============================================================
 // IS03-CSIVW-007-AS01-A16 — Implementation System 03
-// Atomic Step: Hardcode format constraints directly inside layout entry cells.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     622 of 1073
+// Atomic Step:  Hardcode format constraints directly inside layout entry cells.
+// Metric:       Validation / Test Pass Rate - Input cell invalid keystrokes verify har
+// Floor:        0.95  ·  Optimal: 0.9990000000000001
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      804 of 1073
 // ============================================================
-// Why this matters: Blocks incorrect data inputs at the interaction phase before validation sweeps fail downstream.
-// Mobile impl:      Client-side input masking rejects bad text locally before network calls execute, saving bandwidth.
-// Data requirement: Test input cell with invalid keystrokes to verify hardcoded restriction blocks entry.
+// Why:          Blocks incorrect data inputs at the interaction phase before validation sweeps fail downstream.
+// Mobile:       Client-side input masking rejects bad text locally before network calls execute, saving bandwidth.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Is03Csivw007As01A16ConformanceLevel { complete, partial, notComplete }
-enum Is03Csivw007As01A16ExecutionStatus  { pending, running, complete, failed }
+enum Is03Csivw007As01A16ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is03Csivw007As01A16ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS03-CSIVW-007-AS01-A16.
-/// Fields derived from AISS sheet — Implementation System 03.
-/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is03Csivw007As01A16Config {
   final String configId;
   final String fieldId;
@@ -117,20 +122,18 @@ class Is03Csivw007As01A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is03Csivw007As01A16ConformanceLevel.complete:    return 'Pass';
+      case Is03Csivw007As01A16ConformanceLevel.complete:    return 'Complete';
       case Is03Csivw007As01A16ConformanceLevel.partial:     return 'Partial';
-      case Is03Csivw007As01A16ConformanceLevel.notComplete: return 'Fail';
+      case Is03Csivw007As01A16ConformanceLevel.notComplete: return 'Not Complete';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// IS03-CSIVW-007-AS01-A16: Hardcode format constraints directly inside layout entry cells.
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
 class Is03Csivw007As01A16Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.9990000000000001;
 
   // EC:1 — * Connect format verification rules directly to text input cells
   static Is03Csivw007As01A16Config _ec1Execute(Is03Csivw007As01A16Config config) {
@@ -180,7 +183,7 @@ class Is03Csivw007As01A16Pipeline {
     required List<Is03Csivw007As01A16Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is03Csivw007As01A16ValidationResult(
+      return Is03Csivw007As01A16ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is03Csivw007As01A16ConformanceLevel.notComplete,
@@ -190,7 +193,7 @@ class Is03Csivw007As01A16Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Is03Csivw007As01A16ConformanceLevel.complete
         : rate >= _floor
             ? Is03Csivw007As01A16ConformanceLevel.partial
@@ -236,14 +239,14 @@ class Is03Csivw007As01A16Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS03-CSIVW-007-AS01-A16',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Validation / Test Pass Rate - Input cell invalid keystrokes ',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +255,8 @@ class Is03Csivw007As01A16Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is03_csivw_007_as01_a16Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is03_csivw_007_as01_a16Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -278,30 +282,35 @@ class Is03Csivw007As01A16Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS03-CSIVW-007-AS01-A16',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
               backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +338,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is03Csivw007As01A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS03-CSIVW-007-AS01-A16 → $result');
+  final out = await Is03Csivw007As01A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS03-CSIVW-007-AS01-A16 [Complete / Partial / Not Complete] → $out');
 }

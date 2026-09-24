@@ -1,52 +1,45 @@
 // ============================================================
 // IS36-SLPLU-012-AS01-A14 — Implementation System 36
-// Atomic Step: Lineage Trace Time Line Chart (System Latency)
-// Metric:      UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     255 of 396
+// Atomic Step:  Lineage Trace Time Line Chart (System Latency)
+// Metric:       Configuration Conformance Rate - Horizontal axis scrolling high-densit
+// Floor:        0.97  ·  Optimal: 1.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      833 of 1073
 // ============================================================
-// Why this matters: Proves whether the data engine is unbroken. High trace times mean flawed, bloated architecture.
-// Mobile impl:      Clean, responsive SVG line charts optimized for mobile viewport widths.
-// Data requirement: Add horizontal axis scrolling for high-density time trace datasets.
+// Why:          Proves whether the data engine is unbroken. High trace times mean flawed, bloated architecture.
+// Mobile:       Clean, responsive SVG line charts optimized for mobile viewport widths.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Is36Slplu012As01A14ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Is36Slplu012As01A14ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is36Slplu012As01A14ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS36-SLPLU-012-AS01-A14.
-/// Fields derived from AISS sheet row — Implementation System 36.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
 class Is36Slplu012As01A14Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
-  final String chartId;
-  final String dataSource;
-  final String metricLabel;
-  final String refreshIntervalMs;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String modalId;
+  final String triggerEvent;
+  final String contentType;
+  final String dismissBehaviour;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -55,10 +48,10 @@ class Is36Slplu012As01A14Config {
 
   const Is36Slplu012As01A14Config({
     required this.configId,
-    required this.chartId,
-    required this.dataSource,
-    required this.metricLabel,
-    required this.refreshIntervalMs,
+    required this.modalId,
+    required this.triggerEvent,
+    required this.contentType,
+    required this.dismissBehaviour,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +70,10 @@ class Is36Slplu012As01A14Config {
     bool?   complianceStatusInd,
   }) => Is36Slplu012As01A14Config(
     configId: configId,
-    chartId: chartId,
-    dataSource: dataSource,
-    metricLabel: metricLabel,
-    refreshIntervalMs: refreshIntervalMs,
+    modalId: modalId,
+    triggerEvent: triggerEvent,
+    contentType: contentType,
+    dismissBehaviour: dismissBehaviour,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,17 +85,17 @@ class Is36Slplu012As01A14Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'chartId': chartId,
-    'dataSource': dataSource,
-    'metricLabel': metricLabel,
-    'refreshIntervalMs': refreshIntervalMs,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'modalId': modalId,
+    'triggerEvent': triggerEvent,
+    'contentType': contentType,
+    'dismissBehaviour': dismissBehaviour,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,28 +122,24 @@ class Is36Slplu012As01A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is36Slplu012As01A14ConformanceLevel.complete:    return 'Pass';
-      case Is36Slplu012As01A14ConformanceLevel.partial:     return 'Partial';
-      case Is36Slplu012As01A14ConformanceLevel.notComplete: return 'Fail';
+      case Is36Slplu012As01A14ConformanceLevel.good:    return 'Good';
+      case Is36Slplu012As01A14ConformanceLevel.average: return 'Average';
+      case Is36Slplu012As01A14ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// IS36-SLPLU-012-AS01-A14: Lineage Trace Time Line Chart (System Latency)
-///
-/// Metric: UI Animation Compliance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Is36Slplu012As01A14Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.97;
+  static const double _optimal = 1.0;
 
   // EC:1 — Query latency logs
   static Is36Slplu012As01A14Config _ec1Execute(Is36Slplu012As01A14Config config) {
-    if (config.chartId.isEmpty) {
+    if (config.modalId.isEmpty) {
       throw ArgumentError(
-          'EC-IS36SLPLU012-001: chartId required for IS36-SLPLU-012-AS01-A14');
+          'EC-IS36SLPLU012-001: modalId required for IS36-SLPLU-012-AS01-A14');
     }
     // Query latency logs
     return config;
@@ -158,9 +147,9 @@ class Is36Slplu012As01A14Pipeline {
 
   // EC:2 — Render line chart
   static Is36Slplu012As01A14Config _ec2Execute(Is36Slplu012As01A14Config config) {
-    if (config.chartId.isEmpty) {
+    if (config.modalId.isEmpty) {
       throw ArgumentError(
-          'EC-IS36SLPLU012-002: chartId required for IS36-SLPLU-012-AS01-A14');
+          'EC-IS36SLPLU012-002: modalId required for IS36-SLPLU-012-AS01-A14');
     }
     // Render line chart
     return config;
@@ -168,9 +157,9 @@ class Is36Slplu012As01A14Pipeline {
 
   // EC:3 — Draw fixed SLA threshold
   static Is36Slplu012As01A14Config _ec3Execute(Is36Slplu012As01A14Config config) {
-    if (config.chartId.isEmpty) {
+    if (config.modalId.isEmpty) {
       throw ArgumentError(
-          'EC-IS36SLPLU012-003: chartId required for IS36-SLPLU-012-AS01-A14');
+          'EC-IS36SLPLU012-003: modalId required for IS36-SLPLU-012-AS01-A14');
     }
     // Draw fixed SLA threshold
     return config;
@@ -178,9 +167,9 @@ class Is36Slplu012As01A14Pipeline {
 
   // EC:4 — Code alert trigger
   static Is36Slplu012As01A14Config _ec4Execute(Is36Slplu012As01A14Config config) {
-    if (config.chartId.isEmpty) {
+    if (config.modalId.isEmpty) {
       throw ArgumentError(
-          'EC-IS36SLPLU012-004: chartId required for IS36-SLPLU-012-AS01-A14');
+          'EC-IS36SLPLU012-004: modalId required for IS36-SLPLU-012-AS01-A14');
     }
     // Code alert trigger
     return config;
@@ -190,27 +179,25 @@ class Is36Slplu012As01A14Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Is36Slplu012As01A14ValidationResult calculateConformance({
     required List<Is36Slplu012As01A14Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is36Slplu012As01A14ValidationResult(
+      return Is36Slplu012As01A14ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is36Slplu012As01A14ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-IS36SLPLU012-VAL',
+        conformanceLevel: Is36Slplu012As01A14ConformanceLevel.poor,
+        gatePass: false, ecLineRef: 'EC-IS36SLPLU012-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is36Slplu012As01A14ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Is36Slplu012As01A14ConformanceLevel.good
         : rate >= _floor
-            ? Is36Slplu012As01A14ConformanceLevel.partial
-            : Is36Slplu012As01A14ConformanceLevel.notComplete;
+            ? Is36Slplu012As01A14ConformanceLevel.average
+            : Is36Slplu012As01A14ConformanceLevel.poor;
     return Is36Slplu012As01A14ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +226,7 @@ class Is36Slplu012As01A14Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-IS36SLPLU012-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-IS36SLPLU012-000: configs must not be empty for IS36-SLPLU-012-AS01-A14');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +234,19 @@ class Is36Slplu012As01A14Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-IS36SLPLU012-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-IS36SLPLU012-TRI: triangular check failed for IS36-SLPLU-012-AS01-A14');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS36-SLPLU-012-AS01-A14',
-      'metric':             'UI Animation Compliance Rate',
+      'metric':             'Configuration Conformance Rate - Horizontal axis scrolling h',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +256,7 @@ class Is36Slplu012As01A14Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is36_slplu_012_as01_a14Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -299,16 +282,13 @@ class Is36Slplu012As01A14Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS36-SLPLU-012-AS01-A14',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +297,22 @@ class Is36Slplu012As01A14Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.chartId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.modalId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${chartId} | ${dataSource}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +328,16 @@ void main() async {
   final configs = [
     Is36Slplu012As01A14Config(
       configId: 'is36slplu012-cfg-001',
-      chartId: 'is36-slplu-012-as01-a14_chartId_value',
-      dataSource: 'is36-slplu-012-as01-a14_dataSource_value',
-      metricLabel: 'is36-slplu-012-as01-a14_metricLabel_value',
-      refreshIntervalMs: 'is36-slplu-012-as01-a14_refreshIntervalMs_value',
+      modalId: 'is36-slplu-012-as01-a14_modalId',
+      triggerEvent: 'is36-slplu-012-as01-a14_triggerEvent',
+      contentType: 'is36-slplu-012-as01-a14_contentType',
+      dismissBehaviour: 'is36-slplu-012-as01-a14_dismissBehaviour',
       traceId:                 'trace-is36slplu012-001',
       originSourceId:          'origin-is36slplu012',
       immediatePredecessorId:  'pred-is36slplu012-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is36Slplu012As01A14Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS36-SLPLU-012-AS01-A14 → $result');
+  final out = await Is36Slplu012As01A14Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS36-SLPLU-012-AS01-A14 [Good / Average / Poor] → $out');
 }

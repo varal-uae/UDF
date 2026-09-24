@@ -1,31 +1,37 @@
 // ============================================================
-// MCFRL-003 — Mobile Config Financial Rules Layer
-// Atomic Step: Lock Currency/Financial Variables as Read-Only.'
-// Metric:      Security Compliance Rate · Floor=95.0 · Optimal=99.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     539 of 1073
+// MCFRL-003 — MCFRL System Module
+// Atomic Step:  Lock Currency/Financial Variables as Read-Only.'
+// Metric:       Process Execution Quality (%)
+// Floor:        95.0  ·  Optimal: 95.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      856 of 1073
 // ============================================================
-// Why this matters: Dropping legacy negotiations prevents packet overhead and shields backend arrays from downgrade vuln
-// Mobile impl:      Cuts network round-trips in half during connection setups on high-latency cellular grids.
-// Data requirement: 12. Access the User Interface (UI) permission settings.
+// Why:          Dropping legacy negotiations prevents packet overhead and shields backend arrays from downgrade vuln
+// Mobile:       Cuts network round-trips in half during connection setups on high-latency cellular grids.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Mcfrl003ConformanceLevel { complete, partial, notComplete }
-enum Mcfrl003ExecutionStatus  { pending, running, complete, failed }
+enum Mcfrl003ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Mcfrl003ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MCFRL-003.
-/// Fields derived from AISS sheet — Mobile Config Financial Rules Layer.
+/// MCFRL-003 — MCFRL System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mcfrl003Config {
   final String configId;
@@ -35,6 +41,7 @@ class Mcfrl003Config {
   final String grantedAt;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Mcfrl003ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mcfrl003ConformanceLevel.complete:    return 'Pass';
-      case Mcfrl003ConformanceLevel.partial:     return 'Partial';
-      case Mcfrl003ConformanceLevel.notComplete: return 'Fail';
+      case Mcfrl003ConformanceLevel.pass_: return 'Pass';
+      case Mcfrl003ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MCFRL-003: Lock Currency/Financial Variables as Read-Only.'
-/// Metric: Security Compliance Rate · Floor=95.0 · Optimal=99.0
+/// Metric: Process Execution Quality (%)
+/// Floor=95.0 · Output=Pass / Fail
 class Mcfrl003Pipeline {
   static const double _floor   = 95.0;
-  static const double _optimal = 99.0;
+  static const double _optimal = 95.0;
 
   // EC:1 — System locates the MCFRL-003 configuration in the source repository.
   static Mcfrl003Config _ec1Locates(Mcfrl003Config config) {
@@ -152,13 +159,13 @@ class Mcfrl003Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Security Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality (%).
   static Mcfrl003Config _ec3Compiles(Mcfrl003Config config) {
     if (config.resourceId.isEmpty) {
       throw ArgumentError(
           'EC-MCFRL003-003: resourceId required for MCFRL-003');
     }
-    // the implementation rule set per Security Compliance Rate
+    // the implementation rule set per Process Execution Quality (%
     return config;
   }
 
@@ -182,13 +189,13 @@ class Mcfrl003Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Security Compliance Rate gate (floor=0.99).
+  // EC:6 — System validates configuration against Process Execution Quality (%) gate (floor=95.0).
   static Mcfrl003Config _ec6Validates(Mcfrl003Config config) {
     if (config.resourceId.isEmpty) {
       throw ArgumentError(
           'EC-MCFRL003-006: resourceId required for MCFRL-003');
     }
-    // configuration against Security Compliance Rate gate (floor=0
+    // configuration against Process Execution Quality (%) gate (fl
     return config;
   }
 
@@ -220,21 +227,19 @@ class Mcfrl003Pipeline {
     required List<Mcfrl003Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mcfrl003ValidationResult(
+      return Mcfrl003ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Mcfrl003ConformanceLevel.notComplete,
+        conformanceLevel: Mcfrl003ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-MCFRL003-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Mcfrl003ConformanceLevel.complete
-        : rate >= _floor
-            ? Mcfrl003ConformanceLevel.partial
-            : Mcfrl003ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Mcfrl003ConformanceLevel.pass_
+        : Mcfrl003ConformanceLevel.fail_;
     return Mcfrl003ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Mcfrl003Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MCFRL-003',
-      'metric':             'Security Compliance Rate',
+      'metric':             'Process Execution Quality (%)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Mcfrl003Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> mcfrl_003Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> mcfrl_003Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Mcfrl003Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mcfrl003Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Mcfrl003Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MCFRL-003',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.resourceId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mcfrl003Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('MCFRL-003 → $result');
+  final out = await Mcfrl003Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MCFRL-003 [Pass / Fail] → $out');
 }

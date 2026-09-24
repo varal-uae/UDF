@@ -1,50 +1,45 @@
 // ============================================================
-// IS44-RCGLA-042-AS01-A03 — Implementation System 44
-// Atomic Step: Build layout wrapper definitions using structural multi-window responsive breakpoints.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     441 of 530
+// IS44-RCGLA-042-AS01-A03 — IS44 System Module
+// Atomic Step:  Build layout wrapper definitions using structural multi-window responsive breakpoints.
+// Metric:       Specification Definition Accuracy - Css breakpoint values compact wind
+// Floor:        0.98  ·  Optimal: 0.98
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      843 of 1073
 // ============================================================
-// Why this matters: Replaces messy, stretched desktop screens with fluid, context-aware mobile computing layouts.
-// Mobile impl:      Mobile layout parameters establish the base source formatting matrix before scaling layout items upw
-// Data requirement: Define CSS breakpoint values for Compact window width class ($< 600\text{px}$).
+// Why:          Replaces messy, stretched desktop screens with fluid, context-aware mobile computing layouts.
+// Mobile:       Mobile layout parameters establish the base source formatting matrix before scaling layout items upw
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Is44Rcgla042As01A03ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Is44Rcgla042As01A03ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is44Rcgla042As01A03ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS44-RCGLA-042-AS01-A03.
-/// Fields derived from AISS sheet — Implementation System 44.
+/// IS44-RCGLA-042-AS01-A03 — IS44 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is44Rcgla042As01A03Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String navItemId;
   final String routePath;
   final String iconToken;
   final String labelText;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Is44Rcgla042As01A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is44Rcgla042As01A03ConformanceLevel.complete:    return 'Pass';
-      case Is44Rcgla042As01A03ConformanceLevel.partial:     return 'Partial';
-      case Is44Rcgla042As01A03ConformanceLevel.notComplete: return 'Fail';
+      case Is44Rcgla042As01A03ConformanceLevel.pass_: return 'Pass';
+      case Is44Rcgla042As01A03ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS44-RCGLA-042-AS01-A03: Build layout wrapper definitions using structural multi-window responsive breakp
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Specification Definition Accuracy - Css breakpoint values co
+/// Floor=0.98 · Output=Pass / Fail
 class Is44Rcgla042As01A03Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.98;
+  static const double _optimal = 0.98;
 
   // EC:1 — * Map the three core architectural screen sizes: compact, medium, and expanded
   static Is44Rcgla042As01A03Config _ec1Execute(Is44Rcgla042As01A03Config config) {
@@ -193,21 +187,19 @@ class Is44Rcgla042As01A03Pipeline {
     required List<Is44Rcgla042As01A03Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is44Rcgla042As01A03ValidationResult(
+      return Is44Rcgla042As01A03ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is44Rcgla042As01A03ConformanceLevel.notComplete,
+        conformanceLevel: Is44Rcgla042As01A03ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS44RCGLA042-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is44Rcgla042As01A03ConformanceLevel.complete
-        : rate >= _floor
-            ? Is44Rcgla042As01A03ConformanceLevel.partial
-            : Is44Rcgla042As01A03ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is44Rcgla042As01A03ConformanceLevel.pass_
+        : Is44Rcgla042As01A03ConformanceLevel.fail_;
     return Is44Rcgla042As01A03ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Is44Rcgla042As01A03Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-IS44RCGLA042-TRI: triangular check failed for IS44-RCGLA-042-AS01-A03');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS44-RCGLA-042-AS01-A03',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Specification Definition Accuracy - Css breakpoint values co',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Is44Rcgla042As01A03Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is44_rcgla_042_as01_a03Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Is44Rcgla042As01A03Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is44Rcgla042As01A03Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Is44Rcgla042As01A03Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS44-RCGLA-042-AS01-A03',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Is44Rcgla042As01A03Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.navItemId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is44Rcgla042As01A03Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS44-RCGLA-042-AS01-A03 → $result');
+  final out = await Is44Rcgla042As01A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS44-RCGLA-042-AS01-A03 [Pass / Fail] → $out');
 }

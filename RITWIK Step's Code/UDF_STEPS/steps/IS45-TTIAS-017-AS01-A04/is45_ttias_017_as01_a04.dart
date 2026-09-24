@@ -1,31 +1,37 @@
 // ============================================================
-// IS45-TTIAS-017-AS01-A04 — Implementation System 45
-// Atomic Step: Configure Dynamic Font Scale Constraints and Line-Height Safe Boundaries.
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     1073 of 1073
+// IS45-TTIAS-017-AS01-A04 — IS45 System Module
+// Atomic Step:  Configure Dynamic Font Scale Constraints and Line-Height Safe Boundaries.
+// Metric:       Configuration Conformance Rate - Minimum font scaling factor constrain
+// Floor:        0.97  ·  Optimal: 0.97
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      844 of 1073
 // ============================================================
-// Why this matters: Eliminates design breaks, overlapping text lines, and broken UI containers caused by unmanaged font 
-// Mobile impl:      Guarantees critical informational metrics and text labels stay legible without requiring horizontal 
-// Data requirement: Set minimum font scaling factor constraint ($0.85\times$) for small screen viewports.
+// Why:          Eliminates design breaks, overlapping text lines, and broken UI containers caused by unmanaged font 
+// Mobile:       Guarantees critical informational metrics and text labels stay legible without requiring horizontal 
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Is45Ttias017As01A04ConformanceLevel { complete, partial, notComplete }
-enum Is45Ttias017As01A04ExecutionStatus  { pending, running, complete, failed }
+enum Is45Ttias017As01A04ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is45Ttias017As01A04ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS45-TTIAS-017-AS01-A04.
-/// Fields derived from AISS sheet — Implementation System 45.
+/// IS45-TTIAS-017-AS01-A04 — IS45 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is45Ttias017As01A04Config {
   final String configId;
@@ -35,6 +41,7 @@ class Is45Ttias017As01A04Config {
   final String weightToken;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Is45Ttias017As01A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is45Ttias017As01A04ConformanceLevel.complete:    return 'Pass';
-      case Is45Ttias017As01A04ConformanceLevel.partial:     return 'Partial';
-      case Is45Ttias017As01A04ConformanceLevel.notComplete: return 'Fail';
+      case Is45Ttias017As01A04ConformanceLevel.pass_: return 'Pass';
+      case Is45Ttias017As01A04ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// IS45-TTIAS-017-AS01-A04: Configure Dynamic Font Scale Constraints and Line-Height Safe Boundaries.
-/// Metric: Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
+/// Metric: Configuration Conformance Rate - Minimum font scaling factor
+/// Floor=0.97 · Output=Pass / Fail
 class Is45Ttias017As01A04Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.97;
+  static const double _optimal = 0.97;
 
   // EC:1 — Initialize typography mapping rules within the universal application configuration. Implem
   static Is45Ttias017As01A04Config _ec1Execute(Is45Ttias017As01A04Config config) {
@@ -150,21 +157,19 @@ class Is45Ttias017As01A04Pipeline {
     required List<Is45Ttias017As01A04Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is45Ttias017As01A04ValidationResult(
+      return Is45Ttias017As01A04ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is45Ttias017As01A04ConformanceLevel.notComplete,
+        conformanceLevel: Is45Ttias017As01A04ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS45TTIAS017-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is45Ttias017As01A04ConformanceLevel.complete
-        : rate >= _floor
-            ? Is45Ttias017As01A04ConformanceLevel.partial
-            : Is45Ttias017As01A04ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is45Ttias017As01A04ConformanceLevel.pass_
+        : Is45Ttias017As01A04ConformanceLevel.fail_;
     return Is45Ttias017As01A04ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -203,14 +208,14 @@ class Is45Ttias017As01A04Pipeline {
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS45-TTIAS-017-AS01-A04',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Configuration Conformance Rate - Minimum font scaling factor',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -219,7 +224,8 @@ class Is45Ttias017As01A04Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is45_ttias_017_as01_a04Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is45_ttias_017_as01_a04Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -238,6 +244,7 @@ class Is45Ttias017As01A04Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is45Ttias017As01A04Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,30 +252,35 @@ class Is45Ttias017As01A04Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS45-TTIAS-017-AS01-A04',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fontFamily,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -296,6 +308,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is45Ttias017As01A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS45-TTIAS-017-AS01-A04 → $result');
+  final out = await Is45Ttias017As01A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS45-TTIAS-017-AS01-A04 [Pass / Fail] → $out');
 }

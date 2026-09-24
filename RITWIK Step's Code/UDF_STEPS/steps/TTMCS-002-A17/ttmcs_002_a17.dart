@@ -1,52 +1,47 @@
 // ============================================================
 // TTMCS-002-A17 — Material Design Token Configuration System
-// Atomic Step: Establish DCYN Binary Semantic Color Gates.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     383 of 396
+// Atomic Step:  Establish DCYN Binary Semantic Color Gates.
+// Metric:       Verification / QA Pass Rate
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1056 of 1073
 // ============================================================
-// Why this matters: Alerts field workers instantly to validation states without reading long text reports.
-// Mobile impl:      High-contrast highlights maintain strong usability when operating phones outdoors under shifting day
-// Data requirement: Verify WCAG contrast compliance for all four states against all backgrounds they appear on.
+// Why:          Alerts field workers instantly to validation states without reading long text reports.
+// Mobile:       High-contrast highlights maintain strong usability when operating phones outdoors under shifting day
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ttmcs002A17ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ttmcs002A17ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttmcs002A17ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTMCS-002-A17.
-/// Fields derived from AISS sheet row — Material Design Token Configuration System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTMCS-002-A17 — Material Design Token Configuration System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttmcs002A17Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Ttmcs002A17Config {
     'hexValue': hexValue,
     'wcagRatio': wcagRatio,
     'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Ttmcs002A17ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs002A17ConformanceLevel.complete:    return 'Pass';
-      case Ttmcs002A17ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs002A17ConformanceLevel.notComplete: return 'Fail';
+      case Ttmcs002A17ConformanceLevel.pass_: return 'Pass';
+      case Ttmcs002A17ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// TTMCS-002-A17: Establish DCYN Binary Semantic Color Gates.
-///
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Verification / QA Pass Rate
+/// Floor=0.9 · Output=Pass / Fail
 class Ttmcs002A17Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — Set high-contrast green semantic tokens to symbolize true/compliant binary parameters. Set
   static Ttmcs002A17Config _ec1Execute(Ttmcs002A17Config config) {
@@ -160,27 +153,23 @@ class Ttmcs002A17Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Ttmcs002A17ValidationResult calculateConformance({
     required List<Ttmcs002A17Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttmcs002A17ValidationResult(
+      return Ttmcs002A17ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ttmcs002A17ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTMCS002A17-VAL',
+        conformanceLevel: Ttmcs002A17ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-TTMCS002A17-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ttmcs002A17ConformanceLevel.complete
-        : rate >= _floor
-            ? Ttmcs002A17ConformanceLevel.partial
-            : Ttmcs002A17ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ttmcs002A17ConformanceLevel.pass_
+        : Ttmcs002A17ConformanceLevel.fail_;
     return Ttmcs002A17ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -209,26 +198,24 @@ class Ttmcs002A17Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTMCS002A17-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTMCS002A17-000: configs must not be empty for TTMCS-002-A17');
     }
     final p1 = configs.map(_ec1Execute).toList();
 
     if (!triangularCheck(configs.length, p1.length)) {
-      return {'error': 'EC-TTMCS002A17-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTMCS002A17-TRI: triangular check failed for TTMCS-002-A17');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMCS-002-A17',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Verification / QA Pass Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -238,9 +225,7 @@ class Ttmcs002A17Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttmcs_002_a17Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -259,6 +244,7 @@ class Ttmcs002A17Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttmcs002A17Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -266,16 +252,13 @@ class Ttmcs002A17Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTMCS-002-A17',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -284,23 +267,22 @@ class Ttmcs002A17Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${colorToken} | ${hexValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -316,17 +298,16 @@ void main() async {
   final configs = [
     Ttmcs002A17Config(
       configId: 'ttmcs002a17-cfg-001',
-      colorToken: 'ttmcs-002-a17_colorToken_value',
-      hexValue: 'ttmcs-002-a17_hexValue_value',
-      wcagRatio: 'ttmcs-002-a17_wcagRatio_value',
-      usageContext: 'ttmcs-002-a17_usageContext_value',
+      colorToken: 'ttmcs-002-a17_colorToken',
+      hexValue: 'ttmcs-002-a17_hexValue',
+      wcagRatio: 'ttmcs-002-a17_wcagRatio',
+      usageContext: 'ttmcs-002-a17_usageContext',
       traceId:                 'trace-ttmcs002a17-001',
       originSourceId:          'origin-ttmcs002a17',
       immediatePredecessorId:  'pred-ttmcs002a17-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttmcs002A17Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTMCS-002-A17 → $result');
+  final out = await Ttmcs002A17Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTMCS-002-A17 [Pass / Fail] → $out');
 }

@@ -1,31 +1,37 @@
 // ============================================================
-// IS18-RIMV-011-AS01-A14 — Implementation System 18
-// Atomic Step: Setup of DOM Mutation Blocker during isLoading=true Form Submission
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     607 of 1073
+// IS18-RIMV-011-AS01-A14 — IS18 System Module
+// Atomic Step:  Setup of DOM Mutation Blocker during isLoading=true Form Submission
+// Metric:       Validation / Test Pass Rate - Backend network api response resolution 
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      816 of 1073
 // ============================================================
-// Why this matters: Eliminates naming variations and linguistic ambiguity, forcing different developer teams to construc
-// Mobile impl:      Standardizes data parsing structures, allowing mobile database frameworks (like SQLite or Room) to i
-// Data requirement: Await backend network API response resolution or timeout signal.
+// Why:          Eliminates naming variations and linguistic ambiguity, forcing different developer teams to construc
+// Mobile:       Standardizes data parsing structures, allowing mobile database frameworks (like SQLite or Room) to i
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Is18Rimv011As01A14ConformanceLevel { complete, partial, notComplete }
-enum Is18Rimv011As01A14ExecutionStatus  { pending, running, complete, failed }
+enum Is18Rimv011As01A14ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is18Rimv011As01A14ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS18-RIMV-011-AS01-A14.
-/// Fields derived from AISS sheet — Implementation System 18.
+/// IS18-RIMV-011-AS01-A14 — IS18 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is18Rimv011As01A14Config {
   final String configId;
@@ -35,6 +41,7 @@ class Is18Rimv011As01A14Config {
   final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Is18Rimv011As01A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is18Rimv011As01A14ConformanceLevel.complete:    return 'Pass';
-      case Is18Rimv011As01A14ConformanceLevel.partial:     return 'Partial';
-      case Is18Rimv011As01A14ConformanceLevel.notComplete: return 'Fail';
+      case Is18Rimv011As01A14ConformanceLevel.pass_: return 'Pass';
+      case Is18Rimv011As01A14ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS18-RIMV-011-AS01-A14: Setup of DOM Mutation Blocker during isLoading=true Form Submission
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Validation / Test Pass Rate - Backend network api response r
+/// Floor=0.95 · Output=Pass / Fail
 class Is18Rimv011As01A14Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Build an input-blocking screen container that activates based on state variables
   static Is18Rimv011As01A14Config _ec1Execute(Is18Rimv011As01A14Config config) {
@@ -180,21 +187,19 @@ class Is18Rimv011As01A14Pipeline {
     required List<Is18Rimv011As01A14Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is18Rimv011As01A14ValidationResult(
+      return Is18Rimv011As01A14ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is18Rimv011As01A14ConformanceLevel.notComplete,
+        conformanceLevel: Is18Rimv011As01A14ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS18RIMV011A-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is18Rimv011As01A14ConformanceLevel.complete
-        : rate >= _floor
-            ? Is18Rimv011As01A14ConformanceLevel.partial
-            : Is18Rimv011As01A14ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is18Rimv011As01A14ConformanceLevel.pass_
+        : Is18Rimv011As01A14ConformanceLevel.fail_;
     return Is18Rimv011As01A14ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Is18Rimv011As01A14Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS18-RIMV-011-AS01-A14',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Validation / Test Pass Rate - Backend network api response r',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Is18Rimv011As01A14Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is18_rimv_011_as01_a14Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is18_rimv_011_as01_a14Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Is18Rimv011As01A14Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is18Rimv011As01A14Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Is18Rimv011As01A14Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS18-RIMV-011-AS01-A14',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is18Rimv011As01A14Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS18-RIMV-011-AS01-A14 → $result');
+  final out = await Is18Rimv011As01A14Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS18-RIMV-011-AS01-A14 [Pass / Fail] → $out');
 }

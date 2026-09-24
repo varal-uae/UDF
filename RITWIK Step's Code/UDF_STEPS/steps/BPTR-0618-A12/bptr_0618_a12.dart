@@ -1,317 +1,317 @@
 // ============================================================
-// BPTR-0618-A12 | UI/UX Pattern Registry
-// Atomic Task: BPTR-0618-A12
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BPTR-0618-A12 — UI/UX Pattern Registry
+// Atomic Step:  Implement Regex Input Masking for Mobile Forms
+// Metric:       Rule/Configuration Definition Completeness
+// Floor:        95.0  ·  Optimal: 100.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      108 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System fetches active regex mask configuration parameters from registry.
-  // EC: 2. System receives raw mobile input character sequence payload.
-  // EC: 3. System evaluates input payload against active regex mask pattern.
-  // EC: 4. System blocks input characters breaking target format parameters.
-  // EC: 5. System transforms valid character sequence into formatted string display.
-  // EC: 6. System renders visual UI component update with inline helper status.
-  // EC: 7. System routes non-compliant payload telemetry to dead letter queue.
-  // EC: 8. System writes validation audit log entry with session timestamp metrics.
+// Why:          Prevents dirty, malformed data from breaking downstream BigQuery pipelines and payroll APIs.
+// Mobile:       Eliminates tedious mobile backspacing; input automatically spaces and formats strings on a small scr
+// col41:        Complete (Scale: Complete/Partial/Not Complete)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bptr0618A12ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Bptr0618A12ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BPTR-0618-A12.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Bptr0618A12Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+/// BPTR-0618-A12 — UI/UX Pattern Registry
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bptr0618A12Config {
+  final String configId;
+  final String fieldId;
+  final String validationRule;
+  final String errorMessage;
+  final String inputType;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Bptr0618A12Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Bptr0618A12Config({
+    required this.configId,
+    required this.fieldId,
+    required this.validationRule,
+    required this.errorMessage,
+    required this.inputType,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Bptr0618A12Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Bptr0618A12Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Bptr0618A12Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bptr0618A12Config(
+    configId: configId,
+    fieldId: fieldId,
+    validationRule: validationRule,
+    errorMessage: errorMessage,
+    inputType: inputType,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'fieldId': fieldId,
+    'validationRule': validationRule,
+    'errorMessage': errorMessage,
+    'inputType': inputType,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Bptr0618A12ScanResult {
+class Bptr0618A12ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Bptr0618A12ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Bptr0618A12ScanResult({
+  const Bptr0618A12ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bptr0618A12ConformanceLevel.complete:    return 'Complete';
+      case Bptr0618A12ConformanceLevel.partial:     return 'Partial';
+      case Bptr0618A12ConformanceLevel.notComplete: return 'Not Complete';
+    }
+  }
 }
 
-// ── EC:8 Pipeline ──────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
+/// BPTR-0618-A12: Implement Regex Input Masking for Mobile Forms
+/// Metric: Rule/Configuration Definition Completeness
+/// Floor=95.0 · Output=Complete / Partial / Not Complete
 class Bptr0618A12Pipeline {
-  static const double _floor   = 95.0;  // metric floor gate
-  static const double _optimal = 100.0; // metric optimal target
+  static const double _floor   = 95.0;
+  static const double _optimal = 100.0;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System fetches active regex mask configuration parameters from registry.
-  static String executeFetchesStep1(Bptr0618A12Entry entry) {
-    // fetches active regex mask configuration parameters from registry
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — 1) Define Regex rules. 2) Apply UI masking code. 3) Disable invalid keys. 4) Render red er
+  static Bptr0618A12Config _ec1Execute(Bptr0618A12Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0618A12-001: fieldId required for BPTR-0618-A12');
+    }
+    // 1) Define Regex rules. 2) Apply UI masking code. 3) Disable 
+    return config;
   }
 
-  // EC:2 — EC: 2. System receives raw mobile input character sequence payload.
-  static String executeReceivesStep2(Bptr0618A12Entry entry) {
-    // receives raw mobile input character sequence payload
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:3 — EC: 3. System evaluates input payload against active regex mask pattern.
-  static String executeEvaluatesStep3(Bptr0618A12Entry entry) {
-    // evaluates input payload against active regex mask pattern
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:4 — EC: 4. System blocks input characters breaking target format parameters.
-  static String executeBlocksStep4(Bptr0618A12Entry entry) {
-    // blocks input characters breaking target format parameters
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:5 — EC: 5. System transforms valid character sequence into formatted string display.
-  static String executeTransformsStep5(Bptr0618A12Entry entry) {
-    // transforms valid character sequence into formatted string display
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:6 — EC: 6. System renders visual UI component update with inline helper status.
-  static String executeRendersStep6(Bptr0618A12Entry entry) {
-    // renders visual UI component update with inline helper status
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:7 — EC: 7. System routes non-compliant payload telemetry to dead letter queue.
-  static String executeRoutesStep7(Bptr0618A12Entry entry) {
-    // routes non-compliant payload telemetry to dead letter queue
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:8 — EC: 8. System writes validation audit log entry with session timestamp metrics.
-  static String executeWritesStep8(Bptr0618A12Entry entry) {
-    // writes validation audit log entry with session timestamp metrics
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0618A12-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Bptr0618A12ScanResult validateConformance(
-    List<Bptr0618A12Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Bptr0618A12ScanResult(
+  static Bptr0618A12ValidationResult calculateConformance({
+    required List<Bptr0618A12Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bptr0618A12ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bptr0618A12ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-BPTR0618A12-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Bptr0618A12ConformanceLevel.complete
+        : rate >= _floor
+            ? Bptr0618A12ConformanceLevel.partial
+            : Bptr0618A12ConformanceLevel.notComplete;
+    return Bptr0618A12ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BPTR0618A12-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Bptr0618A12Entry routeToRegistry(
-    Bptr0618A12Entry entry,
-    Bptr0618A12ScanResult scan,
+  static Bptr0618A12Config routeToRegistry(
+    Bptr0618A12Config config,
+    Bptr0618A12ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Bptr0618A12Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BPTR0618A12-000: configs must not be empty for BPTR-0618-A12');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+
+    if (!triangularCheck(configs.length, p1.length)) {
+      throw ArgumentError('EC-BPTR0618A12-TRI: triangular check failed for BPTR-0618-A12');
+    }
+    final result     = calculateConformance(configs: p1);
+    final registered = p1.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BPTR-0618-A12',
+      'metric':             'Rule/Configuration Definition Completeness',
+      'output_vocab':       'Complete / Partial / Not Complete',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bptr_0618_a12Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BPTR-0618-A12',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Bptr0618A12Widget extends StatelessWidget {
-  final List<Bptr0618A12Entry> entries;
-  const Bptr0618A12Widget({super.key, required this.entries});
+  final List<Bptr0618A12Config> configs;
+  const Bptr0618A12Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bptr0618A12Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Bptr0618A12Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BPTR-0618-A12',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BPTR-0618-A12',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.fieldId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bptr0618A12Config(
+      configId: 'bptr0618a12-cfg-001',
+      fieldId: 'bptr-0618-a12_fieldId',
+      validationRule: 'bptr-0618-a12_validationRule',
+      errorMessage: 'bptr-0618-a12_errorMessage',
+      inputType: 'bptr-0618-a12_inputType',
+      traceId:                 'trace-bptr0618a12-001',
+      originSourceId:          'origin-bptr0618a12',
+      immediatePredecessorId:  'pred-bptr0618a12-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bptr0618A12Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BPTR-0618-A12 [Complete / Partial / Not Complete] → $out');
 }

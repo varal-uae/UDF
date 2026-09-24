@@ -1,47 +1,47 @@
 // ============================================================
 // RCGLA-023-A03 — Responsive CSS Grid Layout Architecture
-// Atomic Step: RCGLA-023 - Bundling Atomic UI Components into Reusable NPM Packages
-// Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     417 of 440
+// Atomic Step:  RCGLA-023 - Bundling Atomic UI Components into Reusable NPM Packages
+// Metric:       Specification Clarity & Sign-off
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      925 of 1073
 // ============================================================
-// Why this matters: Frontend development operates strictly through the assembly of pre-defined components, banning custo
-// Mobile impl:      Consolidated, tree-shaken component files minimize total package sizes, accelerating app download sp
+// Why:          Frontend development operates strictly through the assembly of pre-defined components, banning custo
+// Mobile:       Consolidated, tree-shaken component files minimize total package sizes, accelerating app download sp
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Rcgla023A03ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Rcgla023A03ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Rcgla023A03ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for RCGLA-023-A03.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// RCGLA-023-A03 — Responsive CSS Grid Layout Architecture
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Rcgla023A03Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String packageName;
+  final String componentId;
+  final String versionTag;
+  final String exportPath;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +50,10 @@ class Rcgla023A03Config {
 
   const Rcgla023A03Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.packageName,
+    required this.componentId,
+    required this.versionTag,
+    required this.exportPath,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +71,33 @@ class Rcgla023A03Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Rcgla023A03Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    packageName: packageName,
+    componentId: componentId,
+    versionTag: versionTag,
+    exportPath: exportPath,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'packageName': packageName,
+    'componentId': componentId,
+    'versionTag': versionTag,
+    'exportPath': exportPath,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -118,98 +124,96 @@ class Rcgla023A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla023A03ConformanceLevel.complete:    return 'Pass';
-      case Rcgla023A03ConformanceLevel.partial:     return 'Partial';
-      case Rcgla023A03ConformanceLevel.notComplete: return 'Fail';
+      case Rcgla023A03ConformanceLevel.pass_: return 'Pass';
+      case Rcgla023A03ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// RCGLA-023-A03: RCGLA-023 - Bundling Atomic UI Components into Reusable NPM Packages
-///
-/// Metric: Component Reuse Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Specification Clarity & Sign-off
+/// Floor=0.95 · Output=Pass / Fail
 class Rcgla023A03Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the RCGLA-023-A03 configuration in the source repository.
   static Rcgla023A03Config _ec1Locates(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA023A03-001: configId required for RCGLA-023-A03');
+          'EC-RCGLA023A03-001: packageName required for RCGLA-023-A03');
     }
     // the RCGLA-023-A03 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts required data fields from the RCGLA-023-A03 registry.
+  // EC:2 — System extracts packageName and componentId from the RCGLA-023-A03 registry.
   static Rcgla023A03Config _ec2Extracts(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA023A03-002: configId required for RCGLA-023-A03');
+          'EC-RCGLA023A03-002: packageName required for RCGLA-023-A03');
     }
-    // required data fields from the RCGLA-023-A03 registry
+    // packageName and componentId from the RCGLA-023-A03 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Component Reuse Rate.
+  // EC:3 — System compiles the implementation rule set per Specification Clarity & Sign-off.
   static Rcgla023A03Config _ec3Compiles(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA023A03-003: configId required for RCGLA-023-A03');
+          'EC-RCGLA023A03-003: packageName required for RCGLA-023-A03');
     }
-    // the implementation rule set per Component Reuse Rate
+    // the implementation rule set per Specification Clarity & Sign
     return config;
   }
 
-  // EC:4 — System registers compiled rules as immutable with immutable_IND=TRUE.
-  static Rcgla023A03Config _ec4Registers(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
+  // EC:4 — System validates configuration against required constraints.
+  static Rcgla023A03Config _ec4Validates(Rcgla023A03Config config) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA023A03-004: configId required for RCGLA-023-A03');
+          'EC-RCGLA023A03-004: packageName required for RCGLA-023-A03');
+    }
+    // configuration against required constraints
+    return config;
+  }
+
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Rcgla023A03Config _ec5Registers(Rcgla023A03Config config) {
+    if (config.packageName.isEmpty) {
+      throw ArgumentError(
+          'EC-RCGLA023A03-005: packageName required for RCGLA-023-A03');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:5 — System validates configuration against Component Reuse Rate gate (floor=0.90).
-  static Rcgla023A03Config _ec5Validates(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
+  // EC:6 — System validates configuration against Specification Clarity & Sign-off gate (floor=0.95).
+  static Rcgla023A03Config _ec6Validates(Rcgla023A03Config config) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA023A03-005: configId required for RCGLA-023-A03');
+          'EC-RCGLA023A03-006: packageName required for RCGLA-023-A03');
     }
-    // configuration against Component Reuse Rate gate (floor=0.90)
+    // configuration against Specification Clarity & Sign-off gate 
     return config;
   }
 
-  // EC:6 — System routes non-compliant records to the dead letter queue.
-  static Rcgla023A03Config _ec6Routes(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Rcgla023A03Config _ec7Routes(Rcgla023A03Config config) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA023A03-006: configId required for RCGLA-023-A03');
+          'EC-RCGLA023A03-007: packageName required for RCGLA-023-A03');
     }
     // non-compliant records to the dead letter queue
     return config;
   }
 
-  // EC:7 — System writes validated result to the execution audit log.
-  static Rcgla023A03Config _ec7Writes(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
-      throw ArgumentError(
-          'EC-RCGLA023A03-007: configId required for RCGLA-023-A03');
-    }
-    // validated result to the execution audit log
-    return config;
-  }
-
   // EC:8 — System publishes validated configuration to the rule registry.
   static Rcgla023A03Config _ec8Publishes(Rcgla023A03Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA023A03-008: configId required for RCGLA-023-A03');
+          'EC-RCGLA023A03-008: packageName required for RCGLA-023-A03');
     }
     // validated configuration to the rule registry
     return config;
@@ -219,27 +223,23 @@ class Rcgla023A03Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=1.0
   static Rcgla023A03ValidationResult calculateConformance({
     required List<Rcgla023A03Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Rcgla023A03ValidationResult(
+      return Rcgla023A03ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Rcgla023A03ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-RCGLA023A03-VAL',
+        conformanceLevel: Rcgla023A03ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-RCGLA023A03-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Rcgla023A03ConformanceLevel.complete
-        : rate >= _floor
-            ? Rcgla023A03ConformanceLevel.partial
-            : Rcgla023A03ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Rcgla023A03ConformanceLevel.pass_
+        : Rcgla023A03ConformanceLevel.fail_;
     return Rcgla023A03ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -268,33 +268,31 @@ class Rcgla023A03Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-RCGLA023A03-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-RCGLA023A03-000: configs must not be empty for RCGLA-023-A03');
     }
     final p1 = configs.map(_ec1Locates).toList();
     final p2 = configs.map(_ec2Extracts).toList();
     final p3 = configs.map(_ec3Compiles).toList();
-    final p4 = configs.map(_ec4Registers).toList();
-    final p5 = configs.map(_ec5Validates).toList();
-    final p6 = configs.map(_ec6Routes).toList();
-    final p7 = configs.map(_ec7Writes).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
     final p8 = configs.map(_ec8Publishes).toList();
 
     if (!triangularCheck(configs.length, p8.length)) {
-      return {'error': 'EC-RCGLA023A03-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-RCGLA023A03-TRI: triangular check failed for RCGLA-023-A03');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-RCGLA-023-A03',
-      'metric':             'Component Reuse Rate',
+      'metric':             'Specification Clarity & Sign-off',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -304,9 +302,7 @@ class Rcgla023A03Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> rcgla_023_a03Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -325,6 +321,7 @@ class Rcgla023A03Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Rcgla023A03Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -332,18 +329,13 @@ class Rcgla023A03Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('RCGLA-023-A03',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -352,24 +344,22 @@ class Rcgla023A03Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.packageName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -384,16 +374,17 @@ class Rcgla023A03Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Rcgla023A03Config(
-      configId:                'rcgla023a03-cfg-001',
-      ruleKey:                 'rcgla-023-a03_rule',
-      ruleValue:               'rcgla-023-a03_value',
+      configId: 'rcgla023a03-cfg-001',
+      packageName: 'rcgla-023-a03_packageName',
+      componentId: 'rcgla-023-a03_componentId',
+      versionTag: 'rcgla-023-a03_versionTag',
+      exportPath: 'rcgla-023-a03_exportPath',
       traceId:                 'trace-rcgla023a03-001',
       originSourceId:          'origin-rcgla023a03',
       immediatePredecessorId:  'pred-rcgla023a03-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Rcgla023A03Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('RCGLA-023-A03 → $result');
+  final out = await Rcgla023A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('RCGLA-023-A03 [Pass / Fail] → $out');
 }

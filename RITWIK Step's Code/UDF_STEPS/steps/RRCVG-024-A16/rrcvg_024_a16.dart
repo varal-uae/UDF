@@ -1,52 +1,48 @@
 // ============================================================
 // RRCVG-024-A16 — Release Readiness & Compliance Validation Gate
-// Atomic Step: Enforce Binary Checklist Stepper Offboarding Rules
-// Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     308 of 396
+// Atomic Step:  Enforce Binary Checklist Stepper Offboarding Rules
+// Metric:       Version Control Compliance (%)
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      954 of 1073
 // ============================================================
-// Why this matters: Converts complex deprovisioning into a single, verifiable, and visually manageable UI checklist ensu
-// Mobile impl:      A vertical stepper is inherently mobile-friendly, stacking steps clearly without cramped horizontal 
-// Data requirement: Save and commit the unified offboarding checklist scripts to the repository branch.
+// Why:          Converts complex deprovisioning into a single, verifiable, and visually manageable UI checklist ensu
+// Mobile:       A vertical stepper is inherently mobile-friendly, stacking steps clearly without cramped horizontal 
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Rrcvg024A16ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Rrcvg024A16ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Rrcvg024A16ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for RRCVG-024-A16.
-/// Fields derived from AISS sheet row — Release Readiness & Compliance Validation Gate.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// RRCVG-024-A16 — Release Readiness & Compliance Validation Gate
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Rrcvg024A16Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
-  final String buildId;
-  final String gateRule;
+  final String configId;
+  final String gateId;
+  final String checkRule;
   final String passThreshold;
   final String failureReason;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -55,8 +51,8 @@ class Rrcvg024A16Config {
 
   const Rrcvg024A16Config({
     required this.configId,
-    required this.buildId,
-    required this.gateRule,
+    required this.gateId,
+    required this.checkRule,
     required this.passThreshold,
     required this.failureReason,
     this.validationStatus   = 'PENDING',
@@ -77,8 +73,8 @@ class Rrcvg024A16Config {
     bool?   complianceStatusInd,
   }) => Rrcvg024A16Config(
     configId: configId,
-    buildId: buildId,
-    gateRule: gateRule,
+    gateId: gateId,
+    checkRule: checkRule,
     passThreshold: passThreshold,
     failureReason: failureReason,
     validationStatus:         validationStatus  ?? this.validationStatus,
@@ -92,17 +88,17 @@ class Rrcvg024A16Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'buildId': buildId,
-    'gateRule': gateRule,
+    'gateId': gateId,
+    'checkRule': checkRule,
     'passThreshold': passThreshold,
     'failureReason': failureReason,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,21 +132,20 @@ class Rrcvg024A16ValidationResult {
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// RRCVG-024-A16: Enforce Binary Checklist Stepper Offboarding Rules
-///
-/// Metric: Release Gate Pass Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Version Control Compliance (%)
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Rrcvg024A16Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — 1) Define offboarding items. 2) Map tool toggles. 3) Build vertical stepper UI. 4) Code fi
   static Rrcvg024A16Config _ec1Execute(Rrcvg024A16Config config) {
-    if (config.buildId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-RRCVG024A16-001: buildId required for RRCVG-024-A16');
+          'EC-RRCVG024A16-001: gateId required for RRCVG-024-A16');
     }
     // 1) Define offboarding items. 2) Map tool toggles. 3) Build v
     return config;
@@ -160,23 +155,21 @@ class Rrcvg024A16Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Rrcvg024A16ValidationResult calculateConformance({
     required List<Rrcvg024A16Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Rrcvg024A16ValidationResult(
+      return Rrcvg024A16ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Rrcvg024A16ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-RRCVG024A16-VAL',
+        gatePass: false, ecLineRef: 'EC-RRCVG024A16-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Rrcvg024A16ConformanceLevel.complete
         : rate >= _floor
             ? Rrcvg024A16ConformanceLevel.partial
@@ -209,26 +202,24 @@ class Rrcvg024A16Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-RRCVG024A16-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-RRCVG024A16-000: configs must not be empty for RRCVG-024-A16');
     }
     final p1 = configs.map(_ec1Execute).toList();
 
     if (!triangularCheck(configs.length, p1.length)) {
-      return {'error': 'EC-RRCVG024A16-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-RRCVG024A16-TRI: triangular check failed for RRCVG-024-A16');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-RRCVG-024-A16',
-      'metric':             'Release Gate Pass Rate',
+      'metric':             'Version Control Compliance (%)',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -238,9 +229,7 @@ class Rrcvg024A16Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> rrcvg_024_a16Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -259,6 +248,7 @@ class Rrcvg024A16Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Rrcvg024A16Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -266,16 +256,13 @@ class Rrcvg024A16Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('RRCVG-024-A16',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -284,23 +271,22 @@ class Rrcvg024A16Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.buildId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.gateId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${buildId} | ${gateRule}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -316,17 +302,16 @@ void main() async {
   final configs = [
     Rrcvg024A16Config(
       configId: 'rrcvg024a16-cfg-001',
-      buildId: 'rrcvg-024-a16_buildId_value',
-      gateRule: 'rrcvg-024-a16_gateRule_value',
-      passThreshold: 'rrcvg-024-a16_passThreshold_value',
-      failureReason: 'rrcvg-024-a16_failureReason_value',
+      gateId: 'rrcvg-024-a16_gateId',
+      checkRule: 'rrcvg-024-a16_checkRule',
+      passThreshold: 'rrcvg-024-a16_passThreshold',
+      failureReason: 'rrcvg-024-a16_failureReason',
       traceId:                 'trace-rrcvg024a16-001',
       originSourceId:          'origin-rrcvg024a16',
       immediatePredecessorId:  'pred-rrcvg024a16-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Rrcvg024A16Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('RRCVG-024-A16 → $result');
+  final out = await Rrcvg024A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('RRCVG-024-A16 [Complete / Partial / Not Complete] → $out');
 }

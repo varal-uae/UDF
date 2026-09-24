@@ -1,50 +1,46 @@
 // ============================================================
-// IS04-RIMV-005-AS01-A02 — Implementation System 04
-// Atomic Step: Configuration of Poka-Yoke Date & Coordinate Input Masking Components
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     472 of 530
+// IS04-RIMV-005-AS01-A02 — IS04 System Module
+// Atomic Step:  Configuration of Poka-Yoke Date & Coordinate Input Masking Components
+// Metric:       Asset & Component Discovery Completeness - Date input field mask forma
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      805 of 1073
 // ============================================================
-// Why this matters: Catching and blocking bad inputs immediately saves processing cycles and stops malformed text from b
-// Mobile impl:      Dynamically opens the optimal native keyboard type (e.g., numeric vs. alphanumeric) based on active 
-// Data requirement: Select target date input field mask format (e.g., YYYY-MM-DD).
+// Why:          Catching and blocking bad inputs immediately saves processing cycles and stops malformed text from b
+// Mobile:       Dynamically opens the optimal native keyboard type (e.g., numeric vs. alphanumeric) based on active 
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Is04Rimv005As01A02ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Is04Rimv005As01A02ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is04Rimv005As01A02ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS04-RIMV-005-AS01-A02.
-/// Fields derived from AISS sheet — Implementation System 04.
+/// IS04-RIMV-005-AS01-A02 — IS04 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is04Rimv005As01A02Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String componentId;
   final String targetSizeDp;
   final String actualSizeDp;
   final String complianceStatus;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,13 +132,13 @@ class Is04Rimv005As01A02ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS04-RIMV-005-AS01-A02: Configuration of Poka-Yoke Date & Coordinate Input Masking Components
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Asset & Component Discovery Completeness - Date input field 
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Is04Rimv005As01A02Pipeline {
-  static const double _floor   = 0.95;
+  static const double _floor   = 0.9;
   static const double _optimal = 1.0;
 
   // EC:1 — Build an input masking utility that appends date separator slashes automatically as the us
@@ -175,7 +171,7 @@ class Is04Rimv005As01A02Pipeline {
     return config;
   }
 
-  // EC:4 — Program paste event filters to strip away non-standard date punctu
+  // EC:4 — Program paste event filters to strip away non-standard date punctuation or whitespace erro
   static Is04Rimv005As01A02Config _ec4Execute(Is04Rimv005As01A02Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
@@ -193,7 +189,7 @@ class Is04Rimv005As01A02Pipeline {
     required List<Is04Rimv005As01A02Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is04Rimv005As01A02ValidationResult(
+      return Is04Rimv005As01A02ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is04Rimv005As01A02ConformanceLevel.notComplete,
@@ -203,7 +199,7 @@ class Is04Rimv005As01A02Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Is04Rimv005As01A02ConformanceLevel.complete
         : rate >= _floor
             ? Is04Rimv005As01A02ConformanceLevel.partial
@@ -246,19 +242,17 @@ class Is04Rimv005As01A02Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-IS04RIMV005A-TRI: triangular check failed for IS04-RIMV-005-AS01-A02');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS04-RIMV-005-AS01-A02',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Asset & Component Discovery Completeness - Date input field ',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Is04Rimv005As01A02Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is04_rimv_005_as01_a02Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Is04Rimv005As01A02Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is04Rimv005As01A02Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Is04Rimv005As01A02Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS04-RIMV-005-AS01-A02',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Is04Rimv005As01A02Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is04Rimv005As01A02Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS04-RIMV-005-AS01-A02 → $result');
+  final out = await Is04Rimv005As01A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS04-RIMV-005-AS01-A02 [Complete / Partial / Not Complete] → $out');
 }

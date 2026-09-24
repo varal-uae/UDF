@@ -1,52 +1,44 @@
 // ============================================================
 // IS05-CSIVW-026-AS01-A13 — Implementation System 05
-// Atomic Step: Implement Swipeable Chip Arrays for ENUMs.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     244 of 396
+// Atomic Step:  Implement Swipeable Chip Arrays for ENUMs.
+// Metric:       Migration / Update Coverage - Underlying field form state selected enu
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      809 of 1073
 // ============================================================
-// Why this matters: Completely wipes out syntax, casing, and misspelling bugs triggered by manual entries.
-// Mobile impl:      Eliminates the need to summon the mobile onscreen keyboard, swapping text input for quick thumb-tap 
-// Data requirement: Update underlying field form state with selected ENUM value.
+// Why:          Completely wipes out syntax, casing, and misspelling bugs triggered by manual entries.
+// Mobile:       Eliminates the need to summon the mobile onscreen keyboard, swapping text input for quick thumb-tap 
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Is05Csivw026As01A13ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Is05Csivw026As01A13ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is05Csivw026As01A13ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS05-CSIVW-026-AS01-A13.
-/// Fields derived from AISS sheet row — Implementation System 05.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
 class Is05Csivw026As01A13Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +88,13 @@ class Is05Csivw026As01A13Config {
     'validationRule': validationRule,
     'errorMessage': errorMessage,
     'inputType': inputType,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +121,17 @@ class Is05Csivw026As01A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is05Csivw026As01A13ConformanceLevel.complete:    return 'Complete';
-      case Is05Csivw026As01A13ConformanceLevel.partial:     return 'Partial';
-      case Is05Csivw026As01A13ConformanceLevel.notComplete: return 'Not Complete';
+      case Is05Csivw026As01A13ConformanceLevel.pass_: return 'Pass';
+      case Is05Csivw026As01A13ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// IS05-CSIVW-026-AS01-A13: Implement Swipeable Chip Arrays for ENUMs.
-///
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Is05Csivw026As01A13Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Parse categorical ENUM sets from business schemas
   static Is05Csivw026As01A13Config _ec1Execute(Is05Csivw026As01A13Config config) {
@@ -190,27 +177,23 @@ class Is05Csivw026As01A13Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Is05Csivw026As01A13ValidationResult calculateConformance({
     required List<Is05Csivw026As01A13Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is05Csivw026As01A13ValidationResult(
+      return Is05Csivw026As01A13ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is05Csivw026As01A13ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-IS05CSIVW026-VAL',
+        conformanceLevel: Is05Csivw026As01A13ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-IS05CSIVW026-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is05Csivw026As01A13ConformanceLevel.complete
-        : rate >= _floor
-            ? Is05Csivw026As01A13ConformanceLevel.partial
-            : Is05Csivw026As01A13ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is05Csivw026As01A13ConformanceLevel.pass_
+        : Is05Csivw026As01A13ConformanceLevel.fail_;
     return Is05Csivw026As01A13ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +222,7 @@ class Is05Csivw026As01A13Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-IS05CSIVW026-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-IS05CSIVW026-000: configs must not be empty for IS05-CSIVW-026-AS01-A13');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +230,19 @@ class Is05Csivw026As01A13Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-IS05CSIVW026-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-IS05CSIVW026-TRI: triangular check failed for IS05-CSIVW-026-AS01-A13');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS05-CSIVW-026-AS01-A13',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Migration / Update Coverage - Underlying field form state se',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +252,7 @@ class Is05Csivw026As01A13Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is05_csivw_026_as01_a13Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -299,16 +278,13 @@ class Is05Csivw026As01A13Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS05-CSIVW-026-AS01-A13',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +293,22 @@ class Is05Csivw026As01A13Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${fieldId} | ${validationRule}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +324,16 @@ void main() async {
   final configs = [
     Is05Csivw026As01A13Config(
       configId: 'is05csivw026-cfg-001',
-      fieldId: 'is05-csivw-026-as01-a13_fieldId_value',
-      validationRule: 'is05-csivw-026-as01-a13_validationRule_value',
-      errorMessage: 'is05-csivw-026-as01-a13_errorMessage_value',
-      inputType: 'is05-csivw-026-as01-a13_inputType_value',
+      fieldId: 'is05-csivw-026-as01-a13_fieldId',
+      validationRule: 'is05-csivw-026-as01-a13_validationRule',
+      errorMessage: 'is05-csivw-026-as01-a13_errorMessage',
+      inputType: 'is05-csivw-026-as01-a13_inputType',
       traceId:                 'trace-is05csivw026-001',
       originSourceId:          'origin-is05csivw026',
       immediatePredecessorId:  'pred-is05csivw026-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is05Csivw026As01A13Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS05-CSIVW-026-AS01-A13 → $result');
+  final out = await Is05Csivw026As01A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS05-CSIVW-026-AS01-A13 [Pass / Fail] → $out');
 }

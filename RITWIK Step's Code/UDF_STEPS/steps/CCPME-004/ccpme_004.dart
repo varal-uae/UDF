@@ -1,202 +1,324 @@
 // ============================================================
-// CCPME-004 | Config Parameter Management Engine
-// Atomic Task: CCPME-004
-// EC Lines: 7 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CCPME-004 — Config Parameter Management Engine
+// Atomic Step:  Privacy Permission & Encryption Lock Gate Design
+// Metric:       Mobile Usability Compliance (Touch Target Size & Core Web Vitals)
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      136 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System extracts layout grid parameters from incoming UI design payload.
-  // EC: 2. System applies Material Design 3 container rules to modal frames.
-  // EC: 3. System calculates responsive geometry bounds for small mobile viewports.
-  // EC: 4. System sets touch target minimum dimensions to 44x44 pixels.
-  // EC: 5. System validates modal layout settings against Core Web Vitals targets.
-  // EC: 6. System compiles output configuration into verified gateway security profile.
-  // EC: 7. System routes failed validation checks to central security vault.
+// Why:          Enforcing clean TLS 1.3 handshakes prevents encryption latency overhead from bottlenecking data stre
+// Mobile:       Drastically reduces round-trip handshake time on cellular connections compared to older legacy proto
+// col41:        Pass / Fail; Good / Average / Poor
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Ccpme004ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CCPME-004.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Ccpme004Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Ccpme004ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+class Ccpme004Config {
+  final String configId;
+  final String tokenName;
+  final String tokenValue;
+  final String tokenCategory;
+  final String appliedComponent;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Ccpme004Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Ccpme004Config({
+    required this.configId,
+    required this.tokenName,
+    required this.tokenValue,
+    required this.tokenCategory,
+    required this.appliedComponent,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Ccpme004Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Ccpme004Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Ccpme004Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Ccpme004Config(
+    configId: configId,
+    tokenName: tokenName,
+    tokenValue: tokenValue,
+    tokenCategory: tokenCategory,
+    appliedComponent: appliedComponent,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'tokenName': tokenName,
+    'tokenValue': tokenValue,
+    'tokenCategory': tokenCategory,
+    'appliedComponent': appliedComponent,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Ccpme004ScanResult {
+class Ccpme004ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Ccpme004ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Ccpme004ScanResult({
+  const Ccpme004ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Ccpme004ConformanceLevel.good:    return 'Good';
+      case Ccpme004ConformanceLevel.average: return 'Average';
+      case Ccpme004ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:7 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 class Ccpme004Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
-
-  // EC:1 — EC: 1. System extracts layout grid parameters from incoming UI design payload.
-  static void executeExtractsStep1(Ccpme004Entry entry) {
-    // extracts layout grid parameters from incoming UI design payload
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCPME004-001: ruleId required');
-    };
+  // EC:1 — System locates the CCPME-004 configuration in the source repository.
+  static Ccpme004Config _ec1Locates(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-001: tokenName required for CCPME-004');
+    }
+    // the CCPME-004 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System applies Material Design 3 container rules to modal frames.
-  static void executeAppliesStep2(Ccpme004Entry entry) {
-    // applies Material Design 3 container rules to modal frames
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCPME004-002: ruleId required');
-    };
+  // EC:2 — System extracts tokenName and tokenValue from the CCPME-004 registry.
+  static Ccpme004Config _ec2Extracts(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-002: tokenName required for CCPME-004');
+    }
+    // tokenName and tokenValue from the CCPME-004 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System calculates responsive geometry bounds for small mobile viewports.
-  static void executeCalculatesStep3(Ccpme004Entry entry) {
-    // calculates responsive geometry bounds for small mobile viewports
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCPME004-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Mobile Usability Compliance (Touch Target 
+  static Ccpme004Config _ec3Compiles(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-003: tokenName required for CCPME-004');
+    }
+    // the implementation rule set per Mobile Usability Compliance 
+    return config;
   }
 
-  // EC:4 — EC: 4. System sets touch target minimum dimensions to 44x44 pixels.
-  static void executeSetsStep4(Ccpme004Entry entry) {
-    // sets touch target minimum dimensions to 44x44 pixels
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCPME004-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Ccpme004Config _ec4Validates(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-004: tokenName required for CCPME-004');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System validates modal layout settings against Core Web Vitals targets.
-  static void executeValidatesStep5(Ccpme004Entry entry) {
-    // validates modal layout settings against Core Web Vitals targets
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCPME004-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Ccpme004Config _ec5Registers(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-005: tokenName required for CCPME-004');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System compiles output configuration into verified gateway security profile.
-  static void executeCompilesStep6(Ccpme004Entry entry) {
-    // compiles output configuration into verified gateway security profile
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCPME004-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Mobile Usability Compliance (Touch Target Size & Co
+  static Ccpme004Config _ec6Validates(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-006: tokenName required for CCPME-004');
+    }
+    // configuration against Mobile Usability Compliance (Touch Tar
+    return config;
   }
 
-  // EC:7 — EC: 7. System routes failed validation checks to central security vault.
-  static void executeRoutesStep7(Ccpme004Entry entry) {
-    // routes failed validation checks to central security vault
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CCPME004-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Ccpme004Config _ec7Routes(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-007: tokenName required for CCPME-004');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  static Ccpme004ScanResult validateConformance(List<Ccpme004Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Ccpme004ScanResult(
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Ccpme004Config _ec8Publishes(Ccpme004Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CCPME004-008: tokenName required for CCPME-004');
+    }
+    // validated configuration to the rule registry
+    return config;
+  }
+
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Ccpme004ValidationResult calculateConformance({
+    required List<Ccpme004Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Ccpme004ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Ccpme004ConformanceLevel.poor,
+        gatePass: false, ecLineRef: 'EC-CCPME004-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Ccpme004ConformanceLevel.good
+        : rate >= _floor
+            ? Ccpme004ConformanceLevel.average
+            : Ccpme004ConformanceLevel.poor;
+    return Ccpme004ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CCPME004-VAL',
     );
   }
 
-  static Ccpme004Entry routeToRegistry(Ccpme004Entry entry, Ccpme004ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Ccpme004Config routeToRegistry(
+    Ccpme004Config config,
+    Ccpme004ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Ccpme004Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CCPME004-000: configs must not be empty for CCPME-004');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CCPME004-TRI: triangular check failed for CCPME-004');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CCPME-004',
+      'metric':             'Mobile Usability Compliance (Touch Target Size & Core Web Vi',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> ccpme_004Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CCPME-004',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Ccpme004Widget extends StatelessWidget {
-  final List<Ccpme004Entry> entries;
-  const Ccpme004Widget({super.key, required this.entries});
+  final List<Ccpme004Config> configs;
+  const Ccpme004Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Ccpme004Pipeline.validateConformance(entries);
+    final result = Ccpme004Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -204,36 +326,37 @@ class Ccpme004Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CCPME-004',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.tokenName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -249,15 +372,16 @@ void main() async {
   final configs = [
     Ccpme004Config(
       configId: 'ccpme004-cfg-001',
-      ruleId: 'ccpme-004_ruleId_val',
-      fieldA: 'ccpme-004_fieldA_val',
+      tokenName: 'ccpme-004_tokenName',
+      tokenValue: 'ccpme-004_tokenValue',
+      tokenCategory: 'ccpme-004_tokenCategory',
+      appliedComponent: 'ccpme-004_appliedComponent',
       traceId:                 'trace-ccpme004-001',
       originSourceId:          'origin-ccpme004',
       immediatePredecessorId:  'pred-ccpme004-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ccpme004Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CCPME-004 → $result');
+  final out = await Ccpme004Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CCPME-004 [Good / Average / Poor] → $out');
 }

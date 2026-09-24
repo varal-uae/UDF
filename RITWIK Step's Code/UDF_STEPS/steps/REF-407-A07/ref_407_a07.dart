@@ -1,52 +1,47 @@
 // ============================================================
 // REF-407-A07 — Reference Implementation Framework
-// Atomic Step: Establish Skeleton Loader Shimmer Speed.
-// Metric:      Layout Consistency Score · Floor=100.0 · Optimal=100.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     305 of 396
+// Atomic Step:  Establish Skeleton Loader Shimmer Speed.
+// Metric:       Angle Standardization
+// Floor:        100.0  ·  Optimal: 100.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      950 of 1073
 // ============================================================
-// Why this matters: BQ queries can take seconds. Skeletons maintain spatial context and reduce perceived latency on mobi
-// Mobile impl:      Maintains the exact height and width of the incoming payload, preventing jumpy mobile layout shifts.
-// Data requirement: Standardize the shimmer angle (e.g., 45 degrees) across all skeleton components.
+// Why:          BQ queries can take seconds. Skeletons maintain spatial context and reduce perceived latency on mobi
+// Mobile:       Maintains the exact height and width of the incoming payload, preventing jumpy mobile layout shifts.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ref407A07ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ref407A07ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ref407A07ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for REF-407-A07.
-/// Fields derived from AISS sheet row — Reference Implementation Framework.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// REF-407-A07 — Reference Implementation Framework
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ref407A07Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Ref407A07Config {
     'hexValue': hexValue,
     'wcagRatio': wcagRatio,
     'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,19 +124,17 @@ class Ref407A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref407A07ConformanceLevel.complete:    return 'Pass';
-      case Ref407A07ConformanceLevel.partial:     return 'Partial';
-      case Ref407A07ConformanceLevel.notComplete: return 'Fail';
+      case Ref407A07ConformanceLevel.pass_: return 'Pass';
+      case Ref407A07ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// REF-407-A07: Establish Skeleton Loader Shimmer Speed.
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Angle Standardization
+/// Floor=100.0 · Output=Pass / Fail
 class Ref407A07Pipeline {
   static const double _floor   = 100.0;
   static const double _optimal = 100.0;
@@ -190,27 +183,23 @@ class Ref407A07Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Ref407A07ValidationResult calculateConformance({
     required List<Ref407A07Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ref407A07ValidationResult(
+      return Ref407A07ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ref407A07ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-REF407A07-VAL',
+        conformanceLevel: Ref407A07ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-REF407A07-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ref407A07ConformanceLevel.complete
-        : rate >= _floor
-            ? Ref407A07ConformanceLevel.partial
-            : Ref407A07ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ref407A07ConformanceLevel.pass_
+        : Ref407A07ConformanceLevel.fail_;
     return Ref407A07ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Ref407A07Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-REF407A07-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-REF407A07-000: configs must not be empty for REF-407-A07');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Ref407A07Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-REF407A07-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-REF407A07-TRI: triangular check failed for REF-407-A07');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-REF-407-A07',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Angle Standardization',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Ref407A07Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ref_407_a07Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Ref407A07Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ref407A07Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Ref407A07Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('REF-407-A07',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Ref407A07Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${colorToken} | ${hexValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Ref407A07Config(
       configId: 'ref407a07-cfg-001',
-      colorToken: 'ref-407-a07_colorToken_value',
-      hexValue: 'ref-407-a07_hexValue_value',
-      wcagRatio: 'ref-407-a07_wcagRatio_value',
-      usageContext: 'ref-407-a07_usageContext_value',
+      colorToken: 'ref-407-a07_colorToken',
+      hexValue: 'ref-407-a07_hexValue',
+      wcagRatio: 'ref-407-a07_wcagRatio',
+      usageContext: 'ref-407-a07_usageContext',
       traceId:                 'trace-ref407a07-001',
       originSourceId:          'origin-ref407a07',
       immediatePredecessorId:  'pred-ref407a07-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ref407A07Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('REF-407-A07 → $result');
+  final out = await Ref407A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('REF-407-A07 [Pass / Fail] → $out');
 }

@@ -1,52 +1,45 @@
 // ============================================================
 // SCTSS-018-A14 — Semantic Color Token Styling System
-// Atomic Step: Implement AI Rationale Accordion (Trust Layer) to decide the layout for the collapsible panel explai
-// Metric:      Design System Token Coverage Rate · Floor=3.5 · Optimal=4.5
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     322 of 396
+// Atomic Step:  Implement AI Rationale Accordion (Trust Layer) to decide the layout for the collapsible panel explai
+// Metric:       Task Execution Quality Score (1-5 scale) — panel typography and paddin
+// Floor:        3.5  ·  Optimal: 4.5
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      972 of 1073
 // ============================================================
-// Why this matters: Explainability is mandatory for AI adoption. Hiding the "Why" leads to rejected AI outputs.
-// Mobile impl:      Uses collapsible accordion sections to hide lengthy rationale text from the immediate mobile view, p
-// Data requirement: Refine panel typography and padding based on user feedback.
+// Why:          Explainability is mandatory for AI adoption. Hiding the "Why" leads to rejected AI outputs.
+// Mobile:       Uses collapsible accordion sections to hide lengthy rationale text from the immediate mobile view, p
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Sctss018A14ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Sctss018A14ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sctss018A14ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SCTSS-018-A14.
-/// Fields derived from AISS sheet row — Semantic Color Token Styling System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
 class Sctss018A14Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String fontFamily;
   final String scaleStep;
   final String sizePx;
   final String weightToken;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +89,13 @@ class Sctss018A14Config {
     'scaleStep': scaleStep,
     'sizePx': sizePx,
     'weightToken': weightToken,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,19 +122,15 @@ class Sctss018A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss018A14ConformanceLevel.complete:    return 'Good';
-      case Sctss018A14ConformanceLevel.partial:     return 'Average';
-      case Sctss018A14ConformanceLevel.notComplete: return 'Poor';
+      case Sctss018A14ConformanceLevel.complete:    return 'Complete';
+      case Sctss018A14ConformanceLevel.partial:     return 'Partial';
+      case Sctss018A14ConformanceLevel.notComplete: return 'Not Complete';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// SCTSS-018-A14: Implement AI Rationale Accordion (Trust Layer) to decide the layout for the coll
-///
-/// Metric: Design System Token Coverage Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
 class Sctss018A14Pipeline {
   static const double _floor   = 3.5;
   static const double _optimal = 4.5;
@@ -190,23 +179,21 @@ class Sctss018A14Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=1.0
   static Sctss018A14ValidationResult calculateConformance({
     required List<Sctss018A14Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sctss018A14ValidationResult(
+      return Sctss018A14ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sctss018A14ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-SCTSS018A14-VAL',
+        gatePass: false, ecLineRef: 'EC-SCTSS018A14-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Sctss018A14ConformanceLevel.complete
         : rate >= _floor
             ? Sctss018A14ConformanceLevel.partial
@@ -239,7 +226,7 @@ class Sctss018A14Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-SCTSS018A14-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-SCTSS018A14-000: configs must not be empty for SCTSS-018-A14');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +234,19 @@ class Sctss018A14Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-SCTSS018A14-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-SCTSS018A14-TRI: triangular check failed for SCTSS-018-A14');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SCTSS-018-A14',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Task Execution Quality Score (1-5 scale) — panel typography ',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +256,7 @@ class Sctss018A14Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sctss_018_a14Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -299,16 +282,13 @@ class Sctss018A14Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SCTSS-018-A14',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +297,22 @@ class Sctss018A14Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fontFamily,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${fontFamily} | ${scaleStep}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +328,16 @@ void main() async {
   final configs = [
     Sctss018A14Config(
       configId: 'sctss018a14-cfg-001',
-      fontFamily: 'sctss-018-a14_fontFamily_value',
-      scaleStep: 'sctss-018-a14_scaleStep_value',
-      sizePx: 'sctss-018-a14_sizePx_value',
-      weightToken: 'sctss-018-a14_weightToken_value',
+      fontFamily: 'sctss-018-a14_fontFamily',
+      scaleStep: 'sctss-018-a14_scaleStep',
+      sizePx: 'sctss-018-a14_sizePx',
+      weightToken: 'sctss-018-a14_weightToken',
       traceId:                 'trace-sctss018a14-001',
       originSourceId:          'origin-sctss018a14',
       immediatePredecessorId:  'pred-sctss018a14-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sctss018A14Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SCTSS-018-A14 → $result');
+  final out = await Sctss018A14Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SCTSS-018-A14 [Complete / Partial / Not Complete] → $out');
 }

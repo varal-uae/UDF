@@ -1,52 +1,48 @@
 // ============================================================
 // TTMCS-021-A16 — Material Design Token Configuration System
-// Atomic Step: Deploy a unified corporate Material Design theme configuration library across platform views.
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     392 of 396
+// Atomic Step:  Deploy a unified corporate Material Design theme configuration library across platform views.
+// Metric:       Component/Style Adoption Coverage Rate (%) - top-level UI providers to
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1066 of 1073
 // ============================================================
-// Why this matters: Enforces a professional, consistent presentation across screens, building brand trust and user famil
-// Mobile impl:      Centralizes asset rules inside a single package file to reduce application footprint and boost load 
-// Data requirement: Bind top-level UI providers to reference the central styling library across all platform views.
+// Why:          Enforces a professional, consistent presentation across screens, building brand trust and user famil
+// Mobile:       Centralizes asset rules inside a single package file to reduce application footprint and boost load 
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Ttmcs021A16ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Ttmcs021A16ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttmcs021A16ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTMCS-021-A16.
-/// Fields derived from AISS sheet row — Material Design Token Configuration System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTMCS-021-A16 — Material Design Token Configuration System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttmcs021A16Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String gridColumns;
   final String gutterSizePx;
   final String maxWidthPx;
   final String breakpointLabel;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Ttmcs021A16Config {
     'gutterSizePx': gutterSizePx,
     'maxWidthPx': maxWidthPx,
     'breakpointLabel': breakpointLabel,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +125,21 @@ class Ttmcs021A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs021A16ConformanceLevel.complete:    return 'Good';
-      case Ttmcs021A16ConformanceLevel.partial:     return 'Average';
-      case Ttmcs021A16ConformanceLevel.notComplete: return 'Poor';
+      case Ttmcs021A16ConformanceLevel.good:    return 'Good';
+      case Ttmcs021A16ConformanceLevel.average: return 'Average';
+      case Ttmcs021A16ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// TTMCS-021-A16: Deploy a unified corporate Material Design theme configuration library across pl
-///
-/// Metric: Design System Token Coverage Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Component/Style Adoption Coverage Rate (%) - top-level UI pr
+/// Floor=0.9 · Output=Good / Average / Poor
 class Ttmcs021A16Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Write a master theme configuration mapping primary corporate colors, surfaces, and semanti
   static Ttmcs021A16Config _ec1Execute(Ttmcs021A16Config config) {
@@ -190,27 +185,25 @@ class Ttmcs021A16Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=1.0
   static Ttmcs021A16ValidationResult calculateConformance({
     required List<Ttmcs021A16Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttmcs021A16ValidationResult(
+      return Ttmcs021A16ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ttmcs021A16ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTMCS021A16-VAL',
+        gatePass: false, ecLineRef: 'EC-TTMCS021A16-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ttmcs021A16ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Ttmcs021A16ConformanceLevel.good
         : rate >= _floor
-            ? Ttmcs021A16ConformanceLevel.partial
-            : Ttmcs021A16ConformanceLevel.notComplete;
+            ? Ttmcs021A16ConformanceLevel.average
+            : Ttmcs021A16ConformanceLevel.poor;
     return Ttmcs021A16ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +232,7 @@ class Ttmcs021A16Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTMCS021A16-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTMCS021A16-000: configs must not be empty for TTMCS-021-A16');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Ttmcs021A16Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-TTMCS021A16-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTMCS021A16-TRI: triangular check failed for TTMCS-021-A16');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMCS-021-A16',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Component/Style Adoption Coverage Rate (%) - top-level UI pr',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Ttmcs021A16Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttmcs_021_a16Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Ttmcs021A16Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttmcs021A16Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Ttmcs021A16Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTMCS-021-A16',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Ttmcs021A16Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${gridColumns} | ${gutterSizePx}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Ttmcs021A16Config(
       configId: 'ttmcs021a16-cfg-001',
-      gridColumns: 'ttmcs-021-a16_gridColumns_value',
-      gutterSizePx: 'ttmcs-021-a16_gutterSizePx_value',
-      maxWidthPx: 'ttmcs-021-a16_maxWidthPx_value',
-      breakpointLabel: 'ttmcs-021-a16_breakpointLabel_value',
+      gridColumns: 'ttmcs-021-a16_gridColumns',
+      gutterSizePx: 'ttmcs-021-a16_gutterSizePx',
+      maxWidthPx: 'ttmcs-021-a16_maxWidthPx',
+      breakpointLabel: 'ttmcs-021-a16_breakpointLabel',
       traceId:                 'trace-ttmcs021a16-001',
       originSourceId:          'origin-ttmcs021a16',
       immediatePredecessorId:  'pred-ttmcs021a16-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttmcs021A16Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTMCS-021-A16 → $result');
+  final out = await Ttmcs021A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTMCS-021-A16 [Good / Average / Poor] → $out');
 }

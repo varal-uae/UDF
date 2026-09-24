@@ -1,31 +1,37 @@
 // ============================================================
 // GEN-04218 — GEN Backend Utility Module
-// Atomic Step: Build atomic UI widgets (KPI Cards, Status Chips, Input Masks, Bottom Sheets) enforcing 48 x 48 dp t
-// Metric:      Touch Target Compliance Rate · Floor=· Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     953 of 1073
+// Atomic Step:  Build atomic UI widgets (KPI Cards, Status Chips, Input Masks, Bottom Sheets) enforcing 48 x 48 dp t
+// Metric:       Minimum Touch Target Size
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      666 of 1073
 // ============================================================
-// Why this matters: Build atomic UI widgets (KPI Cards, Status Chips, Input Masks, Bottom Sheets) enforcing 48 x 48 dp t
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Build atomic UI widgets (KPI Cards, Status Chips, Input Masks, Bottom Sheets) enforcing 48 x 48 dp t
+// Why:          Build atomic UI widgets (KPI Cards, Status Chips, Input Masks, Bottom Sheets) enforcing 48 x 48 dp t
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen04218ConformanceLevel { complete, partial, notComplete }
-enum Gen04218ExecutionStatus  { pending, running, complete, failed }
+enum Gen04218ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen04218ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-04218.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-04218 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen04218Config {
   final String configId;
@@ -35,6 +41,7 @@ class Gen04218Config {
   final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Gen04218ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen04218ConformanceLevel.complete:    return 'Complete';
-      case Gen04218ConformanceLevel.partial:     return 'Partial';
-      case Gen04218ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen04218ConformanceLevel.pass_: return 'Pass';
+      case Gen04218ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-04218: Build atomic UI widgets (KPI Cards, Status Chips, Input Masks, Bottom Sheets) en
-/// Metric: Touch Target Compliance Rate
+/// Metric: Minimum Touch Target Size
+/// Floor=0.95 · Output=Pass / Fail
 class Gen04218Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen04218Config _ec1Execute(Gen04218Config config) {
@@ -180,21 +187,19 @@ class Gen04218Pipeline {
     required List<Gen04218Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen04218ValidationResult(
+      return Gen04218ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen04218ConformanceLevel.notComplete,
+        conformanceLevel: Gen04218ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN04218-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen04218ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen04218ConformanceLevel.partial
-            : Gen04218ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen04218ConformanceLevel.pass_
+        : Gen04218ConformanceLevel.fail_;
     return Gen04218ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen04218Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-04218',
-      'metric':             'Touch Target Compliance Rate',
+      'metric':             'Minimum Touch Target Size',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen04218Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_04218Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_04218Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen04218Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen04218Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen04218Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-04218',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen04218Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-04218 → $result');
+  final out = await Gen04218Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-04218 [Pass / Fail] → $out');
 }

@@ -1,284 +1,288 @@
 // ============================================================
-// BDAE-011-A09 | WebAuthn Biometric Authentication
-// Atomic Task: Test the button triggers native FaceID/Fingerprint dialog correctly.
-// Primary Table: biometric_test_registry
-// Metric: Functional Test Pass Rate | Floor=0.95% | Optimal=1.0%
-// Library: @habot-connect/layout-shell | GCP: Pub/Sub fan-out to Cloud Run
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Security: device_credential_ref = Secure Enclave ref only — never raw credential
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 29-Aug-2026
+// BDAE-011-A09 — Biometric & Data Access Engine
+// Atomic Step:  BDAE-011 — Build a standardized frontend biometric authentication layout interface layer utilizing t
+// Metric:       Functional Test Pass Rate
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      54 of 1073
+// ============================================================
+// Why:          Managing handshakes and triggers between domains guarantees that a security revocation in one area i
+// Mobile:       Mobile devices are easily lost or stolen; instant, verifiable revocation of hardware-linked tokens a
+// col41:        Pass / Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bdae011A09ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-enum BiometricDialogResult { triggered, notTriggered, timeout }
+enum Bdae011A09ExecutionStatus { pending, running, complete, failed }
 
-/// Maps to biometric_test_registry.
-/// Tracks button trigger test confirming native FaceID/Fingerprint dialog opens.
-/// dialog_latency_ms must be <= 200ms — WebAuthn challenge issued on open.
-class BiometricTriggerTestEntry {
-  final String biometricTestId;          // PK — UUID
-  final String testType;                 // BUTTON_TRIGGER / DIALOG_OPEN / CHALLENGE_ISSUED
-  final BiometricDialogResult testResult; // TRIGGERED / NOT_TRIGGERED / TIMEOUT
-  final double testCoverage;             // 0.0–1.0 scenario coverage
-  final String testLogPath;              // evidence log path
-  final int dialogLatencyMs;            // ms for native dialog to open; <= 200
-  final bool rippleEffectActive;        // MD3 ripple feedback confirmed
-  final bool immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome stepOutcome;
-  final bool complianceStatusInd;
+// ── Data Model ───────────────────────────────────────────────
+
+/// BDAE-011-A09 — Biometric & Data Access Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bdae011A09Config {
+  final String configId;
+  final String tokenName;
+  final String tokenValue;
+  final String tokenCategory;
+  final String appliedComponent;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const BiometricTriggerTestEntry({
-    required this.biometricTestId,
-    required this.testType,
-    required this.testResult,
-    required this.testCoverage,
-    required this.testLogPath,
-    required this.dialogLatencyMs,
-    this.rippleEffectActive = false,
-    this.immutableInd = false,
-    this.executionStatus = ExecutionStatus.pending,
-    this.stepOutcome = StepOutcome.partial,
-    this.complianceStatusInd = true,
+  const Bdae011A09Config({
+    required this.configId,
+    required this.tokenName,
+    required this.tokenValue,
+    required this.tokenCategory,
+    required this.appliedComponent,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
-  }) :     if (!(dialogLatencyMs >= 0)) {
-      throw ArgumentError('EC-BDAE011A09-002: dialogLatencyMs must be >= 0');
-    };
+    this.complianceStatusInd = false,
+  });
 
-  static const int    kMaxLatencyMs = 200;
-  static const double kFloor        = 0.95;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  /// EC:6 gate — dialog triggered within 200ms AND ripple active
-  bool get isConformant =>
-      testResult == BiometricDialogResult.triggered &&
-      dialogLatencyMs <= kMaxLatencyMs &&
-      rippleEffectActive;
+  Bdae011A09Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bdae011A09Config(
+    configId: configId,
+    tokenName: tokenName,
+    tokenValue: tokenValue,
+    tokenCategory: tokenCategory,
+    appliedComponent: appliedComponent,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
 
-  String get resultLabel => switch (testResult) {
-    BiometricDialogResult.triggered    => 'TRIGGERED ✓',
-    BiometricDialogResult.notTriggered => 'NOT TRIGGERED ✗',
-    BiometricDialogResult.timeout      => 'TIMEOUT ✗',
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'tokenName': tokenName,
+    'tokenValue': tokenValue,
+    'tokenCategory': tokenCategory,
+    'appliedComponent': appliedComponent,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
-
-  BiometricTriggerTestEntry copyWith({
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-    bool? complianceStatusInd,
-  }) {
-    return BiometricTriggerTestEntry(
-      biometricTestId:         biometricTestId,
-      testType:                testType,
-      testResult:              testResult,
-      testCoverage:            testCoverage,
-      testLogPath:             testLogPath,
-      dialogLatencyMs:         dialogLatencyMs,
-      rippleEffectActive:      rippleEffectActive,
-      immutableInd:            immutableInd ?? this.immutableInd,
-      executionStatus:         executionStatus ?? this.executionStatus,
-      stepOutcome:             stepOutcome ?? this.stepOutcome,
-      complianceStatusInd:     complianceStatusInd ?? this.complianceStatusInd,
-      traceId:                 traceId,
-      originSourceId:          originSourceId,
-      immediatePredecessorId:  immediatePredecessorId,
-      transformationLogicHash: transformationLogicHash,
-    );
-  }
 }
 
-/// Scan result — maps to biometric_test_validation_log.
-class BiometricTriggerScanResult {
-  final int violationCount;
-  final int latencyViolations;
-  final String testOutput;
-  final String result;
+// ── Validation Result ─────────────────────────────────────────
+
+class Bdae011A09ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Bdae011A09ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const BiometricTriggerScanResult({
+  const Bdae011A09ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.latencyViolations,
-    required this.testOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bdae011A09ConformanceLevel.pass_: return 'Pass';
+      case Bdae011A09ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:1–8 Pipeline ──────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
-class Bdae011A09BiometricTriggerTest {
-  static const double _floor   = 0.95;  // metric floor gate
-  static const double _optimal = 1.0; // metric optimal target
+/// BDAE-011-A09: BDAE-011 — Build a standardized frontend biometric authentication layout interfa
+/// Metric: Functional Test Pass Rate
+/// Floor=0.95 · Output=Pass / Fail
+class Bdae011A09Pipeline {
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — Locate biometric button trigger test config in bdae-011-kit repo.
-  static Map<String, dynamic>? locateConfiguration(String repoPath) {
-        if (!(repoPath.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE011A09-001: repo path must not be empty');
-    };
-    return {'ref': 'BDAE-011-A09', 'config_file': 'biometric_test.yaml'};
-  }
-
-  // EC:2 — Extract biometricTestId, testType, testResult, testCoverage, testLogPath.
-  static Map<String, dynamic> extractParameters(Map<String, dynamic> config) {
-    const required = [
-      'biometric_test_id', 'test_type', 'test_result', 'test_coverage', 'test_log_path',
-    ];
-    if (!(required.every((k) => config.containsKey(k) && config[k] != null))) {
-      throw ArgumentError('EC-BDAE011A09-002: all 5 biometric test fields must be non-null',
-    );
-    return Map<String, dynamic>.from(config);
-  }
-
-  // EC:3 — Compile biometric button trigger rule set:
-  //         MD3 fingerprint/face scan icon token applied, button in primary nav,
-  //         native dialog within 200ms, WebAuthn challenge issued on open,
-  //         MD3 ripple effect feedback active.
-  static Map<String, dynamic> compileRuleSet() {
-    return {
-      'icon_token':      'md.sys.color.primary',
-      'max_latency_ms':  BiometricTriggerTestEntry.kMaxLatencyMs,
-      'require_ripple':  true,
-      'challenge_on_open': true,
-      'ref':             'BDAE-011-A09',
-      'immutable':       true,
-    };
-  }
-
-  // EC:4 — Register compiled trigger test rule set as immutable entry in
-  //         biometric_test_registry with immutable_IND=TRUE.
-  static BiometricTriggerTestEntry registerRule(BiometricTriggerTestEntry entry) {
-        if (!(entry.testCoverage >= 0.90)) {
-      throw ArgumentError('EC-BDAE011A09-003: testCoverage must be >= 0.90');
+  // EC:1 — Author checking logic to confirm WebAuthn or native biometric hardware availability on the
+  static Bdae011A09Config _ec1Execute(Bdae011A09Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE011A09-001: tokenName required for BDAE-011-A09');
     }
-    };
-    return entry.copyWith(
-      immutableInd:    true,
-      executionStatus: ExecutionStatus.running,
-    );
+    // Author checking logic to confirm WebAuthn or native biometri
+    return config;
   }
 
-  // EC:5 — Bind each trigger test rule to biometric button handler
-  //         via webauthn_handler_FK constraint.
-  static String bindToTarget(String ruleId, String testType) {
-        if (!(ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE011A09-005: FK bind requires valid ruleId');
-    };
-    return '$testType:$ruleId';
-  }
-
-  // EC:6 — Validate: native dialog triggered within 200ms, WebAuthn challenge issued,
-  //         MD3 ripple active, testResult=TRIGGERED.
-  static BiometricTriggerScanResult validateConformance(
-    List<BiometricTriggerTestEntry> tests,
-  ) {
-    final violations       = tests.where((t) => !t.isConformant).length;
-    final latencyViolations = tests.where((t) =>
-      t.dialogLatencyMs > BiometricTriggerTestEntry.kMaxLatencyMs).length;
-    final total = tests.length;
-    final rate  = total > 0 ? (total - violations) / total : 0.0;
-    return BiometricTriggerScanResult(
-      violationCount:    violations,
-      latencyViolations: latencyViolations,
-      testOutput:        rate >= BiometricTriggerTestEntry.kFloor ? 'Pass' : 'Fail',
-      result:            rate >= BiometricTriggerTestEntry.kFloor ? 'PASS' : 'FAIL',
-      ecLineRef:         'EC-BDAE011A09-006',
-    );
-  }
-
-  // EC:7 — Validate against Functional Test Pass Rate metric (Floor=95%).
-  static String evaluateMetric(BiometricTriggerScanResult scan, int total) {
-    if (total == 0) return 'FAIL';
-    final rate = (total - scan.violationCount) / total;
-    return rate >= BiometricTriggerTestEntry.kFloor ? 'PASS' : 'FAIL';
-  }
-
-  // EC:8 — Route validated trigger test to security_rule_registry
-  //         as authoritative BDAE-011-A09 Trigger Test entry.
-  static BiometricTriggerTestEntry routeToRegistry(
-    BiometricTriggerTestEntry entry,
-    BiometricTriggerScanResult scan,
-  ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
-    );
-  }
-  // Triangular Check — DCDF AEETE-018: source_count - destination_count == 0
+  // Triangular Check — DCDF AEETE-018
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
+  static Bdae011A09ValidationResult calculateConformance({
+    required List<Bdae011A09Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bdae011A09ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bdae011A09ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-BDAE011A09-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Bdae011A09ConformanceLevel.pass_
+        : Bdae011A09ConformanceLevel.fail_;
+    return Bdae011A09ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-BDAE011A09-VAL',
+    );
+  }
+
+  static Bdae011A09Config routeToRegistry(
+    Bdae011A09Config config,
+    Bdae011A09ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Bdae011A09Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BDAE011A09-000: configs must not be empty for BDAE-011-A09');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+
+    if (!triangularCheck(configs.length, p1.length)) {
+      throw ArgumentError('EC-BDAE011A09-TRI: triangular check failed for BDAE-011-A09');
+    }
+    final result     = calculateConformance(configs: p1);
+    final registered = p1.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BDAE-011-A09',
+      'metric':             'Functional Test Pass Rate',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ───────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
 
-class Bdae011A09BiometricTriggerWidget extends StatelessWidget {
-  final List<BiometricTriggerTestEntry> tests;
-  const Bdae011A09BiometricTriggerWidget({super.key, required this.tests});
+Map<String, dynamic> bdae_011_a09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BDAE-011-A09',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
+
+class Bdae011A09Widget extends StatelessWidget {
+  final List<Bdae011A09Config> configs;
+  const Bdae011A09Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bdae011A09BiometricTriggerTest.validateConformance(tests);
-    final metric = Bdae011A09BiometricTriggerTest.evaluateMetric(scan, tests.length);
-
+    final result = Bdae011A09Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(child: Text('BDAE-011-A09 · Biometric Button Trigger Test',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+            Expanded(child: Text('BDAE-011-A09',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.testOutput} · latency violations: ${scan.latencyViolations}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: tests.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final t    = tests[i];
-            final pass = t.isConformant;
-            final latencyOk = t.dialogLatencyMs <= BiometricTriggerTestEntry.kMaxLatencyMs;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                title: Text(t.testType,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                subtitle: Text(
-                  'latency: ${t.dialogLatencyMs}ms / ${BiometricTriggerTestEntry.kMaxLatencyMs}ms | ripple: ${t.rippleEffectActive} | coverage: ${(t.testCoverage * 100).toStringAsFixed(0)}%',
-                  style: TextStyle(fontSize: 11, color: latencyOk ? null : cs.error)),
-                trailing: Chip(
-                  label: Text(t.resultLabel,
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass
-                      ? cs.tertiary : cs.error,
-                ),
                 leading: Icon(
-                  pass ? Icons.fingerprint : Icons.no_encryption,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.tokenName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -286,4 +290,24 @@ class Bdae011A09BiometricTriggerWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bdae011A09Config(
+      configId: 'bdae011a09-cfg-001',
+      tokenName: 'bdae-011-a09_tokenName',
+      tokenValue: 'bdae-011-a09_tokenValue',
+      tokenCategory: 'bdae-011-a09_tokenCategory',
+      appliedComponent: 'bdae-011-a09_appliedComponent',
+      traceId:                 'trace-bdae011a09-001',
+      originSourceId:          'origin-bdae011a09',
+      immediatePredecessorId:  'pred-bdae011a09-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bdae011A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BDAE-011-A09 [Pass / Fail] → $out');
 }

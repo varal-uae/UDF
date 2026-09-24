@@ -1,31 +1,37 @@
 // ============================================================
 // MCIIM-010-13 — Mobile Context Isolation & Image Module
-// Atomic Step: Smart Bounding-Box Document Isolator (Mobile Crop)
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     602 of 1073
+// Atomic Step:  Smart Bounding-Box Document Isolator (Mobile Crop)
+// Metric:       Verification Assertion Accuracy
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      857 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Verify the layout masks out surrounding content fields on narrow mobile displays.
+// Why:          
+// Mobile:       
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Mciim01013ConformanceLevel { complete, partial, notComplete }
-enum Mciim01013ExecutionStatus  { pending, running, complete, failed }
+enum Mciim01013ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Mciim01013ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MCIIM-010-13.
-/// Fields derived from AISS sheet — Mobile Context Isolation & Image Module.
+/// MCIIM-010-13 — Mobile Context Isolation & Image Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mciim01013Config {
   final String configId;
@@ -35,6 +41,7 @@ class Mciim01013Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Mciim01013ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mciim01013ConformanceLevel.complete:    return 'Pass';
-      case Mciim01013ConformanceLevel.partial:     return 'Partial';
-      case Mciim01013ConformanceLevel.notComplete: return 'Fail';
+      case Mciim01013ConformanceLevel.pass_: return 'Pass';
+      case Mciim01013ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MCIIM-010-13: Smart Bounding-Box Document Isolator (Mobile Crop)
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Verification Assertion Accuracy
+/// Floor=0.95 · Output=Pass / Fail
 class Mciim01013Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the MCIIM-010-13 configuration in the source repository.
   static Mciim01013Config _ec1Locates(Mciim01013Config config) {
@@ -152,13 +159,13 @@ class Mciim01013Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Verification Assertion Accuracy.
   static Mciim01013Config _ec3Compiles(Mciim01013Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-MCIIM01013-003: fieldId required for MCIIM-010-13');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Verification Assertion Accur
     return config;
   }
 
@@ -182,13 +189,13 @@ class Mciim01013Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Verification Assertion Accuracy gate (floor=0.95).
   static Mciim01013Config _ec6Validates(Mciim01013Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-MCIIM01013-006: fieldId required for MCIIM-010-13');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Verification Assertion Accuracy gate (
     return config;
   }
 
@@ -220,21 +227,19 @@ class Mciim01013Pipeline {
     required List<Mciim01013Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mciim01013ValidationResult(
+      return Mciim01013ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Mciim01013ConformanceLevel.notComplete,
+        conformanceLevel: Mciim01013ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-MCIIM01013-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Mciim01013ConformanceLevel.complete
-        : rate >= _floor
-            ? Mciim01013ConformanceLevel.partial
-            : Mciim01013ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Mciim01013ConformanceLevel.pass_
+        : Mciim01013ConformanceLevel.fail_;
     return Mciim01013ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Mciim01013Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MCIIM-010-13',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Verification Assertion Accuracy',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Mciim01013Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> mciim_010_13Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> mciim_010_13Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Mciim01013Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mciim01013Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Mciim01013Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MCIIM-010-13',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mciim01013Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('MCIIM-010-13 → $result');
+  final out = await Mciim01013Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MCIIM-010-13 [Pass / Fail] → $out');
 }

@@ -1,50 +1,46 @@
 // ============================================================
 // SGTIM-005-A01 — System Grid & Token Integration Module
-// Atomic Step: Build scroll position listeners that trigger background data calls.
-// Metric:      UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     516 of 530
+// Atomic Step:  Build scroll position listeners that trigger background data calls.
+// Metric:       System Performance / Latency (ms)
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      980 of 1073
 // ============================================================
-// Why this matters: Eliminates slow loading page numbers, turning long data reviews into a single, smooth scrolling expe
-// Mobile impl:      Replaces stiff page navigation grids with a natural vertical scroll flow built for touch gestures.
-// Data requirement: Define the performance metrics and threshold distances governing infinite scroll logic.
+// Why:          Eliminates slow loading page numbers, turning long data reviews into a single, smooth scrolling expe
+// Mobile:       Replaces stiff page navigation grids with a natural vertical scroll flow built for touch gestures.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Sgtim005A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Sgtim005A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sgtim005A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SGTIM-005-A01.
-/// Fields derived from AISS sheet — System Grid & Token Integration Module.
+/// SGTIM-005-A01 — System Grid & Token Integration Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sgtim005A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,20 +125,20 @@ class Sgtim005A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sgtim005A01ConformanceLevel.complete:    return 'Good';
-      case Sgtim005A01ConformanceLevel.partial:     return 'Average';
-      case Sgtim005A01ConformanceLevel.notComplete: return 'Poor';
+      case Sgtim005A01ConformanceLevel.good:    return 'Good';
+      case Sgtim005A01ConformanceLevel.average: return 'Average';
+      case Sgtim005A01ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SGTIM-005-A01: Build scroll position listeners that trigger background data calls.
-/// Metric: UI Animation Compliance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: System Performance / Latency (ms)
+/// Floor=0.9 · Output=Good / Average / Poor
 class Sgtim005A01Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — Monitor active scroll distance ratios relative to table bottom borders
@@ -193,7 +189,7 @@ class Sgtim005A01Pipeline {
     required List<Sgtim005A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sgtim005A01ValidationResult(
+      return Sgtim005A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sgtim005A01ConformanceLevel.notComplete,
@@ -203,11 +199,11 @@ class Sgtim005A01Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sgtim005A01ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Sgtim005A01ConformanceLevel.good
         : rate >= _floor
-            ? Sgtim005A01ConformanceLevel.partial
-            : Sgtim005A01ConformanceLevel.notComplete;
+            ? Sgtim005A01ConformanceLevel.average
+            : Sgtim005A01ConformanceLevel.poor;
     return Sgtim005A01ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +242,17 @@ class Sgtim005A01Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-SGTIM005A01-TRI: triangular check failed for SGTIM-005-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SGTIM-005-A01',
-      'metric':             'UI Animation Compliance Rate',
+      'metric':             'System Performance / Latency (ms)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Sgtim005A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sgtim_005_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Sgtim005A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sgtim005A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Sgtim005A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SGTIM-005-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Sgtim005A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sgtim005A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SGTIM-005-A01 → $result');
+  final out = await Sgtim005A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SGTIM-005-A01 [Good / Average / Poor] → $out');
 }

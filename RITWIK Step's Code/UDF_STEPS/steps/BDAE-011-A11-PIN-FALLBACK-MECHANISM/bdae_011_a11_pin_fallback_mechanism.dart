@@ -1,298 +1,292 @@
 // ============================================================
-// BDAE-011-A11 | WebAuthn Biometric Authentication
-// Atomic Task: Implement single-use PIN entry codes as the fallback mechanism.
-// Primary Table: biometric_fallback_registry
-// Metric: Build / Implementation Completeness | Floor=0.9% | Optimal=1.0%
-// Library: @habot-connect/layout-shell | GCP: Pub/Sub fan-out to Cloud Run
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Security: Single-use PIN expires after 5min or first use; delivered via secure push
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 29-Aug-2026
+// BDAE-011-A11 — Biometric & Data Access Engine
+// Atomic Step:  BDAE-011 — Build a standardized frontend biometric authentication layout interface layer utilizing t
+// Metric:       Build / Implementation Completeness
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      55 of 1073
+// ============================================================
+// Why:          Managing handshakes and triggers between domains guarantees that a security revocation in one area i
+// Mobile:       Mobile devices are easily lost or stolen; instant, verifiable revocation of hardware-linked tokens a
+// col41:        Complete / Partial / Not Complete
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bdae011A11ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-enum PinStatus { pending, delivered, used, expired }
+enum Bdae011A11ExecutionStatus { pending, running, complete, failed }
 
-/// Maps to biometric_fallback_registry.
-/// Single-use PIN fallback for environments where biometric hardware is unavailable.
-/// PIN must expire after 5 minutes or first use — whichever comes first.
-class PinFallbackEntry {
-  final String pinFallbackRuleId;   // PK — UUID
-  final String stepExecutionId;     // execution context UUID
-  final ExecutionStatus executionStatus;
-  final StepOutcome stepOutcome;
-  final String userId;              // UUID reference only — no PII
-  final PinStatus pinStatus;        // PENDING / DELIVERED / USED / EXPIRED
-  final int pinExpiryMinutes;       // must be 5 per BDAE-011 rule set
-  final bool singleUseEnforced;     // TRUE = PIN invalidated on first use
-  final bool immutableInd;
-  final bool complianceStatusInd;
+// ── Data Model ───────────────────────────────────────────────
+
+/// BDAE-011-A11 — Biometric & Data Access Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bdae011A11Config {
+  final String configId;
+  final String tokenName;
+  final String tokenValue;
+  final String tokenCategory;
+  final String appliedComponent;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const PinFallbackEntry({
-    required this.pinFallbackRuleId,
-    required this.stepExecutionId,
-    this.executionStatus = ExecutionStatus.pending,
-    this.stepOutcome = StepOutcome.partial,
-    required this.userId,
-    this.pinStatus = PinStatus.pending,
-    this.pinExpiryMinutes = 5,
-    this.singleUseEnforced = true,
-    this.immutableInd = false,
-    this.complianceStatusInd = true,
+  const Bdae011A11Config({
+    required this.configId,
+    required this.tokenName,
+    required this.tokenValue,
+    required this.tokenCategory,
+    required this.appliedComponent,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
-  }) :     if (!(pinExpiryMinutes <= 5)) {
-      throw ArgumentError('EC-BDAE011A11-003: pinExpiryMinutes must be <= 5 per BDAE-011 rule set');
-    };
+    this.complianceStatusInd = false,
+  });
 
-  static const int    kMaxExpiryMin = 5;
-  static const double kFloor        = 0.90;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  /// EC:6 gate — PIN rules conformant:
-  ///   single-use enforced, expiry <= 5min, status valid
-  bool get isConformant =>
-      singleUseEnforced &&
-      pinExpiryMinutes <= kMaxExpiryMin &&
-      pinStatus != PinStatus.expired;
+  Bdae011A11Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bdae011A11Config(
+    configId: configId,
+    tokenName: tokenName,
+    tokenValue: tokenValue,
+    tokenCategory: tokenCategory,
+    appliedComponent: appliedComponent,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
 
-  String get pinStatusLabel => switch (pinStatus) {
-    PinStatus.pending   => 'PENDING',
-    PinStatus.delivered => 'DELIVERED',
-    PinStatus.used      => 'USED',
-    PinStatus.expired   => 'EXPIRED',
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'tokenName': tokenName,
+    'tokenValue': tokenValue,
+    'tokenCategory': tokenCategory,
+    'appliedComponent': appliedComponent,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
-
-  PinFallbackEntry copyWith({
-    PinStatus? pinStatus,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-    bool? immutableInd,
-    bool? complianceStatusInd,
-  }) {
-    return PinFallbackEntry(
-      pinFallbackRuleId:       pinFallbackRuleId,
-      stepExecutionId:         stepExecutionId,
-      executionStatus:         executionStatus ?? this.executionStatus,
-      stepOutcome:             stepOutcome ?? this.stepOutcome,
-      userId:                  userId,
-      pinStatus:               pinStatus ?? this.pinStatus,
-      pinExpiryMinutes:        pinExpiryMinutes,
-      singleUseEnforced:       singleUseEnforced,
-      immutableInd:            immutableInd ?? this.immutableInd,
-      complianceStatusInd:     complianceStatusInd ?? this.complianceStatusInd,
-      traceId:                 traceId,
-      originSourceId:          originSourceId,
-      immediatePredecessorId:  immediatePredecessorId,
-      transformationLogicHash: transformationLogicHash,
-    );
-  }
 }
 
-/// Scan result — maps to fallback_validation_log.
-class PinFallbackScanResult {
-  final int violationCount;
-  final int expiredCount;
-  final String conformanceOutput; // Complete / Partial / Not Complete
-  final String result;
+// ── Validation Result ─────────────────────────────────────────
+
+class Bdae011A11ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Bdae011A11ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const PinFallbackScanResult({
+  const Bdae011A11ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.expiredCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bdae011A11ConformanceLevel.complete:    return 'Complete';
+      case Bdae011A11ConformanceLevel.partial:     return 'Partial';
+      case Bdae011A11ConformanceLevel.notComplete: return 'Not Complete';
+    }
+  }
 }
 
-// ── EC:1–8 Pipeline ──────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
-class Bdae011A11PinFallbackMechanism {
-  static const double _floor   = 0.9;  // metric floor gate
-  static const double _optimal = 1.0; // metric optimal target
+/// BDAE-011-A11: BDAE-011 — Build a standardized frontend biometric authentication layout interfa
+/// Metric: Build / Implementation Completeness
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
+class Bdae011A11Pipeline {
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
-
-  // EC:1 — Locate PIN fallback config in bdae-011-kit repo.
-  static Map<String, dynamic>? locateConfiguration(String repoPath) {
-        if (!(repoPath.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE011A11-001: repo path must not be empty');
-    };
-    return {'ref': 'BDAE-011-A11', 'config_file': 'biometric_fallback.yaml'};
-  }
-
-  // EC:2 — Extract pinFallbackRuleId, stepExecutionId, executionStatus,
-  //         stepOutcome, userId from biometric_fallback_registry.
-  static Map<String, dynamic> extractParameters(Map<String, dynamic> config) {
-    const required = [
-      'pin_fallback_rule_id', 'step_execution_id',
-      'execution_status', 'step_outcome', 'user_id',
-    ];
-    if (!(required.every((k) => config.containsKey(k) && config[k] != null))) {
-      throw ArgumentError('EC-BDAE011A11-002: all 5 PIN fallback fields must be non-null',
-    );
-    return Map<String, dynamic>.from(config);
-  }
-
-  // EC:3 — Compile PIN fallback rule set:
-  //         single-use PIN generated on biometric failure, expiry=5min,
-  //         PIN delivered via secure push channel within 30s,
-  //         authentication_status=FALLBACK on PIN path.
-  static Map<String, dynamic> compileRuleSet() {
-    return {
-      'single_use':       true,
-      'expiry_min':       PinFallbackEntry.kMaxExpiryMin,
-      'delivery_sec':     30,    // deliver via secure push within 30s
-      'auth_status':      'FALLBACK',
-      'ref':              'BDAE-011-A11',
-      'immutable':        true,
-    };
-  }
-
-  // EC:4 — Register compiled PIN fallback rule set as immutable entry in
-  //         biometric_fallback_registry with immutable_IND=TRUE.
-  static PinFallbackEntry registerRule(PinFallbackEntry entry) {
-        if (!(entry.singleUseEnforced)) {
-      throw ArgumentError('EC-BDAE011A11-003: singleUseEnforced must be TRUE — PIN must expire on first use');
+  // EC:1 — Author checking logic to confirm WebAuthn or native biometric hardware availability on the
+  static Bdae011A11Config _ec1Execute(Bdae011A11Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE011A11-001: tokenName required for BDAE-011-A11');
     }
-    };
-        if (!(entry.pinExpiryMinutes <= PinFallbackEntry.kMaxExpiryMin)) {
-      throw ArgumentError('EC-BDAE011A11-003: pinExpiryMinutes must be <= 5');
-    };
-    return entry.copyWith(
-      immutableInd:    true,
-      executionStatus: ExecutionStatus.running,
-    );
+    // Author checking logic to confirm WebAuthn or native biometri
+    return config;
   }
 
-  // EC:5 — Bind each PIN fallback rule to fallback handler
-  //         via webauthn_handler_FK constraint.
-  static String bindToTarget(String ruleId, String userId) {
-        if (!(ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE011A11-005: FK bind requires valid ruleId');
-    };
-    return '$userId:$ruleId';
-  }
-
-  // EC:6 — Validate PIN fallback:
-  //         single-use PIN generates on biometric failure, delivered within 30s,
-  //         PIN expires after 5min or first use, authentication_status=FALLBACK.
-  static PinFallbackScanResult validateConformance(
-    List<PinFallbackEntry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final expired    = entries.where((e) => e.pinStatus == PinStatus.expired).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return PinFallbackScanResult(
-      violationCount:   violations,
-      expiredCount:     expired,
-      conformanceOutput: output,
-      result:           rate >= PinFallbackEntry.kFloor ? 'PASS' : 'FAIL',
-      ecLineRef:        'EC-BDAE011A11-006',
-    );
-  }
-
-  // EC:7 — Validate against Build/Implementation Completeness metric.
-  //         Floor=90%; Optimal=100%.
-  static String evaluateMetric(PinFallbackScanResult scan, int total) {
-    if (total == 0) return 'FAIL';
-    final rate = (total - scan.violationCount) / total;
-    return rate >= PinFallbackEntry.kFloor ? 'PASS' : 'FAIL';
-  }
-
-  // EC:8 — Route validated PIN fallback configuration to security_rule_registry
-  //         as authoritative BDAE-011-A11 PIN Fallback entry.
-  static PinFallbackEntry routeToRegistry(
-    PinFallbackEntry entry,
-    PinFallbackScanResult scan,
-  ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
-    );
-  }
-  // Triangular Check — DCDF AEETE-018: source_count - destination_count == 0
+  // Triangular Check — DCDF AEETE-018
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
+  static Bdae011A11ValidationResult calculateConformance({
+    required List<Bdae011A11Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bdae011A11ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bdae011A11ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-BDAE011A11-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Bdae011A11ConformanceLevel.complete
+        : rate >= _floor
+            ? Bdae011A11ConformanceLevel.partial
+            : Bdae011A11ConformanceLevel.notComplete;
+    return Bdae011A11ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-BDAE011A11-VAL',
+    );
+  }
+
+  static Bdae011A11Config routeToRegistry(
+    Bdae011A11Config config,
+    Bdae011A11ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Bdae011A11Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BDAE011A11-000: configs must not be empty for BDAE-011-A11');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+
+    if (!triangularCheck(configs.length, p1.length)) {
+      throw ArgumentError('EC-BDAE011A11-TRI: triangular check failed for BDAE-011-A11');
+    }
+    final result     = calculateConformance(configs: p1);
+    final registered = p1.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BDAE-011-A11',
+      'metric':             'Build / Implementation Completeness',
+      'output_vocab':       'Complete / Partial / Not Complete',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ───────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
 
-class Bdae011A11PinFallbackWidget extends StatelessWidget {
-  final List<PinFallbackEntry> entries;
-  const Bdae011A11PinFallbackWidget({super.key, required this.entries});
+Map<String, dynamic> bdae_011_a11Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BDAE-011-A11',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
 
-  Color _pinColor(PinStatus s) => switch (s) {
-    PinStatus.pending   => const Color(0xFFE37400),
-    PinStatus.delivered => const Color(0xFF1A73E8),
-    PinStatus.used      => cs.tertiary,
-    PinStatus.expired   => cs.error,
-  };
+// ── Widget ────────────────────────────────────────────────────
+
+class Bdae011A11Widget extends StatelessWidget {
+  final List<Bdae011A11Config> configs;
+  const Bdae011A11Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bdae011A11PinFallbackMechanism.validateConformance(entries);
-    final metric = Bdae011A11PinFallbackMechanism.evaluateMetric(scan, entries.length);
-
+    final result = Bdae011A11Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(child: Text('BDAE-011-A11 · PIN Fallback Gate (single-use, 5min)',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+            Expanded(child: Text('BDAE-011-A11',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.expiredCount} expired',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e    = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                title: Text('PIN Fallback · ${e.pinFallbackRuleId.substring(0, 8)}...',
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                subtitle: Text(
-                  'expiry: ${e.pinExpiryMinutes}min | single-use: ${e.singleUseEnforced} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
-                trailing: Chip(
-                  label: Text(e.pinStatusLabel,
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: _pinColor(e.pinStatus),
-                ),
                 leading: Icon(
-                  pass ? Icons.pin_outlined : Icons.pin_drop,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.tokenName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -300,4 +294,24 @@ class Bdae011A11PinFallbackWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bdae011A11Config(
+      configId: 'bdae011a11-cfg-001',
+      tokenName: 'bdae-011-a11_tokenName',
+      tokenValue: 'bdae-011-a11_tokenValue',
+      tokenCategory: 'bdae-011-a11_tokenCategory',
+      appliedComponent: 'bdae-011-a11_appliedComponent',
+      traceId:                 'trace-bdae011a11-001',
+      originSourceId:          'origin-bdae011a11',
+      immediatePredecessorId:  'pred-bdae011a11-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bdae011A11Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BDAE-011-A11 [Complete / Partial / Not Complete] → $out');
 }

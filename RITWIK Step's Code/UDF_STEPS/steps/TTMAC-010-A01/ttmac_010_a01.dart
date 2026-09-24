@@ -1,52 +1,47 @@
 // ============================================================
 // TTMAC-010-A01 — Touch Target & Material Accessibility Compliance
-// Atomic Step: TTMAC-010 - Touch Target Minimum Size Standards
-// Metric:      Touch Target Compliance Rate · Floor=0.8 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     372 of 396
+// Atomic Step:  TTMAC-010 - Touch Target Minimum Size Standards
+// Metric:       Asset/Resource Location & Access Confirmation
+// Floor:        0.8  ·  Optimal: 0.8
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1044 of 1073
 // ============================================================
-// Why this matters: Maps directly to human thumb mechanics to completely eliminate "fat-finger" errors, critical for rap
-// Mobile impl:      
-// Data requirement: Open the NPM UI common repository.
+// Why:          Maps directly to human thumb mechanics to completely eliminate "fat-finger" errors, critical for rap
+// Mobile:       
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ttmac010A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ttmac010A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttmac010A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTMAC-010-A01.
-/// Fields derived from AISS sheet row — Touch Target & Material Accessibility Compliance.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTMAC-010-A01 — Touch Target & Material Accessibility Compliance
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttmac010A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String gridColumns;
   final String gutterSizePx;
   final String maxWidthPx;
   final String breakpointLabel;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Ttmac010A01Config {
     'gutterSizePx': gutterSizePx,
     'maxWidthPx': maxWidthPx,
     'breakpointLabel': breakpointLabel,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Ttmac010A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac010A01ConformanceLevel.complete:    return 'Pass';
-      case Ttmac010A01ConformanceLevel.partial:     return 'Partial';
-      case Ttmac010A01ConformanceLevel.notComplete: return 'Fail';
+      case Ttmac010A01ConformanceLevel.pass_: return 'Pass';
+      case Ttmac010A01ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// TTMAC-010-A01: TTMAC-010 - Touch Target Minimum Size Standards
-///
-/// Metric: Touch Target Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Asset/Resource Location & Access Confirmation
+/// Floor=0.8 · Output=Pass / Fail
 class Ttmac010A01Pipeline {
   static const double _floor   = 0.8;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.8;
 
   // EC:1 — 48dp minimum dimension rules
   static Ttmac010A01Config _ec1Execute(Ttmac010A01Config config) {
@@ -190,27 +183,23 @@ class Ttmac010A01Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Ttmac010A01ValidationResult calculateConformance({
     required List<Ttmac010A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttmac010A01ValidationResult(
+      return Ttmac010A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ttmac010A01ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTMAC010A01-VAL',
+        conformanceLevel: Ttmac010A01ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-TTMAC010A01-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ttmac010A01ConformanceLevel.complete
-        : rate >= _floor
-            ? Ttmac010A01ConformanceLevel.partial
-            : Ttmac010A01ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ttmac010A01ConformanceLevel.pass_
+        : Ttmac010A01ConformanceLevel.fail_;
     return Ttmac010A01ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Ttmac010A01Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTMAC010A01-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTMAC010A01-000: configs must not be empty for TTMAC-010-A01');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Ttmac010A01Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-TTMAC010A01-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTMAC010A01-TRI: triangular check failed for TTMAC-010-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMAC-010-A01',
-      'metric':             'Touch Target Compliance Rate',
+      'metric':             'Asset/Resource Location & Access Confirmation',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Ttmac010A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttmac_010_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Ttmac010A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttmac010A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Ttmac010A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTMAC-010-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Ttmac010A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${gridColumns} | ${gutterSizePx}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Ttmac010A01Config(
       configId: 'ttmac010a01-cfg-001',
-      gridColumns: 'ttmac-010-a01_gridColumns_value',
-      gutterSizePx: 'ttmac-010-a01_gutterSizePx_value',
-      maxWidthPx: 'ttmac-010-a01_maxWidthPx_value',
-      breakpointLabel: 'ttmac-010-a01_breakpointLabel_value',
+      gridColumns: 'ttmac-010-a01_gridColumns',
+      gutterSizePx: 'ttmac-010-a01_gutterSizePx',
+      maxWidthPx: 'ttmac-010-a01_maxWidthPx',
+      breakpointLabel: 'ttmac-010-a01_breakpointLabel',
       traceId:                 'trace-ttmac010a01-001',
       originSourceId:          'origin-ttmac010a01',
       immediatePredecessorId:  'pred-ttmac010a01-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttmac010A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTMAC-010-A01 → $result');
+  final out = await Ttmac010A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTMAC-010-A01 [Pass / Fail] → $out');
 }

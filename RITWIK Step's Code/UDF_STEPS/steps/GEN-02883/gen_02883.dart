@@ -1,40 +1,48 @@
 // ============================================================
 // GEN-02883 — GEN Backend Utility Module
-// Atomic Step: Store the evaluation harness in evals/harness/run_replay_suite.py for reuse across all application p
-// Metric:      Schema Lineage Conformance Rate · Floor=60.0 · Optimal=85.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     832 of 1073
+// Atomic Step:  Store the evaluation harness in evals/harness/run_replay_suite.py for reuse across all application p
+// Metric:       Code Modularity/Reuse Rate (%)
+// Floor:        60.0  ·  Optimal: 85.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      545 of 1073
 // ============================================================
-// Why this matters: Store the evaluation harness in evals/harness/run_replay_suite.py for reuse across all application p
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Store the evaluation harness in evals/harness/run_replay_suite.py for reuse across all application p
+// Why:          Store the evaluation harness in evals/harness/run_replay_suite.py for reuse across all application p
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen02883ConformanceLevel { complete, partial, notComplete }
-enum Gen02883ExecutionStatus  { pending, running, complete, failed }
+enum Gen02883ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen02883ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-02883.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-02883 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen02883Config {
   final String configId;
-  final String datasetId;
-  final String tableRef;
-  final String partitionKey;
-  final String ingestTimestamp;
+  final String documentId;
+  final String predecessorId;
+  final String lineageHash;
+  final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gen02883Config {
 
   const Gen02883Config({
     required this.configId,
-    required this.datasetId,
-    required this.tableRef,
-    required this.partitionKey,
-    required this.ingestTimestamp,
+    required this.documentId,
+    required this.predecessorId,
+    required this.lineageHash,
+    required this.complianceRef,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gen02883Config {
     bool?   complianceStatusInd,
   }) => Gen02883Config(
     configId: configId,
-    datasetId: datasetId,
-    tableRef: tableRef,
-    partitionKey: partitionKey,
-    ingestTimestamp: ingestTimestamp,
+    documentId: documentId,
+    predecessorId: predecessorId,
+    lineageHash: lineageHash,
+    complianceRef: complianceRef,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gen02883Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'datasetId': datasetId,
-    'tableRef': tableRef,
-    'partitionKey': partitionKey,
-    'ingestTimestamp': ingestTimestamp,
+    'documentId': documentId,
+    'predecessorId': predecessorId,
+    'lineageHash': lineageHash,
+    'complianceRef': complianceRef,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +125,27 @@ class Gen02883ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen02883ConformanceLevel.complete:    return 'Complete';
-      case Gen02883ConformanceLevel.partial:     return 'Partial';
-      case Gen02883ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen02883ConformanceLevel.good:    return 'Good';
+      case Gen02883ConformanceLevel.average: return 'Average';
+      case Gen02883ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-02883: Store the evaluation harness in evals/harness/run_replay_suite.py for reuse acro
-/// Metric: Schema Lineage Conformance Rate · Floor=60.0 · Optimal=85.0
+/// Metric: Code Modularity/Reuse Rate (%)
+/// Floor=60.0 · Output=Good / Average / Poor
 class Gen02883Pipeline {
   static const double _floor   = 60.0;
   static const double _optimal = 85.0;
 
   // EC:1 — Plan and scope this step
   static Gen02883Config _ec1Execute(Gen02883Config config) {
-    if (config.datasetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN02883-001: datasetId required for GEN-02883');
+          'EC-GEN02883-001: documentId required for GEN-02883');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +153,9 @@ class Gen02883Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen02883Config _ec2Execute(Gen02883Config config) {
-    if (config.datasetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN02883-002: datasetId required for GEN-02883');
+          'EC-GEN02883-002: documentId required for GEN-02883');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +163,9 @@ class Gen02883Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen02883Config _ec3Execute(Gen02883Config config) {
-    if (config.datasetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN02883-003: datasetId required for GEN-02883');
+          'EC-GEN02883-003: documentId required for GEN-02883');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +173,9 @@ class Gen02883Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen02883Config _ec4Execute(Gen02883Config config) {
-    if (config.datasetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN02883-004: datasetId required for GEN-02883');
+          'EC-GEN02883-004: documentId required for GEN-02883');
     }
     // Document and commit to runbook
     return config;
@@ -180,7 +189,7 @@ class Gen02883Pipeline {
     required List<Gen02883Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen02883ValidationResult(
+      return Gen02883ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen02883ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen02883Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen02883ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen02883ConformanceLevel.good
         : rate >= _floor
-            ? Gen02883ConformanceLevel.partial
-            : Gen02883ConformanceLevel.notComplete;
+            ? Gen02883ConformanceLevel.average
+            : Gen02883ConformanceLevel.poor;
     return Gen02883ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen02883Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-02883',
-      'metric':             'Schema Lineage Conformance Rate',
+      'metric':             'Code Modularity/Reuse Rate (%)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen02883Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_02883Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_02883Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen02883Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen02883Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen02883Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-02883',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.datasetId,
+                title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +335,16 @@ void main() async {
   final configs = [
     Gen02883Config(
       configId: 'gen02883-cfg-001',
-      datasetId: 'gen-02883_datasetId',
-      tableRef: 'gen-02883_tableRef',
-      partitionKey: 'gen-02883_partitionKey',
-      ingestTimestamp: 'gen-02883_ingestTimestamp',
+      documentId: 'gen-02883_documentId',
+      predecessorId: 'gen-02883_predecessorId',
+      lineageHash: 'gen-02883_lineageHash',
+      complianceRef: 'gen-02883_complianceRef',
       traceId:                 'trace-gen02883-001',
       originSourceId:          'origin-gen02883',
       immediatePredecessorId:  'pred-gen02883-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen02883Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-02883 → $result');
+  final out = await Gen02883Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-02883 [Good / Average / Poor] → $out');
 }

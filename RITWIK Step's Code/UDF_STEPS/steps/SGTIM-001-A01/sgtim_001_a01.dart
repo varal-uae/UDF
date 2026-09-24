@@ -1,50 +1,46 @@
 // ============================================================
 // SGTIM-001-A01 — System Grid & Token Integration Module
-// Atomic Step: Pagination Limit Rules for Mobile Lists
-// Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     523 of 530
+// Atomic Step:  Pagination Limit Rules for Mobile Lists
+// Metric:       Scope Coverage / Audit Completeness
+// Floor:        0.8  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      977 of 1073
 // ============================================================
-// Why this matters: Completely mitigates memory exhaustion risks over standard portable hardware , blocking performance 
-// Mobile impl:      
-// Data requirement: Identify all list components in the mobile application that display paginated data.
+// Why:          Completely mitigates memory exhaustion risks over standard portable hardware , blocking performance 
+// Mobile:       
+// col41:        Complete (Scale: Complete/Partial/Not Complete)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Sgtim001A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Sgtim001A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sgtim001A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SGTIM-001-A01.
-/// Fields derived from AISS sheet — System Grid & Token Integration Module.
+/// SGTIM-001-A01 — System Grid & Token Integration Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sgtim001A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String packageName;
   final String componentId;
   final String versionTag;
   final String exportPath;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,13 +132,13 @@ class Sgtim001A01ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SGTIM-001-A01: Pagination Limit Rules for Mobile Lists
-/// Metric: Component Reuse Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Scope Coverage / Audit Completeness
+/// Floor=0.8 · Output=Complete / Partial / Not Complete
 class Sgtim001A01Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.8;
   static const double _optimal = 1.0;
 
   // EC:1 — Hard ceiling parameters
@@ -193,7 +189,7 @@ class Sgtim001A01Pipeline {
     required List<Sgtim001A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sgtim001A01ValidationResult(
+      return Sgtim001A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sgtim001A01ConformanceLevel.notComplete,
@@ -203,7 +199,7 @@ class Sgtim001A01Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Sgtim001A01ConformanceLevel.complete
         : rate >= _floor
             ? Sgtim001A01ConformanceLevel.partial
@@ -246,19 +242,17 @@ class Sgtim001A01Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-SGTIM001A01-TRI: triangular check failed for SGTIM-001-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SGTIM-001-A01',
-      'metric':             'Component Reuse Rate',
+      'metric':             'Scope Coverage / Audit Completeness',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Sgtim001A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sgtim_001_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Sgtim001A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sgtim001A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Sgtim001A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SGTIM-001-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Sgtim001A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.packageName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sgtim001A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SGTIM-001-A01 → $result');
+  final out = await Sgtim001A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SGTIM-001-A01 [Complete / Partial / Not Complete] → $out');
 }

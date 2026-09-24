@@ -1,40 +1,48 @@
 // ============================================================
 // GEN-01108 — GEN Backend Utility Module
-// Atomic Step: Configure horizontal swipe gesture controllers for transitioning between onboarding slides.
-// Metric:      UI Animation Compliance Rate · Floor=0.7 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     672 of 1073
+// Atomic Step:  Configure horizontal swipe gesture controllers for transitioning between onboarding slides.
+// Metric:       First-Run Experience Completion Rate
+// Floor:        0.7  ·  Optimal: 0.9
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      383 of 1073
 // ============================================================
-// Why this matters: Configure horizontal swipe gesture controllers for transitioning between onboarding slides. is a cri
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Configure horizontal swipe gesture controllers for transitioning between onboarding slides.
+// Why:          Configure horizontal swipe gesture controllers for transitioning between onboarding slides. is a cri
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen01108ConformanceLevel { complete, partial, notComplete }
-enum Gen01108ExecutionStatus  { pending, running, complete, failed }
+enum Gen01108ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen01108ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-01108.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-01108 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen01108Config {
   final String configId;
-  final String animationId;
-  final String durationMs;
-  final String easingCurve;
-  final String triggerState;
+  final String documentId;
+  final String predecessorId;
+  final String lineageHash;
+  final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gen01108Config {
 
   const Gen01108Config({
     required this.configId,
-    required this.animationId,
-    required this.durationMs,
-    required this.easingCurve,
-    required this.triggerState,
+    required this.documentId,
+    required this.predecessorId,
+    required this.lineageHash,
+    required this.complianceRef,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gen01108Config {
     bool?   complianceStatusInd,
   }) => Gen01108Config(
     configId: configId,
-    animationId: animationId,
-    durationMs: durationMs,
-    easingCurve: easingCurve,
-    triggerState: triggerState,
+    documentId: documentId,
+    predecessorId: predecessorId,
+    lineageHash: lineageHash,
+    complianceRef: complianceRef,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gen01108Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'animationId': animationId,
-    'durationMs': durationMs,
-    'easingCurve': easingCurve,
-    'triggerState': triggerState,
+    'documentId': documentId,
+    'predecessorId': predecessorId,
+    'lineageHash': lineageHash,
+    'complianceRef': complianceRef,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +125,27 @@ class Gen01108ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen01108ConformanceLevel.complete:    return 'Complete';
-      case Gen01108ConformanceLevel.partial:     return 'Partial';
-      case Gen01108ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen01108ConformanceLevel.good:    return 'Good';
+      case Gen01108ConformanceLevel.average: return 'Average';
+      case Gen01108ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-01108: Configure horizontal swipe gesture controllers for transitioning between onboard
-/// Metric: UI Animation Compliance Rate · Floor=0.7 · Optimal=0.97
+/// Metric: First-Run Experience Completion Rate
+/// Floor=0.7 · Output=Good / Average / Poor
 class Gen01108Pipeline {
   static const double _floor   = 0.7;
-  static const double _optimal = 0.97;
+  static const double _optimal = 0.9;
 
   // EC:1 — Plan and scope this step
   static Gen01108Config _ec1Execute(Gen01108Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01108-001: animationId required for GEN-01108');
+          'EC-GEN01108-001: documentId required for GEN-01108');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +153,9 @@ class Gen01108Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen01108Config _ec2Execute(Gen01108Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01108-002: animationId required for GEN-01108');
+          'EC-GEN01108-002: documentId required for GEN-01108');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +163,9 @@ class Gen01108Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen01108Config _ec3Execute(Gen01108Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01108-003: animationId required for GEN-01108');
+          'EC-GEN01108-003: documentId required for GEN-01108');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +173,9 @@ class Gen01108Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen01108Config _ec4Execute(Gen01108Config config) {
-    if (config.animationId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01108-004: animationId required for GEN-01108');
+          'EC-GEN01108-004: documentId required for GEN-01108');
     }
     // Document and commit to runbook
     return config;
@@ -180,7 +189,7 @@ class Gen01108Pipeline {
     required List<Gen01108Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen01108ValidationResult(
+      return Gen01108ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen01108ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen01108Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen01108ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen01108ConformanceLevel.good
         : rate >= _floor
-            ? Gen01108ConformanceLevel.partial
-            : Gen01108ConformanceLevel.notComplete;
+            ? Gen01108ConformanceLevel.average
+            : Gen01108ConformanceLevel.poor;
     return Gen01108ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen01108Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-01108',
-      'metric':             'UI Animation Compliance Rate',
+      'metric':             'First-Run Experience Completion Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen01108Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_01108Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_01108Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen01108Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen01108Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen01108Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-01108',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.animationId,
+                title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +335,16 @@ void main() async {
   final configs = [
     Gen01108Config(
       configId: 'gen01108-cfg-001',
-      animationId: 'gen-01108_animationId',
-      durationMs: 'gen-01108_durationMs',
-      easingCurve: 'gen-01108_easingCurve',
-      triggerState: 'gen-01108_triggerState',
+      documentId: 'gen-01108_documentId',
+      predecessorId: 'gen-01108_predecessorId',
+      lineageHash: 'gen-01108_lineageHash',
+      complianceRef: 'gen-01108_complianceRef',
       traceId:                 'trace-gen01108-001',
       originSourceId:          'origin-gen01108',
       immediatePredecessorId:  'pred-gen01108-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen01108Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-01108 → $result');
+  final out = await Gen01108Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-01108 [Good / Average / Poor] → $out');
 }

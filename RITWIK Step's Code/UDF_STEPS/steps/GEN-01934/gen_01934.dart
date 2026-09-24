@@ -1,40 +1,48 @@
 // ============================================================
 // GEN-01934 — GEN Backend Utility Module
-// Atomic Step: Block the content management system physically from uploading any video exceeding 5 minutes.
-// Metric:      Media Rendering Compliance Rate · Floor=98.0 · Optimal=99.5
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     747 of 1073
+// Atomic Step:  Block the content management system physically from uploading any video exceeding 5 minutes.
+// Metric:       Video Playback Success Rate (%)
+// Floor:        98.0  ·  Optimal: 99.5
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      458 of 1073
 // ============================================================
-// Why this matters: Block the content management system physically from uploading any video exceeding 5 minutes. is a cr
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Block the content management system physically from uploading any video exceeding 5 minutes.
+// Why:          Block the content management system physically from uploading any video exceeding 5 minutes. is a cr
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        High/Medium/Low
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen01934ConformanceLevel { complete, partial, notComplete }
-enum Gen01934ExecutionStatus  { pending, running, complete, failed }
+enum Gen01934ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen01934ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-01934.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-01934 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen01934Config {
   final String configId;
-  final String assetId;
-  final String mediaType;
-  final String aspectRatio;
-  final String loadStrategy;
+  final String documentId;
+  final String predecessorId;
+  final String lineageHash;
+  final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gen01934Config {
 
   const Gen01934Config({
     required this.configId,
-    required this.assetId,
-    required this.mediaType,
-    required this.aspectRatio,
-    required this.loadStrategy,
+    required this.documentId,
+    required this.predecessorId,
+    required this.lineageHash,
+    required this.complianceRef,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gen01934Config {
     bool?   complianceStatusInd,
   }) => Gen01934Config(
     configId: configId,
-    assetId: assetId,
-    mediaType: mediaType,
-    aspectRatio: aspectRatio,
-    loadStrategy: loadStrategy,
+    documentId: documentId,
+    predecessorId: predecessorId,
+    lineageHash: lineageHash,
+    complianceRef: complianceRef,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gen01934Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'assetId': assetId,
-    'mediaType': mediaType,
-    'aspectRatio': aspectRatio,
-    'loadStrategy': loadStrategy,
+    'documentId': documentId,
+    'predecessorId': predecessorId,
+    'lineageHash': lineageHash,
+    'complianceRef': complianceRef,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +125,27 @@ class Gen01934ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen01934ConformanceLevel.complete:    return 'Complete';
-      case Gen01934ConformanceLevel.partial:     return 'Partial';
-      case Gen01934ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen01934ConformanceLevel.good:    return 'Good';
+      case Gen01934ConformanceLevel.average: return 'Average';
+      case Gen01934ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-01934: Block the content management system physically from uploading any video exceedin
-/// Metric: Media Rendering Compliance Rate · Floor=98.0 · Optimal=99.5
+/// Metric: Video Playback Success Rate (%)
+/// Floor=98.0 · Output=Good / Average / Poor
 class Gen01934Pipeline {
   static const double _floor   = 98.0;
   static const double _optimal = 99.5;
 
   // EC:1 — Plan and scope this step
   static Gen01934Config _ec1Execute(Gen01934Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01934-001: assetId required for GEN-01934');
+          'EC-GEN01934-001: documentId required for GEN-01934');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +153,9 @@ class Gen01934Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen01934Config _ec2Execute(Gen01934Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01934-002: assetId required for GEN-01934');
+          'EC-GEN01934-002: documentId required for GEN-01934');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +163,9 @@ class Gen01934Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen01934Config _ec3Execute(Gen01934Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01934-003: assetId required for GEN-01934');
+          'EC-GEN01934-003: documentId required for GEN-01934');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +173,9 @@ class Gen01934Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen01934Config _ec4Execute(Gen01934Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01934-004: assetId required for GEN-01934');
+          'EC-GEN01934-004: documentId required for GEN-01934');
     }
     // Document and commit to runbook
     return config;
@@ -180,7 +189,7 @@ class Gen01934Pipeline {
     required List<Gen01934Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen01934ValidationResult(
+      return Gen01934ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen01934ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen01934Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen01934ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen01934ConformanceLevel.good
         : rate >= _floor
-            ? Gen01934ConformanceLevel.partial
-            : Gen01934ConformanceLevel.notComplete;
+            ? Gen01934ConformanceLevel.average
+            : Gen01934ConformanceLevel.poor;
     return Gen01934ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen01934Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-01934',
-      'metric':             'Media Rendering Compliance Rate',
+      'metric':             'Video Playback Success Rate (%)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen01934Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_01934Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_01934Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen01934Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen01934Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen01934Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-01934',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.assetId,
+                title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +335,16 @@ void main() async {
   final configs = [
     Gen01934Config(
       configId: 'gen01934-cfg-001',
-      assetId: 'gen-01934_assetId',
-      mediaType: 'gen-01934_mediaType',
-      aspectRatio: 'gen-01934_aspectRatio',
-      loadStrategy: 'gen-01934_loadStrategy',
+      documentId: 'gen-01934_documentId',
+      predecessorId: 'gen-01934_predecessorId',
+      lineageHash: 'gen-01934_lineageHash',
+      complianceRef: 'gen-01934_complianceRef',
       traceId:                 'trace-gen01934-001',
       originSourceId:          'origin-gen01934',
       immediatePredecessorId:  'pred-gen01934-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen01934Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-01934 → $result');
+  final out = await Gen01934Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-01934 [Good / Average / Poor] → $out');
 }

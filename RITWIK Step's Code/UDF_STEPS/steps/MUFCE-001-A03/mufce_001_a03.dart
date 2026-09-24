@@ -1,31 +1,38 @@
 // ============================================================
 // MUFCE-001-A03 — Mobile UX Flow & Content Engine
-// Atomic Step: Campaign Imagery & Media Rule Implementation
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     538 of 1073
+// Atomic Step:  Campaign Imagery & Media Rule Implementation
+// Metric:       Business Rule / Threshold Definition Coverage
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      868 of 1073
 // ============================================================
-// Why this matters: Insulates the marketplace from compliance failures and ensures structural interface assets scale cle
-// Mobile impl:      Compresses camera image payloads locally before uploading to minimize data network bills
-// Data requirement: Define the accepted file formats for each media type (e.g. JPG, PNG, SVG, MP4, WebM).
+// Why:          Insulates the marketplace from compliance failures and ensures structural interface assets scale cle
+// Mobile:       Compresses camera image payloads locally before uploading to minimize data network bills
+// col41:        Complete (Scale: Complete/Partial/Not Complete)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Mufce001A03ConformanceLevel { complete, partial, notComplete }
-enum Mufce001A03ExecutionStatus  { pending, running, complete, failed }
+enum Mufce001A03ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Mufce001A03ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MUFCE-001-A03.
-/// Fields derived from AISS sheet — Mobile UX Flow & Content Engine.
+/// MUFCE-001-A03 — Mobile UX Flow & Content Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mufce001A03Config {
   final String configId;
@@ -35,6 +42,7 @@ class Mufce001A03Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -124,13 +132,14 @@ class Mufce001A03ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// MUFCE-001-A03: Campaign Imagery & Media Rule Implementation
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Business Rule / Threshold Definition Coverage
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Mufce001A03Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — Program custom script rules checking asset names and attributes against compliance lists
   static Mufce001A03Config _ec1Execute(Mufce001A03Config config) {
@@ -180,7 +189,7 @@ class Mufce001A03Pipeline {
     required List<Mufce001A03Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mufce001A03ValidationResult(
+      return Mufce001A03ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Mufce001A03ConformanceLevel.notComplete,
@@ -190,7 +199,7 @@ class Mufce001A03Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Mufce001A03ConformanceLevel.complete
         : rate >= _floor
             ? Mufce001A03ConformanceLevel.partial
@@ -236,14 +245,14 @@ class Mufce001A03Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MUFCE-001-A03',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Business Rule / Threshold Definition Coverage',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Mufce001A03Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> mufce_001_a03Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> mufce_001_a03Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Mufce001A03Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mufce001A03Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Mufce001A03Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MUFCE-001-A03',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mufce001A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('MUFCE-001-A03 → $result');
+  final out = await Mufce001A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MUFCE-001-A03 [Complete / Partial / Not Complete] → $out');
 }

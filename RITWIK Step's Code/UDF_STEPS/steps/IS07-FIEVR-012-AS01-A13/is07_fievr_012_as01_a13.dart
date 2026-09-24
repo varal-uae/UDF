@@ -1,50 +1,45 @@
 // ============================================================
-// IS07-FIEVR-012-AS01-A13 — Implementation System 07
-// Atomic Step: Local Reconciliation Gate Logic & Mathematical Validator Setup
-// Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     502 of 530
+// IS07-FIEVR-012-AS01-A13 — IS07 System Module
+// Atomic Step:  Local Reconciliation Gate Logic & Mathematical Validator Setup
+// Metric:       Configuration Conformance Rate - Submission action button local gate s
+// Floor:        0.97  ·  Optimal: 0.97
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      810 of 1073
 // ============================================================
-// Why this matters: Catches mathematical input errors before they are sent over the network, ensuring high data accuracy
-// Mobile impl:      Performs verification logic locally on the device, saving data bandwidth by preventing unnecessary r
-// Data requirement: Disable submission action button when local gate status fails.
+// Why:          Catches mathematical input errors before they are sent over the network, ensuring high data accuracy
+// Mobile:       Performs verification logic locally on the device, saving data bandwidth by preventing unnecessary r
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Is07Fievr012As01A13ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Is07Fievr012As01A13ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is07Fievr012As01A13ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS07-FIEVR-012-AS01-A13.
-/// Fields derived from AISS sheet — Implementation System 07.
+/// IS07-FIEVR-012-AS01-A13 — IS07 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is07Fievr012As01A13Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Is07Fievr012As01A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is07Fievr012As01A13ConformanceLevel.complete:    return 'Pass';
-      case Is07Fievr012As01A13ConformanceLevel.partial:     return 'Partial';
-      case Is07Fievr012As01A13ConformanceLevel.notComplete: return 'Fail';
+      case Is07Fievr012As01A13ConformanceLevel.pass_: return 'Pass';
+      case Is07Fievr012As01A13ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:3 Pipeline ────────────────────────────────────────────
+// ── EC:3 Pipeline ────────────────────────────────────────
 
 /// IS07-FIEVR-012-AS01-A13: Local Reconciliation Gate Logic & Mathematical Validator Setup
-/// Metric: Telemetry Coverage Rate
-/// Floor=0.92 · Optimal=0.98 · Output=Complete / Partial / Not Complete
+/// Metric: Configuration Conformance Rate - Submission action button lo
+/// Floor=0.97 · Output=Pass / Fail
 class Is07Fievr012As01A13Pipeline {
-  static const double _floor   = 0.92;
-  static const double _optimal = 0.98;
+  static const double _floor   = 0.97;
+  static const double _optimal = 0.97;
 
   // EC:1 — Connect verification triggers to run every time an active form field loses focus
   static Is07Fievr012As01A13Config _ec1Execute(Is07Fievr012As01A13Config config) {
@@ -183,21 +177,19 @@ class Is07Fievr012As01A13Pipeline {
     required List<Is07Fievr012As01A13Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is07Fievr012As01A13ValidationResult(
+      return Is07Fievr012As01A13ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is07Fievr012As01A13ConformanceLevel.notComplete,
+        conformanceLevel: Is07Fievr012As01A13ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS07FIEVR012-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is07Fievr012As01A13ConformanceLevel.complete
-        : rate >= _floor
-            ? Is07Fievr012As01A13ConformanceLevel.partial
-            : Is07Fievr012As01A13ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is07Fievr012As01A13ConformanceLevel.pass_
+        : Is07Fievr012As01A13ConformanceLevel.fail_;
     return Is07Fievr012As01A13ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -235,19 +227,17 @@ class Is07Fievr012As01A13Pipeline {
     if (!triangularCheck(configs.length, p3.length)) {
       throw ArgumentError('EC-IS07FIEVR012-TRI: triangular check failed for IS07-FIEVR-012-AS01-A13');
     }
-
     final result     = calculateConformance(configs: p3);
     final registered = p3.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS07-FIEVR-012-AS01-A13',
-      'metric':             'Telemetry Coverage Rate',
+      'metric':             'Configuration Conformance Rate - Submission action button lo',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -257,9 +247,7 @@ class Is07Fievr012As01A13Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is07_fievr_012_as01_a13Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -278,6 +266,7 @@ class Is07Fievr012As01A13Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is07Fievr012As01A13Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -285,15 +274,13 @@ class Is07Fievr012As01A13Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS07-FIEVR-012-AS01-A13',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -302,23 +289,22 @@ class Is07Fievr012As01A13Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -344,7 +330,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is07Fievr012As01A13Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS07-FIEVR-012-AS01-A13 → $result');
+  final out = await Is07Fievr012As01A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS07-FIEVR-012-AS01-A13 [Pass / Fail] → $out');
 }

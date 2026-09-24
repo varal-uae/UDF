@@ -1,50 +1,45 @@
 // ============================================================
 // TTMCS-011-A13 — Material Design Token Configuration System
-// Atomic Step: TTMCS-011 - Apply MD3 Expressive Color/Typography
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     501 of 530
+// Atomic Step:  TTMCS-011 - Apply MD3 Expressive Color/Typography
+// Metric:       Typography Token Scale Adherence (Material Design 3 Type Scale)
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1059 of 1073
 // ============================================================
-// Why this matters: Speeds up worker visual processing by 4x, making key actions stand out.
-// Mobile impl:      Replaces bulky structural elements with dynamic color scaling to preserve precious mobile screen rea
-// Data requirement: Set up code linter rules to flag hardcoded hex color declarations in pull reviews.
+// Why:          Speeds up worker visual processing by 4x, making key actions stand out.
+// Mobile:       Replaces bulky structural elements with dynamic color scaling to preserve precious mobile screen rea
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ttmcs011A13ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ttmcs011A13ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttmcs011A13ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTMCS-011-A13.
-/// Fields derived from AISS sheet — Material Design Token Configuration System.
+/// TTMCS-011-A13 — Material Design Token Configuration System
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttmcs011A13Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Ttmcs011A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs011A13ConformanceLevel.complete:    return 'Pass';
-      case Ttmcs011A13ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs011A13ConformanceLevel.notComplete: return 'Fail';
+      case Ttmcs011A13ConformanceLevel.pass_: return 'Pass';
+      case Ttmcs011A13ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// TTMCS-011-A13: TTMCS-011 - Apply MD3 Expressive Color/Typography
-/// Metric: Design System Token Coverage Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Typography Token Scale Adherence (Material Design 3 Type Sca
+/// Floor=0.9 · Output=Pass / Fail
 class Ttmcs011A13Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — 1) Define 5 key colors via Material Theme Builder. 2) Implement Emphasized Typography scal
   static Ttmcs011A13Config _ec1Execute(Ttmcs011A13Config config) {
@@ -163,21 +157,19 @@ class Ttmcs011A13Pipeline {
     required List<Ttmcs011A13Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttmcs011A13ValidationResult(
+      return Ttmcs011A13ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ttmcs011A13ConformanceLevel.notComplete,
+        conformanceLevel: Ttmcs011A13ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-TTMCS011A13-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ttmcs011A13ConformanceLevel.complete
-        : rate >= _floor
-            ? Ttmcs011A13ConformanceLevel.partial
-            : Ttmcs011A13ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ttmcs011A13ConformanceLevel.pass_
+        : Ttmcs011A13ConformanceLevel.fail_;
     return Ttmcs011A13ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -213,19 +205,17 @@ class Ttmcs011A13Pipeline {
     if (!triangularCheck(configs.length, p1.length)) {
       throw ArgumentError('EC-TTMCS011A13-TRI: triangular check failed for TTMCS-011-A13');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMCS-011-A13',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Typography Token Scale Adherence (Material Design 3 Type Sca',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -235,9 +225,7 @@ class Ttmcs011A13Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttmcs_011_a13Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -256,6 +244,7 @@ class Ttmcs011A13Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttmcs011A13Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -263,15 +252,13 @@ class Ttmcs011A13Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTMCS-011-A13',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -280,23 +267,22 @@ class Ttmcs011A13Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -322,7 +308,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttmcs011A13Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTMCS-011-A13 → $result');
+  final out = await Ttmcs011A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTMCS-011-A13 [Pass / Fail] → $out');
 }

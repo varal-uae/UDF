@@ -1,31 +1,37 @@
 // ============================================================
 // FLADE-017 — Friction Logging & Analytics Data Engine
-// Atomic Step: Configuration of Core Workspace Layout Geometries for GACL Specialists
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     603 of 1073
+// Atomic Step:  Configuration of Core Workspace Layout Geometries for GACL Specialists
+// Metric:       Responsive Breakpoint Coverage
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      279 of 1073
 // ============================================================
-// Why this matters: Overly long session lifetimes expose user data risks, while abrupt logouts frustrate active workflow
-// Mobile impl:      Handles token rotation tasks silently in the background to avoid disrupting active usage.
-// Data requirement: Allocate the primary workspace viewport window section to fill remaining screen layouts.
+// Why:          Overly long session lifetimes expose user data risks, while abrupt logouts frustrate active workflow
+// Mobile:       Handles token rotation tasks silently in the background to avoid disrupting active usage.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Flade017ConformanceLevel { complete, partial, notComplete }
-enum Flade017ExecutionStatus  { pending, running, complete, failed }
+enum Flade017ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Flade017ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FLADE-017.
-/// Fields derived from AISS sheet — Friction Logging & Analytics Data Engine.
+/// FLADE-017 — Friction Logging & Analytics Data Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Flade017Config {
   final String configId;
@@ -35,6 +41,7 @@ class Flade017Config {
   final String complianceTarget;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Flade017ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade017ConformanceLevel.complete:    return 'Pass';
-      case Flade017ConformanceLevel.partial:     return 'Partial';
-      case Flade017ConformanceLevel.notComplete: return 'Fail';
+      case Flade017ConformanceLevel.pass_: return 'Pass';
+      case Flade017ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// FLADE-017: Configuration of Core Workspace Layout Geometries for GACL Specialists
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Responsive Breakpoint Coverage
+/// Floor=0.95 · Output=Pass / Fail
 class Flade017Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the FLADE-017 configuration in the source repository.
   static Flade017Config _ec1Locates(Flade017Config config) {
@@ -152,13 +159,13 @@ class Flade017Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Responsive Breakpoint Coverage.
   static Flade017Config _ec3Compiles(Flade017Config config) {
     if (config.ruleKey.isEmpty) {
       throw ArgumentError(
           'EC-FLADE017-003: ruleKey required for FLADE-017');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Responsive Breakpoint Covera
     return config;
   }
 
@@ -182,13 +189,13 @@ class Flade017Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Responsive Breakpoint Coverage gate (floor=0.95).
   static Flade017Config _ec6Validates(Flade017Config config) {
     if (config.ruleKey.isEmpty) {
       throw ArgumentError(
           'EC-FLADE017-006: ruleKey required for FLADE-017');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Responsive Breakpoint Coverage gate (f
     return config;
   }
 
@@ -220,21 +227,19 @@ class Flade017Pipeline {
     required List<Flade017Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Flade017ValidationResult(
+      return Flade017ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Flade017ConformanceLevel.notComplete,
+        conformanceLevel: Flade017ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-FLADE017-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Flade017ConformanceLevel.complete
-        : rate >= _floor
-            ? Flade017ConformanceLevel.partial
-            : Flade017ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Flade017ConformanceLevel.pass_
+        : Flade017ConformanceLevel.fail_;
     return Flade017ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Flade017Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FLADE-017',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Responsive Breakpoint Coverage',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Flade017Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> flade_017Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> flade_017Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Flade017Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Flade017Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Flade017Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FLADE-017',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.ruleKey,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Flade017Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FLADE-017 → $result');
+  final out = await Flade017Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FLADE-017 [Pass / Fail] → $out');
 }

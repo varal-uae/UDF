@@ -1,50 +1,46 @@
 // ============================================================
 // USMBL-017-A05 — User Session & Mobile Behaviour Layer
-// Atomic Step: Deploy Indeterminate Loading State Controls.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     481 of 530
+// Atomic Step:  Deploy Indeterminate Loading State Controls.
+// Metric:       Implementation Completeness & Functional Compliance
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1071 of 1073
 // ============================================================
-// Why this matters: Blocks broken duplicate transaction payloads from heading into ingestion systems due to user button 
-// Mobile impl:      Isolates processing states inside specific component boundaries to keep background layouts responsiv
-// Data requirement: Shift processing button visual surface tones to muted colors to clearly indicate a disabled state.
+// Why:          Blocks broken duplicate transaction payloads from heading into ingestion systems due to user button 
+// Mobile:       Isolates processing states inside specific component boundaries to keep background layouts responsiv
+// col41:        Complete / Partial / Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Usmbl017A05ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Usmbl017A05ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Usmbl017A05ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for USMBL-017-A05.
-/// Fields derived from AISS sheet — User Session & Mobile Behaviour Layer.
+/// USMBL-017-A05 — User Session & Mobile Behaviour Layer
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Usmbl017A05Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,14 +132,14 @@ class Usmbl017A05ValidationResult {
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// USMBL-017-A05: Deploy Indeterminate Loading State Controls.
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Implementation Completeness & Functional Compliance
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Usmbl017A05Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — Bind interface rendering switches directly to transport status states (isLoading). Swap pr
   static Usmbl017A05Config _ec1Execute(Usmbl017A05Config config) {
@@ -163,7 +159,7 @@ class Usmbl017A05Pipeline {
     required List<Usmbl017A05Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Usmbl017A05ValidationResult(
+      return Usmbl017A05ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Usmbl017A05ConformanceLevel.notComplete,
@@ -173,7 +169,7 @@ class Usmbl017A05Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Usmbl017A05ConformanceLevel.complete
         : rate >= _floor
             ? Usmbl017A05ConformanceLevel.partial
@@ -213,19 +209,17 @@ class Usmbl017A05Pipeline {
     if (!triangularCheck(configs.length, p1.length)) {
       throw ArgumentError('EC-USMBL017A05-TRI: triangular check failed for USMBL-017-A05');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-USMBL-017-A05',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Implementation Completeness & Functional Compliance',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -235,9 +229,7 @@ class Usmbl017A05Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> usmbl_017_a05Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -256,6 +248,7 @@ class Usmbl017A05Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Usmbl017A05Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -263,15 +256,13 @@ class Usmbl017A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('USMBL-017-A05',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -280,23 +271,22 @@ class Usmbl017A05Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -322,7 +312,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Usmbl017A05Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('USMBL-017-A05 → $result');
+  final out = await Usmbl017A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('USMBL-017-A05 [Complete / Partial / Not Complete] → $out');
 }

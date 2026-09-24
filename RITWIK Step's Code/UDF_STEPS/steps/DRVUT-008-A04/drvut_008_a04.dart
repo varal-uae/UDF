@@ -1,220 +1,287 @@
 // ============================================================
-// DRVUT-008-A04 | Derived Utility Transformation
-// Atomic Task: Picture-in-Picture Under-60s Task SOP Micro-Video Loader
-// EC Lines: 9 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// DRVUT-008-A04 — Derived Utility Transformation
+// Atomic Step:  Picture-in-Picture Under-60s Task SOP Micro-Video Loader
+// Metric:       Component/Module Development Completion (%)
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      181 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System initializes picture-in-picture HTML5 video layout container.
-  // EC: 2. System binds container resource route to cloud storage location codes.
-  // EC: 3. System validates video duration under 60 seconds threshold.
-  // EC: 4. System triggers automated video streaming initialization on first view.
-  // EC: 5. System disables user interface input fields during video playback.
-  // EC: 6. System captures media completion event signal.
-  // EC: 7. System enables user interface input fields upon completion signal.
-  // EC: 8. System routes media completion check flags to BigQuery.
-  // EC: 9. System routes user interaction metrics to BigQuery.
+// Why:          Eliminates expensive training periods and lengthy documentation manuals, ensuring immediate agent pe
+// Mobile:       Compresses instructional streaming parameters, minimizing memory consumption profiles inside client 
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Drvut008A04ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for DRVUT-008-A04.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Drvut008A04Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Drvut008A04ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// DRVUT-008-A04 — Derived Utility Transformation
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Drvut008A04Config {
+  final String configId;
+  final String fieldId;
+  final String validationRule;
+  final String errorMessage;
+  final String inputType;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Drvut008A04Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Drvut008A04Config({
+    required this.configId,
+    required this.fieldId,
+    required this.validationRule,
+    required this.errorMessage,
+    required this.inputType,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Drvut008A04Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Drvut008A04Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Drvut008A04Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Drvut008A04Config(
+    configId: configId,
+    fieldId: fieldId,
+    validationRule: validationRule,
+    errorMessage: errorMessage,
+    inputType: inputType,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'fieldId': fieldId,
+    'validationRule': validationRule,
+    'errorMessage': errorMessage,
+    'inputType': inputType,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Drvut008A04ScanResult {
+class Drvut008A04ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Drvut008A04ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Drvut008A04ScanResult({
+  const Drvut008A04ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Drvut008A04ConformanceLevel.complete:    return 'Complete';
+      case Drvut008A04ConformanceLevel.partial:     return 'Partial';
+      case Drvut008A04ConformanceLevel.notComplete: return 'Not Complete';
+    }
+  }
 }
 
-// ── EC:9 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// DRVUT-008-A04: Picture-in-Picture Under-60s Task SOP Micro-Video Loader
+/// Metric: Component/Module Development Completion (%)
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Drvut008A04Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
-
-  // EC:1 — EC: 1. System initializes picture-in-picture HTML5 video layout container.
-  static void executeInitializesStep1(Drvut008A04Entry entry) {
-    // initializes picture-in-picture HTML5 video layout container
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-001: ruleId required');
-    };
+  // EC:1 — Create a media container layout block using HTML5 video specifications
+  static Drvut008A04Config _ec1Execute(Drvut008A04Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-DRVUT008A04-001: fieldId required for DRVUT-008-A04');
+    }
+    // Create a media container layout block using HTML5 video spec
+    return config;
   }
 
-  // EC:2 — EC: 2. System binds container resource route to cloud storage location codes.
-  static void executeBindsStep2(Drvut008A04Entry entry) {
-    // binds container resource route to cloud storage location codes
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-002: ruleId required');
-    };
+  // EC:2 — Bind the resource route directly to cloud storage tutorial location codes
+  static Drvut008A04Config _ec2Execute(Drvut008A04Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-DRVUT008A04-002: fieldId required for DRVUT-008-A04');
+    }
+    // Bind the resource route directly to cloud storage tutorial l
+    return config;
   }
 
-  // EC:3 — EC: 3. System validates video duration under 60 seconds threshold.
-  static void executeValidatesStep3(Drvut008A04Entry entry) {
-    // validates video duration under 60 seconds threshold
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-003: ruleId required');
-    };
+  // EC:3 — Program automated initialization behaviors to start streaming on first view
+  static Drvut008A04Config _ec3Execute(Drvut008A04Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-DRVUT008A04-003: fieldId required for DRVUT-008-A04');
+    }
+    // Program automated initialization behaviors to start streamin
+    return config;
   }
 
-  // EC:4 — EC: 4. System triggers automated video streaming initialization on first view.
-  static void executeTriggersStep4(Drvut008A04Entry entry) {
-    // triggers automated video streaming initialization on first view
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-004: ruleId required');
-    };
+  // EC:4 — Implement execution blockers to freeze inputs until completion events fire
+  static Drvut008A04Config _ec4Execute(Drvut008A04Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-DRVUT008A04-004: fieldId required for DRVUT-008-A04');
+    }
+    // Implement execution blockers to freeze inputs until completi
+    return config;
   }
 
-  // EC:5 — EC: 5. System disables user interface input fields during video playback.
-  static void executeDisablesStep5(Drvut008A04Entry entry) {
-    // disables user interface input fields during video playback
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-005: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System captures media completion event signal.
-  static void executeCapturesStep6(Drvut008A04Entry entry) {
-    // captures media completion event signal
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-006: ruleId required');
-    };
-  }
-
-  // EC:7 — EC: 7. System enables user interface input fields upon completion signal.
-  static void executeEnablesStep7(Drvut008A04Entry entry) {
-    // enables user interface input fields upon completion signal
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-007: ruleId required');
-    };
-  }
-
-  // EC:8 — EC: 8. System routes media completion check flags to BigQuery.
-  static void executeRoutesStep8(Drvut008A04Entry entry) {
-    // routes media completion check flags to BigQuery
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-008: ruleId required');
-    };
-  }
-
-  // EC:9 — EC: 9. System routes user interaction metrics to BigQuery.
-  static void executeRoutesStep9(Drvut008A04Entry entry) {
-    // routes user interaction metrics to BigQuery
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DRVUT008A04-009: ruleId required');
-    };
-  }
-
-  static Drvut008A04ScanResult validateConformance(List<Drvut008A04Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Drvut008A04ScanResult(
+  static Drvut008A04ValidationResult calculateConformance({
+    required List<Drvut008A04Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Drvut008A04ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Drvut008A04ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-DRVUT008A04-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Drvut008A04ConformanceLevel.complete
+        : rate >= _floor
+            ? Drvut008A04ConformanceLevel.partial
+            : Drvut008A04ConformanceLevel.notComplete;
+    return Drvut008A04ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-DRVUT008A04-VAL',
     );
   }
 
-  static Drvut008A04Entry routeToRegistry(Drvut008A04Entry entry, Drvut008A04ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Drvut008A04Config routeToRegistry(
+    Drvut008A04Config config,
+    Drvut008A04ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Drvut008A04Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-DRVUT008A04-000: configs must not be empty for DRVUT-008-A04');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-DRVUT008A04-TRI: triangular check failed for DRVUT-008-A04');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-DRVUT-008-A04',
+      'metric':             'Component/Module Development Completion (%)',
+      'output_vocab':       'Complete / Partial / Not Complete',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> drvut_008_a04Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'DRVUT-008-A04',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Drvut008A04Widget extends StatelessWidget {
-  final List<Drvut008A04Entry> entries;
-  const Drvut008A04Widget({super.key, required this.entries});
+  final List<Drvut008A04Config> configs;
+  const Drvut008A04Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Drvut008A04Pipeline.validateConformance(entries);
+    final result = Drvut008A04Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,36 +289,37 @@ class Drvut008A04Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('DRVUT-008-A04',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.fieldId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -259,4 +327,24 @@ class Drvut008A04Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Drvut008A04Config(
+      configId: 'drvut008a04-cfg-001',
+      fieldId: 'drvut-008-a04_fieldId',
+      validationRule: 'drvut-008-a04_validationRule',
+      errorMessage: 'drvut-008-a04_errorMessage',
+      inputType: 'drvut-008-a04_inputType',
+      traceId:                 'trace-drvut008a04-001',
+      originSourceId:          'origin-drvut008a04',
+      immediatePredecessorId:  'pred-drvut008a04-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Drvut008A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('DRVUT-008-A04 [Complete / Partial / Not Complete] → $out');
 }

@@ -1,50 +1,46 @@
 // ============================================================
 // SSTLA-001-A08 — Split-Screen Template Layout Architecture
-// Atomic Step: Split-Screen Contextual Mirror UI Layout Spec -- Define strict parameter constraints for naming prop
-// Metric:      Layout Consistency Score · Floor=7.0 · Optimal=9.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     451 of 530
+// Atomic Step:  Split-Screen Contextual Mirror UI Layout Spec -- Define strict parameter constraints for naming prop
+// Metric:       Decision Confidence Index (1-10 scale) — viewport boundary constraints
+// Floor:        7.0  ·  Optimal: 9.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1008 of 1073
 // ============================================================
-// Why this matters: Enforces a structured data environment, ensuring users can verify records without switching between 
-// Mobile impl:      Adjusts layouts dynamically from side-by-side grids on large viewports to clear stacked views on sma
-// Data requirement: Define viewport boundary constraints (e.g., minimum width of 320dp, optimal 400dp) for the split lay
+// Why:          Enforces a structured data environment, ensuring users can verify records without switching between 
+// Mobile:       Adjusts layouts dynamically from side-by-side grids on large viewports to clear stacked views on sma
+// col41:        High/Medium/Low
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Sstla001A08ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Sstla001A08ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sstla001A08ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SSTLA-001-A08.
-/// Fields derived from AISS sheet — Split-Screen Template Layout Architecture.
+/// SSTLA-001-A08 — Split-Screen Template Layout Architecture
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sstla001A08Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,18 +125,18 @@ class Sstla001A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sstla001A08ConformanceLevel.complete:    return 'Good';
-      case Sstla001A08ConformanceLevel.partial:     return 'Average';
-      case Sstla001A08ConformanceLevel.notComplete: return 'Poor';
+      case Sstla001A08ConformanceLevel.good:    return 'Good';
+      case Sstla001A08ConformanceLevel.average: return 'Average';
+      case Sstla001A08ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SSTLA-001-A08: Split-Screen Contextual Mirror UI Layout Spec -- Define strict parameter constra
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Decision Confidence Index (1-10 scale) — viewport boundary c
+/// Floor=7.0 · Output=Good / Average / Poor
 class Sstla001A08Pipeline {
   static const double _floor   = 7.0;
   static const double _optimal = 9.0;
@@ -193,7 +189,7 @@ class Sstla001A08Pipeline {
     required List<Sstla001A08Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sstla001A08ValidationResult(
+      return Sstla001A08ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sstla001A08ConformanceLevel.notComplete,
@@ -203,11 +199,11 @@ class Sstla001A08Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sstla001A08ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Sstla001A08ConformanceLevel.good
         : rate >= _floor
-            ? Sstla001A08ConformanceLevel.partial
-            : Sstla001A08ConformanceLevel.notComplete;
+            ? Sstla001A08ConformanceLevel.average
+            : Sstla001A08ConformanceLevel.poor;
     return Sstla001A08ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +242,17 @@ class Sstla001A08Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-SSTLA001A08-TRI: triangular check failed for SSTLA-001-A08');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SSTLA-001-A08',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Decision Confidence Index (1-10 scale) — viewport boundary c',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Sstla001A08Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sstla_001_a08Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Sstla001A08Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sstla001A08Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Sstla001A08Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SSTLA-001-A08',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Sstla001A08Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sstla001A08Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SSTLA-001-A08 → $result');
+  final out = await Sstla001A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SSTLA-001-A08 [Good / Average / Poor] → $out');
 }

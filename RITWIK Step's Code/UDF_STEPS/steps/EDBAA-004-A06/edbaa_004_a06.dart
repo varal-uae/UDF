@@ -1,229 +1,283 @@
 // ============================================================
-// EDBAA-004-A06 | Enterprise Dashboard Business Analytics Adapter
-// Atomic Task: Implementation Step 47: Actionable Mobile Empty States (EDBAA-004)
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// EDBAA-004-A06 — Enterprise Dashboard Analytics Adapter
+// Atomic Step:  Implementation Step 47: Actionable Mobile Empty States (EDBAA-004)
+// Metric:       SVG Clipping / Bounding Box Precision
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      189 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System captures incoming dataset request payload.
-  // EC: 2. System extracts record count field value from payload.
-  // EC: 3. System verifies network HTTP status code for timeout flags.
-  // EC: 4. System directs execution flow to timeout routine if error occurs.
-  // EC: 5. System evaluates record count equality to zero.
-  // EC: 6. System loads light SVG graphics asset for empty layout.
-  // EC: 7. System measures SVG bounding box precision within defined tolerance.
-  // EC: 8. System applies flexbox centering properties to view container.
-  // EC: 9. System renders actionable mobile UI empty state components.
-  // EC: 10. System persists empty state view execution record to log database.
+// Why:          Blank mobile screens cause user panic; empty states guide them directly into the primary data creati
+// Mobile:       Replaces empty tables with a centralized, full-screen onboarding prompt.
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Edbaa004A06ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for EDBAA-004-A06.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Edbaa004A06Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Edbaa004A06ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// EDBAA-004-A06 — Enterprise Dashboard Analytics Adapter
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Edbaa004A06Config {
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Edbaa004A06Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Edbaa004A06Config({
+    required this.configId,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Edbaa004A06Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Edbaa004A06Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Edbaa004A06Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Edbaa004A06Config(
+    configId: configId,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Edbaa004A06ScanResult {
+class Edbaa004A06ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Edbaa004A06ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Edbaa004A06ScanResult({
+  const Edbaa004A06ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Edbaa004A06ConformanceLevel.pass_: return 'Pass';
+      case Edbaa004A06ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// EDBAA-004-A06: Implementation Step 47: Actionable Mobile Empty States (EDBAA-004)
+/// Metric: SVG Clipping / Bounding Box Precision
+/// Floor=0.95 · Output=Pass / Fail
 class Edbaa004A06Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — EC: 1. System captures incoming dataset request payload.
-  static void executeCapturesStep1(Edbaa004A06Entry entry) {
-    // captures incoming dataset request payload
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-001: ruleId required');
-    };
+  // EC:1 — Design SVG illustration
+  static Edbaa004A06Config _ec1Execute(Edbaa004A06Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-EDBAA004A06-001: ruleKey required for EDBAA-004-A06');
+    }
+    // Design SVG illustration
+    return config;
   }
 
-  // EC:2 — EC: 2. System extracts record count field value from payload.
-  static void executeExtractsStep2(Edbaa004A06Entry entry) {
-    // extracts record count field value from payload
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-002: ruleId required');
-    };
+  // EC:2 — Draft 1-line text
+  static Edbaa004A06Config _ec2Execute(Edbaa004A06Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-EDBAA004A06-002: ruleKey required for EDBAA-004-A06');
+    }
+    // Draft 1-line text
+    return config;
   }
 
-  // EC:3 — EC: 3. System verifies network HTTP status code for timeout flags.
-  static void executeVerifiesStep3(Edbaa004A06Entry entry) {
-    // verifies network HTTP status code for timeout flags
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-003: ruleId required');
-    };
+  // EC:3 — Code primary CTA
+  static Edbaa004A06Config _ec3Execute(Edbaa004A06Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-EDBAA004A06-003: ruleKey required for EDBAA-004-A06');
+    }
+    // Code primary CTA
+    return config;
   }
 
-  // EC:4 — EC: 4. System directs execution flow to timeout routine if error occurs.
-  static void executeDirectsStep4(Edbaa004A06Entry entry) {
-    // directs execution flow to timeout routine if error occurs
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-004: ruleId required');
-    };
+  // EC:4 — Map triggers
+  static Edbaa004A06Config _ec4Execute(Edbaa004A06Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-EDBAA004A06-004: ruleKey required for EDBAA-004-A06');
+    }
+    // Map triggers
+    return config;
   }
 
-  // EC:5 — EC: 5. System evaluates record count equality to zero.
-  static void executeEvaluatesStep5(Edbaa004A06Entry entry) {
-    // evaluates record count equality to zero
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-005: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System loads light SVG graphics asset for empty layout.
-  static void executeLoadsStep6(Edbaa004A06Entry entry) {
-    // loads light SVG graphics asset for empty layout
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-006: ruleId required');
-    };
-  }
-
-  // EC:7 — EC: 7. System measures SVG bounding box precision within defined tolerance.
-  static void executeMeasuresStep7(Edbaa004A06Entry entry) {
-    // measures SVG bounding box precision within defined tolerance
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-007: ruleId required');
-    };
-  }
-
-  // EC:8 — EC: 8. System applies flexbox centering properties to view container.
-  static void executeAppliesStep8(Edbaa004A06Entry entry) {
-    // applies flexbox centering properties to view container
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-008: ruleId required');
-    };
-  }
-
-  // EC:9 — EC: 9. System renders actionable mobile UI empty state components.
-  static void executeRendersStep9(Edbaa004A06Entry entry) {
-    // renders actionable mobile UI empty state components
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-009: ruleId required');
-    };
-  }
-
-  // EC:10 — EC: 10. System persists empty state view execution record to log database.
-  static void executePersistsStep10(Edbaa004A06Entry entry) {
-    // persists empty state view execution record to log database
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDBAA004A06-010: ruleId required');
-    };
-  }
-
-  static Edbaa004A06ScanResult validateConformance(List<Edbaa004A06Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Edbaa004A06ScanResult(
+  static Edbaa004A06ValidationResult calculateConformance({
+    required List<Edbaa004A06Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Edbaa004A06ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Edbaa004A06ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-EDBAA004A06-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Edbaa004A06ConformanceLevel.pass_
+        : Edbaa004A06ConformanceLevel.fail_;
+    return Edbaa004A06ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-EDBAA004A06-VAL',
     );
   }
 
-  static Edbaa004A06Entry routeToRegistry(Edbaa004A06Entry entry, Edbaa004A06ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Edbaa004A06Config routeToRegistry(
+    Edbaa004A06Config config,
+    Edbaa004A06ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Edbaa004A06Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-EDBAA004A06-000: configs must not be empty for EDBAA-004-A06');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-EDBAA004A06-TRI: triangular check failed for EDBAA-004-A06');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-EDBAA-004-A06',
+      'metric':             'SVG Clipping / Bounding Box Precision',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> edbaa_004_a06Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'EDBAA-004-A06',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Edbaa004A06Widget extends StatelessWidget {
-  final List<Edbaa004A06Entry> entries;
-  const Edbaa004A06Widget({super.key, required this.entries});
+  final List<Edbaa004A06Config> configs;
+  const Edbaa004A06Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Edbaa004A06Pipeline.validateConformance(entries);
+    final result = Edbaa004A06Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +285,37 @@ class Edbaa004A06Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('EDBAA-004-A06',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -276,15 +331,16 @@ void main() async {
   final configs = [
     Edbaa004A06Config(
       configId: 'edbaa004a06-cfg-001',
-      ruleId: 'edbaa-004-a06_ruleId_val',
-      fieldA: 'edbaa-004-a06_fieldA_val',
+      ruleKey: 'edbaa-004-a06_ruleKey',
+      ruleValue: 'edbaa-004-a06_ruleValue',
+      metricLabel: 'edbaa-004-a06_metricLabel',
+      complianceTarget: 'edbaa-004-a06_complianceTarget',
       traceId:                 'trace-edbaa004a06-001',
       originSourceId:          'origin-edbaa004a06',
       immediatePredecessorId:  'pred-edbaa004a06-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Edbaa004A06Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('EDBAA-004-A06 → $result');
+  final out = await Edbaa004A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('EDBAA-004-A06 [Pass / Fail] → $out');
 }

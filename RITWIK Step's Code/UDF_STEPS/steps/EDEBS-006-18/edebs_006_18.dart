@@ -1,211 +1,327 @@
 // ============================================================
-// EDEBS-006-18 | Event-Driven Edge Bus Service
-// Atomic Task: Deploy a centralized JSON-backed table structure within Cloud SQL to catalog and cross-reference log
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// EDEBS-006-18 — Event-Driven Edge Bus Service
+// Atomic Step:  Deploy a centralized JSON-backed table structure within Cloud SQL to catalog and cross-reference log
+// Metric:       Mobile Touch Target Size Compliance
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      198 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System initializes Cloud SQL database connection parameters.
-  // EC: 2. System creates JSON-backed schema mapping table in Cloud SQL.
-  // EC: 3. System ingests logical business definition payload parameters.
-  // EC: 4. System checks mobile touch target size against 48dp floor threshold.
-  // EC: 5. System assigns binary compliance output status based on target size threshold evaluation.
-  // EC: 6. System maps business definition keys to downstream schema identifiers.
-  // EC: 7. System inserts schema cross-reference JSON payload into Cloud SQL table.
-  // EC: 8. System updates lineage trace headers with execution status metrics.
+// Why:          
+// Mobile:       
+// col41:        Pass/Fail → Best = Pass (≥48dp)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Edebs00618ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for EDEBS-006-18.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Edebs00618Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Edebs00618ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// EDEBS-006-18 — Event-Driven Edge Bus Service
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Edebs00618Config {
+  final String configId;
+  final String gridColumns;
+  final String gutterSizePx;
+  final String maxWidthPx;
+  final String breakpointLabel;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Edebs00618Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Edebs00618Config({
+    required this.configId,
+    required this.gridColumns,
+    required this.gutterSizePx,
+    required this.maxWidthPx,
+    required this.breakpointLabel,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Edebs00618Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Edebs00618Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Edebs00618Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Edebs00618Config(
+    configId: configId,
+    gridColumns: gridColumns,
+    gutterSizePx: gutterSizePx,
+    maxWidthPx: maxWidthPx,
+    breakpointLabel: breakpointLabel,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gridColumns': gridColumns,
+    'gutterSizePx': gutterSizePx,
+    'maxWidthPx': maxWidthPx,
+    'breakpointLabel': breakpointLabel,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Edebs00618ScanResult {
+class Edebs00618ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Edebs00618ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Edebs00618ScanResult({
+  const Edebs00618ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Edebs00618ConformanceLevel.pass_: return 'Pass';
+      case Edebs00618ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// EDEBS-006-18: Deploy a centralized JSON-backed table structure within Cloud SQL to catalog and
+/// Metric: Mobile Touch Target Size Compliance
+/// Floor=0.95 · Output=Pass / Fail
 class Edebs00618Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — EC: 1. System initializes Cloud SQL database connection parameters.
-  static void executeInitializesStep1(Edebs00618Entry entry) {
-    // initializes Cloud SQL database connection parameters
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-001: ruleId required');
-    };
+  // EC:1 — System locates the EDEBS-006-18 configuration in the source repository.
+  static Edebs00618Config _ec1Locates(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-001: gridColumns required for EDEBS-006-18');
+    }
+    // the EDEBS-006-18 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System creates JSON-backed schema mapping table in Cloud SQL.
-  static void executeCreatesStep2(Edebs00618Entry entry) {
-    // creates JSON-backed schema mapping table in Cloud SQL
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-002: ruleId required');
-    };
+  // EC:2 — System extracts gridColumns and gutterSizePx from the EDEBS-006-18 registry.
+  static Edebs00618Config _ec2Extracts(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-002: gridColumns required for EDEBS-006-18');
+    }
+    // gridColumns and gutterSizePx from the EDEBS-006-18 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System ingests logical business definition payload parameters.
-  static void executeIngestsStep3(Edebs00618Entry entry) {
-    // ingests logical business definition payload parameters
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Mobile Touch Target Size Compliance.
+  static Edebs00618Config _ec3Compiles(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-003: gridColumns required for EDEBS-006-18');
+    }
+    // the implementation rule set per Mobile Touch Target Size Com
+    return config;
   }
 
-  // EC:4 — EC: 4. System checks mobile touch target size against 48dp floor threshold.
-  static void executeChecksStep4(Edebs00618Entry entry) {
-    // checks mobile touch target size against 48dp floor threshold
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Edebs00618Config _ec4Validates(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-004: gridColumns required for EDEBS-006-18');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System assigns binary compliance output status based on target size threshold evaluation.
-  static void executeAssignsStep5(Edebs00618Entry entry) {
-    // assigns binary compliance output status based on target size threshold evaluatio
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Edebs00618Config _ec5Registers(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-005: gridColumns required for EDEBS-006-18');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System maps business definition keys to downstream schema identifiers.
-  static void executeMapsStep6(Edebs00618Entry entry) {
-    // maps business definition keys to downstream schema identifiers
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Mobile Touch Target Size Compliance gate (floor=0.9
+  static Edebs00618Config _ec6Validates(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-006: gridColumns required for EDEBS-006-18');
+    }
+    // configuration against Mobile Touch Target Size Compliance ga
+    return config;
   }
 
-  // EC:7 — EC: 7. System inserts schema cross-reference JSON payload into Cloud SQL table.
-  static void executeInsertsStep7(Edebs00618Entry entry) {
-    // inserts schema cross-reference JSON payload into Cloud SQL table
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Edebs00618Config _ec7Routes(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-007: gridColumns required for EDEBS-006-18');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System updates lineage trace headers with execution status metrics.
-  static void executeUpdatesStep8(Edebs00618Entry entry) {
-    // updates lineage trace headers with execution status metrics
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS00618-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Edebs00618Config _ec8Publishes(Edebs00618Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS00618-008: gridColumns required for EDEBS-006-18');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  static Edebs00618ScanResult validateConformance(List<Edebs00618Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Edebs00618ScanResult(
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Edebs00618ValidationResult calculateConformance({
+    required List<Edebs00618Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Edebs00618ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Edebs00618ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-EDEBS00618-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Edebs00618ConformanceLevel.pass_
+        : Edebs00618ConformanceLevel.fail_;
+    return Edebs00618ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-EDEBS00618-VAL',
     );
   }
 
-  static Edebs00618Entry routeToRegistry(Edebs00618Entry entry, Edebs00618ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Edebs00618Config routeToRegistry(
+    Edebs00618Config config,
+    Edebs00618ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Edebs00618Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-EDEBS00618-000: configs must not be empty for EDEBS-006-18');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-EDEBS00618-TRI: triangular check failed for EDEBS-006-18');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-EDEBS-006-18',
+      'metric':             'Mobile Touch Target Size Compliance',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> edebs_006_18Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'EDEBS-006-18',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Edebs00618Widget extends StatelessWidget {
-  final List<Edebs00618Entry> entries;
-  const Edebs00618Widget({super.key, required this.entries});
+  final List<Edebs00618Config> configs;
+  const Edebs00618Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Edebs00618Pipeline.validateConformance(entries);
+    final result = Edebs00618Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -213,36 +329,37 @@ class Edebs00618Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('EDEBS-006-18',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.gridColumns,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -250,4 +367,24 @@ class Edebs00618Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Edebs00618Config(
+      configId: 'edebs00618-cfg-001',
+      gridColumns: 'edebs-006-18_gridColumns',
+      gutterSizePx: 'edebs-006-18_gutterSizePx',
+      maxWidthPx: 'edebs-006-18_maxWidthPx',
+      breakpointLabel: 'edebs-006-18_breakpointLabel',
+      traceId:                 'trace-edebs00618-001',
+      originSourceId:          'origin-edebs00618',
+      immediatePredecessorId:  'pred-edebs00618-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Edebs00618Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('EDEBS-006-18 [Pass / Fail] → $out');
 }

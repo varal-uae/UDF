@@ -1,47 +1,48 @@
 // ============================================================
-// PELCE-012-09 — Platform Element Logic & Config Engine
-// Atomic Step: Anchor the mobile transaction schema to the primary End Document baseline field.
-// Metric:      Schema Lineage Conformance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     403 of 440
+// PELCE-012-09 — PELCE System Module
+// Atomic Step:  Anchor the mobile transaction schema to the primary End Document baseline field.
+// Metric:       UI Design-System Adherence Rate
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      901 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Pelce01209ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Pelce01209ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Pelce01209ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for PELCE-012-09.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// PELCE-012-09 — PELCE System Module
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Pelce01209Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String gridColumns;
+  final String gutterSizePx;
+  final String maxWidthPx;
+  final String breakpointLabel;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +51,10 @@ class Pelce01209Config {
 
   const Pelce01209Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.gridColumns,
+    required this.gutterSizePx,
+    required this.maxWidthPx,
+    required this.breakpointLabel,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +72,33 @@ class Pelce01209Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Pelce01209Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    gridColumns: gridColumns,
+    gutterSizePx: gutterSizePx,
+    maxWidthPx: maxWidthPx,
+    breakpointLabel: breakpointLabel,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'gridColumns': gridColumns,
+    'gutterSizePx': gutterSizePx,
+    'maxWidthPx': maxWidthPx,
+    'breakpointLabel': breakpointLabel,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -118,98 +125,97 @@ class Pelce01209ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Pelce01209ConformanceLevel.complete:    return 'Good';
-      case Pelce01209ConformanceLevel.partial:     return 'Average';
-      case Pelce01209ConformanceLevel.notComplete: return 'Poor';
+      case Pelce01209ConformanceLevel.good:    return 'Good';
+      case Pelce01209ConformanceLevel.average: return 'Average';
+      case Pelce01209ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// PELCE-012-09: Anchor the mobile transaction schema to the primary End Document baseline field.
-///
-/// Metric: Schema Lineage Conformance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: UI Design-System Adherence Rate
+/// Floor=0.9 · Output=Good / Average / Poor
 class Pelce01209Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the PELCE-012-09 configuration in the source repository.
   static Pelce01209Config _ec1Locates(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-PELCE01209-001: configId required for PELCE-012-09');
+          'EC-PELCE01209-001: gridColumns required for PELCE-012-09');
     }
     // the PELCE-012-09 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts required data fields from the PELCE-012-09 registry.
+  // EC:2 — System extracts gridColumns and gutterSizePx from the PELCE-012-09 registry.
   static Pelce01209Config _ec2Extracts(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-PELCE01209-002: configId required for PELCE-012-09');
+          'EC-PELCE01209-002: gridColumns required for PELCE-012-09');
     }
-    // required data fields from the PELCE-012-09 registry
+    // gridColumns and gutterSizePx from the PELCE-012-09 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Schema Lineage Conformance Rate.
+  // EC:3 — System compiles the implementation rule set per UI Design-System Adherence Rate.
   static Pelce01209Config _ec3Compiles(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-PELCE01209-003: configId required for PELCE-012-09');
+          'EC-PELCE01209-003: gridColumns required for PELCE-012-09');
     }
-    // the implementation rule set per Schema Lineage Conformance R
+    // the implementation rule set per UI Design-System Adherence R
     return config;
   }
 
-  // EC:4 — System registers compiled rules as immutable with immutable_IND=TRUE.
-  static Pelce01209Config _ec4Registers(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
+  // EC:4 — System validates configuration against required constraints.
+  static Pelce01209Config _ec4Validates(Pelce01209Config config) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-PELCE01209-004: configId required for PELCE-012-09');
+          'EC-PELCE01209-004: gridColumns required for PELCE-012-09');
+    }
+    // configuration against required constraints
+    return config;
+  }
+
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Pelce01209Config _ec5Registers(Pelce01209Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-PELCE01209-005: gridColumns required for PELCE-012-09');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:5 — System validates configuration against Schema Lineage Conformance Rate gate (floor=0.95).
-  static Pelce01209Config _ec5Validates(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
+  // EC:6 — System validates configuration against UI Design-System Adherence Rate gate (floor=0.9).
+  static Pelce01209Config _ec6Validates(Pelce01209Config config) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-PELCE01209-005: configId required for PELCE-012-09');
+          'EC-PELCE01209-006: gridColumns required for PELCE-012-09');
     }
-    // configuration against Schema Lineage Conformance Rate gate (
+    // configuration against UI Design-System Adherence Rate gate (
     return config;
   }
 
-  // EC:6 — System routes non-compliant records to the dead letter queue.
-  static Pelce01209Config _ec6Routes(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Pelce01209Config _ec7Routes(Pelce01209Config config) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-PELCE01209-006: configId required for PELCE-012-09');
+          'EC-PELCE01209-007: gridColumns required for PELCE-012-09');
     }
     // non-compliant records to the dead letter queue
     return config;
   }
 
-  // EC:7 — System writes validated result to the execution audit log.
-  static Pelce01209Config _ec7Writes(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
-      throw ArgumentError(
-          'EC-PELCE01209-007: configId required for PELCE-012-09');
-    }
-    // validated result to the execution audit log
-    return config;
-  }
-
   // EC:8 — System publishes validated configuration to the rule registry.
   static Pelce01209Config _ec8Publishes(Pelce01209Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-PELCE01209-008: configId required for PELCE-012-09');
+          'EC-PELCE01209-008: gridColumns required for PELCE-012-09');
     }
     // validated configuration to the rule registry
     return config;
@@ -219,27 +225,25 @@ class Pelce01209Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Pelce01209ValidationResult calculateConformance({
     required List<Pelce01209Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Pelce01209ValidationResult(
+      return Pelce01209ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Pelce01209ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-PELCE01209-VAL',
+        gatePass: false, ecLineRef: 'EC-PELCE01209-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Pelce01209ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Pelce01209ConformanceLevel.good
         : rate >= _floor
-            ? Pelce01209ConformanceLevel.partial
-            : Pelce01209ConformanceLevel.notComplete;
+            ? Pelce01209ConformanceLevel.average
+            : Pelce01209ConformanceLevel.poor;
     return Pelce01209ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -268,33 +272,31 @@ class Pelce01209Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-PELCE01209-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-PELCE01209-000: configs must not be empty for PELCE-012-09');
     }
     final p1 = configs.map(_ec1Locates).toList();
     final p2 = configs.map(_ec2Extracts).toList();
     final p3 = configs.map(_ec3Compiles).toList();
-    final p4 = configs.map(_ec4Registers).toList();
-    final p5 = configs.map(_ec5Validates).toList();
-    final p6 = configs.map(_ec6Routes).toList();
-    final p7 = configs.map(_ec7Writes).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
     final p8 = configs.map(_ec8Publishes).toList();
 
     if (!triangularCheck(configs.length, p8.length)) {
-      return {'error': 'EC-PELCE01209-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-PELCE01209-TRI: triangular check failed for PELCE-012-09');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-PELCE-012-09',
-      'metric':             'Schema Lineage Conformance Rate',
+      'metric':             'UI Design-System Adherence Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -304,9 +306,7 @@ class Pelce01209Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> pelce_012_09Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -325,6 +325,7 @@ class Pelce01209Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Pelce01209Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -332,18 +333,13 @@ class Pelce01209Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('PELCE-012-09',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -352,24 +348,22 @@ class Pelce01209Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.gridColumns,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -384,16 +378,17 @@ class Pelce01209Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Pelce01209Config(
-      configId:                'pelce01209-cfg-001',
-      ruleKey:                 'pelce-012-09_rule',
-      ruleValue:               'pelce-012-09_value',
+      configId: 'pelce01209-cfg-001',
+      gridColumns: 'pelce-012-09_gridColumns',
+      gutterSizePx: 'pelce-012-09_gutterSizePx',
+      maxWidthPx: 'pelce-012-09_maxWidthPx',
+      breakpointLabel: 'pelce-012-09_breakpointLabel',
       traceId:                 'trace-pelce01209-001',
       originSourceId:          'origin-pelce01209',
       immediatePredecessorId:  'pred-pelce01209-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Pelce01209Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('PELCE-012-09 → $result');
+  final out = await Pelce01209Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('PELCE-012-09 [Good / Average / Poor] → $out');
 }

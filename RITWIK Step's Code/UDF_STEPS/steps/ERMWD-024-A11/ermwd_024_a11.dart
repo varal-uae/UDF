@@ -1,31 +1,38 @@
 // ============================================================
 // ERMWD-024-A11 — Error Mapping & Widget Display
-// Atomic Step: Design MTOI Single-Action Mobile Interface.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     578 of 1073
+// Atomic Step:  Design MTOI Single-Action Mobile Interface.
+// Metric:       Implementation Completeness & Functional Compliance
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      207 of 1073
 // ============================================================
-// Why this matters: Enforces zero decision-making. Perfectly suited for mobile gig-workers to execute micro-tasks instan
-// Mobile impl:      
-// Data requirement: Connect submission events to push clean data entries straight into processing queues.
+// Why:          Enforces zero decision-making. Perfectly suited for mobile gig-workers to execute micro-tasks instan
+// Mobile:       
+// col41:        Complete / Partial / Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Ermwd024A11ConformanceLevel { complete, partial, notComplete }
-enum Ermwd024A11ExecutionStatus  { pending, running, complete, failed }
+enum Ermwd024A11ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Ermwd024A11ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for ERMWD-024-A11.
-/// Fields derived from AISS sheet — Error Mapping & Widget Display.
+/// ERMWD-024-A11 — Error Mapping & Widget Display
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ermwd024A11Config {
   final String configId;
@@ -35,6 +42,7 @@ class Ermwd024A11Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -124,12 +132,13 @@ class Ermwd024A11ValidationResult {
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// ERMWD-024-A11: Design MTOI Single-Action Mobile Interface.
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Implementation Completeness & Functional Compliance
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Ermwd024A11Pipeline {
-  static const double _floor   = 0.95;
+  static const double _floor   = 0.9;
   static const double _optimal = 1.0;
 
   // EC:1 — 1) Visually crop the Byt image to remove context. 2) Provide exactly one input box. 3) App
@@ -150,7 +159,7 @@ class Ermwd024A11Pipeline {
     required List<Ermwd024A11Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ermwd024A11ValidationResult(
+      return Ermwd024A11ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ermwd024A11ConformanceLevel.notComplete,
@@ -160,7 +169,7 @@ class Ermwd024A11Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ermwd024A11ConformanceLevel.complete
         : rate >= _floor
             ? Ermwd024A11ConformanceLevel.partial
@@ -203,14 +212,14 @@ class Ermwd024A11Pipeline {
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ERMWD-024-A11',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Implementation Completeness & Functional Compliance',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -219,7 +228,8 @@ class Ermwd024A11Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> ermwd_024_a11Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> ermwd_024_a11Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -238,6 +248,7 @@ class Ermwd024A11Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ermwd024A11Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,30 +256,35 @@ class Ermwd024A11Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('ERMWD-024-A11',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -296,6 +312,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ermwd024A11Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('ERMWD-024-A11 → $result');
+  final out = await Ermwd024A11Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ERMWD-024-A11 [Complete / Partial / Not Complete] → $out');
 }

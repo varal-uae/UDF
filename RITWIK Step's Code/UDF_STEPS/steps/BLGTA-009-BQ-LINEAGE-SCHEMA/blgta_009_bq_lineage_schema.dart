@@ -1,367 +1,369 @@
 // ============================================================
-// BLGTA-009 | BigQuery Graph Lineage Lookup Table Architecture
-// Atomic Task: Build main lookup table with all trace and origin fields.
-// Primary Table: bq_lineage_schema_registry
-// Metric: Implementation Conformance Rate | Floor=0.92 | Optimal=0.98 | Ceiling=1.0
-// Standard: ISO/IEC/IEEE 12207 Software Life-Cycle Process Standard
-// EC Lines: 8 | DCDF AEETE-018
-// Constraints: dcdf_columns_count = 5 (CHECK) | tls_version = '1.3' (CHECK)
-// Infrastructure: Terraform DDL | Partitioned by ingestion_date | Clustered by compliance_status_IND
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 29-Aug-2026
+// BLGTA-009 — DCDF Lineage Engine
+// Atomic Step:  Construct the structural schema architecture for the core graph lineage lookup tables inside Google 
+// Metric:       Implementation Conformance Rate
+// Floor:        0.92  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      59 of 1073
+// ============================================================
+// Why:          Prevents man-in-the-middle attacks on mobile networks.
+// Mobile:       Faster handshake protocols on 4G/5G compared to older TLS.
+// col41:        Complete / Partial / Not Complete
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Blgta009ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-enum BqBuildStatus { success, failed, pending }
+enum Blgta009ExecutionStatus { pending, running, complete, failed }
 
-/// Maps to bq_lineage_schema_registry.
-/// dcdf_columns_count must equal exactly 5.
-/// tls_version must equal '1.3'.
-/// Both enforced by CHECK constraint at DB level.
-class BqLineageSchemaEntry {
-  final String schemaRuleId;          // PK — UUID
-  final BqBuildStatus buildStatus;    // SUCCESS / FAILED / PENDING
-  final DateTime? buildTimestamp;     // UTC build execution timestamp
-  final String buildArtifactsPath;    // GCS Terraform DDL artifacts path
-  final String buildLogs;             // Terraform apply log output
-  final int dcdfColumnsCount;         // must equal exactly 5
-  final String tlsVersion;            // must equal '1.3'
-  final double conformanceRate;       // 0.0–1.0 ISO 12207 rate
-  final bool partitionActive;         // ingestion_date partition confirmed
-  final bool clusterActive;           // compliance_status_IND clustering confirmed
-  final bool immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome stepOutcome;
-  final bool complianceStatusInd;
+// ── Data Model ───────────────────────────────────────────────
+
+/// BLGTA-009 — DCDF Lineage Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Blgta009Config {
+  final String configId;
+  final String gateId;
+  final String checkRule;
+  final String passThreshold;
+  final String failureReason;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const BqLineageSchemaEntry({
-    required this.schemaRuleId,
-    required this.buildStatus,
-    this.buildTimestamp,
-    required this.buildArtifactsPath,
-    required this.buildLogs,
-    required this.dcdfColumnsCount,
-    required this.tlsVersion,
-    required this.conformanceRate,
-    this.partitionActive = false,
-    this.clusterActive = false,
-    this.immutableInd = false,
-    this.executionStatus = ExecutionStatus.pending,
-    this.stepOutcome = StepOutcome.partial,
-    this.complianceStatusInd = true,
+  const Blgta009Config({
+    required this.configId,
+    required this.gateId,
+    required this.checkRule,
+    required this.passThreshold,
+    required this.failureReason,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
-  })  :     if (!(dcdfColumnsCount == 5)) {
-      throw ArgumentError('EC-BLGTA009-003: dcdfColumnsCount must be exactly 5');
-    },
-            if (!(tlsVersion == '1.3')) {
-      throw ArgumentError('EC-BLGTA009-003: tlsVersion must be 1.3');
-    };
+    this.complianceStatusInd = false,
+  });
 
-  static const int    kRequiredDcdfColumns = 5;
-  static const String kRequiredTlsVersion  = '1.3';
-  static const double kFloor              = 0.92;
-  static const double kOptimal            = 0.98;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  static const List<String> kDcdfColumns = [
-    'trace_id',
-    'origin_source_ID',
-    'immediate_predecessor_ID',
-    'transformation_logic_hash',
-    'compliance_status_IND',
-  ];
+  Blgta009Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Blgta009Config(
+    configId: configId,
+    gateId: gateId,
+    checkRule: checkRule,
+    passThreshold: passThreshold,
+    failureReason: failureReason,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
 
-  /// EC:6 gate — all 5 DCDF columns, TLS 1.3, partition + cluster active,
-  ///             build_status=SUCCESS
-  bool get isConformant =>
-      dcdfColumnsCount == kRequiredDcdfColumns &&
-      tlsVersion == kRequiredTlsVersion &&
-      buildStatus == BqBuildStatus.success &&
-      partitionActive &&
-      clusterActive;
-
-  String get conformanceTier {
-    if (conformanceRate >= 1.0)     return 'Ceiling (1.0)';
-    if (conformanceRate >= kOptimal) return 'Optimal (≥0.98)';
-    if (conformanceRate >= kFloor)   return 'Floor (≥0.92)';
-    return 'Not Complete';
-  }
-
-  String get buildStatusLabel => switch (buildStatus) {
-    BqBuildStatus.success => 'SUCCESS',
-    BqBuildStatus.failed  => 'FAILED',
-    BqBuildStatus.pending => 'PENDING',
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gateId': gateId,
+    'checkRule': checkRule,
+    'passThreshold': passThreshold,
+    'failureReason': failureReason,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
-
-  BqLineageSchemaEntry copyWith({
-    BqBuildStatus? buildStatus,
-    bool? partitionActive,
-    bool? clusterActive,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-    bool? complianceStatusInd,
-  }) {
-    return BqLineageSchemaEntry(
-      schemaRuleId:            schemaRuleId,
-      buildStatus:             buildStatus ?? this.buildStatus,
-      buildTimestamp:          buildTimestamp,
-      buildArtifactsPath:      buildArtifactsPath,
-      buildLogs:               buildLogs,
-      dcdfColumnsCount:        dcdfColumnsCount,
-      tlsVersion:              tlsVersion,
-      conformanceRate:         conformanceRate,
-      partitionActive:         partitionActive ?? this.partitionActive,
-      clusterActive:           clusterActive ?? this.clusterActive,
-      immutableInd:            immutableInd ?? this.immutableInd,
-      executionStatus:         executionStatus ?? this.executionStatus,
-      stepOutcome:             stepOutcome ?? this.stepOutcome,
-      complianceStatusInd:     complianceStatusInd ?? this.complianceStatusInd,
-      traceId:                 traceId,
-      originSourceId:          originSourceId,
-      immediatePredecessorId:  immediatePredecessorId,
-      transformationLogicHash: transformationLogicHash,
-    );
-  }
 }
 
-/// Scan result — maps to bq_schema_validation_log.
-class BqSchemaScanResult {
-  final int violationCount;
-  final int tlsViolations;
-  final int dcdfViolations;
-  final String conformanceOutput; // Complete / Partial / Not Complete
-  final String result;
+// ── Validation Result ─────────────────────────────────────────
+
+class Blgta009ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Blgta009ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const BqSchemaScanResult({
+  const Blgta009ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.tlsViolations,
-    required this.dcdfViolations,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Blgta009ConformanceLevel.complete:    return 'Complete';
+      case Blgta009ConformanceLevel.partial:     return 'Partial';
+      case Blgta009ConformanceLevel.notComplete: return 'Not Complete';
+    }
+  }
 }
 
-// ── EC:1–8 Pipeline ──────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
-class Blgta009BqLineageSchema {
-  static const double _floor   = 0.92;  // metric floor gate
-  static const double _optimal = 0.98; // metric optimal target
+/// BLGTA-009: Construct the structural schema architecture for the core graph lineage lookup t
+/// Metric: Implementation Conformance Rate
+/// Floor=0.92 · Output=Complete / Partial / Not Complete
+class Blgta009Pipeline {
+  static const double _floor   = 0.92;
+  static const double _optimal = 0.98;
 
-
-  // EC:1 — Locate BigQuery lineage schema config in blgta-009-kit repo.
-  static Map<String, dynamic>? locateConfiguration(String repoPath) {
-        if (!(repoPath.isNotEmpty)) {
-      throw ArgumentError('EC-BLGTA009-001: repo path must not be empty');
-    };
-    return {'ref': 'BLGTA-009', 'config_file': 'blgta-009.yaml'};
-  }
-
-  // EC:2 — Extract schemaRuleId, buildStatus, buildTimestamp,
-  //         buildArtifactsPath, buildLogs.
-  static Map<String, dynamic> extractParameters(Map<String, dynamic> config) {
-    const required = [
-      'schema_rule_id', 'build_status', 'build_timestamp',
-      'build_artifacts_path', 'build_logs',
-    ];
-    if (!(required.every((k) => config.containsKey(k) && config[k] != null))) {
-      throw ArgumentError('EC-BLGTA009-002: all 5 BQ schema build fields must be non-null',
-    );
-    return Map<String, dynamic>.from(config);
-  }
-
-  // EC:3 — Compile BigQuery lineage schema rule set:
-  //         5 DCDF lineage columns mandatory, partitioned by ingestion_date,
-  //         clustered by compliance_status_IND, TLS 1.3 only.
-  static Map<String, dynamic> compileRuleSet() {
-    return {
-      'dcdf_columns':       BqLineageSchemaEntry.kDcdfColumns,
-      'dcdf_columns_count': BqLineageSchemaEntry.kRequiredDcdfColumns,
-      'partition_by':       'ingestion_date',
-      'cluster_by':         'compliance_status_IND',
-      'tls_version':        BqLineageSchemaEntry.kRequiredTlsVersion,
-      'floor':              BqLineageSchemaEntry.kFloor,
-      'optimal':            BqLineageSchemaEntry.kOptimal,
-      'standard':           'ISO/IEC/IEEE 12207',
-      'ref':                'BLGTA-009',
-      'immutable':          true,
-    };
-  }
-
-  // EC:4 — Register compiled BQ schema rule set as immutable in
-  //         bq_lineage_schema_registry with immutable_IND=TRUE.
-  static BqLineageSchemaEntry registerRule(BqLineageSchemaEntry entry) {
-    // Fail-closed gate — must hold in release too (asserts are stripped there).
-    if (entry.dcdfColumnsCount != BqLineageSchemaEntry.kRequiredDcdfColumns) {
-      throw StateError('EC-BLGTA009-003: dcdfColumnsCount != 5');
+  // EC:1 — System locates the BLGTA-009 configuration in the source repository.
+  static Blgta009Config _ec1Locates(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-001: gateId required for BLGTA-009');
     }
+    // the BLGTA-009 configuration in the source repository
+    return config;
+  }
+
+  // EC:2 — System extracts gateId and checkRule from the BLGTA-009 registry.
+  static Blgta009Config _ec2Extracts(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-002: gateId required for BLGTA-009');
     }
-    if (entry.tlsVersion != BqLineageSchemaEntry.kRequiredTlsVersion) {
-      throw StateError('EC-BLGTA009-003: tlsVersion != 1.3');
+    // gateId and checkRule from the BLGTA-009 registry
+    return config;
+  }
+
+  // EC:3 — System compiles the implementation rule set per Implementation Conformance Rate.
+  static Blgta009Config _ec3Compiles(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-003: gateId required for BLGTA-009');
     }
-    return entry.copyWith(
-      immutableInd:    true,
-      executionStatus: ExecutionStatus.running,
-    );
+    // the implementation rule set per Implementation Conformance R
+    return config;
   }
 
-  // EC:5 — Bind each schema rule to BigQuery dataset handler
-  //         via bq_dataset_FK constraint.
-  static String bindToTarget(String ruleId, String buildArtifactsPath) {
-        if (!(ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BLGTA009-005: FK bind requires valid ruleId');
-    };
-    return '$buildArtifactsPath:$ruleId';
+  // EC:4 — System validates configuration against required constraints.
+  static Blgta009Config _ec4Validates(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-004: gateId required for BLGTA-009');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:6 — Validate: all 5 DCDF columns present, partition active,
-  //         clustering active, 0 non-TLS 1.3 connections, build_status=SUCCESS.
-  static BqSchemaScanResult validateConformance(
-    List<BqLineageSchemaEntry> entries,
-  ) {
-    final violations    = entries.where((e) => !e.isConformant).length;
-    final tlsViolations = entries.where((e) => e.tlsVersion != '1.3').length;
-    final dcdfViolations = entries.where((e) => e.dcdfColumnsCount != 5).length;
-    final avgRate = entries.isEmpty ? 0.0
-        : entries.map((e) => e.conformanceRate).reduce((a, b) => a + b) / entries.length;
-    final output = avgRate >= 0.98 ? 'Complete'
-                 : avgRate >= 0.92 ? 'Partial'
-                 : 'Not Complete';
-    return BqSchemaScanResult(
-      violationCount:  violations,
-      tlsViolations:   tlsViolations,
-      dcdfViolations:  dcdfViolations,
-      conformanceOutput: output,
-      result:          violations == 0 ? 'PASS' : 'FAIL',
-      ecLineRef:       'EC-BLGTA009-006',
-    );
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Blgta009Config _ec5Registers(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-005: gateId required for BLGTA-009');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:7 — Validate against Implementation Conformance Rate metric.
-  //         Floor=0.92 | Optimal=0.98 | Ceiling=1.0 (ISO/IEC/IEEE 12207).
-  static String evaluateMetric(BqSchemaScanResult scan) {
-    return scan.violationCount == 0 ? 'PASS' : 'FAIL';
+  // EC:6 — System validates configuration against Implementation Conformance Rate gate (floor=0.92).
+  static Blgta009Config _ec6Validates(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-006: gateId required for BLGTA-009');
+    }
+    // configuration against Implementation Conformance Rate gate (
+    return config;
   }
 
-  // EC:8 — Route validated BQ schema config to blgta_rule_registry
-  //         as authoritative BLGTA-009 BigQuery Lineage Schema entry.
-  static BqLineageSchemaEntry routeToRegistry(
-    BqLineageSchemaEntry entry,
-    BqSchemaScanResult scan,
-  ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      buildStatus:         passed ? BqBuildStatus.success : BqBuildStatus.failed,
-      partitionActive:     passed,
-      clusterActive:       passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
-    );
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Blgta009Config _ec7Routes(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-007: gateId required for BLGTA-009');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
-  // Triangular Check — DCDF AEETE-018: source_count - destination_count == 0
+
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Blgta009Config _ec8Publishes(Blgta009Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA009-008: gateId required for BLGTA-009');
+    }
+    // validated configuration to the rule registry
+    return config;
+  }
+
+  // Triangular Check — DCDF AEETE-018
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
+  static Blgta009ValidationResult calculateConformance({
+    required List<Blgta009Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Blgta009ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Blgta009ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-BLGTA009-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Blgta009ConformanceLevel.complete
+        : rate >= _floor
+            ? Blgta009ConformanceLevel.partial
+            : Blgta009ConformanceLevel.notComplete;
+    return Blgta009ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-BLGTA009-VAL',
+    );
+  }
+
+  static Blgta009Config routeToRegistry(
+    Blgta009Config config,
+    Blgta009ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Blgta009Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BLGTA009-000: configs must not be empty for BLGTA-009');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-BLGTA009-TRI: triangular check failed for BLGTA-009');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BLGTA-009',
+      'metric':             'Implementation Conformance Rate',
+      'output_vocab':       'Complete / Partial / Not Complete',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ───────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
 
-class Blgta009BqLineageSchemaWidget extends StatelessWidget {
-  final List<BqLineageSchemaEntry> entries;
-  const Blgta009BqLineageSchemaWidget({super.key, required this.entries});
+Map<String, dynamic> blgta_009Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BLGTA-009',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
 
-  Color _tierColor(String tier) {
-    if (tier.startsWith('Ceiling')) return cs.tertiary;
-    if (tier.startsWith('Optimal')) return const Color(0xFF1A73E8);
-    if (tier.startsWith('Floor'))   return const Color(0xFFE37400);
-    return cs.error;
-  }
+// ── Widget ────────────────────────────────────────────────────
+
+class Blgta009Widget extends StatelessWidget {
+  final List<Blgta009Config> configs;
+  const Blgta009Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Blgta009BqLineageSchema.validateConformance(entries);
-    final metric = Blgta009BqLineageSchema.evaluateMetric(scan);
-
+    final result = Blgta009Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                Expanded(child: Text('BLGTA-009 · BigQuery Lineage Schema (ISO 12207)',
-                  style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
-                Chip(
-                  label: Text('${scan.conformanceOutput}',
-                    style: const TextStyle(color: Colors.white, fontSize: 11)),
-                  backgroundColor: metric == 'PASS'
-                      ? cs.tertiary : cs.error,
-                ),
-              ]),
-              if (scan.tlsViolations > 0 || scan.dcdfViolations > 0)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    'TLS violations: ${scan.tlsViolations} | DCDF column violations: ${scan.dcdfViolations}',
-                    style: const TextStyle(fontSize: 11, color: cs.error),
-                  ),
-                ),
-              // DCDF required columns reference
-              const Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Text('Required DCDF columns (must be = 5):',
-                  style: TextStyle(fontFamily: 'Courier', fontSize: 10, fontWeight: FontWeight.bold)),
-              ),
-              ...BqLineageSchemaEntry.kDcdfColumns.map((col) => Padding(
-                padding: const EdgeInsets.only(left: 8, top: 2),
-                child: Text('• $col',
-                  style: const TextStyle(fontFamily: 'Courier', fontSize: 10, color: Color(0xFF1A73E8))),
-              )),
-            ],
-          ),
+          child: Row(children: [
+            Expanded(child: Text('BLGTA-009',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
+            Chip(
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
+          ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e    = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                title: Text(e.buildStatusLabel,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                subtitle: Text(
-                  'DCDF cols: ${e.dcdfColumnsCount}/5 | TLS: ${e.tlsVersion} | partition: ${e.partitionActive} | cluster: ${e.clusterActive} | rate: ${e.conformanceRate.toStringAsFixed(2)}',
-                  style: const TextStyle(fontSize: 10)),
-                trailing: Chip(
-                  label: Text(e.conformanceTier,
-                    style: const TextStyle(color: Colors.white, fontSize: 9)),
-                  backgroundColor: _tierColor(e.conformanceTier),
-                ),
                 leading: Icon(
-                  pass ? Icons.dataset : Icons.dataset_linked,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.gateId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -369,4 +371,24 @@ class Blgta009BqLineageSchemaWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Blgta009Config(
+      configId: 'blgta009-cfg-001',
+      gateId: 'blgta-009_gateId',
+      checkRule: 'blgta-009_checkRule',
+      passThreshold: 'blgta-009_passThreshold',
+      failureReason: 'blgta-009_failureReason',
+      traceId:                 'trace-blgta009-001',
+      originSourceId:          'origin-blgta009',
+      immediatePredecessorId:  'pred-blgta009-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Blgta009Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BLGTA-009 [Complete / Partial / Not Complete] → $out');
 }

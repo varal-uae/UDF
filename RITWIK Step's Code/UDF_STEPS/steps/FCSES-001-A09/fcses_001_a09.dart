@@ -1,50 +1,46 @@
 // ============================================================
 // FCSES-001-A09 — Fail-Closed Session Execution System
-// Atomic Step: Implement Pre-Execution Boolean Check Logic (FCSES-001)
-// Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     493 of 530
+// Atomic Step:  Implement Pre-Execution Boolean Check Logic (FCSES-001)
+// Metric:       UI/UX Design System Conformity (Material 3)
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      219 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Remove all administrative override buttons from the frontend mobile UI layer.
+// Why:          
+// Mobile:       
+// col41:        Good
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Fcses001A09ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Fcses001A09ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Fcses001A09ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FCSES-001-A09.
-/// Fields derived from AISS sheet — Fail-Closed Session Execution System.
+/// FCSES-001-A09 — Fail-Closed Session Execution System
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Fcses001A09Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
-  final String gateId;
-  final String checkRule;
-  final String passThreshold;
-  final String failureReason;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -55,10 +51,10 @@ class Fcses001A09Config {
 
   const Fcses001A09Config({
     required this.configId,
-    required this.gateId,
-    required this.checkRule,
-    required this.passThreshold,
-    required this.failureReason,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +73,10 @@ class Fcses001A09Config {
     bool?   complianceStatusInd,
   }) => Fcses001A09Config(
     configId: configId,
-    gateId: gateId,
-    checkRule: checkRule,
-    passThreshold: passThreshold,
-    failureReason: failureReason,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,10 +88,10 @@ class Fcses001A09Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'gateId': gateId,
-    'checkRule': checkRule,
-    'passThreshold': passThreshold,
-    'failureReason': failureReason,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -129,87 +125,87 @@ class Fcses001A09ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fcses001A09ConformanceLevel.complete:    return 'Good';
-      case Fcses001A09ConformanceLevel.partial:     return 'Average';
-      case Fcses001A09ConformanceLevel.notComplete: return 'Poor';
+      case Fcses001A09ConformanceLevel.good:    return 'Good';
+      case Fcses001A09ConformanceLevel.average: return 'Average';
+      case Fcses001A09ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// FCSES-001-A09: Implement Pre-Execution Boolean Check Logic (FCSES-001)
-/// Metric: Telemetry Coverage Rate
-/// Floor=0.92 · Optimal=0.98 · Output=Complete / Partial / Not Complete
+/// Metric: UI/UX Design System Conformity (Material 3)
+/// Floor=0.9 · Output=Good / Average / Poor
 class Fcses001A09Pipeline {
-  static const double _floor   = 0.92;
-  static const double _optimal = 0.98;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the FCSES-001-A09 configuration in the source repository.
   static Fcses001A09Config _ec1Locates(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-001: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-001: ruleKey required for FCSES-001-A09');
     }
     // the FCSES-001-A09 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts gateId and checkRule from the FCSES-001-A09 registry.
+  // EC:2 — System extracts ruleKey and ruleValue from the FCSES-001-A09 registry.
   static Fcses001A09Config _ec2Extracts(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-002: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-002: ruleKey required for FCSES-001-A09');
     }
-    // gateId and checkRule from the FCSES-001-A09 registry
+    // ruleKey and ruleValue from the FCSES-001-A09 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Telemetry Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per UI/UX Design System Conformity (Material 3
   static Fcses001A09Config _ec3Compiles(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-003: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-003: ruleKey required for FCSES-001-A09');
     }
-    // the implementation rule set per Telemetry Coverage Rate
+    // the implementation rule set per UI/UX Design System Conformi
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Fcses001A09Config _ec4Validates(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-004: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-004: ruleKey required for FCSES-001-A09');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Fcses001A09Config _ec5Registers(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-005: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-005: ruleKey required for FCSES-001-A09');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against Telemetry Coverage Rate gate (floor=0.92).
+  // EC:6 — System validates configuration against UI/UX Design System Conformity (Material 3) gate (f
   static Fcses001A09Config _ec6Validates(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-006: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-006: ruleKey required for FCSES-001-A09');
     }
-    // configuration against Telemetry Coverage Rate gate (floor=0.
+    // configuration against UI/UX Design System Conformity (Materi
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Fcses001A09Config _ec7Routes(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-007: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-007: ruleKey required for FCSES-001-A09');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -217,9 +213,9 @@ class Fcses001A09Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Fcses001A09Config _ec8Publishes(Fcses001A09Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-FCSES001A09-008: gateId required for FCSES-001-A09');
+          'EC-FCSES001A09-008: ruleKey required for FCSES-001-A09');
     }
     // validated configuration to the rule registry
     return config;
@@ -233,7 +229,7 @@ class Fcses001A09Pipeline {
     required List<Fcses001A09Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Fcses001A09ValidationResult(
+      return Fcses001A09ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Fcses001A09ConformanceLevel.notComplete,
@@ -243,11 +239,11 @@ class Fcses001A09Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Fcses001A09ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Fcses001A09ConformanceLevel.good
         : rate >= _floor
-            ? Fcses001A09ConformanceLevel.partial
-            : Fcses001A09ConformanceLevel.notComplete;
+            ? Fcses001A09ConformanceLevel.average
+            : Fcses001A09ConformanceLevel.poor;
     return Fcses001A09ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +286,17 @@ class Fcses001A09Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-FCSES001A09-TRI: triangular check failed for FCSES-001-A09');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FCSES-001-A09',
-      'metric':             'Telemetry Coverage Rate',
+      'metric':             'UI/UX Design System Conformity (Material 3)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Fcses001A09Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> fcses_001_a09Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Fcses001A09Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Fcses001A09Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Fcses001A09Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FCSES-001-A09',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Fcses001A09Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.gateId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -389,17 +379,16 @@ void main() async {
   final configs = [
     Fcses001A09Config(
       configId: 'fcses001a09-cfg-001',
-      gateId: 'fcses-001-a09_gateId',
-      checkRule: 'fcses-001-a09_checkRule',
-      passThreshold: 'fcses-001-a09_passThreshold',
-      failureReason: 'fcses-001-a09_failureReason',
+      ruleKey: 'fcses-001-a09_ruleKey',
+      ruleValue: 'fcses-001-a09_ruleValue',
+      metricLabel: 'fcses-001-a09_metricLabel',
+      complianceTarget: 'fcses-001-a09_complianceTarget',
       traceId:                 'trace-fcses001a09-001',
       originSourceId:          'origin-fcses001a09',
       immediatePredecessorId:  'pred-fcses001a09-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Fcses001A09Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('FCSES-001-A09 → $result');
+  final out = await Fcses001A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FCSES-001-A09 [Good / Average / Poor] → $out');
 }

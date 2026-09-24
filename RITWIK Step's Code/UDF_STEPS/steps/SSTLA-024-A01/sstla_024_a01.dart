@@ -1,50 +1,46 @@
 // ============================================================
 // SSTLA-024-A01 — Split-Screen Template Layout Architecture
-// Atomic Step: Formulate the responsive container constraints and component positioning rules to wrap input fields 
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     518 of 530
+// Atomic Step:  Formulate the responsive container constraints and component positioning rules to wrap input fields 
+// Metric:       Requirement & Asset Discovery Coverage (%) — low-resolution target dis
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1016 of 1073
 // ============================================================
-// Why this matters: Fixed layouts distort on small phones, hiding critical text and causing user fatigue or data selecti
-// Mobile impl:      Replaces desktop multi-column grids with fluid vertical blocks engineered explicitly for thumb scrol
-// Data requirement: Identify low-resolution target display specifications (e.g., 320px width, low DPI screens).
+// Why:          Fixed layouts distort on small phones, hiding critical text and causing user fatigue or data selecti
+// Mobile:       Replaces desktop multi-column grids with fluid vertical blocks engineered explicitly for thumb scrol
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Sstla024A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Sstla024A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sstla024A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SSTLA-024-A01.
-/// Fields derived from AISS sheet — Split-Screen Template Layout Architecture.
+/// SSTLA-024-A01 — Split-Screen Template Layout Architecture
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sstla024A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String componentId;
   final String targetSizeDp;
   final String actualSizeDp;
   final String complianceStatus;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,13 +132,13 @@ class Sstla024A01ValidationResult {
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// SSTLA-024-A01: Formulate the responsive container constraints and component positioning rules t
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Requirement & Asset Discovery Coverage (%) — low-resolution 
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Sstla024A01Pipeline {
-  static const double _floor   = 0.95;
+  static const double _floor   = 0.9;
   static const double _optimal = 1.0;
 
   // EC:1 — System locates the SSTLA-024-A01 configuration in the source repository.
@@ -165,23 +161,23 @@ class Sstla024A01Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Input Validation Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Requirement & Asset Discovery Coverage (%)
   static Sstla024A01Config _ec3Compiles(Sstla024A01Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
           'EC-SSTLA024A01-003: componentId required for SSTLA-024-A01');
     }
-    // the implementation rule set per Input Validation Coverage Ra
+    // the implementation rule set per Requirement & Asset Discover
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Sstla024A01Config _ec4Validates(Sstla024A01Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
           'EC-SSTLA024A01-004: componentId required for SSTLA-024-A01');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +191,13 @@ class Sstla024A01Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Input Validation Coverage Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Requirement & Asset Discovery Coverage (%) — low-re
   static Sstla024A01Config _ec6Validates(Sstla024A01Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
           'EC-SSTLA024A01-006: componentId required for SSTLA-024-A01');
     }
-    // configuration against Input Validation Coverage Rate gate (f
+    // configuration against Requirement & Asset Discovery Coverage
     return config;
   }
 
@@ -233,7 +229,7 @@ class Sstla024A01Pipeline {
     required List<Sstla024A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sstla024A01ValidationResult(
+      return Sstla024A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sstla024A01ConformanceLevel.notComplete,
@@ -243,7 +239,7 @@ class Sstla024A01Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Sstla024A01ConformanceLevel.complete
         : rate >= _floor
             ? Sstla024A01ConformanceLevel.partial
@@ -290,19 +286,17 @@ class Sstla024A01Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-SSTLA024A01-TRI: triangular check failed for SSTLA-024-A01');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SSTLA-024-A01',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Requirement & Asset Discovery Coverage (%) — low-resolution ',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Sstla024A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sstla_024_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Sstla024A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sstla024A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Sstla024A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SSTLA-024-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Sstla024A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sstla024A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SSTLA-024-A01 → $result');
+  final out = await Sstla024A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SSTLA-024-A01 [Complete / Partial / Not Complete] → $out');
 }

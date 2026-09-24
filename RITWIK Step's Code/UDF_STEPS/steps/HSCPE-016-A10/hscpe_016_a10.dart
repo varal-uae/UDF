@@ -1,50 +1,46 @@
 // ============================================================
-// HSCPE-016-A10 — Habot Service Config & Platform Engine
-// Atomic Step: ConfigMap Injection for Decoupled redis.conf (HSCPE-016)
-// Metric:      Infrastructure Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     455 of 530
+// HSCPE-016-A10 — HSCPE System Module
+// Atomic Step:  ConfigMap Injection for Decoupled redis.conf (HSCPE-016)
+// Metric:       Mobile Performance & Responsiveness
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      790 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Enable horizontal sliding actions on dense data views for mobile responsiveness.
+// Why:          
+// Mobile:       
+// col41:        Good
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Hscpe016A10ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Hscpe016A10ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Hscpe016A10ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for HSCPE-016-A10.
-/// Fields derived from AISS sheet — Habot Service Config & Platform Engine.
+/// HSCPE-016-A10 — HSCPE System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Hscpe016A10Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
-  final String resourceId;
-  final String configKey;
-  final String configValue;
-  final String envTarget;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -55,10 +51,10 @@ class Hscpe016A10Config {
 
   const Hscpe016A10Config({
     required this.configId,
-    required this.resourceId,
-    required this.configKey,
-    required this.configValue,
-    required this.envTarget,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +73,10 @@ class Hscpe016A10Config {
     bool?   complianceStatusInd,
   }) => Hscpe016A10Config(
     configId: configId,
-    resourceId: resourceId,
-    configKey: configKey,
-    configValue: configValue,
-    envTarget: envTarget,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,10 +88,10 @@ class Hscpe016A10Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'resourceId': resourceId,
-    'configKey': configKey,
-    'configValue': configValue,
-    'envTarget': envTarget,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -129,87 +125,87 @@ class Hscpe016A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Hscpe016A10ConformanceLevel.complete:    return 'Good';
-      case Hscpe016A10ConformanceLevel.partial:     return 'Average';
-      case Hscpe016A10ConformanceLevel.notComplete: return 'Poor';
+      case Hscpe016A10ConformanceLevel.good:    return 'Good';
+      case Hscpe016A10ConformanceLevel.average: return 'Average';
+      case Hscpe016A10ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// HSCPE-016-A10: ConfigMap Injection for Decoupled redis.conf (HSCPE-016)
-/// Metric: Infrastructure Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Mobile Performance & Responsiveness
+/// Floor=0.9 · Output=Good / Average / Poor
 class Hscpe016A10Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the HSCPE-016-A10 configuration in the source repository.
   static Hscpe016A10Config _ec1Locates(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-001: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-001: ruleKey required for HSCPE-016-A10');
     }
     // the HSCPE-016-A10 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts resourceId and configKey from the HSCPE-016-A10 registry.
+  // EC:2 — System extracts ruleKey and ruleValue from the HSCPE-016-A10 registry.
   static Hscpe016A10Config _ec2Extracts(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-002: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-002: ruleKey required for HSCPE-016-A10');
     }
-    // resourceId and configKey from the HSCPE-016-A10 registry
+    // ruleKey and ruleValue from the HSCPE-016-A10 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Infrastructure Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Mobile Performance & Responsiveness.
   static Hscpe016A10Config _ec3Compiles(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-003: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-003: ruleKey required for HSCPE-016-A10');
     }
-    // the implementation rule set per Infrastructure Compliance Ra
+    // the implementation rule set per Mobile Performance & Respons
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Hscpe016A10Config _ec4Validates(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-004: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-004: ruleKey required for HSCPE-016-A10');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Hscpe016A10Config _ec5Registers(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-005: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-005: ruleKey required for HSCPE-016-A10');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against Infrastructure Compliance Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Mobile Performance & Responsiveness gate (floor=0.9
   static Hscpe016A10Config _ec6Validates(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-006: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-006: ruleKey required for HSCPE-016-A10');
     }
-    // configuration against Infrastructure Compliance Rate gate (f
+    // configuration against Mobile Performance & Responsiveness ga
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Hscpe016A10Config _ec7Routes(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-007: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-007: ruleKey required for HSCPE-016-A10');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -217,9 +213,9 @@ class Hscpe016A10Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Hscpe016A10Config _ec8Publishes(Hscpe016A10Config config) {
-    if (config.resourceId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-HSCPE016A10-008: resourceId required for HSCPE-016-A10');
+          'EC-HSCPE016A10-008: ruleKey required for HSCPE-016-A10');
     }
     // validated configuration to the rule registry
     return config;
@@ -233,7 +229,7 @@ class Hscpe016A10Pipeline {
     required List<Hscpe016A10Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Hscpe016A10ValidationResult(
+      return Hscpe016A10ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Hscpe016A10ConformanceLevel.notComplete,
@@ -243,11 +239,11 @@ class Hscpe016A10Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Hscpe016A10ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Hscpe016A10ConformanceLevel.good
         : rate >= _floor
-            ? Hscpe016A10ConformanceLevel.partial
-            : Hscpe016A10ConformanceLevel.notComplete;
+            ? Hscpe016A10ConformanceLevel.average
+            : Hscpe016A10ConformanceLevel.poor;
     return Hscpe016A10ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +286,17 @@ class Hscpe016A10Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-HSCPE016A10-TRI: triangular check failed for HSCPE-016-A10');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-HSCPE-016-A10',
-      'metric':             'Infrastructure Compliance Rate',
+      'metric':             'Mobile Performance & Responsiveness',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Hscpe016A10Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> hscpe_016_a10Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Hscpe016A10Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Hscpe016A10Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Hscpe016A10Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('HSCPE-016-A10',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Hscpe016A10Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.resourceId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -389,17 +379,16 @@ void main() async {
   final configs = [
     Hscpe016A10Config(
       configId: 'hscpe016a10-cfg-001',
-      resourceId: 'hscpe-016-a10_resourceId',
-      configKey: 'hscpe-016-a10_configKey',
-      configValue: 'hscpe-016-a10_configValue',
-      envTarget: 'hscpe-016-a10_envTarget',
+      ruleKey: 'hscpe-016-a10_ruleKey',
+      ruleValue: 'hscpe-016-a10_ruleValue',
+      metricLabel: 'hscpe-016-a10_metricLabel',
+      complianceTarget: 'hscpe-016-a10_complianceTarget',
       traceId:                 'trace-hscpe016a10-001',
       originSourceId:          'origin-hscpe016a10',
       immediatePredecessorId:  'pred-hscpe016a10-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Hscpe016A10Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('HSCPE-016-A10 → $result');
+  final out = await Hscpe016A10Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('HSCPE-016-A10 [Good / Average / Poor] → $out');
 }

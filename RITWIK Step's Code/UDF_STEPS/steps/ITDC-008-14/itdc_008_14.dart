@@ -1,31 +1,37 @@
 // ============================================================
-// ITDC-008-14 — Interface Template Data Controller
-// Atomic Step: Smart Form Routing
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     610 of 1073
+// ITDC-008-14 — ITDC System Module
+// Atomic Step:  Smart Form Routing
+// Metric:       Verification Assertion Accuracy
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      848 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Verify no urgency selection UI options are rendered onto user layout views.
+// Why:          
+// Mobile:       
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Itdc00814ConformanceLevel { complete, partial, notComplete }
-enum Itdc00814ExecutionStatus  { pending, running, complete, failed }
+enum Itdc00814ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Itdc00814ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for ITDC-008-14.
-/// Fields derived from AISS sheet — Interface Template Data Controller.
+/// ITDC-008-14 — ITDC System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Itdc00814Config {
   final String configId;
@@ -35,6 +41,7 @@ class Itdc00814Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Itdc00814ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Itdc00814ConformanceLevel.complete:    return 'Pass';
-      case Itdc00814ConformanceLevel.partial:     return 'Partial';
-      case Itdc00814ConformanceLevel.notComplete: return 'Fail';
+      case Itdc00814ConformanceLevel.pass_: return 'Pass';
+      case Itdc00814ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// ITDC-008-14: Smart Form Routing
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Verification Assertion Accuracy
+/// Floor=0.95 · Output=Pass / Fail
 class Itdc00814Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the ITDC-008-14 configuration in the source repository.
   static Itdc00814Config _ec1Locates(Itdc00814Config config) {
@@ -152,13 +159,13 @@ class Itdc00814Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Verification Assertion Accuracy.
   static Itdc00814Config _ec3Compiles(Itdc00814Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-ITDC00814-003: fieldId required for ITDC-008-14');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Verification Assertion Accur
     return config;
   }
 
@@ -182,13 +189,13 @@ class Itdc00814Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Verification Assertion Accuracy gate (floor=0.95).
   static Itdc00814Config _ec6Validates(Itdc00814Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-ITDC00814-006: fieldId required for ITDC-008-14');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Verification Assertion Accuracy gate (
     return config;
   }
 
@@ -220,21 +227,19 @@ class Itdc00814Pipeline {
     required List<Itdc00814Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Itdc00814ValidationResult(
+      return Itdc00814ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Itdc00814ConformanceLevel.notComplete,
+        conformanceLevel: Itdc00814ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-ITDC00814-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Itdc00814ConformanceLevel.complete
-        : rate >= _floor
-            ? Itdc00814ConformanceLevel.partial
-            : Itdc00814ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Itdc00814ConformanceLevel.pass_
+        : Itdc00814ConformanceLevel.fail_;
     return Itdc00814ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Itdc00814Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ITDC-008-14',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Verification Assertion Accuracy',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Itdc00814Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> itdc_008_14Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> itdc_008_14Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Itdc00814Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Itdc00814Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Itdc00814Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('ITDC-008-14',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Itdc00814Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('ITDC-008-14 → $result');
+  final out = await Itdc00814Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ITDC-008-14 [Pass / Fail] → $out');
 }

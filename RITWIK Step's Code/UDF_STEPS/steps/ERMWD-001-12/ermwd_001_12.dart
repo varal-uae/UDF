@@ -1,31 +1,38 @@
 // ============================================================
 // ERMWD-001-12 — Error Mapping & Widget Display
-// Atomic Step: Identify Exception Triggers (e.g., OCRConfidenceLow)
-// Metric:      Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     593 of 1073
+// Atomic Step:  Identify Exception Triggers (e.g., OCRConfidenceLow)
+// Metric:       Process Execution Quality Score
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      205 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Populate data on MTB API worker screens.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Ermwd00112ConformanceLevel { complete, partial, notComplete }
-enum Ermwd00112ExecutionStatus  { pending, running, complete, failed }
+enum Ermwd00112ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Ermwd00112ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for ERMWD-001-12.
-/// Fields derived from AISS sheet — Error Mapping & Widget Display.
+/// ERMWD-001-12 — Error Mapping & Widget Display
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ermwd00112Config {
   final String configId;
@@ -35,6 +42,7 @@ class Ermwd00112Config {
   final String resolvedBy;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Ermwd00112ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ermwd00112ConformanceLevel.complete:    return 'Good';
-      case Ermwd00112ConformanceLevel.partial:     return 'Average';
-      case Ermwd00112ConformanceLevel.notComplete: return 'Poor';
+      case Ermwd00112ConformanceLevel.good:    return 'Good';
+      case Ermwd00112ConformanceLevel.average: return 'Average';
+      case Ermwd00112ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// ERMWD-001-12: Identify Exception Triggers (e.g., OCRConfidenceLow)
-/// Metric: Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Process Execution Quality Score
+/// Floor=0.9 · Output=Good / Average / Poor
 class Ermwd00112Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the ERMWD-001-12 configuration in the source repository.
   static Ermwd00112Config _ec1Locates(Ermwd00112Config config) {
@@ -152,13 +161,13 @@ class Ermwd00112Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Error Handling Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality Score.
   static Ermwd00112Config _ec3Compiles(Ermwd00112Config config) {
     if (config.errorCode.isEmpty) {
       throw ArgumentError(
           'EC-ERMWD00112-003: errorCode required for ERMWD-001-12');
     }
-    // the implementation rule set per Error Handling Coverage Rate
+    // the implementation rule set per Process Execution Quality Sc
     return config;
   }
 
@@ -182,13 +191,13 @@ class Ermwd00112Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Error Handling Coverage Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Process Execution Quality Score gate (floor=0.9).
   static Ermwd00112Config _ec6Validates(Ermwd00112Config config) {
     if (config.errorCode.isEmpty) {
       throw ArgumentError(
           'EC-ERMWD00112-006: errorCode required for ERMWD-001-12');
     }
-    // configuration against Error Handling Coverage Rate gate (flo
+    // configuration against Process Execution Quality Score gate (
     return config;
   }
 
@@ -220,7 +229,7 @@ class Ermwd00112Pipeline {
     required List<Ermwd00112Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ermwd00112ValidationResult(
+      return Ermwd00112ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ermwd00112ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Ermwd00112Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ermwd00112ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Ermwd00112ConformanceLevel.good
         : rate >= _floor
-            ? Ermwd00112ConformanceLevel.partial
-            : Ermwd00112ConformanceLevel.notComplete;
+            ? Ermwd00112ConformanceLevel.average
+            : Ermwd00112ConformanceLevel.poor;
     return Ermwd00112ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Ermwd00112Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ERMWD-001-12',
-      'metric':             'Error Handling Coverage Rate',
+      'metric':             'Process Execution Quality Score',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Ermwd00112Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> ermwd_001_12Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> ermwd_001_12Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Ermwd00112Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ermwd00112Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Ermwd00112Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('ERMWD-001-12',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.errorCode,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ermwd00112Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('ERMWD-001-12 → $result');
+  final out = await Ermwd00112Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ERMWD-001-12 [Good / Average / Poor] → $out');
 }

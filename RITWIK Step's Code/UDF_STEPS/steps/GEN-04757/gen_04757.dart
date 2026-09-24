@@ -1,31 +1,37 @@
 // ============================================================
 // GEN-04757 — GEN Backend Utility Module
-// Atomic Step: Confirm that the dependency prerequisite (Step 8) is complete before starting this step.
-// Metric:      Schema Lineage Conformance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     1002 of 1073
+// Atomic Step:  Confirm that the dependency prerequisite (Step 8) is complete before starting this step.
+// Metric:       Dependency Gate Compliance Rate
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      715 of 1073
 // ============================================================
-// Why this matters: Confirm that the dependency prerequisite (Step 8) is complete before starting this step. is a critic
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Confirm that the dependency prerequisite (Step 8) is complete before starting this step.
+// Why:          Confirm that the dependency prerequisite (Step 8) is complete before starting this step. is a critic
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen04757ConformanceLevel { complete, partial, notComplete }
-enum Gen04757ExecutionStatus  { pending, running, complete, failed }
+enum Gen04757ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen04757ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-04757.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-04757 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen04757Config {
   final String configId;
@@ -35,6 +41,7 @@ class Gen04757Config {
   final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Gen04757ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen04757ConformanceLevel.complete:    return 'Complete';
-      case Gen04757ConformanceLevel.partial:     return 'Partial';
-      case Gen04757ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen04757ConformanceLevel.pass_: return 'Pass';
+      case Gen04757ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-04757: Confirm that the dependency prerequisite (Step 8) is complete before starting th
-/// Metric: Schema Lineage Conformance Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Dependency Gate Compliance Rate
+/// Floor=0.95 · Output=Pass / Fail
 class Gen04757Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen04757Config _ec1Execute(Gen04757Config config) {
@@ -180,21 +187,19 @@ class Gen04757Pipeline {
     required List<Gen04757Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen04757ValidationResult(
+      return Gen04757ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen04757ConformanceLevel.notComplete,
+        conformanceLevel: Gen04757ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN04757-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen04757ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen04757ConformanceLevel.partial
-            : Gen04757ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen04757ConformanceLevel.pass_
+        : Gen04757ConformanceLevel.fail_;
     return Gen04757ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen04757Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-04757',
-      'metric':             'Schema Lineage Conformance Rate',
+      'metric':             'Dependency Gate Compliance Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen04757Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_04757Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_04757Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen04757Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen04757Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen04757Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-04757',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen04757Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-04757 → $result');
+  final out = await Gen04757Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-04757 [Pass / Fail] → $out');
 }

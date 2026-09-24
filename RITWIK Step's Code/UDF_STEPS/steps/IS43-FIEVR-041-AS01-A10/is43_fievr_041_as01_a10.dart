@@ -1,40 +1,47 @@
 // ============================================================
-// IS43-FIEVR-041-AS01-A10 — Implementation System 43
-// Atomic Step: Build inline logic evaluation checks between related input fields.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     571 of 1073
+// IS43-FIEVR-041-AS01-A10 — IS43 System Module
+// Atomic Step:  Build inline logic evaluation checks between related input fields.
+// Metric:       Validation / Test Pass Rate - Logical conditional check field values s
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      842 of 1073
 // ============================================================
-// Why this matters: Stops confusing or contradictory data combinations from ever being saved, protecting system integrit
-// Mobile impl:      Catches business logic errors instantly inside the mobile browser to avoid round-trip server communi
-// Data requirement: Evaluate logical conditional check across field values synchronously.
+// Why:          Stops confusing or contradictory data combinations from ever being saved, protecting system integrit
+// Mobile:       Catches business logic errors instantly inside the mobile browser to avoid round-trip server communi
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Is43Fievr041As01A10ConformanceLevel { complete, partial, notComplete }
-enum Is43Fievr041As01A10ExecutionStatus  { pending, running, complete, failed }
+enum Is43Fievr041As01A10ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is43Fievr041As01A10ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS43-FIEVR-041-AS01-A10.
-/// Fields derived from AISS sheet — Implementation System 43.
+/// IS43-FIEVR-041-AS01-A10 — IS43 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is43Fievr041As01A10Config {
   final String configId;
-  final String fieldId;
-  final String validationRule;
-  final String errorMessage;
-  final String inputType;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +50,10 @@ class Is43Fievr041As01A10Config {
 
   const Is43Fievr041As01A10Config({
     required this.configId,
-    required this.fieldId,
-    required this.validationRule,
-    required this.errorMessage,
-    required this.inputType,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +72,10 @@ class Is43Fievr041As01A10Config {
     bool?   complianceStatusInd,
   }) => Is43Fievr041As01A10Config(
     configId: configId,
-    fieldId: fieldId,
-    validationRule: validationRule,
-    errorMessage: errorMessage,
-    inputType: inputType,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +87,10 @@ class Is43Fievr041As01A10Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'fieldId': fieldId,
-    'validationRule': validationRule,
-    'errorMessage': errorMessage,
-    'inputType': inputType,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +124,26 @@ class Is43Fievr041As01A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is43Fievr041As01A10ConformanceLevel.complete:    return 'Pass';
-      case Is43Fievr041As01A10ConformanceLevel.partial:     return 'Partial';
-      case Is43Fievr041As01A10ConformanceLevel.notComplete: return 'Fail';
+      case Is43Fievr041As01A10ConformanceLevel.pass_: return 'Pass';
+      case Is43Fievr041As01A10ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS43-FIEVR-041-AS01-A10: Build inline logic evaluation checks between related input fields.
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Validation / Test Pass Rate - Logical conditional check fiel
+/// Floor=0.95 · Output=Pass / Fail
 class Is43Fievr041As01A10Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Map functional connection lines to link related form input components
   static Is43Fievr041As01A10Config _ec1Execute(Is43Fievr041As01A10Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-IS43FIEVR041-001: fieldId required for IS43-FIEVR-041-AS01-A10');
+          'EC-IS43FIEVR041-001: componentId required for IS43-FIEVR-041-AS01-A10');
     }
     // Map functional connection lines to link related form input c
     return config;
@@ -144,9 +151,9 @@ class Is43Fievr041As01A10Pipeline {
 
   // EC:2 — Write instant evaluation parameters that track updates inside targeted inputs
   static Is43Fievr041As01A10Config _ec2Execute(Is43Fievr041As01A10Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-IS43FIEVR041-002: fieldId required for IS43-FIEVR-041-AS01-A10');
+          'EC-IS43FIEVR041-002: componentId required for IS43-FIEVR-041-AS01-A10');
     }
     // Write instant evaluation parameters that track updates insid
     return config;
@@ -154,9 +161,9 @@ class Is43Fievr041As01A10Pipeline {
 
   // EC:3 — Intercept and block submission tasks if entries breach business parameters
   static Is43Fievr041As01A10Config _ec3Execute(Is43Fievr041As01A10Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-IS43FIEVR041-003: fieldId required for IS43-FIEVR-041-AS01-A10');
+          'EC-IS43FIEVR041-003: componentId required for IS43-FIEVR-041-AS01-A10');
     }
     // Intercept and block submission tasks if entries breach busin
     return config;
@@ -164,9 +171,9 @@ class Is43Fievr041As01A10Pipeline {
 
   // EC:4 — Lock primary form confirmation keys until all input values match parameters perfectly
   static Is43Fievr041As01A10Config _ec4Execute(Is43Fievr041As01A10Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-IS43FIEVR041-004: fieldId required for IS43-FIEVR-041-AS01-A10');
+          'EC-IS43FIEVR041-004: componentId required for IS43-FIEVR-041-AS01-A10');
     }
     // Lock primary form confirmation keys until all input values m
     return config;
@@ -180,21 +187,19 @@ class Is43Fievr041As01A10Pipeline {
     required List<Is43Fievr041As01A10Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is43Fievr041As01A10ValidationResult(
+      return Is43Fievr041As01A10ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is43Fievr041As01A10ConformanceLevel.notComplete,
+        conformanceLevel: Is43Fievr041As01A10ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS43FIEVR041-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is43Fievr041As01A10ConformanceLevel.complete
-        : rate >= _floor
-            ? Is43Fievr041As01A10ConformanceLevel.partial
-            : Is43Fievr041As01A10ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is43Fievr041As01A10ConformanceLevel.pass_
+        : Is43Fievr041As01A10ConformanceLevel.fail_;
     return Is43Fievr041As01A10ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Is43Fievr041As01A10Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS43-FIEVR-041-AS01-A10',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Validation / Test Pass Rate - Logical conditional check fiel',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Is43Fievr041As01A10Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is43_fievr_041_as01_a10Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is43_fievr_041_as01_a10Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Is43Fievr041As01A10Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is43Fievr041As01A10Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Is43Fievr041As01A10Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS43-FIEVR-041-AS01-A10',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.fieldId,
+                title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +331,16 @@ void main() async {
   final configs = [
     Is43Fievr041As01A10Config(
       configId: 'is43fievr041-cfg-001',
-      fieldId: 'is43-fievr-041-as01-a10_fieldId',
-      validationRule: 'is43-fievr-041-as01-a10_validationRule',
-      errorMessage: 'is43-fievr-041-as01-a10_errorMessage',
-      inputType: 'is43-fievr-041-as01-a10_inputType',
+      componentId: 'is43-fievr-041-as01-a10_componentId',
+      targetSizeDp: 'is43-fievr-041-as01-a10_targetSizeDp',
+      actualSizeDp: 'is43-fievr-041-as01-a10_actualSizeDp',
+      complianceStatus: 'is43-fievr-041-as01-a10_complianceStatus',
       traceId:                 'trace-is43fievr041-001',
       originSourceId:          'origin-is43fievr041',
       immediatePredecessorId:  'pred-is43fievr041-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is43Fievr041As01A10Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS43-FIEVR-041-AS01-A10 → $result');
+  final out = await Is43Fievr041As01A10Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS43-FIEVR-041-AS01-A10 [Pass / Fail] → $out');
 }

@@ -1,52 +1,47 @@
 // ============================================================
 // REF-242-A06 — Reference Implementation Framework
-// Atomic Step: Implement Strict Input Masking
-// Metric:      Input Validation Coverage Rate · Floor=10.0 · Optimal=2.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     300 of 396
+// Atomic Step:  Implement Strict Input Masking
+// Metric:       Guide Render Time
+// Floor:        10.0  ·  Optimal: 10.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      945 of 1073
 // ============================================================
-// Why this matters: Blocks invalid characters from entering the application context, completely removing downstream data
-// Mobile impl:      Automatically triggers specific numeric or alphanumeric keyboards on mobile viewports to prevent use
-// Data requirement: Implement a visual format guide within the input (e.g., ( ) - ).
+// Why:          Blocks invalid characters from entering the application context, completely removing downstream data
+// Mobile:       Automatically triggers specific numeric or alphanumeric keyboards on mobile viewports to prevent use
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ref242A06ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ref242A06ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ref242A06ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for REF-242-A06.
-/// Fields derived from AISS sheet row — Reference Implementation Framework.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// REF-242-A06 — Reference Implementation Framework
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ref242A06Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Ref242A06Config {
     'validationRule': validationRule,
     'errorMessage': errorMessage,
     'inputType': inputType,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Ref242A06ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref242A06ConformanceLevel.complete:    return 'Pass';
-      case Ref242A06ConformanceLevel.partial:     return 'Partial';
-      case Ref242A06ConformanceLevel.notComplete: return 'Fail';
+      case Ref242A06ConformanceLevel.pass_: return 'Pass';
+      case Ref242A06ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// REF-242-A06: Implement Strict Input Masking
-///
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Guide Render Time
+/// Floor=10.0 · Output=Pass / Fail
 class Ref242A06Pipeline {
   static const double _floor   = 10.0;
-  static const double _optimal = 2.0;
+  static const double _optimal = 10.0;
 
   // EC:1 — Map schemas to inputs
   static Ref242A06Config _ec1Execute(Ref242A06Config config) {
@@ -190,27 +183,23 @@ class Ref242A06Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Ref242A06ValidationResult calculateConformance({
     required List<Ref242A06Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ref242A06ValidationResult(
+      return Ref242A06ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ref242A06ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-REF242A06-VAL',
+        conformanceLevel: Ref242A06ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-REF242A06-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ref242A06ConformanceLevel.complete
-        : rate >= _floor
-            ? Ref242A06ConformanceLevel.partial
-            : Ref242A06ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ref242A06ConformanceLevel.pass_
+        : Ref242A06ConformanceLevel.fail_;
     return Ref242A06ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Ref242A06Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-REF242A06-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-REF242A06-000: configs must not be empty for REF-242-A06');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Ref242A06Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-REF242A06-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-REF242A06-TRI: triangular check failed for REF-242-A06');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-REF-242-A06',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Guide Render Time',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Ref242A06Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ref_242_a06Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Ref242A06Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ref242A06Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Ref242A06Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('REF-242-A06',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Ref242A06Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${fieldId} | ${validationRule}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Ref242A06Config(
       configId: 'ref242a06-cfg-001',
-      fieldId: 'ref-242-a06_fieldId_value',
-      validationRule: 'ref-242-a06_validationRule_value',
-      errorMessage: 'ref-242-a06_errorMessage_value',
-      inputType: 'ref-242-a06_inputType_value',
+      fieldId: 'ref-242-a06_fieldId',
+      validationRule: 'ref-242-a06_validationRule',
+      errorMessage: 'ref-242-a06_errorMessage',
+      inputType: 'ref-242-a06_inputType',
       traceId:                 'trace-ref242a06-001',
       originSourceId:          'origin-ref242a06',
       immediatePredecessorId:  'pred-ref242a06-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ref242A06Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('REF-242-A06 → $result');
+  final out = await Ref242A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('REF-242-A06 [Pass / Fail] → $out');
 }

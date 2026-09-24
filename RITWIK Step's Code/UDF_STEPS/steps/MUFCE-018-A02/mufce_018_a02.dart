@@ -1,47 +1,48 @@
 // ============================================================
 // MUFCE-018-A02 — Mobile UX Flow & Content Engine
-// Atomic Step: Embed Universal Design Component Compliance Validator.
-// Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     419 of 440
+// Atomic Step:  Embed Universal Design Component Compliance Validator.
+// Metric:       Configuration / Field-Mapping Accuracy
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      881 of 1073
 // ============================================================
-// Why this matters: Guarantees unyielding brand layout consistency.
-// Mobile impl:      NPM components contain strict touch-target limits designed exclusively for mobile app usage.
+// Why:          Guarantees unyielding brand layout consistency.
+// Mobile:       NPM components contain strict touch-target limits designed exclusively for mobile app usage.
+// col41:        Complete / Partial / Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Mufce018A02ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Mufce018A02ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Mufce018A02ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MUFCE-018-A02.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// MUFCE-018-A02 — Mobile UX Flow & Content Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mufce018A02Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String packageName;
+  final String componentId;
+  final String versionTag;
+  final String exportPath;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +51,10 @@ class Mufce018A02Config {
 
   const Mufce018A02Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.packageName,
+    required this.componentId,
+    required this.versionTag,
+    required this.exportPath,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +72,33 @@ class Mufce018A02Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Mufce018A02Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    packageName: packageName,
+    componentId: componentId,
+    versionTag: versionTag,
+    exportPath: exportPath,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'packageName': packageName,
+    'componentId': componentId,
+    'versionTag': versionTag,
+    'exportPath': exportPath,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -125,21 +132,20 @@ class Mufce018A02ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// MUFCE-018-A02: Embed Universal Design Component Compliance Validator.
-///
-/// Metric: Component Reuse Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Configuration / Field-Mapping Accuracy
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Mufce018A02Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 1.0;
 
   // EC:1 — Build unified visual component kit
   static Mufce018A02Config _ec1Execute(Mufce018A02Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-MUFCE018A02-001: configId required for MUFCE-018-A02');
+          'EC-MUFCE018A02-001: packageName required for MUFCE-018-A02');
     }
     // Build unified visual component kit
     return config;
@@ -147,9 +153,9 @@ class Mufce018A02Pipeline {
 
   // EC:2 — Implement CSS parameter linters blocking local code
   static Mufce018A02Config _ec2Execute(Mufce018A02Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-MUFCE018A02-002: configId required for MUFCE-018-A02');
+          'EC-MUFCE018A02-002: packageName required for MUFCE-018-A02');
     }
     // Implement CSS parameter linters blocking local code
     return config;
@@ -157,9 +163,9 @@ class Mufce018A02Pipeline {
 
   // EC:3 — Configure CI validator blocking duplication
   static Mufce018A02Config _ec3Execute(Mufce018A02Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-MUFCE018A02-003: configId required for MUFCE-018-A02');
+          'EC-MUFCE018A02-003: packageName required for MUFCE-018-A02');
     }
     // Configure CI validator blocking duplication
     return config;
@@ -167,9 +173,9 @@ class Mufce018A02Pipeline {
 
   // EC:4 — Force apps to declare dependencies
   static Mufce018A02Config _ec4Execute(Mufce018A02Config config) {
-    if (config.configId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-MUFCE018A02-004: configId required for MUFCE-018-A02');
+          'EC-MUFCE018A02-004: packageName required for MUFCE-018-A02');
     }
     // Force apps to declare dependencies
     return config;
@@ -179,23 +185,21 @@ class Mufce018A02Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=1.0
   static Mufce018A02ValidationResult calculateConformance({
     required List<Mufce018A02Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mufce018A02ValidationResult(
+      return Mufce018A02ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Mufce018A02ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-MUFCE018A02-VAL',
+        gatePass: false, ecLineRef: 'EC-MUFCE018A02-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Mufce018A02ConformanceLevel.complete
         : rate >= _floor
             ? Mufce018A02ConformanceLevel.partial
@@ -228,7 +232,7 @@ class Mufce018A02Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-MUFCE018A02-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-MUFCE018A02-000: configs must not be empty for MUFCE-018-A02');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -236,21 +240,19 @@ class Mufce018A02Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-MUFCE018A02-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-MUFCE018A02-TRI: triangular check failed for MUFCE-018-A02');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MUFCE-018-A02',
-      'metric':             'Component Reuse Rate',
+      'metric':             'Configuration / Field-Mapping Accuracy',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -260,9 +262,7 @@ class Mufce018A02Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> mufce_018_a02Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -281,6 +281,7 @@ class Mufce018A02Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mufce018A02Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -288,18 +289,13 @@ class Mufce018A02Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MUFCE-018-A02',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -308,24 +304,22 @@ class Mufce018A02Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.packageName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -340,16 +334,17 @@ class Mufce018A02Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Mufce018A02Config(
-      configId:                'mufce018a02-cfg-001',
-      ruleKey:                 'mufce-018-a02_rule',
-      ruleValue:               'mufce-018-a02_value',
+      configId: 'mufce018a02-cfg-001',
+      packageName: 'mufce-018-a02_packageName',
+      componentId: 'mufce-018-a02_componentId',
+      versionTag: 'mufce-018-a02_versionTag',
+      exportPath: 'mufce-018-a02_exportPath',
       traceId:                 'trace-mufce018a02-001',
       originSourceId:          'origin-mufce018a02',
       immediatePredecessorId:  'pred-mufce018a02-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mufce018A02Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('MUFCE-018-A02 → $result');
+  final out = await Mufce018A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MUFCE-018-A02 [Complete / Partial / Not Complete] → $out');
 }

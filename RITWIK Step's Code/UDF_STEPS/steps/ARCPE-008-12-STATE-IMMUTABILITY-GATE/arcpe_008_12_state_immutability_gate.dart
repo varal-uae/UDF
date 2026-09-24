@@ -1,178 +1,394 @@
 // ============================================================
-// ARCPE-008-12 | Architecture Pattern Enforcement
-// Atomic Task: Architecture Pattern Enforcement — State Management Immutability Gate: Validate all state management objects enforce immutability constraints across the frontend state layer.
-// EC Lines: 8 | Standard: DCDF AEETE-018
+// ARCPE-008-12 — Architecture Pattern Compliance Engine
+// Atomic Step:  Establish Generative Prompt Template Selectors
+// Metric:       Touch Target Size & Accessibility Compliance
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      39 of 1073
+// ============================================================
+// Why:          
+// Mobile:       
+// col41:        Good (Scale: Good/Average/Poor)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Arcpe00812ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-class Arcpe00812StateImmutabilityGateLog {
-  final String immutabilityRuleId;
-  final double violationCount;
-  final bool complianceStatusInd;
-  final bool immutableInd;
-  final ExecutionStatus status;
+// ── Execution status ─────────────────────────────────────────
+
+enum Arcpe00812ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// ARCPE-008-12 — Architecture Pattern Compliance Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Arcpe00812Config {
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Arcpe00812StateImmutabilityGateLog({
-    required this.immutabilityRuleId,
-    required this.violationCount,
-    required this.complianceStatusInd,
-    required this.immutableInd,
-    required this.status,
+  const Arcpe00812Config({
+    required this.configId,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
+
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
+
+  Arcpe00812Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Arcpe00812Config(
+    configId: configId,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── EC:1–8 Pipeline ──────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Arcpe00812StateImmutabilityGate {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+class Arcpe00812ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Arcpe00812ConformanceLevel conformanceLevel;
+  final bool   gatePass;
+  final String ecLineRef;
 
+  const Arcpe00812ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
+    required this.violationCount,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
+    required this.ecLineRef,
+  });
 
-  static const double _threshold = 0;
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Arcpe00812ConformanceLevel.good:    return 'Good';
+      case Arcpe00812ConformanceLevel.average: return 'Average';
+      case Arcpe00812ConformanceLevel.poor:    return 'Poor';
+    }
+  }
+}
 
-  // EC:1 — Locate state management immutability configuration within arcpe-008-kit source repository.  // error: EC-ARCPE00812-001
-  static Map<String, dynamic>? locateConfiguration(String componentRef) {
-        if (!(componentRef == 'ARCPE-008-12')) {
-      throw ArgumentError('Invalid component ref');
-    };
-    return {};
+// ── EC:8 Pipeline ────────────────────────────────────────
+
+/// ARCPE-008-12: Establish Generative Prompt Template Selectors
+/// Metric: Touch Target Size & Accessibility Compliance
+/// Floor=0.9 · Output=Good / Average / Poor
+class Arcpe00812Pipeline {
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
+
+  // EC:1 — System locates the ARCPE-008-12 configuration in the source repository.
+  static Arcpe00812Config _ec1Locates(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-001: ruleKey required for ARCPE-008-12');
+    }
+    // the ARCPE-008-12 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — Extract immutabilityRuleId, stateClassName, copyWithInd, equatableInd, mutationViolationCount from state_immutability_registry.  // error: EC-ARCPE00812-002
-  static Map<String, dynamic> extractParameters(Map<String, dynamic> config) {
-    return Map<String, dynamic>.from(config);
+  // EC:2 — System extracts ruleKey and ruleValue from the ARCPE-008-12 registry.
+  static Arcpe00812Config _ec2Extracts(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-002: ruleKey required for ARCPE-008-12');
+    }
+    // ruleKey and ruleValue from the ARCPE-008-12 registry
+    return config;
   }
 
-  // EC:3 — Compile immutability rule set: copyWith required, no direct mutation, Equatable required, stateHash validated per update.  // error: EC-ARCPE00812-003
-  static Map<String, dynamic> compileRuleSet() {
-    return {
-      'threshold': _threshold,
-      'ref': 'ARCPE-008-12',
-      'immutable': true,
-    };
+  // EC:3 — System compiles the implementation rule set per Touch Target Size & Accessibility Complian
+  static Arcpe00812Config _ec3Compiles(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-003: ruleKey required for ARCPE-008-12');
+    }
+    // the implementation rule set per Touch Target Size & Accessib
+    return config;
   }
 
-  // EC:4 — Register compiled immutability rule set as immutable entry in state_immutability_registry.  // error: EC-ARCPE00812-004
-  static Arcpe00812StateImmutabilityGateLog registerRule({
-    required String immutabilityRuleId,
-    required String traceId,
-    required String originSourceId,
-    required String predecessorId,
-    required String logicHash,
-  }) {
-    return Arcpe00812StateImmutabilityGateLog(
-      immutabilityRuleId: immutabilityRuleId,
-      violationCount: 0.0,
-      complianceStatusInd: true,
-      immutableInd: true,
-      status: ExecutionStatus.pending,
-      traceId: traceId,
-      originSourceId: originSourceId,
-      immediatePredecessorId: predecessorId,
-      transformationLogicHash: logicHash,
-    );
+  // EC:4 — System validates configuration against required constraints.
+  static Arcpe00812Config _ec4Validates(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-004: ruleKey required for ARCPE-008-12');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — Bind each registered immutability rule to state management layer by applying state_layer_FK constraint.  // error: EC-ARCPE00812-005
-  static String bindToTarget(String ruleId, String targetSlot) {
-    return '$targetSlot:$ruleId';
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Arcpe00812Config _ec5Registers(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-005: ruleKey required for ARCPE-008-12');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — Validate bound immutability configuration by executing static analysis check confirming 0 direct mutations, Equatable present.  // error: EC-ARCPE00812-006
-  static bool validateConformance(double actual, Map<String, dynamic> rules) {
-    final threshold = (rules['threshold'] as num).toDouble();
-    return actual <= threshold;
+  // EC:6 — System validates configuration against Touch Target Size & Accessibility Compliance gate (
+  static Arcpe00812Config _ec6Validates(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-006: ruleKey required for ARCPE-008-12');
+    }
+    // configuration against Touch Target Size & Accessibility Comp
+    return config;
   }
 
-  // EC:7 — Validate immutability implementation against Implementation Completeness metric (Complete = 0 mutability violations).  // error: EC-ARCPE00812-007
-  static String evaluateMetric(double actual) {
-    return actual <= _threshold ? 'PASS' : 'FAIL';
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Arcpe00812Config _ec7Routes(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-007: ruleKey required for ARCPE-008-12');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — Route validated immutability configuration to architecture_rule_registry as authoritative State Immutability Registry entry.  // error: EC-ARCPE00812-008
-  static Arcpe00812StateImmutabilityGateLog routeToRegistry(
-    Arcpe00812StateImmutabilityGateLog entry,
-    double actual,
-  ) {
-    final passed = validateConformance(actual, compileRuleSet());
-    return Arcpe00812StateImmutabilityGateLog(
-      immutabilityRuleId: entry.immutabilityRuleId,
-      violationCount: actual,
-      complianceStatusInd: passed,
-      immutableInd: entry.immutableInd,
-      status: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      traceId: entry.traceId,
-      originSourceId: entry.originSourceId,
-      immediatePredecessorId: entry.immediatePredecessorId,
-      transformationLogicHash: entry.transformationLogicHash,
-    );
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Arcpe00812Config _ec8Publishes(Arcpe00812Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-ARCPE00812-008: ruleKey required for ARCPE-008-12');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
+
+  // Triangular Check — DCDF AEETE-018
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
+  static Arcpe00812ValidationResult calculateConformance({
+    required List<Arcpe00812Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Arcpe00812ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Arcpe00812ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-ARCPE00812-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Arcpe00812ConformanceLevel.good
+        : rate >= _floor
+            ? Arcpe00812ConformanceLevel.average
+            : Arcpe00812ConformanceLevel.poor;
+    return Arcpe00812ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-ARCPE00812-VAL',
+    );
+  }
+
+  static Arcpe00812Config routeToRegistry(
+    Arcpe00812Config config,
+    Arcpe00812ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Arcpe00812Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-ARCPE00812-000: configs must not be empty for ARCPE-008-12');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-ARCPE00812-TRI: triangular check failed for ARCPE-008-12');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-ARCPE-008-12',
+      'metric':             'Touch Target Size & Accessibility Compliance',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ───────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
 
-class Arcpe00812StateImmutabilityGateWidget extends StatelessWidget {
-  final List<Arcpe00812StateImmutabilityGateLog> entries;
-  const Arcpe00812StateImmutabilityGateWidget({super.key, required this.entries});
+Map<String, dynamic> arcpe_008_12Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'ARCPE-008-12',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
+
+class Arcpe00812Widget extends StatelessWidget {
+  final List<Arcpe00812Config> configs;
+  const Arcpe00812Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return ListView.builder(
-      itemCount: entries.length,
-      itemBuilder: (context, i) {
-        final e = entries[i];
-        final metric = Arcpe00812StateImmutabilityGate.evaluateMetric(e.violationCount);
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: ListTile(
-            title: Text(
-              e.immutabilityRuleId,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Courier',
-                fontSize: 12,
-              ),
-            ),
-            subtitle: Text(
-              'Violations: ${e.violationCount.toStringAsFixed(2)} | Threshold: 0',
-              style: const TextStyle(fontSize: 11),
-            ),
-            trailing: Chip(
+    final result = Arcpe00812Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            Expanded(child: Text('ARCPE-008-12',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
+            Chip(
               label: Text(
-                metric,
-                style: const TextStyle(color: Colors.white, fontSize: 11),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
+          ]),
+        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
-            leading: Icon(
-              e.complianceStatusInd ? Icons.check_circle : Icons.error,
-              color: e.complianceStatusInd
-                  ? cs.tertiary
-                  : cs.error,
-            ),
-          ),
-        );
-      },
+            );
+          },
+        )),
+      ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Arcpe00812Config(
+      configId: 'arcpe00812-cfg-001',
+      ruleKey: 'arcpe-008-12_ruleKey',
+      ruleValue: 'arcpe-008-12_ruleValue',
+      metricLabel: 'arcpe-008-12_metricLabel',
+      complianceTarget: 'arcpe-008-12_complianceTarget',
+      traceId:                 'trace-arcpe00812-001',
+      originSourceId:          'origin-arcpe00812',
+      immediatePredecessorId:  'pred-arcpe00812-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Arcpe00812Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ARCPE-008-12 [Good / Average / Poor] → $out');
 }

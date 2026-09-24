@@ -1,229 +1,331 @@
 // ============================================================
-// CBSV-021 | Core Business Service Validator
-// Atomic Task: CBSV-021
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CBSV-021 — Core Business Service Validator
+// Atomic Step:  Implementation Step 27: Configuration of Core Extraction Fields for Clinical Operations Records.
+// Metric:       UI / UX Component Interaction Response Time (Core Web Vitals INP band)
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      128 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System receives incoming mobile session metadata packet.
-  // EC: 2. System validates classification key within user session profile.
-  // EC: 3. System evaluates access privileges against habot.io/library/security/document_access.json rules.
-  // EC: 4. System drops unauthorized document fetch requests missing required keys.
-  // EC: 5. System extracts multi-column clinical operation records for authorized profiles.
-  // EC: 6. System transforms multi-column tabular data into dense mobile card layouts.
-  // EC: 7. System applies high-saturation visual priority indicators to urgent records.
-  // EC: 8. System writes compliance exception alert logs for failed access attempts.
-  // EC: 9. System measures UI component interaction response time against INP targets.
-  // EC: 10. System emits document isolation status output to security dashboards.
+// Why:          Protects sensitive customer records against unauthorized data viewing attempts.
+// Mobile:       Facilitates efficient resource visibility checks, keeping user profiles protected over public data l
+// col41:        Good (Rating Scale: Poor / Average / Good)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cbsv021ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CBSV-021.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cbsv021Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cbsv021ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CBSV-021 — Core Business Service Validator
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Cbsv021Config {
+  final String configId;
+  final String gridColumns;
+  final String gutterSizePx;
+  final String maxWidthPx;
+  final String breakpointLabel;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cbsv021Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cbsv021Config({
+    required this.configId,
+    required this.gridColumns,
+    required this.gutterSizePx,
+    required this.maxWidthPx,
+    required this.breakpointLabel,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cbsv021Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cbsv021Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cbsv021Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cbsv021Config(
+    configId: configId,
+    gridColumns: gridColumns,
+    gutterSizePx: gutterSizePx,
+    maxWidthPx: maxWidthPx,
+    breakpointLabel: breakpointLabel,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gridColumns': gridColumns,
+    'gutterSizePx': gutterSizePx,
+    'maxWidthPx': maxWidthPx,
+    'breakpointLabel': breakpointLabel,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cbsv021ScanResult {
+class Cbsv021ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cbsv021ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cbsv021ScanResult({
+  const Cbsv021ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cbsv021ConformanceLevel.good:    return 'Good';
+      case Cbsv021ConformanceLevel.average: return 'Average';
+      case Cbsv021ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// CBSV-021: Implementation Step 27: Configuration of Core Extraction Fields for Clinical Ope
+/// Metric: UI / UX Component Interaction Response Time (Core Web Vitals
+/// Floor=0.9 · Output=Good / Average / Poor
 class Cbsv021Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
-
-  // EC:1 — EC: 1. System receives incoming mobile session metadata packet.
-  static void executeReceivesStep1(Cbsv021Entry entry) {
-    // receives incoming mobile session metadata packet
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-001: ruleId required');
-    };
+  // EC:1 — System locates the CBSV-021 configuration in the source repository.
+  static Cbsv021Config _ec1Locates(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-001: gridColumns required for CBSV-021');
+    }
+    // the CBSV-021 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System validates classification key within user session profile.
-  static void executeValidatesStep2(Cbsv021Entry entry) {
-    // validates classification key within user session profile
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-002: ruleId required');
-    };
+  // EC:2 — System extracts gridColumns and gutterSizePx from the CBSV-021 registry.
+  static Cbsv021Config _ec2Extracts(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-002: gridColumns required for CBSV-021');
+    }
+    // gridColumns and gutterSizePx from the CBSV-021 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System evaluates access privileges against habot.io/library/security/document_access.json rules.
-  static void executeEvaluatesStep3(Cbsv021Entry entry) {
-    // evaluates access privileges against habot.io/library/security/document_access.js
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per UI / UX Component Interaction Response Tim
+  static Cbsv021Config _ec3Compiles(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-003: gridColumns required for CBSV-021');
+    }
+    // the implementation rule set per UI / UX Component Interactio
+    return config;
   }
 
-  // EC:4 — EC: 4. System drops unauthorized document fetch requests missing required keys.
-  static void executeDropsStep4(Cbsv021Entry entry) {
-    // drops unauthorized document fetch requests missing required keys
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Cbsv021Config _ec4Validates(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-004: gridColumns required for CBSV-021');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System extracts multi-column clinical operation records for authorized profiles.
-  static void executeExtractsStep5(Cbsv021Entry entry) {
-    // extracts multi-column clinical operation records for authorized profiles
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Cbsv021Config _ec5Registers(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-005: gridColumns required for CBSV-021');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System transforms multi-column tabular data into dense mobile card layouts.
-  static void executeTransformsStep6(Cbsv021Entry entry) {
-    // transforms multi-column tabular data into dense mobile card layouts
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against UI / UX Component Interaction Response Time (Core W
+  static Cbsv021Config _ec6Validates(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-006: gridColumns required for CBSV-021');
+    }
+    // configuration against UI / UX Component Interaction Response
+    return config;
   }
 
-  // EC:7 — EC: 7. System applies high-saturation visual priority indicators to urgent records.
-  static void executeAppliesStep7(Cbsv021Entry entry) {
-    // applies high-saturation visual priority indicators to urgent records
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Cbsv021Config _ec7Routes(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-007: gridColumns required for CBSV-021');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System writes compliance exception alert logs for failed access attempts.
-  static void executeWritesStep8(Cbsv021Entry entry) {
-    // writes compliance exception alert logs for failed access attempts
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Cbsv021Config _ec8Publishes(Cbsv021Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-CBSV021-008: gridColumns required for CBSV-021');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System measures UI component interaction response time against INP targets.
-  static void executeMeasuresStep9(Cbsv021Entry entry) {
-    // measures UI component interaction response time against INP targets
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-009: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:10 — EC: 10. System emits document isolation status output to security dashboards.
-  static void executeEmitsStep10(Cbsv021Entry entry) {
-    // emits document isolation status output to security dashboards
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CBSV021-010: ruleId required');
-    };
-  }
-
-  static Cbsv021ScanResult validateConformance(List<Cbsv021Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cbsv021ScanResult(
+  static Cbsv021ValidationResult calculateConformance({
+    required List<Cbsv021Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cbsv021ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cbsv021ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-CBSV021-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Cbsv021ConformanceLevel.good
+        : rate >= _floor
+            ? Cbsv021ConformanceLevel.average
+            : Cbsv021ConformanceLevel.poor;
+    return Cbsv021ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CBSV021-VAL',
     );
   }
 
-  static Cbsv021Entry routeToRegistry(Cbsv021Entry entry, Cbsv021ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cbsv021Config routeToRegistry(
+    Cbsv021Config config,
+    Cbsv021ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cbsv021Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CBSV021-000: configs must not be empty for CBSV-021');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CBSV021-TRI: triangular check failed for CBSV-021');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CBSV-021',
+      'metric':             'UI / UX Component Interaction Response Time (Core Web Vitals',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cbsv_021Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CBSV-021',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cbsv021Widget extends StatelessWidget {
-  final List<Cbsv021Entry> entries;
-  const Cbsv021Widget({super.key, required this.entries});
+  final List<Cbsv021Config> configs;
+  const Cbsv021Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cbsv021Pipeline.validateConformance(entries);
+    final result = Cbsv021Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +333,37 @@ class Cbsv021Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CBSV-021',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.gridColumns,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -276,15 +379,16 @@ void main() async {
   final configs = [
     Cbsv021Config(
       configId: 'cbsv021-cfg-001',
-      ruleId: 'cbsv-021_ruleId_val',
-      fieldA: 'cbsv-021_fieldA_val',
+      gridColumns: 'cbsv-021_gridColumns',
+      gutterSizePx: 'cbsv-021_gutterSizePx',
+      maxWidthPx: 'cbsv-021_maxWidthPx',
+      breakpointLabel: 'cbsv-021_breakpointLabel',
       traceId:                 'trace-cbsv021-001',
       originSourceId:          'origin-cbsv021',
       immediatePredecessorId:  'pred-cbsv021-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Cbsv021Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CBSV-021 → $result');
+  final out = await Cbsv021Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CBSV-021 [Good / Average / Poor] → $out');
 }

@@ -1,9 +1,0 @@
-{
-  "//": "GEN-00774 — SKAN 4.0 coarse conversion-value mapping to AED buckets.",
-  "//metric": "Mapping Completeness",
-  "coarse_to_aed_bucket": {
-    "low":    { "min_aed": 0,   "max_aed": 50 },
-    "medium": { "min_aed": 50,  "max_aed": 250 },
-    "high":   { "min_aed": 250, "max_aed": null }
-  }
-}

@@ -1,31 +1,37 @@
 // ============================================================
 // HSFVS-006 — Hard Stop Fail Validation System
-// Atomic Step: Implement Hard Stop if compliance fails.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=· Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     575 of 1073
+// Atomic Step:  Implement Hard Stop if compliance fails.
+// Metric:       WCAG 2.2 Touch Target & Contrast Compliance
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      791 of 1073
 // ============================================================
-// Why this matters: Eradicates the possibility of malicious app injections flooding downstream cache architectures.
-// Mobile impl:      Protects resource constraints on the mobile device by screening out massive invalid payloads at the 
-// Data requirement: Configure a 48dp disabled touch target for the halt state buttons.
+// Why:          Eradicates the possibility of malicious app injections flooding downstream cache architectures.
+// Mobile:       Protects resource constraints on the mobile device by screening out massive invalid payloads at the 
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Hsfvs006ConformanceLevel { complete, partial, notComplete }
-enum Hsfvs006ExecutionStatus  { pending, running, complete, failed }
+enum Hsfvs006ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Hsfvs006ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for HSFVS-006.
-/// Fields derived from AISS sheet — Hard Stop Fail Validation System.
+/// HSFVS-006 — Hard Stop Fail Validation System
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Hsfvs006Config {
   final String configId;
@@ -35,6 +41,7 @@ class Hsfvs006Config {
   final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Hsfvs006ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Hsfvs006ConformanceLevel.complete:    return 'Pass';
-      case Hsfvs006ConformanceLevel.partial:     return 'Partial';
-      case Hsfvs006ConformanceLevel.notComplete: return 'Fail';
+      case Hsfvs006ConformanceLevel.pass_: return 'Pass';
+      case Hsfvs006ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// HSFVS-006: Implement Hard Stop if compliance fails.
 /// Metric: WCAG 2.2 Touch Target & Contrast Compliance
+/// Floor=0.95 · Output=Pass / Fail
 class Hsfvs006Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the HSFVS-006 configuration in the source repository.
   static Hsfvs006Config _ec1Locates(Hsfvs006Config config) {
@@ -152,13 +159,13 @@ class Hsfvs006Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Touch Target Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per WCAG 2.2 Touch Target & Contrast Complianc
   static Hsfvs006Config _ec3Compiles(Hsfvs006Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
           'EC-HSFVS006-003: componentId required for HSFVS-006');
     }
-    // the implementation rule set per Touch Target Compliance Rate
+    // the implementation rule set per WCAG 2.2 Touch Target & Cont
     return config;
   }
 
@@ -182,13 +189,13 @@ class Hsfvs006Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Touch Target Compliance Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against WCAG 2.2 Touch Target & Contrast Compliance gate (f
   static Hsfvs006Config _ec6Validates(Hsfvs006Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
           'EC-HSFVS006-006: componentId required for HSFVS-006');
     }
-    // configuration against Touch Target Compliance Rate gate (flo
+    // configuration against WCAG 2.2 Touch Target & Contrast Compl
     return config;
   }
 
@@ -220,21 +227,19 @@ class Hsfvs006Pipeline {
     required List<Hsfvs006Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Hsfvs006ValidationResult(
+      return Hsfvs006ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Hsfvs006ConformanceLevel.notComplete,
+        conformanceLevel: Hsfvs006ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-HSFVS006-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Hsfvs006ConformanceLevel.complete
-        : rate >= _floor
-            ? Hsfvs006ConformanceLevel.partial
-            : Hsfvs006ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Hsfvs006ConformanceLevel.pass_
+        : Hsfvs006ConformanceLevel.fail_;
     return Hsfvs006ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Hsfvs006Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-HSFVS-006',
       'metric':             'WCAG 2.2 Touch Target & Contrast Compliance',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Hsfvs006Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> hsfvs_006Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> hsfvs_006Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Hsfvs006Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Hsfvs006Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Hsfvs006Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('HSFVS-006',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Hsfvs006Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('HSFVS-006 → $result');
+  final out = await Hsfvs006Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('HSFVS-006 [Pass / Fail] → $out');
 }

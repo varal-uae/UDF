@@ -1,50 +1,46 @@
 // ============================================================
 // SSELC-013-A01 — Split-Screen Element Layout Controller
-// Atomic Step: SSELC-013 - Split-Screen Contextual Mirror UI Template Standardization
-// Metric:      Layout Consistency Score · Floor=0.5 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     511 of 530
+// Atomic Step:  SSELC-013 - Split-Screen Contextual Mirror UI Template Standardization
+// Metric:       Asset/Resource Location & Access Confirmation
+// Floor:        0.5  ·  Optimal: 0.9
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      999 of 1073
 // ============================================================
-// Why this matters: Locks operator familiarity and maximizes manual verification task speeds.
-// Mobile impl:      Split screen natively adjusts to vertical scrolling "card" UI on mobile interfaces.
-// Data requirement: Access the core.ui.split_screen_layout codebase module.
+// Why:          Locks operator familiarity and maximizes manual verification task speeds.
+// Mobile:       Split screen natively adjusts to vertical scrolling "card" UI on mobile interfaces.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Sselc013A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Sselc013A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sselc013A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SSELC-013-A01.
-/// Fields derived from AISS sheet — Split-Screen Element Layout Controller.
+/// SSELC-013-A01 — Split-Screen Element Layout Controller
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sselc013A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
-  final String layoutId;
-  final String splitRatio;
-  final String containerWidth;
-  final String breakpointKey;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String assetId;
+  final String mediaType;
+  final String aspectRatio;
+  final String loadStrategy;
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -55,10 +51,10 @@ class Sselc013A01Config {
 
   const Sselc013A01Config({
     required this.configId,
-    required this.layoutId,
-    required this.splitRatio,
-    required this.containerWidth,
-    required this.breakpointKey,
+    required this.assetId,
+    required this.mediaType,
+    required this.aspectRatio,
+    required this.loadStrategy,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +73,10 @@ class Sselc013A01Config {
     bool?   complianceStatusInd,
   }) => Sselc013A01Config(
     configId: configId,
-    layoutId: layoutId,
-    splitRatio: splitRatio,
-    containerWidth: containerWidth,
-    breakpointKey: breakpointKey,
+    assetId: assetId,
+    mediaType: mediaType,
+    aspectRatio: aspectRatio,
+    loadStrategy: loadStrategy,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,10 +88,10 @@ class Sselc013A01Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'layoutId': layoutId,
-    'splitRatio': splitRatio,
-    'containerWidth': containerWidth,
-    'breakpointKey': breakpointKey,
+    'assetId': assetId,
+    'mediaType': mediaType,
+    'aspectRatio': aspectRatio,
+    'loadStrategy': loadStrategy,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -129,27 +125,27 @@ class Sselc013A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc013A01ConformanceLevel.complete:    return 'Good';
-      case Sselc013A01ConformanceLevel.partial:     return 'Average';
-      case Sselc013A01ConformanceLevel.notComplete: return 'Poor';
+      case Sselc013A01ConformanceLevel.good:    return 'Good';
+      case Sselc013A01ConformanceLevel.average: return 'Average';
+      case Sselc013A01ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SSELC-013-A01: SSELC-013 - Split-Screen Contextual Mirror UI Template Standardization
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Asset/Resource Location & Access Confirmation
+/// Floor=0.5 · Output=Good / Average / Poor
 class Sselc013A01Pipeline {
   static const double _floor   = 0.5;
-  static const double _optimal = 0.97;
+  static const double _optimal = 0.9;
 
   // EC:1 — Build framework component locking horizontal geometries
   static Sselc013A01Config _ec1Execute(Sselc013A01Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.assetId.isEmpty) {
       throw ArgumentError(
-          'EC-SSELC013A01-001: layoutId required for SSELC-013-A01');
+          'EC-SSELC013A01-001: assetId required for SSELC-013-A01');
     }
     // Build framework component locking horizontal geometries
     return config;
@@ -157,9 +153,9 @@ class Sselc013A01Pipeline {
 
   // EC:2 — Implement property injectors feeding verification assets
   static Sselc013A01Config _ec2Execute(Sselc013A01Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.assetId.isEmpty) {
       throw ArgumentError(
-          'EC-SSELC013A01-002: layoutId required for SSELC-013-A01');
+          'EC-SSELC013A01-002: assetId required for SSELC-013-A01');
     }
     // Implement property injectors feeding verification assets
     return config;
@@ -167,9 +163,9 @@ class Sselc013A01Pipeline {
 
   // EC:3 — Configure code layout scanner flagging custom CSS
   static Sselc013A01Config _ec3Execute(Sselc013A01Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.assetId.isEmpty) {
       throw ArgumentError(
-          'EC-SSELC013A01-003: layoutId required for SSELC-013-A01');
+          'EC-SSELC013A01-003: assetId required for SSELC-013-A01');
     }
     // Configure code layout scanner flagging custom CSS
     return config;
@@ -177,9 +173,9 @@ class Sselc013A01Pipeline {
 
   // EC:4 — Force views to import approved layout package
   static Sselc013A01Config _ec4Execute(Sselc013A01Config config) {
-    if (config.layoutId.isEmpty) {
+    if (config.assetId.isEmpty) {
       throw ArgumentError(
-          'EC-SSELC013A01-004: layoutId required for SSELC-013-A01');
+          'EC-SSELC013A01-004: assetId required for SSELC-013-A01');
     }
     // Force views to import approved layout package
     return config;
@@ -193,7 +189,7 @@ class Sselc013A01Pipeline {
     required List<Sselc013A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sselc013A01ValidationResult(
+      return Sselc013A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sselc013A01ConformanceLevel.notComplete,
@@ -203,11 +199,11 @@ class Sselc013A01Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sselc013A01ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Sselc013A01ConformanceLevel.good
         : rate >= _floor
-            ? Sselc013A01ConformanceLevel.partial
-            : Sselc013A01ConformanceLevel.notComplete;
+            ? Sselc013A01ConformanceLevel.average
+            : Sselc013A01ConformanceLevel.poor;
     return Sselc013A01ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +242,17 @@ class Sselc013A01Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-SSELC013A01-TRI: triangular check failed for SSELC-013-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SSELC-013-A01',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Asset/Resource Location & Access Confirmation',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Sselc013A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sselc_013_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Sselc013A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sselc013A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Sselc013A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SSELC-013-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Sselc013A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.layoutId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.assetId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -345,17 +335,16 @@ void main() async {
   final configs = [
     Sselc013A01Config(
       configId: 'sselc013a01-cfg-001',
-      layoutId: 'sselc-013-a01_layoutId',
-      splitRatio: 'sselc-013-a01_splitRatio',
-      containerWidth: 'sselc-013-a01_containerWidth',
-      breakpointKey: 'sselc-013-a01_breakpointKey',
+      assetId: 'sselc-013-a01_assetId',
+      mediaType: 'sselc-013-a01_mediaType',
+      aspectRatio: 'sselc-013-a01_aspectRatio',
+      loadStrategy: 'sselc-013-a01_loadStrategy',
       traceId:                 'trace-sselc013a01-001',
       originSourceId:          'origin-sselc013a01',
       immediatePredecessorId:  'pred-sselc013a01-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sselc013A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SSELC-013-A01 → $result');
+  final out = await Sselc013A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SSELC-013-A01 [Good / Average / Poor] → $out');
 }

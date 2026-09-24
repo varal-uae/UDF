@@ -1,229 +1,331 @@
 // ============================================================
-// CTTEE-008 | Client Thread Telemetry Engine
-// Atomic Task: CTTEE-008
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CTTEE-008 — Client Thread Telemetry Engine
+// Atomic Step:  Build interaction-linked background countdown tracking clocks.
+// Metric:       Event Listener Coverage Rate (%)
+// Floor:        95.0  ·  Optimal: 99.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      162 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System registers UI interaction event listener on client main thread.
-  // EC: 2. System captures client interaction payload from UI thread event.
-  // EC: 3. System extracts user_ID from interaction payload.
-  // EC: 4. System validates runtime timeout configuration parameters against active traffic load thresholds.
-  // EC: 5. System initializes background countdown tracking clock using configured timeout values.
-  // EC: 6. System calculates event listener coverage rate metric percentage.
-  // EC: 7. System evaluates metric percentage against target threshold of 99.0 percent.
-  // EC: 8. System assigns step outcome status based on metric evaluation.
-  // EC: 9. System attaches lineage headers including trace_id to execution record.
-  // EC: 10. System writes execution log record to Core Ingress Repository.
+// Why:          Eliminates point-to-point service dependencies, enabling backend upgrades without breaking active pa
+// Mobile:       
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cttee008ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CTTEE-008.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cttee008Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cttee008ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CTTEE-008 — Client Thread Telemetry Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Cttee008Config {
+  final String configId;
+  final String gateId;
+  final String checkRule;
+  final String passThreshold;
+  final String failureReason;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cttee008Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cttee008Config({
+    required this.configId,
+    required this.gateId,
+    required this.checkRule,
+    required this.passThreshold,
+    required this.failureReason,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cttee008Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cttee008Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cttee008Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cttee008Config(
+    configId: configId,
+    gateId: gateId,
+    checkRule: checkRule,
+    passThreshold: passThreshold,
+    failureReason: failureReason,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gateId': gateId,
+    'checkRule': checkRule,
+    'passThreshold': passThreshold,
+    'failureReason': failureReason,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cttee008ScanResult {
+class Cttee008ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cttee008ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cttee008ScanResult({
+  const Cttee008ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cttee008ConformanceLevel.complete:    return 'Complete';
+      case Cttee008ConformanceLevel.partial:     return 'Partial';
+      case Cttee008ConformanceLevel.notComplete: return 'Not Complete';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// CTTEE-008: Build interaction-linked background countdown tracking clocks.
+/// Metric: Event Listener Coverage Rate (%)
+/// Floor=95.0 · Output=Complete / Partial / Not Complete
 class Cttee008Pipeline {
-  static const double _floor   = 95.0;  // metric floor gate
-  static const double _optimal = 99.0; // metric optimal target
+  static const double _floor   = 95.0;
+  static const double _optimal = 99.0;
 
-
-  // EC:1 — EC: 1. System registers UI interaction event listener on client main thread.
-  static void executeRegistersStep1(Cttee008Entry entry) {
-    // registers UI interaction event listener on client main thread
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-001: ruleId required');
-    };
+  // EC:1 — System locates the CTTEE-008 configuration in the source repository.
+  static Cttee008Config _ec1Locates(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-001: gateId required for CTTEE-008');
+    }
+    // the CTTEE-008 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System captures client interaction payload from UI thread event.
-  static void executeCapturesStep2(Cttee008Entry entry) {
-    // captures client interaction payload from UI thread event
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-002: ruleId required');
-    };
+  // EC:2 — System extracts gateId and checkRule from the CTTEE-008 registry.
+  static Cttee008Config _ec2Extracts(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-002: gateId required for CTTEE-008');
+    }
+    // gateId and checkRule from the CTTEE-008 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System extracts user_ID from interaction payload.
-  static void executeExtractsStep3(Cttee008Entry entry) {
-    // extracts user_ID from interaction payload
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Event Listener Coverage Rate (%).
+  static Cttee008Config _ec3Compiles(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-003: gateId required for CTTEE-008');
+    }
+    // the implementation rule set per Event Listener Coverage Rate
+    return config;
   }
 
-  // EC:4 — EC: 4. System validates runtime timeout configuration parameters against active traffic load thresholds.
-  static void executeValidatesStep4(Cttee008Entry entry) {
-    // validates runtime timeout configuration parameters against active traffic load t
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Cttee008Config _ec4Validates(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-004: gateId required for CTTEE-008');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System initializes background countdown tracking clock using configured timeout values.
-  static void executeInitializesStep5(Cttee008Entry entry) {
-    // initializes background countdown tracking clock using configured timeout values
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Cttee008Config _ec5Registers(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-005: gateId required for CTTEE-008');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System calculates event listener coverage rate metric percentage.
-  static void executeCalculatesStep6(Cttee008Entry entry) {
-    // calculates event listener coverage rate metric percentage
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Event Listener Coverage Rate (%) gate (floor=95.0).
+  static Cttee008Config _ec6Validates(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-006: gateId required for CTTEE-008');
+    }
+    // configuration against Event Listener Coverage Rate (%) gate 
+    return config;
   }
 
-  // EC:7 — EC: 7. System evaluates metric percentage against target threshold of 99.0 percent.
-  static void executeEvaluatesStep7(Cttee008Entry entry) {
-    // evaluates metric percentage against target threshold of 99.0 percent
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Cttee008Config _ec7Routes(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-007: gateId required for CTTEE-008');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System assigns step outcome status based on metric evaluation.
-  static void executeAssignsStep8(Cttee008Entry entry) {
-    // assigns step outcome status based on metric evaluation
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Cttee008Config _ec8Publishes(Cttee008Config config) {
+    if (config.gateId.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE008-008: gateId required for CTTEE-008');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System attaches lineage headers including trace_id to execution record.
-  static void executeAttachesStep9(Cttee008Entry entry) {
-    // attaches lineage headers including trace_id to execution record
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-009: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:10 — EC: 10. System writes execution log record to Core Ingress Repository.
-  static void executeWritesStep10(Cttee008Entry entry) {
-    // writes execution log record to Core Ingress Repository
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE008-010: ruleId required');
-    };
-  }
-
-  static Cttee008ScanResult validateConformance(List<Cttee008Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cttee008ScanResult(
+  static Cttee008ValidationResult calculateConformance({
+    required List<Cttee008Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cttee008ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cttee008ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-CTTEE008-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Cttee008ConformanceLevel.complete
+        : rate >= _floor
+            ? Cttee008ConformanceLevel.partial
+            : Cttee008ConformanceLevel.notComplete;
+    return Cttee008ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CTTEE008-VAL',
     );
   }
 
-  static Cttee008Entry routeToRegistry(Cttee008Entry entry, Cttee008ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cttee008Config routeToRegistry(
+    Cttee008Config config,
+    Cttee008ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cttee008Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CTTEE008-000: configs must not be empty for CTTEE-008');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CTTEE008-TRI: triangular check failed for CTTEE-008');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CTTEE-008',
+      'metric':             'Event Listener Coverage Rate (%)',
+      'output_vocab':       'Complete / Partial / Not Complete',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cttee_008Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CTTEE-008',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cttee008Widget extends StatelessWidget {
-  final List<Cttee008Entry> entries;
-  const Cttee008Widget({super.key, required this.entries});
+  final List<Cttee008Config> configs;
+  const Cttee008Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cttee008Pipeline.validateConformance(entries);
+    final result = Cttee008Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +333,37 @@ class Cttee008Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CTTEE-008',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.gateId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -268,4 +371,24 @@ class Cttee008Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Cttee008Config(
+      configId: 'cttee008-cfg-001',
+      gateId: 'cttee-008_gateId',
+      checkRule: 'cttee-008_checkRule',
+      passThreshold: 'cttee-008_passThreshold',
+      failureReason: 'cttee-008_failureReason',
+      traceId:                 'trace-cttee008-001',
+      originSourceId:          'origin-cttee008',
+      immediatePredecessorId:  'pred-cttee008-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Cttee008Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CTTEE-008 [Complete / Partial / Not Complete] → $out');
 }

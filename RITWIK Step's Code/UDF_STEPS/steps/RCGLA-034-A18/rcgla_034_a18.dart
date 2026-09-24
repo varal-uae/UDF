@@ -1,47 +1,47 @@
 // ============================================================
 // RCGLA-034-A18 — Responsive CSS Grid Layout Architecture
-// Atomic Step: Define Global Grid Alignment Rules.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     393 of 440
+// Atomic Step:  Define Global Grid Alignment Rules.
+// Metric:       Production Release Success Rate (%) / Change Failure Rate
+// Floor:        0.98  ·  Optimal: 0.98
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      932 of 1073
 // ============================================================
-// Why this matters: Rigid grids prevent visual chaos and ensure data-entry Byts are processed uniformly without cognitiv
-// Mobile impl:      Prioritizes limited screen real estate by stacking elements vertically.
+// Why:          Rigid grids prevent visual chaos and ensure data-entry Byts are processed uniformly without cognitiv
+// Mobile:       Prioritizes limited screen real estate by stacking elements vertically.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Rcgla034A18ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Rcgla034A18ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Rcgla034A18ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for RCGLA-034-A18.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// RCGLA-034-A18 — Responsive CSS Grid Layout Architecture
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Rcgla034A18Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String gridColumns;
+  final String gutterSizePx;
+  final String maxWidthPx;
+  final String breakpointLabel;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +50,10 @@ class Rcgla034A18Config {
 
   const Rcgla034A18Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.gridColumns,
+    required this.gutterSizePx,
+    required this.maxWidthPx,
+    required this.breakpointLabel,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +71,33 @@ class Rcgla034A18Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Rcgla034A18Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    gridColumns: gridColumns,
+    gutterSizePx: gutterSizePx,
+    maxWidthPx: maxWidthPx,
+    breakpointLabel: breakpointLabel,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'gridColumns': gridColumns,
+    'gutterSizePx': gutterSizePx,
+    'maxWidthPx': maxWidthPx,
+    'breakpointLabel': breakpointLabel,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -118,28 +124,26 @@ class Rcgla034A18ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla034A18ConformanceLevel.complete:    return 'Pass';
-      case Rcgla034A18ConformanceLevel.partial:     return 'Partial';
-      case Rcgla034A18ConformanceLevel.notComplete: return 'Fail';
+      case Rcgla034A18ConformanceLevel.pass_: return 'Pass';
+      case Rcgla034A18ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// RCGLA-034-A18: Define Global Grid Alignment Rules.
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Production Release Success Rate (%) / Change Failure Rate
+/// Floor=0.98 · Output=Pass / Fail
 class Rcgla034A18Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.98;
+  static const double _optimal = 0.98;
 
   // EC:1 — Set mobile 4-column constraints
   static Rcgla034A18Config _ec1Execute(Rcgla034A18Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA034A18-001: configId required for RCGLA-034-A18');
+          'EC-RCGLA034A18-001: gridColumns required for RCGLA-034-A18');
     }
     // Set mobile 4-column constraints
     return config;
@@ -147,9 +151,9 @@ class Rcgla034A18Pipeline {
 
   // EC:2 — Define standard 8px gutters
   static Rcgla034A18Config _ec2Execute(Rcgla034A18Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA034A18-002: configId required for RCGLA-034-A18');
+          'EC-RCGLA034A18-002: gridColumns required for RCGLA-034-A18');
     }
     // Define standard 8px gutters
     return config;
@@ -157,9 +161,9 @@ class Rcgla034A18Pipeline {
 
   // EC:3 — Lock mobile max-width
   static Rcgla034A18Config _ec3Execute(Rcgla034A18Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA034A18-003: configId required for RCGLA-034-A18');
+          'EC-RCGLA034A18-003: gridColumns required for RCGLA-034-A18');
     }
     // Lock mobile max-width
     return config;
@@ -167,9 +171,9 @@ class Rcgla034A18Pipeline {
 
   // EC:4 — Determine fluid breakpoints
   static Rcgla034A18Config _ec4Execute(Rcgla034A18Config config) {
-    if (config.configId.isEmpty) {
+    if (config.gridColumns.isEmpty) {
       throw ArgumentError(
-          'EC-RCGLA034A18-004: configId required for RCGLA-034-A18');
+          'EC-RCGLA034A18-004: gridColumns required for RCGLA-034-A18');
     }
     // Determine fluid breakpoints
     return config;
@@ -179,27 +183,23 @@ class Rcgla034A18Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Rcgla034A18ValidationResult calculateConformance({
     required List<Rcgla034A18Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Rcgla034A18ValidationResult(
+      return Rcgla034A18ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Rcgla034A18ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-RCGLA034A18-VAL',
+        conformanceLevel: Rcgla034A18ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-RCGLA034A18-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Rcgla034A18ConformanceLevel.complete
-        : rate >= _floor
-            ? Rcgla034A18ConformanceLevel.partial
-            : Rcgla034A18ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Rcgla034A18ConformanceLevel.pass_
+        : Rcgla034A18ConformanceLevel.fail_;
     return Rcgla034A18ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -228,7 +228,7 @@ class Rcgla034A18Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-RCGLA034A18-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-RCGLA034A18-000: configs must not be empty for RCGLA-034-A18');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -236,21 +236,19 @@ class Rcgla034A18Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-RCGLA034A18-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-RCGLA034A18-TRI: triangular check failed for RCGLA-034-A18');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-RCGLA-034-A18',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Production Release Success Rate (%) / Change Failure Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -260,9 +258,7 @@ class Rcgla034A18Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> rcgla_034_a18Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -281,6 +277,7 @@ class Rcgla034A18Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Rcgla034A18Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -288,18 +285,13 @@ class Rcgla034A18Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('RCGLA-034-A18',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -308,24 +300,22 @@ class Rcgla034A18Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.gridColumns,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -340,16 +330,17 @@ class Rcgla034A18Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Rcgla034A18Config(
-      configId:                'rcgla034a18-cfg-001',
-      ruleKey:                 'rcgla-034-a18_rule',
-      ruleValue:               'rcgla-034-a18_value',
+      configId: 'rcgla034a18-cfg-001',
+      gridColumns: 'rcgla-034-a18_gridColumns',
+      gutterSizePx: 'rcgla-034-a18_gutterSizePx',
+      maxWidthPx: 'rcgla-034-a18_maxWidthPx',
+      breakpointLabel: 'rcgla-034-a18_breakpointLabel',
       traceId:                 'trace-rcgla034a18-001',
       originSourceId:          'origin-rcgla034a18',
       immediatePredecessorId:  'pred-rcgla034a18-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Rcgla034A18Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('RCGLA-034-A18 → $result');
+  final out = await Rcgla034A18Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('RCGLA-034-A18 [Pass / Fail] → $out');
 }

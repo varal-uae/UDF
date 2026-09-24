@@ -1,52 +1,48 @@
 // ============================================================
 // SCTSS-020-A03 — Semantic Color Token Styling System
-// Atomic Step: Configure LLM Confidence Score Threshold Visuals to decide how to color-code and gate AI outputs bas
-// Metric:      Input Validation Coverage Rate · Floor=3.5 · Optimal=4.5
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     325 of 396
+// Atomic Step:  Configure LLM Confidence Score Threshold Visuals to decide how to color-code and gate AI outputs bas
+// Metric:       Task Execution Quality Score (1-5 scale) — operational gating rules fo
+// Floor:        3.5  ·  Optimal: 4.5
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      975 of 1073
 // ============================================================
-// Why this matters: Prevents humans from blindly accepting AI hallucinations by making model uncertainty visually obviou
-// Mobile impl:      A highly scannable micro-badge (pill format) that instantly communicates safety without text clutter
-// Data requirement: Formulate operational gating rules for low-confidence outputs (e.g., mandatory human verification re
+// Why:          Prevents humans from blindly accepting AI hallucinations by making model uncertainty visually obviou
+// Mobile:       A highly scannable micro-badge (pill format) that instantly communicates safety without text clutter
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Sctss020A03ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Sctss020A03ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sctss020A03ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SCTSS-020-A03.
-/// Fields derived from AISS sheet row — Semantic Color Token Styling System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// SCTSS-020-A03 — Semantic Color Token Styling System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sctss020A03Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Sctss020A03Config {
     'hexValue': hexValue,
     'wcagRatio': wcagRatio,
     'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,19 +125,18 @@ class Sctss020A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss020A03ConformanceLevel.complete:    return 'Good';
-      case Sctss020A03ConformanceLevel.partial:     return 'Average';
-      case Sctss020A03ConformanceLevel.notComplete: return 'Poor';
+      case Sctss020A03ConformanceLevel.good:    return 'Good';
+      case Sctss020A03ConformanceLevel.average: return 'Average';
+      case Sctss020A03ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SCTSS-020-A03: Configure LLM Confidence Score Threshold Visuals to decide how to color-code and
-///
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Task Execution Quality Score (1-5 scale) — operational gatin
+/// Floor=3.5 · Output=Good / Average / Poor
 class Sctss020A03Pipeline {
   static const double _floor   = 3.5;
   static const double _optimal = 4.5;
@@ -190,27 +185,25 @@ class Sctss020A03Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Sctss020A03ValidationResult calculateConformance({
     required List<Sctss020A03Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sctss020A03ValidationResult(
+      return Sctss020A03ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sctss020A03ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-SCTSS020A03-VAL',
+        gatePass: false, ecLineRef: 'EC-SCTSS020A03-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sctss020A03ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Sctss020A03ConformanceLevel.good
         : rate >= _floor
-            ? Sctss020A03ConformanceLevel.partial
-            : Sctss020A03ConformanceLevel.notComplete;
+            ? Sctss020A03ConformanceLevel.average
+            : Sctss020A03ConformanceLevel.poor;
     return Sctss020A03ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +232,7 @@ class Sctss020A03Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-SCTSS020A03-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-SCTSS020A03-000: configs must not be empty for SCTSS-020-A03');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Sctss020A03Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-SCTSS020A03-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-SCTSS020A03-TRI: triangular check failed for SCTSS-020-A03');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SCTSS-020-A03',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Task Execution Quality Score (1-5 scale) — operational gatin',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Sctss020A03Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sctss_020_a03Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Sctss020A03Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sctss020A03Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Sctss020A03Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SCTSS-020-A03',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Sctss020A03Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${colorToken} | ${hexValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Sctss020A03Config(
       configId: 'sctss020a03-cfg-001',
-      colorToken: 'sctss-020-a03_colorToken_value',
-      hexValue: 'sctss-020-a03_hexValue_value',
-      wcagRatio: 'sctss-020-a03_wcagRatio_value',
-      usageContext: 'sctss-020-a03_usageContext_value',
+      colorToken: 'sctss-020-a03_colorToken',
+      hexValue: 'sctss-020-a03_hexValue',
+      wcagRatio: 'sctss-020-a03_wcagRatio',
+      usageContext: 'sctss-020-a03_usageContext',
       traceId:                 'trace-sctss020a03-001',
       originSourceId:          'origin-sctss020a03',
       immediatePredecessorId:  'pred-sctss020a03-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sctss020A03Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SCTSS-020-A03 → $result');
+  final out = await Sctss020A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SCTSS-020-A03 [Good / Average / Poor] → $out');
 }

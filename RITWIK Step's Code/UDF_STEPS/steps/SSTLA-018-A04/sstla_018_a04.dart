@@ -1,52 +1,45 @@
 // ============================================================
 // SSTLA-018-A04 — Split-Screen Template Layout Architecture
-// Atomic Step: Formulating the responsive layout rules to organize parent command sections on 5.5-inch mobile viewp
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     443 of 530
+// Atomic Step:  Formulating the responsive layout rules to organize parent command sections on 5.5-inch mobile viewp
+// Metric:       Responsive Layout Fidelity (%) — responsive layout rules utilizing sin
+// Floor:        0.95  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1014 of 1073
 // ============================================================
-// Why this matters: Cluttered or rigid mobile screen interfaces frustrate parents, driving application abandonment spike
-// Mobile impl:      Screen elements must collapse into vertical layout stacks to eliminate horizontal scroll glitches.
-// Data requirement: Formulate responsive layout rules utilizing single-column or accordion-style command grouping.
+// Why:          Cluttered or rigid mobile screen interfaces frustrate parents, driving application abandonment spike
+// Mobile:       Screen elements must collapse into vertical layout stacks to eliminate horizontal scroll glitches.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Sstla018A04ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Sstla018A04ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sstla018A04ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SSTLA-018-A04.
-/// Fields derived from AISS sheet — Split-Screen Template Layout Architecture.
-/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sstla018A04Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String gridColumns;
   final String gutterSizePx;
   final String maxWidthPx;
   final String breakpointLabel;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -129,21 +122,18 @@ class Sstla018A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sstla018A04ConformanceLevel.complete:    return 'Pass';
+      case Sstla018A04ConformanceLevel.complete:    return 'Complete';
       case Sstla018A04ConformanceLevel.partial:     return 'Partial';
-      case Sstla018A04ConformanceLevel.notComplete: return 'Fail';
+      case Sstla018A04ConformanceLevel.notComplete: return 'Not Complete';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
-/// SSTLA-018-A04: Formulating the responsive layout rules to organize parent command sections on 5
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sstla018A04Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 1.0;
 
   // EC:1 — System locates the SSTLA-018-A04 configuration in the source repository.
   static Sstla018A04Config _ec1Locates(Sstla018A04Config config) {
@@ -165,23 +155,23 @@ class Sstla018A04Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Responsive Layout Fidelity (%) — responsiv
   static Sstla018A04Config _ec3Compiles(Sstla018A04Config config) {
     if (config.gridColumns.isEmpty) {
       throw ArgumentError(
           'EC-SSTLA018A04-003: gridColumns required for SSTLA-018-A04');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Responsive Layout Fidelity (
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Sstla018A04Config _ec4Validates(Sstla018A04Config config) {
     if (config.gridColumns.isEmpty) {
       throw ArgumentError(
           'EC-SSTLA018A04-004: gridColumns required for SSTLA-018-A04');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +185,13 @@ class Sstla018A04Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Responsive Layout Fidelity (%) — responsive layout 
   static Sstla018A04Config _ec6Validates(Sstla018A04Config config) {
     if (config.gridColumns.isEmpty) {
       throw ArgumentError(
           'EC-SSTLA018A04-006: gridColumns required for SSTLA-018-A04');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Responsive Layout Fidelity (%) — respo
     return config;
   }
 
@@ -233,7 +223,7 @@ class Sstla018A04Pipeline {
     required List<Sstla018A04Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sstla018A04ValidationResult(
+      return Sstla018A04ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sstla018A04ConformanceLevel.notComplete,
@@ -243,7 +233,7 @@ class Sstla018A04Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Sstla018A04ConformanceLevel.complete
         : rate >= _floor
             ? Sstla018A04ConformanceLevel.partial
@@ -290,19 +280,17 @@ class Sstla018A04Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-SSTLA018A04-TRI: triangular check failed for SSTLA-018-A04');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SSTLA-018-A04',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Responsive Layout Fidelity (%) — responsive layout rules uti',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +300,7 @@ class Sstla018A04Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sstla_018_a04Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -340,15 +326,13 @@ class Sstla018A04Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SSTLA-018-A04',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +341,22 @@ class Sstla018A04Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +382,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sstla018A04Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SSTLA-018-A04 → $result');
+  final out = await Sstla018A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SSTLA-018-A04 [Complete / Partial / Not Complete] → $out');
 }

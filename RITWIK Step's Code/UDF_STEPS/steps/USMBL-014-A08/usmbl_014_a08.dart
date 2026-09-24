@@ -1,51 +1,47 @@
 // ============================================================
 // USMBL-014-A08 — User Session & Mobile Behaviour Layer
-// Atomic Step: USMBL-014 - Design Empty State Boilerplates.
-// Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     395 of 396
+// Atomic Step:  USMBL-014 - Design Empty State Boilerplates.
+// Metric:       Verification / QA Pass Rate for the Stated Check
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1069 of 1073
 // ============================================================
-// Why this matters: Blank screens cause panic; empty states act as onboarding mechanisms.
-// Mobile impl:      Ensures empty data arrays don't result in white screens of death; provides instant thumb-reachable C
-// Data requirement: Set up conditional rendering triggers based on array length checks (length === 0).
+// Why:          Blank screens cause panic; empty states act as onboarding mechanisms.
+// Mobile:       Ensures empty data arrays don't result in white screens of death; provides instant thumb-reachable C
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Usmbl014A08ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Usmbl014A08ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Usmbl014A08ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for USMBL-014-A08.
-/// Fields derived from AISS sheet row — User Session & Mobile Behaviour Layer.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// USMBL-014-A08 — User Session & Mobile Behaviour Layer
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Usmbl014A08Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
-  final String conditional;
-  final String rendering;
-  final String triggers;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -54,9 +50,10 @@ class Usmbl014A08Config {
 
   const Usmbl014A08Config({
     required this.configId,
-    required this.conditional,
-    required this.rendering,
-    required this.triggers,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -75,9 +72,10 @@ class Usmbl014A08Config {
     bool?   complianceStatusInd,
   }) => Usmbl014A08Config(
     configId: configId,
-    conditional: conditional,
-    rendering: rendering,
-    triggers: triggers,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -89,16 +87,17 @@ class Usmbl014A08Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'conditional': conditional,
-    'rendering': rendering,
-    'triggers': triggers,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -125,28 +124,26 @@ class Usmbl014A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Usmbl014A08ConformanceLevel.complete:    return 'Pass';
-      case Usmbl014A08ConformanceLevel.partial:     return 'Partial';
-      case Usmbl014A08ConformanceLevel.notComplete: return 'Fail';
+      case Usmbl014A08ConformanceLevel.pass_: return 'Pass';
+      case Usmbl014A08ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// USMBL-014-A08: USMBL-014 - Design Empty State Boilerplates.
-///
-/// Metric: Implementation Conformance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Complete / Partial / Not Complete
+/// Metric: Verification / QA Pass Rate for the Stated Check
+/// Floor=0.9 · Output=Pass / Fail
 class Usmbl014A08Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — Select illustration
   static Usmbl014A08Config _ec1Execute(Usmbl014A08Config config) {
-    if (config.conditional.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-USMBL014A08-001: conditional required for USMBL-014-A08');
+          'EC-USMBL014A08-001: ruleKey required for USMBL-014-A08');
     }
     // Select illustration
     return config;
@@ -154,9 +151,9 @@ class Usmbl014A08Pipeline {
 
   // EC:2 — Define text
   static Usmbl014A08Config _ec2Execute(Usmbl014A08Config config) {
-    if (config.conditional.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-USMBL014A08-002: conditional required for USMBL-014-A08');
+          'EC-USMBL014A08-002: ruleKey required for USMBL-014-A08');
     }
     // Define text
     return config;
@@ -164,9 +161,9 @@ class Usmbl014A08Pipeline {
 
   // EC:3 — Position primary CTA centrally
   static Usmbl014A08Config _ec3Execute(Usmbl014A08Config config) {
-    if (config.conditional.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-USMBL014A08-003: conditional required for USMBL-014-A08');
+          'EC-USMBL014A08-003: ruleKey required for USMBL-014-A08');
     }
     // Position primary CTA centrally
     return config;
@@ -174,9 +171,9 @@ class Usmbl014A08Pipeline {
 
   // EC:4 — Differentiate states
   static Usmbl014A08Config _ec4Execute(Usmbl014A08Config config) {
-    if (config.conditional.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-USMBL014A08-004: conditional required for USMBL-014-A08');
+          'EC-USMBL014A08-004: ruleKey required for USMBL-014-A08');
     }
     // Differentiate states
     return config;
@@ -186,27 +183,23 @@ class Usmbl014A08Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Usmbl014A08ValidationResult calculateConformance({
     required List<Usmbl014A08Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Usmbl014A08ValidationResult(
+      return Usmbl014A08ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Usmbl014A08ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-USMBL014A08-VAL',
+        conformanceLevel: Usmbl014A08ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-USMBL014A08-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Usmbl014A08ConformanceLevel.complete
-        : rate >= _floor
-            ? Usmbl014A08ConformanceLevel.partial
-            : Usmbl014A08ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Usmbl014A08ConformanceLevel.pass_
+        : Usmbl014A08ConformanceLevel.fail_;
     return Usmbl014A08ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -235,7 +228,7 @@ class Usmbl014A08Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-USMBL014A08-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-USMBL014A08-000: configs must not be empty for USMBL-014-A08');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -243,21 +236,19 @@ class Usmbl014A08Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-USMBL014A08-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-USMBL014A08-TRI: triangular check failed for USMBL-014-A08');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-USMBL-014-A08',
-      'metric':             'Implementation Conformance Rate',
+      'metric':             'Verification / QA Pass Rate for the Stated Check',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -267,9 +258,7 @@ class Usmbl014A08Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> usmbl_014_a08Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -288,6 +277,7 @@ class Usmbl014A08Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Usmbl014A08Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -295,16 +285,13 @@ class Usmbl014A08Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('USMBL-014-A08',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Usmbl014A08Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.conditional,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${conditional} | ${rendering}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -345,16 +331,16 @@ void main() async {
   final configs = [
     Usmbl014A08Config(
       configId: 'usmbl014a08-cfg-001',
-      conditional: 'usmbl-014-a08_conditional_value',
-      rendering: 'usmbl-014-a08_rendering_value',
-      triggers: 'usmbl-014-a08_triggers_value',
+      ruleKey: 'usmbl-014-a08_ruleKey',
+      ruleValue: 'usmbl-014-a08_ruleValue',
+      metricLabel: 'usmbl-014-a08_metricLabel',
+      complianceTarget: 'usmbl-014-a08_complianceTarget',
       traceId:                 'trace-usmbl014a08-001',
       originSourceId:          'origin-usmbl014a08',
       immediatePredecessorId:  'pred-usmbl014a08-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Usmbl014A08Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('USMBL-014-A08 → $result');
+  final out = await Usmbl014A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('USMBL-014-A08 [Pass / Fail] → $out');
 }

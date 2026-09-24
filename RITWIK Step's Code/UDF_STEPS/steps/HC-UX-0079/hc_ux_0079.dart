@@ -1,31 +1,38 @@
 // ============================================================
 // HC-UX-0079 — Habot Core Schema
-// Atomic Step: Design the Data Lineage Flowchart View .
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     612 of 1073
+// Atomic Step:  Design the Data Lineage Flowchart View .
+// Metric:       UI Component Usability Compliance
+// Floor:        0.8  ·  Optimal: 0.95
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      789 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Support pinch-to-zoom gestures on handheld mobile viewports.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum HcUx0079ConformanceLevel { complete, partial, notComplete }
-enum HcUx0079ExecutionStatus  { pending, running, complete, failed }
+enum HcUx0079ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum HcUx0079ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for HC-UX-0079.
-/// Fields derived from AISS sheet — Habot Core Schema.
+/// HC-UX-0079 — Habot Core Schema
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class HcUx0079Config {
   final String configId;
@@ -35,6 +42,7 @@ class HcUx0079Config {
   final String refreshIntervalMs;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class HcUx0079ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case HcUx0079ConformanceLevel.complete:    return 'Good';
-      case HcUx0079ConformanceLevel.partial:     return 'Average';
-      case HcUx0079ConformanceLevel.notComplete: return 'Poor';
+      case HcUx0079ConformanceLevel.good:    return 'Good';
+      case HcUx0079ConformanceLevel.average: return 'Average';
+      case HcUx0079ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// HC-UX-0079: Design the Data Lineage Flowchart View .
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: UI Component Usability Compliance
+/// Floor=0.8 · Output=Good / Average / Poor
 class HcUx0079Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.8;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the HC-UX-0079 configuration in the source repository.
   static HcUx0079Config _ec1Locates(HcUx0079Config config) {
@@ -152,13 +161,13 @@ class HcUx0079Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per UI Component Usability Compliance.
   static HcUx0079Config _ec3Compiles(HcUx0079Config config) {
     if (config.widgetId.isEmpty) {
       throw ArgumentError(
           'EC-HCUX0079-003: widgetId required for HC-UX-0079');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per UI Component Usability Compl
     return config;
   }
 
@@ -182,13 +191,13 @@ class HcUx0079Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against UI Component Usability Compliance gate (floor=0.8).
   static HcUx0079Config _ec6Validates(HcUx0079Config config) {
     if (config.widgetId.isEmpty) {
       throw ArgumentError(
           'EC-HCUX0079-006: widgetId required for HC-UX-0079');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against UI Component Usability Compliance gate
     return config;
   }
 
@@ -220,7 +229,7 @@ class HcUx0079Pipeline {
     required List<HcUx0079Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const HcUx0079ValidationResult(
+      return HcUx0079ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: HcUx0079ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class HcUx0079Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? HcUx0079ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? HcUx0079ConformanceLevel.good
         : rate >= _floor
-            ? HcUx0079ConformanceLevel.partial
-            : HcUx0079ConformanceLevel.notComplete;
+            ? HcUx0079ConformanceLevel.average
+            : HcUx0079ConformanceLevel.poor;
     return HcUx0079ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class HcUx0079Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-HC-UX-0079',
-      'metric':             'Layout Consistency Score',
+      'metric':             'UI Component Usability Compliance',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class HcUx0079Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> hc_ux_0079Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> hc_ux_0079Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class HcUx0079Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = HcUx0079Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class HcUx0079Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('HC-UX-0079',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.widgetId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await HcUx0079Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('HC-UX-0079 → $result');
+  final out = await HcUx0079Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('HC-UX-0079 [Good / Average / Poor] → $out');
 }

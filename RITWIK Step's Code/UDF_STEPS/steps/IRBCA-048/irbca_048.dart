@@ -1,52 +1,47 @@
 // ============================================================
 // IRBCA-048 — Immutable Rule-Based Component Architecture
-// Atomic Step: Cloud Storage Signed URL Expiry Interceptor for Mobile Evidence
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     239 of 396
+// Atomic Step:  Cloud Storage Signed URL Expiry Interceptor for Mobile Evidence
+// Metric:       Signed URL Expiry Window
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      796 of 1073
 // ============================================================
-// Why this matters: Required for automated GL accounting and tax routing.
-// Mobile impl:      Native mobile selection menus (Action Sheets) are faster than typing.
-// Data requirement: Embed Material layout cards that constrain imagery to 50% of the screen.
+// Why:          Required for automated GL accounting and tax routing.
+// Mobile:       Native mobile selection menus (Action Sheets) are faster than typing.
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Irbca048ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Irbca048ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Irbca048ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IRBCA-048.
-/// Fields derived from AISS sheet row — Immutable Rule-Based Component Architecture.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// IRBCA-048 — Immutable Rule-Based Component Architecture
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Irbca048Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String tokenName;
   final String tokenValue;
   final String tokenCategory;
   final String appliedComponent;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Irbca048Config {
     'tokenValue': tokenValue,
     'tokenCategory': tokenCategory,
     'appliedComponent': appliedComponent,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Irbca048ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Irbca048ConformanceLevel.complete:    return 'Pass';
-      case Irbca048ConformanceLevel.partial:     return 'Partial';
-      case Irbca048ConformanceLevel.notComplete: return 'Fail';
+      case Irbca048ConformanceLevel.pass_: return 'Pass';
+      case Irbca048ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// IRBCA-048: Cloud Storage Signed URL Expiry Interceptor for Mobile Evidence
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Signed URL Expiry Window
+/// Floor=0.95 · Output=Pass / Fail
 class Irbca048Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the IRBCA-048 configuration in the source repository.
   static Irbca048Config _ec1Locates(Irbca048Config config) {
@@ -156,33 +149,33 @@ class Irbca048Pipeline {
     return config;
   }
 
-  // EC:2 — System extracts tokenName, tokenValue from the IRBCA-048 registry.
+  // EC:2 — System extracts tokenName and tokenValue from the IRBCA-048 registry.
   static Irbca048Config _ec2Extracts(Irbca048Config config) {
     if (config.tokenName.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA048-002: tokenName required for IRBCA-048');
     }
-    // tokenName, tokenValue from the IRBCA-048 registry
+    // tokenName and tokenValue from the IRBCA-048 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Signed URL Expiry Window.
   static Irbca048Config _ec3Compiles(Irbca048Config config) {
     if (config.tokenName.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA048-003: tokenName required for IRBCA-048');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Signed URL Expiry Window
     return config;
   }
 
-  // EC:4 — System validates tokenName against required constraints.
+  // EC:4 — System validates configuration against required constraints.
   static Irbca048Config _ec4Validates(Irbca048Config config) {
     if (config.tokenName.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA048-004: tokenName required for IRBCA-048');
     }
-    // tokenName against required constraints
+    // configuration against required constraints
     return config;
   }
 
@@ -196,13 +189,13 @@ class Irbca048Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Signed URL Expiry Window gate (floor=0.95).
   static Irbca048Config _ec6Validates(Irbca048Config config) {
     if (config.tokenName.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA048-006: tokenName required for IRBCA-048');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Signed URL Expiry Window gate (floor=0
     return config;
   }
 
@@ -230,27 +223,23 @@ class Irbca048Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Irbca048ValidationResult calculateConformance({
     required List<Irbca048Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Irbca048ValidationResult(
+      return Irbca048ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Irbca048ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-IRBCA048-VAL',
+        conformanceLevel: Irbca048ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-IRBCA048-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Irbca048ConformanceLevel.complete
-        : rate >= _floor
-            ? Irbca048ConformanceLevel.partial
-            : Irbca048ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Irbca048ConformanceLevel.pass_
+        : Irbca048ConformanceLevel.fail_;
     return Irbca048ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -279,7 +268,7 @@ class Irbca048Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-IRBCA048-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-IRBCA048-000: configs must not be empty for IRBCA-048');
     }
     final p1 = configs.map(_ec1Locates).toList();
     final p2 = configs.map(_ec2Extracts).toList();
@@ -291,21 +280,19 @@ class Irbca048Pipeline {
     final p8 = configs.map(_ec8Publishes).toList();
 
     if (!triangularCheck(configs.length, p8.length)) {
-      return {'error': 'EC-IRBCA048-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-IRBCA048-TRI: triangular check failed for IRBCA-048');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IRBCA-048',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Signed URL Expiry Window',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -315,9 +302,7 @@ class Irbca048Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> irbca_048Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -336,6 +321,7 @@ class Irbca048Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Irbca048Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -343,16 +329,13 @@ class Irbca048Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IRBCA-048',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -361,23 +344,22 @@ class Irbca048Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.tokenName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${tokenName} | ${tokenValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -393,17 +375,16 @@ void main() async {
   final configs = [
     Irbca048Config(
       configId: 'irbca048-cfg-001',
-      tokenName: 'irbca-048_tokenName_value',
-      tokenValue: 'irbca-048_tokenValue_value',
-      tokenCategory: 'irbca-048_tokenCategory_value',
-      appliedComponent: 'irbca-048_appliedComponent_value',
+      tokenName: 'irbca-048_tokenName',
+      tokenValue: 'irbca-048_tokenValue',
+      tokenCategory: 'irbca-048_tokenCategory',
+      appliedComponent: 'irbca-048_appliedComponent',
       traceId:                 'trace-irbca048-001',
       originSourceId:          'origin-irbca048',
       immediatePredecessorId:  'pred-irbca048-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Irbca048Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IRBCA-048 → $result');
+  final out = await Irbca048Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IRBCA-048 [Pass / Fail] → $out');
 }

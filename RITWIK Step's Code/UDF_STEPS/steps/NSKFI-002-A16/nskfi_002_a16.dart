@@ -1,52 +1,47 @@
 // ============================================================
 // NSKFI-002-A16 — Navigation Shell & Key Feature Integration
-// Atomic Step: Catalog reusable mobile components (SRCs).
-// Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     268 of 396
+// Atomic Step:  Catalog reusable mobile components (SRCs).
+// Metric:       Verification / QA Pass Rate
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      889 of 1073
 // ============================================================
-// Why this matters: Eradicates duplicate effort.
-// Mobile impl:      Dramatically reduces the mobile app binary size (APK/AAB) by reusing common code.
-// Data requirement: Test Storybook stories for each SRC — verify all documented variants render correctly.
+// Why:          Eradicates duplicate effort.
+// Mobile:       Dramatically reduces the mobile app binary size (APK/AAB) by reusing common code.
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Nskfi002A16ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Nskfi002A16ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Nskfi002A16ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for NSKFI-002-A16.
-/// Fields derived from AISS sheet row — Navigation Shell & Key Feature Integration.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// NSKFI-002-A16 — Navigation Shell & Key Feature Integration
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Nskfi002A16Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
+  final String packageName;
   final String componentId;
-  final String widgetClass;
-  final String propsSchema;
-  final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String versionTag;
+  final String exportPath;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -55,10 +50,10 @@ class Nskfi002A16Config {
 
   const Nskfi002A16Config({
     required this.configId,
+    required this.packageName,
     required this.componentId,
-    required this.widgetClass,
-    required this.propsSchema,
-    required this.usageContext,
+    required this.versionTag,
+    required this.exportPath,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +72,10 @@ class Nskfi002A16Config {
     bool?   complianceStatusInd,
   }) => Nskfi002A16Config(
     configId: configId,
+    packageName: packageName,
     componentId: componentId,
-    widgetClass: widgetClass,
-    propsSchema: propsSchema,
-    usageContext: usageContext,
+    versionTag: versionTag,
+    exportPath: exportPath,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,17 +87,17 @@ class Nskfi002A16Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
+    'packageName': packageName,
     'componentId': componentId,
-    'widgetClass': widgetClass,
-    'propsSchema': propsSchema,
-    'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'versionTag': versionTag,
+    'exportPath': exportPath,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,28 +124,26 @@ class Nskfi002A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Nskfi002A16ConformanceLevel.complete:    return 'Pass';
-      case Nskfi002A16ConformanceLevel.partial:     return 'Partial';
-      case Nskfi002A16ConformanceLevel.notComplete: return 'Fail';
+      case Nskfi002A16ConformanceLevel.pass_: return 'Pass';
+      case Nskfi002A16ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// NSKFI-002-A16: Catalog reusable mobile components (SRCs).
-///
-/// Metric: Component Reuse Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Verification / QA Pass Rate
+/// Floor=0.9 · Output=Pass / Fail
 class Nskfi002A16Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — 1) Index Byt, 2) Verify uniqueness, 3) Map to Dict, 4) Publish SRC
   static Nskfi002A16Config _ec1Execute(Nskfi002A16Config config) {
-    if (config.componentId.isEmpty) {
+    if (config.packageName.isEmpty) {
       throw ArgumentError(
-          'EC-NSKFI002A16-001: componentId required for NSKFI-002-A16');
+          'EC-NSKFI002A16-001: packageName required for NSKFI-002-A16');
     }
     // 1) Index Byt, 2) Verify uniqueness, 3) Map to Dict, 4) Publi
     return config;
@@ -160,27 +153,23 @@ class Nskfi002A16Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=1.0
   static Nskfi002A16ValidationResult calculateConformance({
     required List<Nskfi002A16Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Nskfi002A16ValidationResult(
+      return Nskfi002A16ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Nskfi002A16ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-NSKFI002A16-VAL',
+        conformanceLevel: Nskfi002A16ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-NSKFI002A16-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Nskfi002A16ConformanceLevel.complete
-        : rate >= _floor
-            ? Nskfi002A16ConformanceLevel.partial
-            : Nskfi002A16ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Nskfi002A16ConformanceLevel.pass_
+        : Nskfi002A16ConformanceLevel.fail_;
     return Nskfi002A16ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -209,26 +198,24 @@ class Nskfi002A16Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-NSKFI002A16-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-NSKFI002A16-000: configs must not be empty for NSKFI-002-A16');
     }
     final p1 = configs.map(_ec1Execute).toList();
 
     if (!triangularCheck(configs.length, p1.length)) {
-      return {'error': 'EC-NSKFI002A16-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-NSKFI002A16-TRI: triangular check failed for NSKFI-002-A16');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-NSKFI-002-A16',
-      'metric':             'Component Reuse Rate',
+      'metric':             'Verification / QA Pass Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -238,9 +225,7 @@ class Nskfi002A16Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> nskfi_002_a16Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -259,6 +244,7 @@ class Nskfi002A16Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Nskfi002A16Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -266,16 +252,13 @@ class Nskfi002A16Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('NSKFI-002-A16',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -284,23 +267,22 @@ class Nskfi002A16Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.packageName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${componentId} | ${widgetClass}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -316,17 +298,16 @@ void main() async {
   final configs = [
     Nskfi002A16Config(
       configId: 'nskfi002a16-cfg-001',
-      componentId: 'nskfi-002-a16_componentId_value',
-      widgetClass: 'nskfi-002-a16_widgetClass_value',
-      propsSchema: 'nskfi-002-a16_propsSchema_value',
-      usageContext: 'nskfi-002-a16_usageContext_value',
+      packageName: 'nskfi-002-a16_packageName',
+      componentId: 'nskfi-002-a16_componentId',
+      versionTag: 'nskfi-002-a16_versionTag',
+      exportPath: 'nskfi-002-a16_exportPath',
       traceId:                 'trace-nskfi002a16-001',
       originSourceId:          'origin-nskfi002a16',
       immediatePredecessorId:  'pred-nskfi002a16-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Nskfi002A16Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('NSKFI-002-A16 → $result');
+  final out = await Nskfi002A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('NSKFI-002-A16 [Pass / Fail] → $out');
 }

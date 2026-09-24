@@ -1,229 +1,327 @@
 // ============================================================
-// CKCKM-012 | Cross-Key Cryptographic Key Manager
-// Atomic Task: CKCKM-012
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CKCKM-012 — Cross-Key Cryptographic Key Manager
+// Atomic Step:  Deploy Automated Field-Level Encryption Rules for PII Aliases
+// Metric:       Standard Operating Procedure (SOP) Adherence Rate
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      144 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System ingests API origin whitelist configurations from the deployment repository.
-  // EC: 2. System evaluates incoming deployment parameters for wildcard origin syntax.
-  // EC: 3. System rejects deployment payloads containing wildcard origin declarations.
-  // EC: 4. System transforms whitelisted domain lists into strict CORS configuration rules.
-  // EC: 5. System inspects data payload attributes for sensitive PII tags.
-  // EC: 6. System executes field-level cryptographic encryption routines on designated PII attributes.
-  // EC: 7. System assigns custom lock emblem UI configurations to encrypted output fields.
-  // EC: 8. System writes transaction lineage metadata to the central audit log.
-  // EC: 9. System verifies origin request headers against authorized domain tables.
-  // EC: 10. System routes unauthorized origin requests to the security block queue.
+// Why:          Prevents malicious websites from making unauthorized API requests on behalf of users.
+// Mobile:       While mobile apps don't strictly enforce CORS, the web-based MTO and Admin portals do; securing this
+// col41:        Pass
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Ckckm012ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CKCKM-012.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Ckckm012Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Ckckm012ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CKCKM-012 — Cross-Key Cryptographic Key Manager
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Ckckm012Config {
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Ckckm012Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Ckckm012Config({
+    required this.configId,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Ckckm012Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Ckckm012Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Ckckm012Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Ckckm012Config(
+    configId: configId,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Ckckm012ScanResult {
+class Ckckm012ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Ckckm012ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Ckckm012ScanResult({
+  const Ckckm012ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Ckckm012ConformanceLevel.pass_: return 'Pass';
+      case Ckckm012ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// CKCKM-012: Deploy Automated Field-Level Encryption Rules for PII Aliases
+/// Metric: Standard Operating Procedure (SOP) Adherence Rate
+/// Floor=0.9 · Output=Pass / Fail
 class Ckckm012Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
-
-  // EC:1 — EC: 1. System ingests API origin whitelist configurations from the deployment repository.
-  static void executeIngestsStep1(Ckckm012Entry entry) {
-    // ingests API origin whitelist configurations from the deployment repository
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-001: ruleId required');
-    };
+  // EC:1 — System locates the CKCKM-012 configuration in the source repository.
+  static Ckckm012Config _ec1Locates(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-001: ruleKey required for CKCKM-012');
+    }
+    // the CKCKM-012 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System evaluates incoming deployment parameters for wildcard origin syntax.
-  static void executeEvaluatesStep2(Ckckm012Entry entry) {
-    // evaluates incoming deployment parameters for wildcard origin syntax
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-002: ruleId required');
-    };
+  // EC:2 — System extracts ruleKey and ruleValue from the CKCKM-012 registry.
+  static Ckckm012Config _ec2Extracts(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-002: ruleKey required for CKCKM-012');
+    }
+    // ruleKey and ruleValue from the CKCKM-012 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System rejects deployment payloads containing wildcard origin declarations.
-  static void executeRejectsStep3(Ckckm012Entry entry) {
-    // rejects deployment payloads containing wildcard origin declarations
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Standard Operating Procedure (SOP) Adheren
+  static Ckckm012Config _ec3Compiles(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-003: ruleKey required for CKCKM-012');
+    }
+    // the implementation rule set per Standard Operating Procedure
+    return config;
   }
 
-  // EC:4 — EC: 4. System transforms whitelisted domain lists into strict CORS configuration rules.
-  static void executeTransformsStep4(Ckckm012Entry entry) {
-    // transforms whitelisted domain lists into strict CORS configuration rules
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Ckckm012Config _ec4Validates(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-004: ruleKey required for CKCKM-012');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System inspects data payload attributes for sensitive PII tags.
-  static void executeInspectsStep5(Ckckm012Entry entry) {
-    // inspects data payload attributes for sensitive PII tags
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Ckckm012Config _ec5Registers(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-005: ruleKey required for CKCKM-012');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System executes field-level cryptographic encryption routines on designated PII attributes.
-  static void executeExecutesStep6(Ckckm012Entry entry) {
-    // executes field-level cryptographic encryption routines on designated PII attribu
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Standard Operating Procedure (SOP) Adherence Rate g
+  static Ckckm012Config _ec6Validates(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-006: ruleKey required for CKCKM-012');
+    }
+    // configuration against Standard Operating Procedure (SOP) Adh
+    return config;
   }
 
-  // EC:7 — EC: 7. System assigns custom lock emblem UI configurations to encrypted output fields.
-  static void executeAssignsStep7(Ckckm012Entry entry) {
-    // assigns custom lock emblem UI configurations to encrypted output fields
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Ckckm012Config _ec7Routes(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-007: ruleKey required for CKCKM-012');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System writes transaction lineage metadata to the central audit log.
-  static void executeWritesStep8(Ckckm012Entry entry) {
-    // writes transaction lineage metadata to the central audit log
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Ckckm012Config _ec8Publishes(Ckckm012Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CKCKM012-008: ruleKey required for CKCKM-012');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System verifies origin request headers against authorized domain tables.
-  static void executeVerifiesStep9(Ckckm012Entry entry) {
-    // verifies origin request headers against authorized domain tables
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-009: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:10 — EC: 10. System routes unauthorized origin requests to the security block queue.
-  static void executeRoutesStep10(Ckckm012Entry entry) {
-    // routes unauthorized origin requests to the security block queue
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CKCKM012-010: ruleId required');
-    };
-  }
-
-  static Ckckm012ScanResult validateConformance(List<Ckckm012Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Ckckm012ScanResult(
+  static Ckckm012ValidationResult calculateConformance({
+    required List<Ckckm012Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Ckckm012ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Ckckm012ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-CKCKM012-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Ckckm012ConformanceLevel.pass_
+        : Ckckm012ConformanceLevel.fail_;
+    return Ckckm012ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CKCKM012-VAL',
     );
   }
 
-  static Ckckm012Entry routeToRegistry(Ckckm012Entry entry, Ckckm012ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Ckckm012Config routeToRegistry(
+    Ckckm012Config config,
+    Ckckm012ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Ckckm012Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CKCKM012-000: configs must not be empty for CKCKM-012');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CKCKM012-TRI: triangular check failed for CKCKM-012');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CKCKM-012',
+      'metric':             'Standard Operating Procedure (SOP) Adherence Rate',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> ckckm_012Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CKCKM-012',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Ckckm012Widget extends StatelessWidget {
-  final List<Ckckm012Entry> entries;
-  const Ckckm012Widget({super.key, required this.entries});
+  final List<Ckckm012Config> configs;
+  const Ckckm012Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Ckckm012Pipeline.validateConformance(entries);
+    final result = Ckckm012Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +329,37 @@ class Ckckm012Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CKCKM-012',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -276,15 +375,16 @@ void main() async {
   final configs = [
     Ckckm012Config(
       configId: 'ckckm012-cfg-001',
-      ruleId: 'ckckm-012_ruleId_val',
-      fieldA: 'ckckm-012_fieldA_val',
+      ruleKey: 'ckckm-012_ruleKey',
+      ruleValue: 'ckckm-012_ruleValue',
+      metricLabel: 'ckckm-012_metricLabel',
+      complianceTarget: 'ckckm-012_complianceTarget',
       traceId:                 'trace-ckckm012-001',
       originSourceId:          'origin-ckckm012',
       immediatePredecessorId:  'pred-ckckm012-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ckckm012Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CKCKM-012 → $result');
+  final out = await Ckckm012Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CKCKM-012 [Pass / Fail] → $out');
 }

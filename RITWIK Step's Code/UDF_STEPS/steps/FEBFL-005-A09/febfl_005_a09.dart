@@ -1,31 +1,38 @@
 // ============================================================
 // FEBFL-005-A09 — Frontend Element Build & Feature Library
-// Atomic Step: FEBFL-005 - Enforce Private NPM Package Component Imports across Frontend Repositories.
-// Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     562 of 1073
+// Atomic Step:  FEBFL-005 - Enforce Private NPM Package Component Imports across Frontend Repositories.
+// Metric:       Shared Component Library Adoption Rate
+// Floor:        0.85  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      229 of 1073
 // ============================================================
-// Why this matters: Preserves muscle memory for interface operators and marketplace users, accelerating task completion 
-// Mobile impl:      Reduces frontend compilation asset weights drastically by using shared, cached design assets on mobi
-// Data requirement: Add the private NPM design library package dependency to the root package.json file.
+// Why:          Preserves muscle memory for interface operators and marketplace users, accelerating task completion 
+// Mobile:       Reduces frontend compilation asset weights drastically by using shared, cached design assets on mobi
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Febfl005A09ConformanceLevel { complete, partial, notComplete }
-enum Febfl005A09ExecutionStatus  { pending, running, complete, failed }
+enum Febfl005A09ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Febfl005A09ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FEBFL-005-A09.
-/// Fields derived from AISS sheet — Frontend Element Build & Feature Library.
+/// FEBFL-005-A09 — Frontend Element Build & Feature Library
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Febfl005A09Config {
   final String configId;
@@ -35,6 +42,7 @@ class Febfl005A09Config {
   final String breakpointLabel;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -124,13 +132,14 @@ class Febfl005A09ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FEBFL-005-A09: FEBFL-005 - Enforce Private NPM Package Component Imports across Frontend Reposi
-/// Metric: Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Shared Component Library Adoption Rate
+/// Floor=0.85 · Output=Complete / Partial / Not Complete
 class Febfl005A09Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.85;
+  static const double _optimal = 0.98;
 
   // EC:1 — Map required visual parameters (Grid_Columns_12, Touch_Target_48dp, evidence_panel_left, a
   static Febfl005A09Config _ec1Execute(Febfl005A09Config config) {
@@ -180,7 +189,7 @@ class Febfl005A09Pipeline {
     required List<Febfl005A09Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Febfl005A09ValidationResult(
+      return Febfl005A09ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Febfl005A09ConformanceLevel.notComplete,
@@ -190,7 +199,7 @@ class Febfl005A09Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Febfl005A09ConformanceLevel.complete
         : rate >= _floor
             ? Febfl005A09ConformanceLevel.partial
@@ -236,14 +245,14 @@ class Febfl005A09Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FEBFL-005-A09',
-      'metric':             'Touch Target Compliance Rate',
+      'metric':             'Shared Component Library Adoption Rate',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Febfl005A09Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> febfl_005_a09Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> febfl_005_a09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Febfl005A09Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Febfl005A09Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Febfl005A09Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FEBFL-005-A09',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Febfl005A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FEBFL-005-A09 → $result');
+  final out = await Febfl005A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FEBFL-005-A09 [Complete / Partial / Not Complete] → $out');
 }

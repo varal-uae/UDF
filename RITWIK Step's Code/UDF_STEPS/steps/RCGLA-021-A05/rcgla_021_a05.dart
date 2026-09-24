@@ -1,50 +1,46 @@
 // ============================================================
 // RCGLA-021-A05 — Responsive CSS Grid Layout Architecture
-// Atomic Step: RCGLA-021 - Responsive Layout Grid & Breakpoint Engine Deployment
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     445 of 530
+// Atomic Step:  RCGLA-021 - Responsive Layout Grid & Breakpoint Engine Deployment
+// Metric:       Implementation Completeness & Code Quality
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      922 of 1073
 // ============================================================
-// Why this matters: Ensures that complex deployment monitoring tools remain fully scannable and functional whether viewe
-// Mobile impl:      Guarantees touch element isolation and full readability on tight 360px portrait smartphone glass wit
-// Data requirement: Implement column-span props allowing components to adapt per breakpoint.
+// Why:          Ensures that complex deployment monitoring tools remain fully scannable and functional whether viewe
+// Mobile:       Guarantees touch element isolation and full readability on tight 360px portrait smartphone glass wit
+// col41:        Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Rcgla021A05ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Rcgla021A05ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Rcgla021A05ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for RCGLA-021-A05.
-/// Fields derived from AISS sheet — Responsive CSS Grid Layout Architecture.
+/// RCGLA-021-A05 — Responsive CSS Grid Layout Architecture
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Rcgla021A05Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String gridColumns;
   final String gutterSizePx;
   final String maxWidthPx;
   final String breakpointLabel;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,14 +132,14 @@ class Rcgla021A05ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// RCGLA-021-A05: RCGLA-021 - Responsive Layout Grid & Breakpoint Engine Deployment
-/// Metric: Design System Token Coverage Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Implementation Completeness & Code Quality
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Rcgla021A05Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Define 4-column layout guidelines for small mobile viewports below 600dp
   static Rcgla021A05Config _ec1Execute(Rcgla021A05Config config) {
@@ -193,7 +189,7 @@ class Rcgla021A05Pipeline {
     required List<Rcgla021A05Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Rcgla021A05ValidationResult(
+      return Rcgla021A05ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Rcgla021A05ConformanceLevel.notComplete,
@@ -203,7 +199,7 @@ class Rcgla021A05Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Rcgla021A05ConformanceLevel.complete
         : rate >= _floor
             ? Rcgla021A05ConformanceLevel.partial
@@ -246,19 +242,17 @@ class Rcgla021A05Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-RCGLA021A05-TRI: triangular check failed for RCGLA-021-A05');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-RCGLA-021-A05',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Implementation Completeness & Code Quality',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Rcgla021A05Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> rcgla_021_a05Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Rcgla021A05Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Rcgla021A05Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Rcgla021A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('RCGLA-021-A05',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Rcgla021A05Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Rcgla021A05Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('RCGLA-021-A05 → $result');
+  final out = await Rcgla021A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('RCGLA-021-A05 [Complete / Partial / Not Complete] → $out');
 }

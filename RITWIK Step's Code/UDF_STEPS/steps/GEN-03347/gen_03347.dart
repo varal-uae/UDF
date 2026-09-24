@@ -1,40 +1,47 @@
 // ============================================================
 // GEN-03347 — GEN Backend Utility Module
-// Atomic Step: Run transition performance tests across target low-spec mobile hardware.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     874 of 1073
+// Atomic Step:  Run transition performance tests across target low-spec mobile hardware.
+// Metric:       Low-spec Hardware Frame Rate
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      587 of 1073
 // ============================================================
-// Why this matters: Run transition performance tests across target low-spec mobile hardware. is a critical implementatio
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Run transition performance tests across target low-spec mobile hardware.
+// Why:          Run transition performance tests across target low-spec mobile hardware. is a critical implementatio
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen03347ConformanceLevel { complete, partial, notComplete }
-enum Gen03347ExecutionStatus  { pending, running, complete, failed }
+enum Gen03347ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen03347ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-03347.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-03347 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen03347Config {
   final String configId;
-  final String fieldId;
-  final String validationRule;
-  final String errorMessage;
-  final String inputType;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +50,10 @@ class Gen03347Config {
 
   const Gen03347Config({
     required this.configId,
-    required this.fieldId,
-    required this.validationRule,
-    required this.errorMessage,
-    required this.inputType,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +72,10 @@ class Gen03347Config {
     bool?   complianceStatusInd,
   }) => Gen03347Config(
     configId: configId,
-    fieldId: fieldId,
-    validationRule: validationRule,
-    errorMessage: errorMessage,
-    inputType: inputType,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +87,10 @@ class Gen03347Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'fieldId': fieldId,
-    'validationRule': validationRule,
-    'errorMessage': errorMessage,
-    'inputType': inputType,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +124,26 @@ class Gen03347ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen03347ConformanceLevel.complete:    return 'Complete';
-      case Gen03347ConformanceLevel.partial:     return 'Partial';
-      case Gen03347ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen03347ConformanceLevel.pass_: return 'Pass';
+      case Gen03347ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-03347: Run transition performance tests across target low-spec mobile hardware.
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Low-spec Hardware Frame Rate
+/// Floor=0.95 · Output=Pass / Fail
 class Gen03347Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen03347Config _ec1Execute(Gen03347Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03347-001: fieldId required for GEN-03347');
+          'EC-GEN03347-001: componentId required for GEN-03347');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +151,9 @@ class Gen03347Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen03347Config _ec2Execute(Gen03347Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03347-002: fieldId required for GEN-03347');
+          'EC-GEN03347-002: componentId required for GEN-03347');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +161,9 @@ class Gen03347Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen03347Config _ec3Execute(Gen03347Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03347-003: fieldId required for GEN-03347');
+          'EC-GEN03347-003: componentId required for GEN-03347');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +171,9 @@ class Gen03347Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen03347Config _ec4Execute(Gen03347Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03347-004: fieldId required for GEN-03347');
+          'EC-GEN03347-004: componentId required for GEN-03347');
     }
     // Document and commit to runbook
     return config;
@@ -180,21 +187,19 @@ class Gen03347Pipeline {
     required List<Gen03347Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen03347ValidationResult(
+      return Gen03347ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen03347ConformanceLevel.notComplete,
+        conformanceLevel: Gen03347ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN03347-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen03347ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen03347ConformanceLevel.partial
-            : Gen03347ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen03347ConformanceLevel.pass_
+        : Gen03347ConformanceLevel.fail_;
     return Gen03347ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen03347Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-03347',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Low-spec Hardware Frame Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen03347Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_03347Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_03347Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen03347Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen03347Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen03347Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-03347',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.fieldId,
+                title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +331,16 @@ void main() async {
   final configs = [
     Gen03347Config(
       configId: 'gen03347-cfg-001',
-      fieldId: 'gen-03347_fieldId',
-      validationRule: 'gen-03347_validationRule',
-      errorMessage: 'gen-03347_errorMessage',
-      inputType: 'gen-03347_inputType',
+      componentId: 'gen-03347_componentId',
+      targetSizeDp: 'gen-03347_targetSizeDp',
+      actualSizeDp: 'gen-03347_actualSizeDp',
+      complianceStatus: 'gen-03347_complianceStatus',
       traceId:                 'trace-gen03347-001',
       originSourceId:          'origin-gen03347',
       immediatePredecessorId:  'pred-gen03347-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen03347Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-03347 → $result');
+  final out = await Gen03347Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-03347 [Pass / Fail] → $out');
 }

@@ -1,31 +1,38 @@
 // ============================================================
 // GEN-04416 — GEN Backend Utility Module
-// Atomic Step: Set up secure memory isolation routines for session tokens and credentials.
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     971 of 1073
+// Atomic Step:  Set up secure memory isolation routines for session tokens and credentials.
+// Metric:       Authentication Success Rate
+// Floor:        0.95  ·  Optimal: 0.99
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      684 of 1073
 // ============================================================
-// Why this matters: Set up secure memory isolation routines for session tokens and credentials. is a critical implementa
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Set up secure memory isolation routines for session tokens and credentials.
+// Why:          Set up secure memory isolation routines for session tokens and credentials. is a critical implementa
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen04416ConformanceLevel { complete, partial, notComplete }
-enum Gen04416ExecutionStatus  { pending, running, complete, failed }
+enum Gen04416ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen04416ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-04416.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-04416 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen04416Config {
   final String configId;
@@ -35,6 +42,7 @@ class Gen04416Config {
   final String appliedComponent;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Gen04416ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen04416ConformanceLevel.complete:    return 'Complete';
-      case Gen04416ConformanceLevel.partial:     return 'Partial';
-      case Gen04416ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen04416ConformanceLevel.good:    return 'Good';
+      case Gen04416ConformanceLevel.average: return 'Average';
+      case Gen04416ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-04416: Set up secure memory isolation routines for session tokens and credentials.
-/// Metric: Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
+/// Metric: Authentication Success Rate
+/// Floor=0.95 · Output=Good / Average / Poor
 class Gen04416Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.99;
 
   // EC:1 — Plan and scope this step
   static Gen04416Config _ec1Execute(Gen04416Config config) {
@@ -180,7 +189,7 @@ class Gen04416Pipeline {
     required List<Gen04416Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen04416ValidationResult(
+      return Gen04416ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen04416ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen04416Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen04416ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen04416ConformanceLevel.good
         : rate >= _floor
-            ? Gen04416ConformanceLevel.partial
-            : Gen04416ConformanceLevel.notComplete;
+            ? Gen04416ConformanceLevel.average
+            : Gen04416ConformanceLevel.poor;
     return Gen04416ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen04416Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-04416',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Authentication Success Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen04416Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_04416Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_04416Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen04416Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen04416Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen04416Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-04416',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.tokenName,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen04416Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-04416 → $result');
+  final out = await Gen04416Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-04416 [Good / Average / Poor] → $out');
 }

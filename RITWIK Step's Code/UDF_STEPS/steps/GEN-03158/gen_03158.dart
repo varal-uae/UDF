@@ -1,31 +1,37 @@
 // ============================================================
 // GEN-03158 — GEN Backend Utility Module
-// Atomic Step: Configure mobile clients to automatically reconnect to the active failover region without logging us
-// Metric:      Telemetry Coverage Rate · Floor=60.0 · Optimal=15.0
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     857 of 1073
+// Atomic Step:  Configure mobile clients to automatically reconnect to the active failover region without logging us
+// Metric:       Recovery Time Objective (RTO, min)
+// Floor:        60.0  ·  Optimal: 60.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      570 of 1073
 // ============================================================
-// Why this matters: Configure mobile clients to automatically reconnect to the active failover region without logging us
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Configure mobile clients to automatically reconnect to the active failover region without logging us
+// Why:          Configure mobile clients to automatically reconnect to the active failover region without logging us
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen03158ConformanceLevel { complete, partial, notComplete }
-enum Gen03158ExecutionStatus  { pending, running, complete, failed }
+enum Gen03158ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen03158ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-03158.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-03158 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen03158Config {
   final String configId;
@@ -35,6 +41,7 @@ class Gen03158Config {
   final String alertChannel;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Gen03158ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen03158ConformanceLevel.complete:    return 'Complete';
-      case Gen03158ConformanceLevel.partial:     return 'Partial';
-      case Gen03158ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen03158ConformanceLevel.pass_: return 'Pass';
+      case Gen03158ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-03158: Configure mobile clients to automatically reconnect to the active failover regio
-/// Metric: Telemetry Coverage Rate · Floor=60.0 · Optimal=15.0
+/// Metric: Recovery Time Objective (RTO, min)
+/// Floor=60.0 · Output=Pass / Fail
 class Gen03158Pipeline {
   static const double _floor   = 60.0;
-  static const double _optimal = 15.0;
+  static const double _optimal = 60.0;
 
   // EC:1 — Plan and scope this step
   static Gen03158Config _ec1Execute(Gen03158Config config) {
@@ -180,21 +187,19 @@ class Gen03158Pipeline {
     required List<Gen03158Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen03158ValidationResult(
+      return Gen03158ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen03158ConformanceLevel.notComplete,
+        conformanceLevel: Gen03158ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN03158-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen03158ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen03158ConformanceLevel.partial
-            : Gen03158ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen03158ConformanceLevel.pass_
+        : Gen03158ConformanceLevel.fail_;
     return Gen03158ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen03158Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-03158',
-      'metric':             'Telemetry Coverage Rate',
+      'metric':             'Recovery Time Objective (RTO, min)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen03158Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_03158Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_03158Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen03158Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen03158Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen03158Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-03158',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.serviceId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen03158Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-03158 → $result');
+  final out = await Gen03158Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-03158 [Pass / Fail] → $out');
 }

@@ -1,52 +1,47 @@
 // ============================================================
 // MUFCE-013-A10 — Mobile UX Flow & Content Engine
-// Atomic Step: Code Stateful Switch Component Status Interlock.
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     262 of 396
+// Atomic Step:  Code Stateful Switch Component Status Interlock.
+// Metric:       Query Performance & Schema Integrity (BigQuery Best Practice)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      879 of 1073
 // ============================================================
-// Why this matters: Provides clear, single-tap status updates across settings modules without prompting intrusive confir
-// Mobile impl:      Leverages native mobile toggle switch mechanics to match single-hand finger sweeping habits perfectl
-// Data requirement: Inject fallback data rollback routines to revert switch visual states if database validation handsha
+// Why:          Provides clear, single-tap status updates across settings modules without prompting intrusive confir
+// Mobile:       Leverages native mobile toggle switch mechanics to match single-hand finger sweeping habits perfectl
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Mufce013A10ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Mufce013A10ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Mufce013A10ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MUFCE-013-A10.
-/// Fields derived from AISS sheet row — Mobile UX Flow & Content Engine.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// MUFCE-013-A10 — Mobile UX Flow & Content Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mufce013A10Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Mufce013A10Config {
     'hexValue': hexValue,
     'wcagRatio': wcagRatio,
     'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Mufce013A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mufce013A10ConformanceLevel.complete:    return 'Pass';
-      case Mufce013A10ConformanceLevel.partial:     return 'Partial';
-      case Mufce013A10ConformanceLevel.notComplete: return 'Fail';
+      case Mufce013A10ConformanceLevel.pass_: return 'Pass';
+      case Mufce013A10ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// MUFCE-013-A10: Code Stateful Switch Component Status Interlock.
-///
-/// Metric: Design System Token Coverage Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Query Performance & Schema Integrity (BigQuery Best Practice
+/// Floor=0.95 · Output=Pass / Fail
 class Mufce013A10Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Hardcode horizontal track width constraints relative to inner thumbs
   static Mufce013A10Config _ec1Execute(Mufce013A10Config config) {
@@ -190,27 +183,23 @@ class Mufce013A10Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=1.0
   static Mufce013A10ValidationResult calculateConformance({
     required List<Mufce013A10Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mufce013A10ValidationResult(
+      return Mufce013A10ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Mufce013A10ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-MUFCE013A10-VAL',
+        conformanceLevel: Mufce013A10ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-MUFCE013A10-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Mufce013A10ConformanceLevel.complete
-        : rate >= _floor
-            ? Mufce013A10ConformanceLevel.partial
-            : Mufce013A10ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Mufce013A10ConformanceLevel.pass_
+        : Mufce013A10ConformanceLevel.fail_;
     return Mufce013A10ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Mufce013A10Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-MUFCE013A10-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-MUFCE013A10-000: configs must not be empty for MUFCE-013-A10');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Mufce013A10Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-MUFCE013A10-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-MUFCE013A10-TRI: triangular check failed for MUFCE-013-A10');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MUFCE-013-A10',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Query Performance & Schema Integrity (BigQuery Best Practice',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Mufce013A10Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> mufce_013_a10Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Mufce013A10Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mufce013A10Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Mufce013A10Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MUFCE-013-A10',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Mufce013A10Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${colorToken} | ${hexValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Mufce013A10Config(
       configId: 'mufce013a10-cfg-001',
-      colorToken: 'mufce-013-a10_colorToken_value',
-      hexValue: 'mufce-013-a10_hexValue_value',
-      wcagRatio: 'mufce-013-a10_wcagRatio_value',
-      usageContext: 'mufce-013-a10_usageContext_value',
+      colorToken: 'mufce-013-a10_colorToken',
+      hexValue: 'mufce-013-a10_hexValue',
+      wcagRatio: 'mufce-013-a10_wcagRatio',
+      usageContext: 'mufce-013-a10_usageContext',
       traceId:                 'trace-mufce013a10-001',
       originSourceId:          'origin-mufce013a10',
       immediatePredecessorId:  'pred-mufce013a10-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mufce013A10Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('MUFCE-013-A10 → $result');
+  final out = await Mufce013A10Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MUFCE-013-A10 [Pass / Fail] → $out');
 }

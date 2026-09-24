@@ -1,31 +1,38 @@
 // ============================================================
 // IRBCA-001-A07 — Immutable Rule-Based Component Architecture
-// Atomic Step: Configure Google Cloud IAM "Least Privilege" (IRBCA-001)
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     556 of 1073
+// Atomic Step:  Configure Google Cloud IAM "Least Privilege" (IRBCA-001)
+// Metric:       UI/UX Design System Conformity (Material 3)
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      792 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Program the app layout to adjust menus dynamically based on permission arrays.
+// Why:          
+// Mobile:       
+// col41:        Good
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Irbca001A07ConformanceLevel { complete, partial, notComplete }
-enum Irbca001A07ExecutionStatus  { pending, running, complete, failed }
+enum Irbca001A07ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Irbca001A07ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IRBCA-001-A07.
-/// Fields derived from AISS sheet — Immutable Rule-Based Component Architecture.
+/// IRBCA-001-A07 — Immutable Rule-Based Component Architecture
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Irbca001A07Config {
   final String configId;
@@ -35,6 +42,7 @@ class Irbca001A07Config {
   final String grantedAt;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,19 +125,20 @@ class Irbca001A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Irbca001A07ConformanceLevel.complete:    return 'Good';
-      case Irbca001A07ConformanceLevel.partial:     return 'Average';
-      case Irbca001A07ConformanceLevel.notComplete: return 'Poor';
+      case Irbca001A07ConformanceLevel.good:    return 'Good';
+      case Irbca001A07ConformanceLevel.average: return 'Average';
+      case Irbca001A07ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// IRBCA-001-A07: Configure Google Cloud IAM "Least Privilege" (IRBCA-001)
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: UI/UX Design System Conformity (Material 3)
+/// Floor=0.9 · Output=Good / Average / Poor
 class Irbca001A07Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — System locates the IRBCA-001-A07 configuration in the source repository.
@@ -152,13 +161,13 @@ class Irbca001A07Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per UI/UX Design System Conformity (Material 3
   static Irbca001A07Config _ec3Compiles(Irbca001A07Config config) {
     if (config.resourceId.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA001A07-003: resourceId required for IRBCA-001-A07');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per UI/UX Design System Conformi
     return config;
   }
 
@@ -182,13 +191,13 @@ class Irbca001A07Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against UI/UX Design System Conformity (Material 3) gate (f
   static Irbca001A07Config _ec6Validates(Irbca001A07Config config) {
     if (config.resourceId.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA001A07-006: resourceId required for IRBCA-001-A07');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against UI/UX Design System Conformity (Materi
     return config;
   }
 
@@ -220,7 +229,7 @@ class Irbca001A07Pipeline {
     required List<Irbca001A07Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Irbca001A07ValidationResult(
+      return Irbca001A07ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Irbca001A07ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Irbca001A07Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Irbca001A07ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Irbca001A07ConformanceLevel.good
         : rate >= _floor
-            ? Irbca001A07ConformanceLevel.partial
-            : Irbca001A07ConformanceLevel.notComplete;
+            ? Irbca001A07ConformanceLevel.average
+            : Irbca001A07ConformanceLevel.poor;
     return Irbca001A07ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Irbca001A07Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IRBCA-001-A07',
-      'metric':             'Layout Consistency Score',
+      'metric':             'UI/UX Design System Conformity (Material 3)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Irbca001A07Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> irbca_001_a07Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> irbca_001_a07Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Irbca001A07Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Irbca001A07Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Irbca001A07Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IRBCA-001-A07',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.resourceId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Irbca001A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IRBCA-001-A07 → $result');
+  final out = await Irbca001A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IRBCA-001-A07 [Good / Average / Poor] → $out');
 }

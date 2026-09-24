@@ -1,31 +1,38 @@
 // ============================================================
 // FIEVR-044-A05 — Form Input Entry Validation Registry
-// Atomic Step: FIEVR-044 - Configure Single-Action Mobile Form Workflows with Progressive Reveal.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     1071 of 1073
+// Atomic Step:  FIEVR-044 - Configure Single-Action Mobile Form Workflows with Progressive Reveal.
+// Metric:       Gamification State Update Latency / Accuracy
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      269 of 1073
 // ============================================================
-// Why this matters: Flooding narrow screen viewports with massive rows of inputs drives up customer abandon rates, creat
-// Mobile impl:      Maximizes input speed metrics by limiting visible elements to elements that guide immediate next ste
-// Data requirement: Configure step indicator bars at the layout top to display active completion milestones.
+// Why:          Flooding narrow screen viewports with massive rows of inputs drives up customer abandon rates, creat
+// Mobile:       Maximizes input speed metrics by limiting visible elements to elements that guide immediate next ste
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Fievr044A05ConformanceLevel { complete, partial, notComplete }
-enum Fievr044A05ExecutionStatus  { pending, running, complete, failed }
+enum Fievr044A05ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Fievr044A05ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FIEVR-044-A05.
-/// Fields derived from AISS sheet — Form Input Entry Validation Registry.
+/// FIEVR-044-A05 — Form Input Entry Validation Registry
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Fievr044A05Config {
   final String configId;
@@ -35,6 +42,7 @@ class Fievr044A05Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,19 +125,20 @@ class Fievr044A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fievr044A05ConformanceLevel.complete:    return 'Good';
-      case Fievr044A05ConformanceLevel.partial:     return 'Average';
-      case Fievr044A05ConformanceLevel.notComplete: return 'Poor';
+      case Fievr044A05ConformanceLevel.good:    return 'Good';
+      case Fievr044A05ConformanceLevel.average: return 'Average';
+      case Fievr044A05ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// FIEVR-044-A05: FIEVR-044 - Configure Single-Action Mobile Form Workflows with Progressive Revea
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Gamification State Update Latency / Accuracy
+/// Floor=0.9 · Output=Good / Average / Poor
 class Fievr044A05Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — Arrange long data fields into isolated, distinct processing sections. Implement progressiv
@@ -150,7 +159,7 @@ class Fievr044A05Pipeline {
     required List<Fievr044A05Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Fievr044A05ValidationResult(
+      return Fievr044A05ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Fievr044A05ConformanceLevel.notComplete,
@@ -160,11 +169,11 @@ class Fievr044A05Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Fievr044A05ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Fievr044A05ConformanceLevel.good
         : rate >= _floor
-            ? Fievr044A05ConformanceLevel.partial
-            : Fievr044A05ConformanceLevel.notComplete;
+            ? Fievr044A05ConformanceLevel.average
+            : Fievr044A05ConformanceLevel.poor;
     return Fievr044A05ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -203,14 +212,14 @@ class Fievr044A05Pipeline {
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FIEVR-044-A05',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Gamification State Update Latency / Accuracy',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -219,7 +228,8 @@ class Fievr044A05Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> fievr_044_a05Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> fievr_044_a05Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -238,6 +248,7 @@ class Fievr044A05Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Fievr044A05Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,30 +256,35 @@ class Fievr044A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FIEVR-044-A05',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -296,6 +312,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Fievr044A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FIEVR-044-A05 → $result');
+  final out = await Fievr044A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FIEVR-044-A05 [Good / Average / Poor] → $out');
 }

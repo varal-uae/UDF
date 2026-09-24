@@ -1,50 +1,46 @@
 // ============================================================
-// PELCE-019-08 — Platform Element Logic & Config Engine
-// Atomic Step: English Code (EC) System Verbs on Mobile CTAs. (Restrict all mobile buttons to strict machine-action
-// Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     491 of 530
+// PELCE-019-08 — PELCE System Module
+// Atomic Step:  English Code (EC) System Verbs on Mobile CTAs. (Restrict all mobile buttons to strict machine-action
+// Metric:       Schema/Field Naming Standardization Rate
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      904 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Refactor each identified legacy button label to utilize the closest matching machine-action verb fro
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Pelce01908ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Pelce01908ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Pelce01908ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for PELCE-019-08.
-/// Fields derived from AISS sheet — Platform Element Logic & Config Engine.
+/// PELCE-019-08 — PELCE System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Pelce01908Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String ruleKey;
   final String ruleValue;
   final String metricLabel;
   final String complianceTarget;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +125,21 @@ class Pelce01908ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Pelce01908ConformanceLevel.complete:    return 'Good';
-      case Pelce01908ConformanceLevel.partial:     return 'Average';
-      case Pelce01908ConformanceLevel.notComplete: return 'Poor';
+      case Pelce01908ConformanceLevel.good:    return 'Good';
+      case Pelce01908ConformanceLevel.average: return 'Average';
+      case Pelce01908ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// PELCE-019-08: English Code (EC) System Verbs on Mobile CTAs. (Restrict all mobile buttons to s
-/// Metric: Implementation Conformance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Complete / Partial / Not Complete
+/// Metric: Schema/Field Naming Standardization Rate
+/// Floor=0.9 · Output=Good / Average / Poor
 class Pelce01908Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — System locates the PELCE-019-08 configuration in the source repository.
   static Pelce01908Config _ec1Locates(Pelce01908Config config) {
@@ -165,23 +161,23 @@ class Pelce01908Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Implementation Conformance Rate.
+  // EC:3 — System compiles the implementation rule set per Schema/Field Naming Standardization Rate.
   static Pelce01908Config _ec3Compiles(Pelce01908Config config) {
     if (config.ruleKey.isEmpty) {
       throw ArgumentError(
           'EC-PELCE01908-003: ruleKey required for PELCE-019-08');
     }
-    // the implementation rule set per Implementation Conformance R
+    // the implementation rule set per Schema/Field Naming Standard
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Pelce01908Config _ec4Validates(Pelce01908Config config) {
     if (config.ruleKey.isEmpty) {
       throw ArgumentError(
           'EC-PELCE01908-004: ruleKey required for PELCE-019-08');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +191,13 @@ class Pelce01908Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Implementation Conformance Rate gate (floor=0.90).
+  // EC:6 — System validates configuration against Schema/Field Naming Standardization Rate gate (floo
   static Pelce01908Config _ec6Validates(Pelce01908Config config) {
     if (config.ruleKey.isEmpty) {
       throw ArgumentError(
           'EC-PELCE01908-006: ruleKey required for PELCE-019-08');
     }
-    // configuration against Implementation Conformance Rate gate (
+    // configuration against Schema/Field Naming Standardization Ra
     return config;
   }
 
@@ -233,7 +229,7 @@ class Pelce01908Pipeline {
     required List<Pelce01908Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Pelce01908ValidationResult(
+      return Pelce01908ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Pelce01908ConformanceLevel.notComplete,
@@ -243,11 +239,11 @@ class Pelce01908Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Pelce01908ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Pelce01908ConformanceLevel.good
         : rate >= _floor
-            ? Pelce01908ConformanceLevel.partial
-            : Pelce01908ConformanceLevel.notComplete;
+            ? Pelce01908ConformanceLevel.average
+            : Pelce01908ConformanceLevel.poor;
     return Pelce01908ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +286,17 @@ class Pelce01908Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-PELCE01908-TRI: triangular check failed for PELCE-019-08');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-PELCE-019-08',
-      'metric':             'Implementation Conformance Rate',
+      'metric':             'Schema/Field Naming Standardization Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Pelce01908Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> pelce_019_08Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Pelce01908Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Pelce01908Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Pelce01908Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('PELCE-019-08',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Pelce01908Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Pelce01908Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('PELCE-019-08 → $result');
+  final out = await Pelce01908Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('PELCE-019-08 [Good / Average / Poor] → $out');
 }

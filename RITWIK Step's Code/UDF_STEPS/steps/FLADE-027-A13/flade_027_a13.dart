@@ -1,31 +1,37 @@
 // ============================================================
 // FLADE-027-A13 — Friction Logging & Analytics Data Engine
-// Atomic Step: Setup Mobile Progressive Profiling Step 1 Form.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     597 of 1073
+// Atomic Step:  Setup Mobile Progressive Profiling Step 1 Form.
+// Metric:       Telemetry Logging Completeness & Latency
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      280 of 1073
 // ============================================================
-// Why this matters: Avoids upfront abandonment due to cognitive overload and form friction, which is especially high on 
-// Mobile impl:      Ensures the initial sign-up fits entirely "above the fold" on a standard mobile screen, requiring ze
-// Data requirement: Connect friction telemetry to flag the Friction Log if high drop-off rates occur at Step 1.
+// Why:          Avoids upfront abandonment due to cognitive overload and form friction, which is especially high on 
+// Mobile:       Ensures the initial sign-up fits entirely "above the fold" on a standard mobile screen, requiring ze
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Flade027A13ConformanceLevel { complete, partial, notComplete }
-enum Flade027A13ExecutionStatus  { pending, running, complete, failed }
+enum Flade027A13ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Flade027A13ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FLADE-027-A13.
-/// Fields derived from AISS sheet — Friction Logging & Analytics Data Engine.
+/// FLADE-027-A13 — Friction Logging & Analytics Data Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Flade027A13Config {
   final String configId;
@@ -35,6 +41,7 @@ class Flade027A13Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Flade027A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade027A13ConformanceLevel.complete:    return 'Pass';
-      case Flade027A13ConformanceLevel.partial:     return 'Partial';
-      case Flade027A13ConformanceLevel.notComplete: return 'Fail';
+      case Flade027A13ConformanceLevel.pass_: return 'Pass';
+      case Flade027A13ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FLADE-027-A13: Setup Mobile Progressive Profiling Step 1 Form.
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Telemetry Logging Completeness & Latency
+/// Floor=0.95 · Output=Pass / Fail
 class Flade027A13Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Create Name and Email inputs
   static Flade027A13Config _ec1Execute(Flade027A13Config config) {
@@ -180,21 +187,19 @@ class Flade027A13Pipeline {
     required List<Flade027A13Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Flade027A13ValidationResult(
+      return Flade027A13ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Flade027A13ConformanceLevel.notComplete,
+        conformanceLevel: Flade027A13ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-FLADE027A13-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Flade027A13ConformanceLevel.complete
-        : rate >= _floor
-            ? Flade027A13ConformanceLevel.partial
-            : Flade027A13ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Flade027A13ConformanceLevel.pass_
+        : Flade027A13ConformanceLevel.fail_;
     return Flade027A13ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Flade027A13Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FLADE-027-A13',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Telemetry Logging Completeness & Latency',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Flade027A13Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> flade_027_a13Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> flade_027_a13Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Flade027A13Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Flade027A13Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Flade027A13Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FLADE-027-A13',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Flade027A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FLADE-027-A13 → $result');
+  final out = await Flade027A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FLADE-027-A13 [Pass / Fail] → $out');
 }

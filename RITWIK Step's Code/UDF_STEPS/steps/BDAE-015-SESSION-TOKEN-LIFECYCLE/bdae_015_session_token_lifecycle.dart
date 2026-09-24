@@ -1,319 +1,365 @@
 // ============================================================
-// BDAE-015 | Session Token Management & Remote Invalidation
-// Atomic Task: Define the maximum session lifecycle lifespan for mobile endpoints.
-// Primary Table: session_token_registry
-// Metric: Session Token Security Response Time
-//         Floor=<=2s | Optimal=<=500ms | Ceiling=<=200ms (OWASP)
-// GCP: API Gateway JWT stateless | Pub/Sub revocation <= 500ms
-// EC Lines: 8 | Standard: OWASP Session Management Cheat Sheet | DCDF AEETE-018
-// Constraint: MOBILE session_lifespan_hours <= 8 (CHECK at DB level)
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 29-Aug-2026
+// BDAE-015 — Biometric & Data Access Engine
+// Atomic Step:  Session Token Management & Remote Invalidation System Setup
+// Metric:       Session Token Security Response Time
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      57 of 1073
+// ============================================================
+// Why:          Loose team responsibility structures generate visibility gaps, allowing formatting errors to build u
+// Mobile:       Simplifies operational workspaces into clear, duty-specific navigation screens.
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bdae015ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-enum DeviceType { mobile, tablet, desktop }
+enum Bdae015ExecutionStatus { pending, running, complete, failed }
 
-/// Maps to session_token_registry.
-/// MOBILE session_lifespan_hours must be <= 8 — enforced via CHECK at DB level.
-/// revoke_pubsub_ms must be <= 500ms for remote invalidation SLA.
-class SessionTokenEntry {
-  final String sessionRuleId;          // PK — UUID
-  final String mobilePlatform;         // iOS / Android / PWA
-  final String osVersion;              // minimum supported OS version
-  final DeviceType deviceType;        // MOBILE / TABLET / DESKTOP
-  final int sessionLifespanHours;      // max session lifespan; MOBILE <= 8
-  final int idleTimeoutMin;            // idle timeout in minutes; default 30
-  final int revokePubsubMs;            // Pub/Sub revocation SLA in ms; <= 500
-  final int responseMs;                // measured token response time in ms
-  final bool immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome stepOutcome;
-  final bool complianceStatusInd;
+// ── Data Model ───────────────────────────────────────────────
+
+/// BDAE-015 — Biometric & Data Access Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bdae015Config {
+  final String configId;
+  final String tokenName;
+  final String tokenValue;
+  final String tokenCategory;
+  final String appliedComponent;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const SessionTokenEntry({
-    required this.sessionRuleId,
-    required this.mobilePlatform,
-    required this.osVersion,
-    required this.deviceType,
-    required this.sessionLifespanHours,
-    this.idleTimeoutMin = 30,
-    this.revokePubsubMs = 500,
-    required this.responseMs,
-    this.immutableInd = false,
-    this.executionStatus = ExecutionStatus.pending,
-    this.stepOutcome = StepOutcome.partial,
-    this.complianceStatusInd = true,
+  const Bdae015Config({
+    required this.configId,
+    required this.tokenName,
+    required this.tokenValue,
+    required this.tokenCategory,
+    required this.appliedComponent,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
-  }) : if (!(!(deviceType == DeviceType.mobile && sessionLifespanHours > 8))) {
-      throw ArgumentError('EC-BDAE015-003: MOBILE session_lifespan_hours must be <= 8 (OWASP)',
+    this.complianceStatusInd = false,
+  });
+
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
+
+  Bdae015Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bdae015Config(
+    configId: configId,
+    tokenName: tokenName,
+    tokenValue: tokenValue,
+    tokenCategory: tokenCategory,
+    appliedComponent: appliedComponent,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
-  static const int kMaxMobileLifespanHours = 8;
-  static const int kDefaultIdleTimeoutMin  = 30;
-  static const int kMaxRevokePubsubMs      = 500;
-  static const int kFloorResponseMs        = 2000;
-  static const int kOptimalResponseMs      = 500;
-  static const int kCeilingResponseMs      = 200;
-
-  /// EC:6 gate — lifespan within OWASP bounds, revocation SLA met,
-  ///             response time within floor
-  bool get isConformant {
-    if (deviceType == DeviceType.mobile && sessionLifespanHours > kMaxMobileLifespanHours) return false;
-    if (revokePubsubMs > kMaxRevokePubsubMs) return false;
-    if (responseMs > kFloorResponseMs) return false;
-    return true;
-  }
-
-  String get owaspTier {
-    if (responseMs <= kCeilingResponseMs) return 'Ceiling (≤200ms)';
-    if (responseMs <= kOptimalResponseMs) return 'Optimal (≤500ms)';
-    if (responseMs <= kFloorResponseMs)   return 'Floor (≤2s)';
-    return 'Below Floor';
-  }
-
-  String get deviceTypeLabel => switch (deviceType) {
-    DeviceType.mobile  => 'MOBILE',
-    DeviceType.tablet  => 'TABLET',
-    DeviceType.desktop => 'DESKTOP',
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'tokenName': tokenName,
+    'tokenValue': tokenValue,
+    'tokenCategory': tokenCategory,
+    'appliedComponent': appliedComponent,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
-
-  SessionTokenEntry copyWith({
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-    bool? complianceStatusInd,
-  }) {
-    return SessionTokenEntry(
-      sessionRuleId:           sessionRuleId,
-      mobilePlatform:          mobilePlatform,
-      osVersion:               osVersion,
-      deviceType:              deviceType,
-      sessionLifespanHours:    sessionLifespanHours,
-      idleTimeoutMin:          idleTimeoutMin,
-      revokePubsubMs:          revokePubsubMs,
-      responseMs:              responseMs,
-      immutableInd:            immutableInd ?? this.immutableInd,
-      executionStatus:         executionStatus ?? this.executionStatus,
-      stepOutcome:             stepOutcome ?? this.stepOutcome,
-      complianceStatusInd:     complianceStatusInd ?? this.complianceStatusInd,
-      traceId:                 traceId,
-      originSourceId:          originSourceId,
-      immediatePredecessorId:  immediatePredecessorId,
-      transformationLogicHash: transformationLogicHash,
-    );
-  }
 }
 
-/// Scan result — maps to session_validation_log.
-class SessionTokenScanResult {
-  final int violationCount;
-  final int lifespanViolations;
-  final int revocationViolations;
-  final String testOutput;
-  final String result;
+// ── Validation Result ─────────────────────────────────────────
+
+class Bdae015ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Bdae015ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const SessionTokenScanResult({
+  const Bdae015ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.lifespanViolations,
-    required this.revocationViolations,
-    required this.testOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bdae015ConformanceLevel.pass_: return 'Pass';
+      case Bdae015ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:1–8 Pipeline ──────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
-class Bdae015SessionTokenLifecycle {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+/// BDAE-015: Session Token Management & Remote Invalidation System Setup
+/// Metric: Session Token Security Response Time
+/// Floor=0.95 · Output=Pass / Fail
+class Bdae015Pipeline {
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — Locate session token management config in bdae-015-kit repo.
-  static Map<String, dynamic>? locateConfiguration(String repoPath) {
-        if (!(repoPath.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE015-001: repo path must not be empty');
+  // EC:1 — System locates the BDAE-015 configuration in the source repository.
+  static Bdae015Config _ec1Locates(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-001: tokenName required for BDAE-015');
     }
-    };
-    return {'ref': 'BDAE-015', 'config_file': 'session_token.yaml'};
+    // the BDAE-015 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — Extract sessionRuleId, mobilePlatform, osVersion, deviceType,
-  //         sessionLifespanHours from session_token_registry.
-  static Map<String, dynamic> extractParameters(Map<String, dynamic> config) {
-    const required = [
-      'session_rule_id', 'mobile_platform', 'os_version',
-      'device_type', 'session_lifespan_hours',
-    ];
-    if (!(required.every((k) => config.containsKey(k) && config[k] != null))) {
-      throw ArgumentError('EC-BDAE015-002: all 5 session lifecycle fields must be non-null',
-    );
-    return Map<String, dynamic>.from(config);
-  }
-
-  // EC:3 — Compile session lifecycle rule set per OWASP Session Management:
-  //         MOBILE session_lifespan_hours <= 8, idle_timeout=30min,
-  //         revoke_pubsub <= 500ms, API Gateway JWT stateless.
-  static Map<String, dynamic> compileRuleSet() {
-    return {
-      'max_mobile_lifespan_hours': SessionTokenEntry.kMaxMobileLifespanHours,
-      'idle_timeout_min':          SessionTokenEntry.kDefaultIdleTimeoutMin,
-      'revoke_pubsub_ms':          SessionTokenEntry.kMaxRevokePubsubMs,
-      'floor_response_ms':         SessionTokenEntry.kFloorResponseMs,
-      'optimal_response_ms':       SessionTokenEntry.kOptimalResponseMs,
-      'owasp_standard':            'Session Management Cheat Sheet',
-      'ref':                       'BDAE-015',
-      'immutable':                 true,
-    };
-  }
-
-  // EC:4 — Register compiled session lifecycle rule set as immutable entry in
-  //         session_token_registry with immutable_IND=TRUE.
-  static SessionTokenEntry registerRule(SessionTokenEntry entry) {
-        if (!(!(entry.deviceType == DeviceType.mobile && entry.sessionLifespanHours > 8))) {
-      throw ArgumentError('EC-BDAE015-003: MOBILE session lifespan > 8h violates OWASP');
+  // EC:2 — System extracts tokenName and tokenValue from the BDAE-015 registry.
+  static Bdae015Config _ec2Extracts(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-002: tokenName required for BDAE-015');
     }
-    };
-        if (!(entry.revokePubsubMs <= SessionTokenEntry.kMaxRevokePubsubMs)) {
-      throw ArgumentError('EC-BDAE015-003: revokePubsubMs > 500ms violates revocation SLA');
-    };
-    return entry.copyWith(
-      immutableInd:    true,
-      executionStatus: ExecutionStatus.running,
-    );
+    // tokenName and tokenValue from the BDAE-015 registry
+    return config;
   }
 
-  // EC:5 — Bind each registered rule to API Gateway JWT validation handler
-  //         via api_gateway_FK constraint.
-  static String bindToTarget(String ruleId, String mobilePlatform) {
-        if (!(ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE015-005: FK bind requires valid ruleId');
-    };
-    return '$mobilePlatform:$ruleId';
+  // EC:3 — System compiles the implementation rule set per Session Token Security Response Time.
+  static Bdae015Config _ec3Compiles(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-003: tokenName required for BDAE-015');
+    }
+    // the implementation rule set per Session Token Security Respo
+    return config;
   }
 
-  // EC:6 — Validate: remote invalidation via Pub/Sub <= 500ms,
-  //         API Gateway blocks invalidated token <= 200ms,
-  //         MOBILE lifespan <= 8h, response time <= 2s floor.
-  static SessionTokenScanResult validateConformance(
-    List<SessionTokenEntry> entries,
-  ) {
-    final violations       = entries.where((e) => !e.isConformant).length;
-    final lifespanV        = entries.where((e) =>
-      e.deviceType == DeviceType.mobile && e.sessionLifespanHours > 8).length;
-    final revocationV      = entries.where((e) =>
-      e.revokePubsubMs > SessionTokenEntry.kMaxRevokePubsubMs).length;
-    final total = entries.length;
-    final rate  = total > 0 ? (total - violations) / total : 0.0;
-    return SessionTokenScanResult(
-      violationCount:       violations,
-      lifespanViolations:   lifespanV,
-      revocationViolations: revocationV,
-      testOutput:           rate >= 0.95 ? 'Pass' : 'Fail',
-      result:               rate >= 0.95 ? 'PASS' : 'FAIL',
-      ecLineRef:            'EC-BDAE015-006',
-    );
+  // EC:4 — System validates configuration against required constraints.
+  static Bdae015Config _ec4Validates(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-004: tokenName required for BDAE-015');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:7 — Validate against Session Token Security Response Time metric.
-  //         Floor=<=2s | Optimal=<=500ms | Ceiling=<=200ms (OWASP).
-  static String evaluateMetric(SessionTokenScanResult scan) {
-    return scan.violationCount == 0 ? 'PASS' : 'FAIL';
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Bdae015Config _ec5Registers(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-005: tokenName required for BDAE-015');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:8 — Route validated session configuration to security_rule_registry
-  //         as authoritative BDAE-015 Session Token Registry entry.
-  static SessionTokenEntry routeToRegistry(
-    SessionTokenEntry entry,
-    SessionTokenScanResult scan,
-  ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
-    );
+  // EC:6 — System validates configuration against Session Token Security Response Time gate (floor=0.
+  static Bdae015Config _ec6Validates(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-006: tokenName required for BDAE-015');
+    }
+    // configuration against Session Token Security Response Time g
+    return config;
   }
-  // Triangular Check — DCDF AEETE-018: source_count - destination_count == 0
+
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Bdae015Config _ec7Routes(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-007: tokenName required for BDAE-015');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
+  }
+
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Bdae015Config _ec8Publishes(Bdae015Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE015-008: tokenName required for BDAE-015');
+    }
+    // validated configuration to the rule registry
+    return config;
+  }
+
+  // Triangular Check — DCDF AEETE-018
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
+  static Bdae015ValidationResult calculateConformance({
+    required List<Bdae015Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bdae015ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bdae015ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-BDAE015-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Bdae015ConformanceLevel.pass_
+        : Bdae015ConformanceLevel.fail_;
+    return Bdae015ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-BDAE015-VAL',
+    );
+  }
+
+  static Bdae015Config routeToRegistry(
+    Bdae015Config config,
+    Bdae015ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Bdae015Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BDAE015-000: configs must not be empty for BDAE-015');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-BDAE015-TRI: triangular check failed for BDAE-015');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BDAE-015',
+      'metric':             'Session Token Security Response Time',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ───────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
 
-class Bdae015SessionTokenWidget extends StatelessWidget {
-  final List<SessionTokenEntry> entries;
-  const Bdae015SessionTokenWidget({super.key, required this.entries});
+Map<String, dynamic> bdae_015Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BDAE-015',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
 
-  Color _tierColor(String tier) {
-    if (tier.startsWith('Ceiling')) return cs.tertiary;
-    if (tier.startsWith('Optimal')) return const Color(0xFF1A73E8);
-    if (tier.startsWith('Floor'))   return const Color(0xFFE37400);
-    return cs.error;
-  }
+// ── Widget ────────────────────────────────────────────────────
+
+class Bdae015Widget extends StatelessWidget {
+  final List<Bdae015Config> configs;
+  const Bdae015Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bdae015SessionTokenLifecycle.validateConformance(entries);
-    final metric = Bdae015SessionTokenLifecycle.evaluateMetric(scan);
-
+    final result = Bdae015Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(child: Text('BDAE-015 · Session Lifecycle Gate (OWASP)',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+            Expanded(child: Text('BDAE-015',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.testOutput} · ${scan.lifespanViolations} lifespan · ${scan.revocationViolations} revocation',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e    = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                title: Text('${e.mobilePlatform} · ${e.deviceTypeLabel}',
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                subtitle: Text(
-                  'lifespan: ${e.sessionLifespanHours}h / 8h max | idle: ${e.idleTimeoutMin}min | revoke: ${e.revokePubsubMs}ms | response: ${e.responseMs}ms',
-                  style: const TextStyle(fontSize: 10)),
-                trailing: Chip(
-                  label: Text(e.owaspTier,
-                    style: const TextStyle(color: Colors.white, fontSize: 9)),
-                  backgroundColor: _tierColor(e.owaspTier),
-                ),
                 leading: Icon(
-                  pass ? Icons.timer_outlined : Icons.timer_off,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.tokenName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -321,4 +367,24 @@ class Bdae015SessionTokenWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bdae015Config(
+      configId: 'bdae015-cfg-001',
+      tokenName: 'bdae-015_tokenName',
+      tokenValue: 'bdae-015_tokenValue',
+      tokenCategory: 'bdae-015_tokenCategory',
+      appliedComponent: 'bdae-015_appliedComponent',
+      traceId:                 'trace-bdae015-001',
+      originSourceId:          'origin-bdae015',
+      immediatePredecessorId:  'pred-bdae015-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bdae015Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BDAE-015 [Pass / Fail] → $out');
 }

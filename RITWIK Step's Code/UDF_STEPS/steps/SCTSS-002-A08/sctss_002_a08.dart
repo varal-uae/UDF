@@ -1,52 +1,45 @@
 // ============================================================
 // SCTSS-002-A08 — Semantic Color Token Styling System
-// Atomic Step: Define Global Grid Alignment Rules to establish strict 4-column mobile pixel spacing for gutters to 
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     312 of 396
+// Atomic Step:  Define Global Grid Alignment Rules to establish strict 4-column mobile pixel spacing for gutters to 
+// Metric:       Configuration Accuracy Rate (%) — the grid configuration values into g
+// Floor:        0.98  ·  Optimal: 1.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      961 of 1073
 // ============================================================
-// Why this matters: Rigid grids prevent visual chaos and ensure data-entry Byts are processed uniformly without cognitiv
-// Mobile impl:      Prioritizes limited screen real estate by stacking elements vertically.
-// Data requirement: Code the grid configuration values into global variables within the design system's style library (e
+// Why:          Rigid grids prevent visual chaos and ensure data-entry Byts are processed uniformly without cognitiv
+// Mobile:       Prioritizes limited screen real estate by stacking elements vertically.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Sctss002A08ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Sctss002A08ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sctss002A08ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SCTSS-002-A08.
-/// Fields derived from AISS sheet row — Semantic Color Token Styling System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
 class Sctss002A08Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String gridColumns;
   final String gutterSizePx;
   final String maxWidthPx;
   final String breakpointLabel;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +89,13 @@ class Sctss002A08Config {
     'gutterSizePx': gutterSizePx,
     'maxWidthPx': maxWidthPx,
     'breakpointLabel': breakpointLabel,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +122,18 @@ class Sctss002A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss002A08ConformanceLevel.complete:    return 'Pass';
-      case Sctss002A08ConformanceLevel.partial:     return 'Partial';
-      case Sctss002A08ConformanceLevel.notComplete: return 'Fail';
+      case Sctss002A08ConformanceLevel.good:    return 'Good';
+      case Sctss002A08ConformanceLevel.average: return 'Average';
+      case Sctss002A08ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// SCTSS-002-A08: Define Global Grid Alignment Rules to establish strict 4-column mobile pixel spa
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sctss002A08Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.98;
+  static const double _optimal = 1.0;
 
   // EC:1 — Set mobile 4-column constraints
   static Sctss002A08Config _ec1Execute(Sctss002A08Config config) {
@@ -190,27 +179,25 @@ class Sctss002A08Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Sctss002A08ValidationResult calculateConformance({
     required List<Sctss002A08Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sctss002A08ValidationResult(
+      return Sctss002A08ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Sctss002A08ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-SCTSS002A08-VAL',
+        conformanceLevel: Sctss002A08ConformanceLevel.poor,
+        gatePass: false, ecLineRef: 'EC-SCTSS002A08-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sctss002A08ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Sctss002A08ConformanceLevel.good
         : rate >= _floor
-            ? Sctss002A08ConformanceLevel.partial
-            : Sctss002A08ConformanceLevel.notComplete;
+            ? Sctss002A08ConformanceLevel.average
+            : Sctss002A08ConformanceLevel.poor;
     return Sctss002A08ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +226,7 @@ class Sctss002A08Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-SCTSS002A08-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-SCTSS002A08-000: configs must not be empty for SCTSS-002-A08');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +234,19 @@ class Sctss002A08Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-SCTSS002A08-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-SCTSS002A08-TRI: triangular check failed for SCTSS-002-A08');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SCTSS-002-A08',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Configuration Accuracy Rate (%) — the grid configuration val',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +256,7 @@ class Sctss002A08Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sctss_002_a08Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -299,16 +282,13 @@ class Sctss002A08Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SCTSS-002-A08',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +297,22 @@ class Sctss002A08Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${gridColumns} | ${gutterSizePx}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +328,16 @@ void main() async {
   final configs = [
     Sctss002A08Config(
       configId: 'sctss002a08-cfg-001',
-      gridColumns: 'sctss-002-a08_gridColumns_value',
-      gutterSizePx: 'sctss-002-a08_gutterSizePx_value',
-      maxWidthPx: 'sctss-002-a08_maxWidthPx_value',
-      breakpointLabel: 'sctss-002-a08_breakpointLabel_value',
+      gridColumns: 'sctss-002-a08_gridColumns',
+      gutterSizePx: 'sctss-002-a08_gutterSizePx',
+      maxWidthPx: 'sctss-002-a08_maxWidthPx',
+      breakpointLabel: 'sctss-002-a08_breakpointLabel',
       traceId:                 'trace-sctss002a08-001',
       originSourceId:          'origin-sctss002a08',
       immediatePredecessorId:  'pred-sctss002a08-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sctss002A08Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SCTSS-002-A08 → $result');
+  final out = await Sctss002A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SCTSS-002-A08 [Good / Average / Poor] → $out');
 }

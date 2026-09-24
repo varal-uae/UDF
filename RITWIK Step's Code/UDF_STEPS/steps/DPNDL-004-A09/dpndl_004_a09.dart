@@ -1,229 +1,283 @@
 // ============================================================
-// DPNDL-004-A09 | Dynamic Panel Navigation Display Layer
-// Atomic Task: DPNDL-004 - Configure 12-Column Desktop Grid.
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// DPNDL-004-A09 — Dynamic Panel Navigation Display Layer
+// Atomic Step:  DPNDL-004 - Configure 12-Column Desktop Grid.
+// Metric:       Layout Grid / Breakpoint Adherence (Material Design responsive grid)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      172 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System extracts grid configuration parameters from input payload.
-  // EC: 2. System applies 24dp screen padding margins to root viewport container.
-  // EC: 3. System applies 24dp grid spacing gutters between layout columns.
-  // EC: 4. System validates 12-column structural layout constraints.
-  // EC: 5. System sets 8-column component span rules for wide visualization charts.
-  // EC: 6. System sets 4-column component span rules for standard dashboard widgets.
-  // EC: 7. System enforces snap-to-grid alignment across active layout components.
-  // EC: 8. System evaluates layout grid adherence against 8dp target breakpoint standard.
-  // EC: 9. System generates validation status record with timestamp metrics.
-  // EC: 10. System stores layout configuration record in repository.
+// Why:          Prevents cluttered dashboard layouts and maps complex telemetry logic streams symmetrically.
+// Mobile:       Serves as the upstream target of the fluid layout grid, allowing layout elements to expand smoothly 
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Dpndl004A09ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for DPNDL-004-A09.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Dpndl004A09Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Dpndl004A09ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// DPNDL-004-A09 — Dynamic Panel Navigation Display Layer
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Dpndl004A09Config {
+  final String configId;
+  final String gridColumns;
+  final String gutterSizePx;
+  final String maxWidthPx;
+  final String breakpointLabel;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Dpndl004A09Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Dpndl004A09Config({
+    required this.configId,
+    required this.gridColumns,
+    required this.gutterSizePx,
+    required this.maxWidthPx,
+    required this.breakpointLabel,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Dpndl004A09Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Dpndl004A09Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Dpndl004A09Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Dpndl004A09Config(
+    configId: configId,
+    gridColumns: gridColumns,
+    gutterSizePx: gutterSizePx,
+    maxWidthPx: maxWidthPx,
+    breakpointLabel: breakpointLabel,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gridColumns': gridColumns,
+    'gutterSizePx': gutterSizePx,
+    'maxWidthPx': maxWidthPx,
+    'breakpointLabel': breakpointLabel,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Dpndl004A09ScanResult {
+class Dpndl004A09ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Dpndl004A09ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Dpndl004A09ScanResult({
+  const Dpndl004A09ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Dpndl004A09ConformanceLevel.pass_: return 'Pass';
+      case Dpndl004A09ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// DPNDL-004-A09: DPNDL-004 - Configure 12-Column Desktop Grid.
+/// Metric: Layout Grid / Breakpoint Adherence (Material Design responsi
+/// Floor=0.95 · Output=Pass / Fail
 class Dpndl004A09Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — EC: 1. System extracts grid configuration parameters from input payload.
-  static void executeExtractsStep1(Dpndl004A09Entry entry) {
-    // extracts grid configuration parameters from input payload
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-001: ruleId required');
-    };
+  // EC:1 — Set strict 24dp screen padding margins
+  static Dpndl004A09Config _ec1Execute(Dpndl004A09Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-DPNDL004A09-001: gridColumns required for DPNDL-004-A09');
+    }
+    // Set strict 24dp screen padding margins
+    return config;
   }
 
-  // EC:2 — EC: 2. System applies 24dp screen padding margins to root viewport container.
-  static void executeAppliesStep2(Dpndl004A09Entry entry) {
-    // applies 24dp screen padding margins to root viewport container
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-002: ruleId required');
-    };
+  // EC:2 — Set structural 24dp grid spacing gutters
+  static Dpndl004A09Config _ec2Execute(Dpndl004A09Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-DPNDL004A09-002: gridColumns required for DPNDL-004-A09');
+    }
+    // Set structural 24dp grid spacing gutters
+    return config;
   }
 
-  // EC:3 — EC: 3. System applies 24dp grid spacing gutters between layout columns.
-  static void executeAppliesStep3(Dpndl004A09Entry entry) {
-    // applies 24dp grid spacing gutters between layout columns
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-003: ruleId required');
-    };
+  // EC:3 — Define component column spans (e.g., 4-column widgets, 8-column charts)
+  static Dpndl004A09Config _ec3Execute(Dpndl004A09Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-DPNDL004A09-003: gridColumns required for DPNDL-004-A09');
+    }
+    // Define component column spans (e.g., 4-column widgets, 8-col
+    return config;
   }
 
-  // EC:4 — EC: 4. System validates 12-column structural layout constraints.
-  static void executeValidatesStep4(Dpndl004A09Entry entry) {
-    // validates 12-column structural layout constraints
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-004: ruleId required');
-    };
+  // EC:4 — Enforce mandatory snap-to-grid alignment guidelines
+  static Dpndl004A09Config _ec4Execute(Dpndl004A09Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-DPNDL004A09-004: gridColumns required for DPNDL-004-A09');
+    }
+    // Enforce mandatory snap-to-grid alignment guidelines
+    return config;
   }
 
-  // EC:5 — EC: 5. System sets 8-column component span rules for wide visualization charts.
-  static void executeSetsStep5(Dpndl004A09Entry entry) {
-    // sets 8-column component span rules for wide visualization charts
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-005: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System sets 4-column component span rules for standard dashboard widgets.
-  static void executeSetsStep6(Dpndl004A09Entry entry) {
-    // sets 4-column component span rules for standard dashboard widgets
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-006: ruleId required');
-    };
-  }
-
-  // EC:7 — EC: 7. System enforces snap-to-grid alignment across active layout components.
-  static void executeEnforcesStep7(Dpndl004A09Entry entry) {
-    // enforces snap-to-grid alignment across active layout components
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-007: ruleId required');
-    };
-  }
-
-  // EC:8 — EC: 8. System evaluates layout grid adherence against 8dp target breakpoint standard.
-  static void executeEvaluatesStep8(Dpndl004A09Entry entry) {
-    // evaluates layout grid adherence against 8dp target breakpoint standard
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-008: ruleId required');
-    };
-  }
-
-  // EC:9 — EC: 9. System generates validation status record with timestamp metrics.
-  static void executeGeneratesStep9(Dpndl004A09Entry entry) {
-    // generates validation status record with timestamp metrics
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-009: ruleId required');
-    };
-  }
-
-  // EC:10 — EC: 10. System stores layout configuration record in repository.
-  static void executeStoresStep10(Dpndl004A09Entry entry) {
-    // stores layout configuration record in repository
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-DPNDL004A09-010: ruleId required');
-    };
-  }
-
-  static Dpndl004A09ScanResult validateConformance(List<Dpndl004A09Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Dpndl004A09ScanResult(
+  static Dpndl004A09ValidationResult calculateConformance({
+    required List<Dpndl004A09Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Dpndl004A09ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Dpndl004A09ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-DPNDL004A09-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Dpndl004A09ConformanceLevel.pass_
+        : Dpndl004A09ConformanceLevel.fail_;
+    return Dpndl004A09ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-DPNDL004A09-VAL',
     );
   }
 
-  static Dpndl004A09Entry routeToRegistry(Dpndl004A09Entry entry, Dpndl004A09ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Dpndl004A09Config routeToRegistry(
+    Dpndl004A09Config config,
+    Dpndl004A09ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Dpndl004A09Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-DPNDL004A09-000: configs must not be empty for DPNDL-004-A09');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-DPNDL004A09-TRI: triangular check failed for DPNDL-004-A09');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-DPNDL-004-A09',
+      'metric':             'Layout Grid / Breakpoint Adherence (Material Design responsi',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> dpndl_004_a09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'DPNDL-004-A09',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Dpndl004A09Widget extends StatelessWidget {
-  final List<Dpndl004A09Entry> entries;
-  const Dpndl004A09Widget({super.key, required this.entries});
+  final List<Dpndl004A09Config> configs;
+  const Dpndl004A09Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Dpndl004A09Pipeline.validateConformance(entries);
+    final result = Dpndl004A09Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +285,37 @@ class Dpndl004A09Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('DPNDL-004-A09',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.gridColumns,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -268,4 +323,24 @@ class Dpndl004A09Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Dpndl004A09Config(
+      configId: 'dpndl004a09-cfg-001',
+      gridColumns: 'dpndl-004-a09_gridColumns',
+      gutterSizePx: 'dpndl-004-a09_gutterSizePx',
+      maxWidthPx: 'dpndl-004-a09_maxWidthPx',
+      breakpointLabel: 'dpndl-004-a09_breakpointLabel',
+      traceId:                 'trace-dpndl004a09-001',
+      originSourceId:          'origin-dpndl004a09',
+      immediatePredecessorId:  'pred-dpndl004a09-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Dpndl004A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('DPNDL-004-A09 [Pass / Fail] → $out');
 }

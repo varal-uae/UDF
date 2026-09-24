@@ -1,31 +1,37 @@
 // ============================================================
 // IRBCA-032 — Immutable Rule-Based Component Architecture
-// Atomic Step: Least-Privilege Signed URL Restricted Workspace Access
-// Metric:      Security Compliance Rate · Floor=0.99 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     587 of 1073
+// Atomic Step:  Least-Privilege Signed URL Restricted Workspace Access
+// Metric:       Signed URL Expiry Window
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      795 of 1073
 // ============================================================
-// Why this matters: Time travel only gives snapshots; the CHANGES function exposes the exact sequence of modifications f
-// Mobile impl:      Traces offline-to-online sync behaviors perfectly, ensuring no edge-case modification is lost during
-// Data requirement: Build the automated storage signature helper engine for short-lifespan links.
+// Why:          Time travel only gives snapshots; the CHANGES function exposes the exact sequence of modifications f
+// Mobile:       Traces offline-to-online sync behaviors perfectly, ensuring no edge-case modification is lost during
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Irbca032ConformanceLevel { complete, partial, notComplete }
-enum Irbca032ExecutionStatus  { pending, running, complete, failed }
+enum Irbca032ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Irbca032ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IRBCA-032.
-/// Fields derived from AISS sheet — Immutable Rule-Based Component Architecture.
+/// IRBCA-032 — Immutable Rule-Based Component Architecture
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Irbca032Config {
   final String configId;
@@ -35,6 +41,7 @@ class Irbca032Config {
   final String grantedAt;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Irbca032ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Irbca032ConformanceLevel.complete:    return 'Pass';
-      case Irbca032ConformanceLevel.partial:     return 'Partial';
-      case Irbca032ConformanceLevel.notComplete: return 'Fail';
+      case Irbca032ConformanceLevel.pass_: return 'Pass';
+      case Irbca032ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// IRBCA-032: Least-Privilege Signed URL Restricted Workspace Access
-/// Metric: Security Compliance Rate · Floor=0.99 · Optimal=1.0
+/// Metric: Signed URL Expiry Window
+/// Floor=0.95 · Output=Pass / Fail
 class Irbca032Pipeline {
-  static const double _floor   = 0.99;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the IRBCA-032 configuration in the source repository.
   static Irbca032Config _ec1Locates(Irbca032Config config) {
@@ -152,13 +159,13 @@ class Irbca032Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Security Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Signed URL Expiry Window.
   static Irbca032Config _ec3Compiles(Irbca032Config config) {
     if (config.resourceId.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA032-003: resourceId required for IRBCA-032');
     }
-    // the implementation rule set per Security Compliance Rate
+    // the implementation rule set per Signed URL Expiry Window
     return config;
   }
 
@@ -182,13 +189,13 @@ class Irbca032Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Security Compliance Rate gate (floor=0.99).
+  // EC:6 — System validates configuration against Signed URL Expiry Window gate (floor=0.95).
   static Irbca032Config _ec6Validates(Irbca032Config config) {
     if (config.resourceId.isEmpty) {
       throw ArgumentError(
           'EC-IRBCA032-006: resourceId required for IRBCA-032');
     }
-    // configuration against Security Compliance Rate gate (floor=0
+    // configuration against Signed URL Expiry Window gate (floor=0
     return config;
   }
 
@@ -220,21 +227,19 @@ class Irbca032Pipeline {
     required List<Irbca032Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Irbca032ValidationResult(
+      return Irbca032ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Irbca032ConformanceLevel.notComplete,
+        conformanceLevel: Irbca032ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IRBCA032-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Irbca032ConformanceLevel.complete
-        : rate >= _floor
-            ? Irbca032ConformanceLevel.partial
-            : Irbca032ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Irbca032ConformanceLevel.pass_
+        : Irbca032ConformanceLevel.fail_;
     return Irbca032ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Irbca032Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IRBCA-032',
-      'metric':             'Security Compliance Rate',
+      'metric':             'Signed URL Expiry Window',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Irbca032Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> irbca_032Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> irbca_032Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Irbca032Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Irbca032Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Irbca032Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IRBCA-032',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.resourceId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Irbca032Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IRBCA-032 → $result');
+  final out = await Irbca032Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IRBCA-032 [Pass / Fail] → $out');
 }

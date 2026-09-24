@@ -1,40 +1,48 @@
 // ============================================================
 // GEN-01196 — GEN Backend Utility Module
-// Atomic Step: Execute concurrency stress tests simulating simultaneous booking requests to verify zero double-book
-// Metric:      Compliance Gate Pass Rate · Floor=0.99 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     680 of 1073
+// Atomic Step:  Execute concurrency stress tests simulating simultaneous booking requests to verify zero double-book
+// Metric:       Slot Scheduling Conflict/Double-Booking Rate
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      391 of 1073
 // ============================================================
-// Why this matters: Execute concurrency stress tests simulating simultaneous booking requests to verify zero double-book
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Execute concurrency stress tests simulating simultaneous booking requests to verify zero double-book
+// Why:          Execute concurrency stress tests simulating simultaneous booking requests to verify zero double-book
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen01196ConformanceLevel { complete, partial, notComplete }
-enum Gen01196ExecutionStatus  { pending, running, complete, failed }
+enum Gen01196ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen01196ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-01196.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-01196 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen01196Config {
   final String configId;
-  final String ruleId;
-  final String classificationTag;
-  final String complianceFlag;
-  final String auditRef;
+  final String documentId;
+  final String predecessorId;
+  final String lineageHash;
+  final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gen01196Config {
 
   const Gen01196Config({
     required this.configId,
-    required this.ruleId,
-    required this.classificationTag,
-    required this.complianceFlag,
-    required this.auditRef,
+    required this.documentId,
+    required this.predecessorId,
+    required this.lineageHash,
+    required this.complianceRef,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gen01196Config {
     bool?   complianceStatusInd,
   }) => Gen01196Config(
     configId: configId,
-    ruleId: ruleId,
-    classificationTag: classificationTag,
-    complianceFlag: complianceFlag,
-    auditRef: auditRef,
+    documentId: documentId,
+    predecessorId: predecessorId,
+    lineageHash: lineageHash,
+    complianceRef: complianceRef,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gen01196Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'ruleId': ruleId,
-    'classificationTag': classificationTag,
-    'complianceFlag': complianceFlag,
-    'auditRef': auditRef,
+    'documentId': documentId,
+    'predecessorId': predecessorId,
+    'lineageHash': lineageHash,
+    'complianceRef': complianceRef,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +125,27 @@ class Gen01196ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen01196ConformanceLevel.complete:    return 'Complete';
-      case Gen01196ConformanceLevel.partial:     return 'Partial';
-      case Gen01196ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen01196ConformanceLevel.good:    return 'Good';
+      case Gen01196ConformanceLevel.average: return 'Average';
+      case Gen01196ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-01196: Execute concurrency stress tests simulating simultaneous booking requests to ver
-/// Metric: Compliance Gate Pass Rate · Floor=0.99 · Optimal=1.0
+/// Metric: Slot Scheduling Conflict/Double-Booking Rate
+/// Floor=0.9 · Output=Good / Average / Poor
 class Gen01196Pipeline {
-  static const double _floor   = 0.99;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Plan and scope this step
   static Gen01196Config _ec1Execute(Gen01196Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01196-001: ruleId required for GEN-01196');
+          'EC-GEN01196-001: documentId required for GEN-01196');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +153,9 @@ class Gen01196Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen01196Config _ec2Execute(Gen01196Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01196-002: ruleId required for GEN-01196');
+          'EC-GEN01196-002: documentId required for GEN-01196');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +163,9 @@ class Gen01196Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen01196Config _ec3Execute(Gen01196Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01196-003: ruleId required for GEN-01196');
+          'EC-GEN01196-003: documentId required for GEN-01196');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +173,9 @@ class Gen01196Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen01196Config _ec4Execute(Gen01196Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN01196-004: ruleId required for GEN-01196');
+          'EC-GEN01196-004: documentId required for GEN-01196');
     }
     // Document and commit to runbook
     return config;
@@ -180,7 +189,7 @@ class Gen01196Pipeline {
     required List<Gen01196Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen01196ValidationResult(
+      return Gen01196ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen01196ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen01196Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen01196ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen01196ConformanceLevel.good
         : rate >= _floor
-            ? Gen01196ConformanceLevel.partial
-            : Gen01196ConformanceLevel.notComplete;
+            ? Gen01196ConformanceLevel.average
+            : Gen01196ConformanceLevel.poor;
     return Gen01196ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen01196Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-01196',
-      'metric':             'Compliance Gate Pass Rate',
+      'metric':             'Slot Scheduling Conflict/Double-Booking Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen01196Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_01196Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_01196Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen01196Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen01196Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen01196Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-01196',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.ruleId,
+                title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +335,16 @@ void main() async {
   final configs = [
     Gen01196Config(
       configId: 'gen01196-cfg-001',
-      ruleId: 'gen-01196_ruleId',
-      classificationTag: 'gen-01196_classificationTag',
-      complianceFlag: 'gen-01196_complianceFlag',
-      auditRef: 'gen-01196_auditRef',
+      documentId: 'gen-01196_documentId',
+      predecessorId: 'gen-01196_predecessorId',
+      lineageHash: 'gen-01196_lineageHash',
+      complianceRef: 'gen-01196_complianceRef',
       traceId:                 'trace-gen01196-001',
       originSourceId:          'origin-gen01196',
       immediatePredecessorId:  'pred-gen01196-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen01196Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-01196 → $result');
+  final out = await Gen01196Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-01196 [Good / Average / Poor] → $out');
 }

@@ -1,40 +1,48 @@
 // ============================================================
 // GEN-03004 — GEN Backend Utility Module
-// Atomic Step: Confirm the warrant criteria (recency, authority threshold, non-contradiction) required for factual 
-// Metric:      Schema Lineage Conformance Rate · Floor=0.8 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     843 of 1073
+// Atomic Step:  Confirm the warrant criteria (recency, authority threshold, non-contradiction) required for factual 
+// Metric:       Task Completion Status
+// Floor:        0.8  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      556 of 1073
 // ============================================================
-// Why this matters: Confirm the warrant criteria (recency, authority threshold, non-contradiction) required for factual 
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Confirm the warrant criteria (recency, authority threshold, non-contradiction) required for factual 
+// Why:          Confirm the warrant criteria (recency, authority threshold, non-contradiction) required for factual 
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Gen03004ConformanceLevel { complete, partial, notComplete }
-enum Gen03004ExecutionStatus  { pending, running, complete, failed }
+enum Gen03004ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen03004ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-03004.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-03004 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen03004Config {
   final String configId;
-  final String documentId;
-  final String predecessorId;
-  final String lineageHash;
-  final String complianceRef;
+  final String sessionId;
+  final String userId;
+  final String jwtClaim;
+  final String expiryTs;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gen03004Config {
 
   const Gen03004Config({
     required this.configId,
-    required this.documentId,
-    required this.predecessorId,
-    required this.lineageHash,
-    required this.complianceRef,
+    required this.sessionId,
+    required this.userId,
+    required this.jwtClaim,
+    required this.expiryTs,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gen03004Config {
     bool?   complianceStatusInd,
   }) => Gen03004Config(
     configId: configId,
-    documentId: documentId,
-    predecessorId: predecessorId,
-    lineageHash: lineageHash,
-    complianceRef: complianceRef,
+    sessionId: sessionId,
+    userId: userId,
+    jwtClaim: jwtClaim,
+    expiryTs: expiryTs,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gen03004Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'documentId': documentId,
-    'predecessorId': predecessorId,
-    'lineageHash': lineageHash,
-    'complianceRef': complianceRef,
+    'sessionId': sessionId,
+    'userId': userId,
+    'jwtClaim': jwtClaim,
+    'expiryTs': expiryTs,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -124,19 +132,20 @@ class Gen03004ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-03004: Confirm the warrant criteria (recency, authority threshold, non-contradiction) r
-/// Metric: Schema Lineage Conformance Rate · Floor=0.8 · Optimal=1.0
+/// Metric: Task Completion Status
+/// Floor=0.8 · Output=Complete / Partial / Not Complete
 class Gen03004Pipeline {
   static const double _floor   = 0.8;
   static const double _optimal = 1.0;
 
   // EC:1 — Plan and scope this step
   static Gen03004Config _ec1Execute(Gen03004Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03004-001: documentId required for GEN-03004');
+          'EC-GEN03004-001: sessionId required for GEN-03004');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +153,9 @@ class Gen03004Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen03004Config _ec2Execute(Gen03004Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03004-002: documentId required for GEN-03004');
+          'EC-GEN03004-002: sessionId required for GEN-03004');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +163,9 @@ class Gen03004Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen03004Config _ec3Execute(Gen03004Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03004-003: documentId required for GEN-03004');
+          'EC-GEN03004-003: sessionId required for GEN-03004');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +173,9 @@ class Gen03004Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen03004Config _ec4Execute(Gen03004Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03004-004: documentId required for GEN-03004');
+          'EC-GEN03004-004: sessionId required for GEN-03004');
     }
     // Document and commit to runbook
     return config;
@@ -180,7 +189,7 @@ class Gen03004Pipeline {
     required List<Gen03004Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen03004ValidationResult(
+      return Gen03004ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen03004ConformanceLevel.notComplete,
@@ -190,7 +199,7 @@ class Gen03004Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Gen03004ConformanceLevel.complete
         : rate >= _floor
             ? Gen03004ConformanceLevel.partial
@@ -236,14 +245,14 @@ class Gen03004Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-03004',
-      'metric':             'Schema Lineage Conformance Rate',
+      'metric':             'Task Completion Status',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen03004Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_03004Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_03004Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen03004Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen03004Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen03004Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-03004',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.documentId,
+                title: Text(c.sessionId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +335,16 @@ void main() async {
   final configs = [
     Gen03004Config(
       configId: 'gen03004-cfg-001',
-      documentId: 'gen-03004_documentId',
-      predecessorId: 'gen-03004_predecessorId',
-      lineageHash: 'gen-03004_lineageHash',
-      complianceRef: 'gen-03004_complianceRef',
+      sessionId: 'gen-03004_sessionId',
+      userId: 'gen-03004_userId',
+      jwtClaim: 'gen-03004_jwtClaim',
+      expiryTs: 'gen-03004_expiryTs',
       traceId:                 'trace-gen03004-001',
       originSourceId:          'origin-gen03004',
       immediatePredecessorId:  'pred-gen03004-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen03004Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-03004 → $result');
+  final out = await Gen03004Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-03004 [Complete / Partial / Not Complete] → $out');
 }

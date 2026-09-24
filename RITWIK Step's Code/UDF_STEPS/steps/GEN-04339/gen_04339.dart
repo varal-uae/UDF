@@ -1,31 +1,38 @@
 // ============================================================
 // GEN-04339 — GEN Backend Utility Module
-// Atomic Step: Create the self-service knowledge base search container.
-// Metric:      Schema Lineage Conformance Rate · Floor=0.2 · Optimal=0.4
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     964 of 1073
+// Atomic Step:  Create the self-service knowledge base search container.
+// Metric:       Self-Service Deflection Rate
+// Floor:        0.2  ·  Optimal: 0.4
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      677 of 1073
 // ============================================================
-// Why this matters: Create the self-service knowledge base search container. is a critical implementation step. Without 
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Create the self-service knowledge base search container.
+// Why:          Create the self-service knowledge base search container. is a critical implementation step. Without 
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen04339ConformanceLevel { complete, partial, notComplete }
-enum Gen04339ExecutionStatus  { pending, running, complete, failed }
+enum Gen04339ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen04339ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-04339.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-04339 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen04339Config {
   final String configId;
@@ -35,6 +42,7 @@ class Gen04339Config {
   final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,17 +125,18 @@ class Gen04339ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen04339ConformanceLevel.complete:    return 'Complete';
-      case Gen04339ConformanceLevel.partial:     return 'Partial';
-      case Gen04339ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen04339ConformanceLevel.good:    return 'Good';
+      case Gen04339ConformanceLevel.average: return 'Average';
+      case Gen04339ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-04339: Create the self-service knowledge base search container.
-/// Metric: Schema Lineage Conformance Rate · Floor=0.2 · Optimal=0.4
+/// Metric: Self-Service Deflection Rate
+/// Floor=0.2 · Output=Good / Average / Poor
 class Gen04339Pipeline {
   static const double _floor   = 0.2;
   static const double _optimal = 0.4;
@@ -180,7 +189,7 @@ class Gen04339Pipeline {
     required List<Gen04339Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen04339ValidationResult(
+      return Gen04339ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen04339ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen04339Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen04339ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen04339ConformanceLevel.good
         : rate >= _floor
-            ? Gen04339ConformanceLevel.partial
-            : Gen04339ConformanceLevel.notComplete;
+            ? Gen04339ConformanceLevel.average
+            : Gen04339ConformanceLevel.poor;
     return Gen04339ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen04339Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-04339',
-      'metric':             'Schema Lineage Conformance Rate',
+      'metric':             'Self-Service Deflection Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen04339Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_04339Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_04339Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen04339Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen04339Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen04339Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-04339',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen04339Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-04339 → $result');
+  final out = await Gen04339Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-04339 [Good / Average / Poor] → $out');
 }

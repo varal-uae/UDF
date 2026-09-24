@@ -1,31 +1,38 @@
 // ============================================================
 // IS37-CSIVW-025-AS01-A13 — IS37 System Module
-// Atomic Step: Build an input mask logic filter for official fiscal registration fields.
-// Metric:      Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     599 of 1073
+// Atomic Step:  Build an input mask logic filter for official fiscal registration fields.
+// Metric:       UI Response / Rendering Latency - Inline validation indicator green ch
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      834 of 1073
 // ============================================================
-// Why this matters: Completely blocks corrupted formatting entries from reaching database ledgers, saving data correctio
-// Mobile impl:      Deploys local character checkers inside smartphone fields, preventing unoptimized processing calls a
-// Data requirement: Display inline validation indicator (green check or warning text) reflecting isFiscalValid state.
+// Why:          Completely blocks corrupted formatting entries from reaching database ledgers, saving data correctio
+// Mobile:       Deploys local character checkers inside smartphone fields, preventing unoptimized processing calls a
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Is37Csivw025As01A13ConformanceLevel { complete, partial, notComplete }
-enum Is37Csivw025As01A13ExecutionStatus  { pending, running, complete, failed }
+enum Is37Csivw025As01A13ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is37Csivw025As01A13ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS37-CSIVW-025-AS01-A13.
-/// Fields derived from AISS sheet — IS37 System Module.
+/// IS37-CSIVW-025-AS01-A13 — IS37 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is37Csivw025As01A13Config {
   final String configId;
@@ -35,6 +42,7 @@ class Is37Csivw025As01A13Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Is37Csivw025As01A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is37Csivw025As01A13ConformanceLevel.complete:    return 'Good';
-      case Is37Csivw025As01A13ConformanceLevel.partial:     return 'Average';
-      case Is37Csivw025As01A13ConformanceLevel.notComplete: return 'Poor';
+      case Is37Csivw025As01A13ConformanceLevel.good:    return 'Good';
+      case Is37Csivw025As01A13ConformanceLevel.average: return 'Average';
+      case Is37Csivw025As01A13ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS37-CSIVW-025-AS01-A13: Build an input mask logic filter for official fiscal registration fields.
-/// Metric: Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: UI Response / Rendering Latency - Inline validation indicato
+/// Floor=0.9 · Output=Good / Average / Poor
 class Is37Csivw025As01A13Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Detail the exact numeric structure required under local tax law (e.g., exactly 15 digits)
   static Is37Csivw025As01A13Config _ec1Execute(Is37Csivw025As01A13Config config) {
@@ -180,7 +189,7 @@ class Is37Csivw025As01A13Pipeline {
     required List<Is37Csivw025As01A13Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is37Csivw025As01A13ValidationResult(
+      return Is37Csivw025As01A13ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is37Csivw025As01A13ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Is37Csivw025As01A13Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is37Csivw025As01A13ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Is37Csivw025As01A13ConformanceLevel.good
         : rate >= _floor
-            ? Is37Csivw025As01A13ConformanceLevel.partial
-            : Is37Csivw025As01A13ConformanceLevel.notComplete;
+            ? Is37Csivw025As01A13ConformanceLevel.average
+            : Is37Csivw025As01A13ConformanceLevel.poor;
     return Is37Csivw025As01A13ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Is37Csivw025As01A13Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS37-CSIVW-025-AS01-A13',
-      'metric':             'Error Handling Coverage Rate',
+      'metric':             'UI Response / Rendering Latency - Inline validation indicato',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Is37Csivw025As01A13Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is37_csivw_025_as01_a13Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is37_csivw_025_as01_a13Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Is37Csivw025As01A13Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is37Csivw025As01A13Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Is37Csivw025As01A13Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS37-CSIVW-025-AS01-A13',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is37Csivw025As01A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS37-CSIVW-025-AS01-A13 → $result');
+  final out = await Is37Csivw025As01A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS37-CSIVW-025-AS01-A13 [Good / Average / Poor] → $out');
 }

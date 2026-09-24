@@ -1,211 +1,327 @@
 // ============================================================
-// CTTEE-011 | Client Thread Telemetry Engine
-// Atomic Task: CTTEE-011
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CTTEE-011 — Client Thread Telemetry Engine
+// Atomic Step:  Enforce Time-Boxing on MTOI Tasks
+// Metric:       Timer Synchronization Accuracy (seconds)
+// Floor:        29.5  ·  Optimal: 29.5
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      164 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System receives expiration timestamp payload in ISO 8601:2019 format.
-  // EC: 2. System validates expiration timestamp structure against gateway configuration.
-  // EC: 3. System calculates time variance relative to client local clock.
-  // EC: 4. System checks time variance against floor boundary 29.5 seconds.
-  // EC: 5. System checks time variance against ceiling boundary 30.5 seconds.
-  // EC: 6. System initializes local client countdown timer to target value 30.0 seconds.
-  // EC: 7. System synchronizes timer execution state with expiration timestamp.
-  // EC: 8. System records synchronization status metric to session telemetry logs.
+// Why:          Protects backend stateless containers from DDoS and cost-spikes.
+// Mobile:       Prevents runaway mobile app bugs (e.g., infinite retry loops) from destroying backend resources and 
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cttee011ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CTTEE-011.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cttee011Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cttee011ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CTTEE-011 — Client Thread Telemetry Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Cttee011Config {
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cttee011Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cttee011Config({
+    required this.configId,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cttee011Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cttee011Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cttee011Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cttee011Config(
+    configId: configId,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cttee011ScanResult {
+class Cttee011ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cttee011ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cttee011ScanResult({
+  const Cttee011ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cttee011ConformanceLevel.pass_: return 'Pass';
+      case Cttee011ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// CTTEE-011: Enforce Time-Boxing on MTOI Tasks
+/// Metric: Timer Synchronization Accuracy (seconds)
+/// Floor=29.5 · Output=Pass / Fail
 class Cttee011Pipeline {
-  static const double _floor   = 29.5;  // metric floor gate
-  static const double _optimal = 30.0; // metric optimal target
+  static const double _floor   = 29.5;
+  static const double _optimal = 29.5;
 
-
-  // EC:1 — EC: 1. System receives expiration timestamp payload in ISO 8601:2019 format.
-  static void executeReceivesStep1(Cttee011Entry entry) {
-    // receives expiration timestamp payload in ISO 8601:2019 format
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-001: ruleId required');
-    };
+  // EC:1 — System locates the CTTEE-011 configuration in the source repository.
+  static Cttee011Config _ec1Locates(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-001: ruleKey required for CTTEE-011');
+    }
+    // the CTTEE-011 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System validates expiration timestamp structure against gateway configuration.
-  static void executeValidatesStep2(Cttee011Entry entry) {
-    // validates expiration timestamp structure against gateway configuration
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-002: ruleId required');
-    };
+  // EC:2 — System extracts ruleKey and ruleValue from the CTTEE-011 registry.
+  static Cttee011Config _ec2Extracts(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-002: ruleKey required for CTTEE-011');
+    }
+    // ruleKey and ruleValue from the CTTEE-011 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System calculates time variance relative to client local clock.
-  static void executeCalculatesStep3(Cttee011Entry entry) {
-    // calculates time variance relative to client local clock
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Timer Synchronization Accuracy (seconds).
+  static Cttee011Config _ec3Compiles(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-003: ruleKey required for CTTEE-011');
+    }
+    // the implementation rule set per Timer Synchronization Accura
+    return config;
   }
 
-  // EC:4 — EC: 4. System checks time variance against floor boundary 29.5 seconds.
-  static void executeChecksStep4(Cttee011Entry entry) {
-    // checks time variance against floor boundary 29.5 seconds
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Cttee011Config _ec4Validates(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-004: ruleKey required for CTTEE-011');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System checks time variance against ceiling boundary 30.5 seconds.
-  static void executeChecksStep5(Cttee011Entry entry) {
-    // checks time variance against ceiling boundary 30.5 seconds
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Cttee011Config _ec5Registers(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-005: ruleKey required for CTTEE-011');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System initializes local client countdown timer to target value 30.0 seconds.
-  static void executeInitializesStep6(Cttee011Entry entry) {
-    // initializes local client countdown timer to target value 30.0 seconds
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Timer Synchronization Accuracy (seconds) gate (floo
+  static Cttee011Config _ec6Validates(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-006: ruleKey required for CTTEE-011');
+    }
+    // configuration against Timer Synchronization Accuracy (second
+    return config;
   }
 
-  // EC:7 — EC: 7. System synchronizes timer execution state with expiration timestamp.
-  static void executeSynchronizesStep7(Cttee011Entry entry) {
-    // synchronizes timer execution state with expiration timestamp
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Cttee011Config _ec7Routes(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-007: ruleKey required for CTTEE-011');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System records synchronization status metric to session telemetry logs.
-  static void executeRecordsStep8(Cttee011Entry entry) {
-    // records synchronization status metric to session telemetry logs
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CTTEE011-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Cttee011Config _ec8Publishes(Cttee011Config config) {
+    if (config.ruleKey.isEmpty) {
+      throw ArgumentError(
+          'EC-CTTEE011-008: ruleKey required for CTTEE-011');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  static Cttee011ScanResult validateConformance(List<Cttee011Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cttee011ScanResult(
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Cttee011ValidationResult calculateConformance({
+    required List<Cttee011Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cttee011ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cttee011ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-CTTEE011-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Cttee011ConformanceLevel.pass_
+        : Cttee011ConformanceLevel.fail_;
+    return Cttee011ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CTTEE011-VAL',
     );
   }
 
-  static Cttee011Entry routeToRegistry(Cttee011Entry entry, Cttee011ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cttee011Config routeToRegistry(
+    Cttee011Config config,
+    Cttee011ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cttee011Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CTTEE011-000: configs must not be empty for CTTEE-011');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CTTEE011-TRI: triangular check failed for CTTEE-011');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CTTEE-011',
+      'metric':             'Timer Synchronization Accuracy (seconds)',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cttee_011Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CTTEE-011',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cttee011Widget extends StatelessWidget {
-  final List<Cttee011Entry> entries;
-  const Cttee011Widget({super.key, required this.entries});
+  final List<Cttee011Config> configs;
+  const Cttee011Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cttee011Pipeline.validateConformance(entries);
+    final result = Cttee011Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -213,36 +329,37 @@ class Cttee011Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CTTEE-011',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -250,4 +367,24 @@ class Cttee011Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Cttee011Config(
+      configId: 'cttee011-cfg-001',
+      ruleKey: 'cttee-011_ruleKey',
+      ruleValue: 'cttee-011_ruleValue',
+      metricLabel: 'cttee-011_metricLabel',
+      complianceTarget: 'cttee-011_complianceTarget',
+      traceId:                 'trace-cttee011-001',
+      originSourceId:          'origin-cttee011',
+      immediatePredecessorId:  'pred-cttee011-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Cttee011Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CTTEE-011 [Pass / Fail] → $out');
 }

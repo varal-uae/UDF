@@ -1,31 +1,38 @@
 // ============================================================
 // MTVPE-009-11 — Mobile Touch & Viewport Platform Engine
-// Atomic Step: Configure Mobile MTOI Training Embedded Videos
-// Metric:      Media Rendering Compliance Rate · Floor=0.7 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     586 of 1073
+// Atomic Step:  Configure Mobile MTOI Training Embedded Videos
+// Metric:       Training Completion & Comprehension Rate
+// Floor:        0.7  ·  Optimal: 0.9
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      865 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Set generous touchscreen target parameters for video pause and play interaction controls.
+// Why:          
+// Mobile:       
+// col41:        Good (Scale: Good/Average/Poor)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Mtvpe00911ConformanceLevel { complete, partial, notComplete }
-enum Mtvpe00911ExecutionStatus  { pending, running, complete, failed }
+enum Mtvpe00911ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Mtvpe00911ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MTVPE-009-11.
-/// Fields derived from AISS sheet — Mobile Touch & Viewport Platform Engine.
+/// MTVPE-009-11 — Mobile Touch & Viewport Platform Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mtvpe00911Config {
   final String configId;
@@ -35,6 +42,7 @@ class Mtvpe00911Config {
   final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Mtvpe00911ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mtvpe00911ConformanceLevel.complete:    return 'Good';
-      case Mtvpe00911ConformanceLevel.partial:     return 'Average';
-      case Mtvpe00911ConformanceLevel.notComplete: return 'Poor';
+      case Mtvpe00911ConformanceLevel.good:    return 'Good';
+      case Mtvpe00911ConformanceLevel.average: return 'Average';
+      case Mtvpe00911ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MTVPE-009-11: Configure Mobile MTOI Training Embedded Videos
-/// Metric: Media Rendering Compliance Rate · Floor=0.7 · Optimal=0.97
+/// Metric: Training Completion & Comprehension Rate
+/// Floor=0.7 · Output=Good / Average / Poor
 class Mtvpe00911Pipeline {
   static const double _floor   = 0.7;
-  static const double _optimal = 0.97;
+  static const double _optimal = 0.9;
 
   // EC:1 — System locates the MTVPE-009-11 configuration in the source repository.
   static Mtvpe00911Config _ec1Locates(Mtvpe00911Config config) {
@@ -152,13 +161,13 @@ class Mtvpe00911Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Media Rendering Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Training Completion & Comprehension Rate.
   static Mtvpe00911Config _ec3Compiles(Mtvpe00911Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
           'EC-MTVPE00911-003: componentId required for MTVPE-009-11');
     }
-    // the implementation rule set per Media Rendering Compliance R
+    // the implementation rule set per Training Completion & Compre
     return config;
   }
 
@@ -182,13 +191,13 @@ class Mtvpe00911Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Media Rendering Compliance Rate gate (floor=0.90).
+  // EC:6 — System validates configuration against Training Completion & Comprehension Rate gate (floo
   static Mtvpe00911Config _ec6Validates(Mtvpe00911Config config) {
     if (config.componentId.isEmpty) {
       throw ArgumentError(
           'EC-MTVPE00911-006: componentId required for MTVPE-009-11');
     }
-    // configuration against Media Rendering Compliance Rate gate (
+    // configuration against Training Completion & Comprehension Ra
     return config;
   }
 
@@ -220,7 +229,7 @@ class Mtvpe00911Pipeline {
     required List<Mtvpe00911Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mtvpe00911ValidationResult(
+      return Mtvpe00911ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Mtvpe00911ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Mtvpe00911Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Mtvpe00911ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Mtvpe00911ConformanceLevel.good
         : rate >= _floor
-            ? Mtvpe00911ConformanceLevel.partial
-            : Mtvpe00911ConformanceLevel.notComplete;
+            ? Mtvpe00911ConformanceLevel.average
+            : Mtvpe00911ConformanceLevel.poor;
     return Mtvpe00911ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Mtvpe00911Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MTVPE-009-11',
-      'metric':             'Media Rendering Compliance Rate',
+      'metric':             'Training Completion & Comprehension Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Mtvpe00911Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> mtvpe_009_11Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> mtvpe_009_11Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Mtvpe00911Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mtvpe00911Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Mtvpe00911Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MTVPE-009-11',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mtvpe00911Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('MTVPE-009-11 → $result');
+  final out = await Mtvpe00911Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MTVPE-009-11 [Good / Average / Poor] → $out');
 }

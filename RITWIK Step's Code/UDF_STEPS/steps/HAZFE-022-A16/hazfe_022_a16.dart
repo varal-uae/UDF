@@ -1,38 +1,42 @@
 // ============================================================
 // HAZFE-022-A16 — High Availability Zone Frontend Engine
-// Atomic Step: Designing Mobile Layouts for High Availability (HA) Failover Visual Banners
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     621 of 1073
+// Atomic Step:  Designing Mobile Layouts for High Availability (HA) Failover Visual Banners
+// Metric:       Version Control Compliance (%)
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      785 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      Using compact notice banners presents system updates cleanly on small screens without cluttering the
-// Data requirement: Save the layout assets and push the new banner component code to the feature branch.
+// Why:          
+// Mobile:       Using compact notice banners presents system updates cleanly on small screens without cluttering the
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Hazfe022A16ConformanceLevel { complete, partial, notComplete }
-enum Hazfe022A16ExecutionStatus  { pending, running, complete, failed }
+enum Hazfe022A16ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Hazfe022A16ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for HAZFE-022-A16.
-/// Fields derived from AISS sheet — High Availability Zone Frontend Engine.
-/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Hazfe022A16Config {
   final String configId;
-  final String assetId;
-  final String mediaType;
-  final String aspectRatio;
-  final String loadStrategy;
+  final String animationId;
+  final String durationMs;
+  final String easingCurve;
+  final String triggerState;
   final String validationStatus;
   final bool   immutableInd;
   final String traceId;
@@ -43,10 +47,10 @@ class Hazfe022A16Config {
 
   const Hazfe022A16Config({
     required this.configId,
-    required this.assetId,
-    required this.mediaType,
-    required this.aspectRatio,
-    required this.loadStrategy,
+    required this.animationId,
+    required this.durationMs,
+    required this.easingCurve,
+    required this.triggerState,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +69,10 @@ class Hazfe022A16Config {
     bool?   complianceStatusInd,
   }) => Hazfe022A16Config(
     configId: configId,
-    assetId: assetId,
-    mediaType: mediaType,
-    aspectRatio: aspectRatio,
-    loadStrategy: loadStrategy,
+    animationId: animationId,
+    durationMs: durationMs,
+    easingCurve: easingCurve,
+    triggerState: triggerState,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +84,10 @@ class Hazfe022A16Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'assetId': assetId,
-    'mediaType': mediaType,
-    'aspectRatio': aspectRatio,
-    'loadStrategy': loadStrategy,
+    'animationId': animationId,
+    'durationMs': durationMs,
+    'easingCurve': easingCurve,
+    'triggerState': triggerState,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +121,23 @@ class Hazfe022A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Hazfe022A16ConformanceLevel.complete:    return 'Complete';
-      case Hazfe022A16ConformanceLevel.partial:     return 'Partial';
-      case Hazfe022A16ConformanceLevel.notComplete: return 'Not Complete';
+      case Hazfe022A16ConformanceLevel.pass_: return 'Pass';
+      case Hazfe022A16ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// HAZFE-022-A16: Designing Mobile Layouts for High Availability (HA) Failover Visual Banners
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
 class Hazfe022A16Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — Build a responsive layout banner component within the core interface library framework
   static Hazfe022A16Config _ec1Execute(Hazfe022A16Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-HAZFE022A16-001: assetId required for HAZFE-022-A16');
+          'EC-HAZFE022A16-001: animationId required for HAZFE-022-A16');
     }
     // Build a responsive layout banner component within the core i
     return config;
@@ -144,9 +145,9 @@ class Hazfe022A16Pipeline {
 
   // EC:2 — Configure banner display rules to read live database status states and surface helpful upd
   static Hazfe022A16Config _ec2Execute(Hazfe022A16Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-HAZFE022A16-002: assetId required for HAZFE-022-A16');
+          'EC-HAZFE022A16-002: animationId required for HAZFE-022-A16');
     }
     // Configure banner display rules to read live database status 
     return config;
@@ -154,9 +155,9 @@ class Hazfe022A16Pipeline {
 
   // EC:3 — Program explicit user controls to allow users to dismiss minor notice bars once they have 
   static Hazfe022A16Config _ec3Execute(Hazfe022A16Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-HAZFE022A16-003: assetId required for HAZFE-022-A16');
+          'EC-HAZFE022A16-003: animationId required for HAZFE-022-A16');
     }
     // Program explicit user controls to allow users to dismiss min
     return config;
@@ -164,9 +165,9 @@ class Hazfe022A16Pipeline {
 
   // EC:4 — Set up layout positions to lock notice modules safely at the top of active screen viewport
   static Hazfe022A16Config _ec4Execute(Hazfe022A16Config config) {
-    if (config.assetId.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-HAZFE022A16-004: assetId required for HAZFE-022-A16');
+          'EC-HAZFE022A16-004: animationId required for HAZFE-022-A16');
     }
     // Set up layout positions to lock notice modules safely at the
     return config;
@@ -180,21 +181,19 @@ class Hazfe022A16Pipeline {
     required List<Hazfe022A16Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Hazfe022A16ValidationResult(
+      return Hazfe022A16ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Hazfe022A16ConformanceLevel.notComplete,
+        conformanceLevel: Hazfe022A16ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-HAZFE022A16-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Hazfe022A16ConformanceLevel.complete
-        : rate >= _floor
-            ? Hazfe022A16ConformanceLevel.partial
-            : Hazfe022A16ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Hazfe022A16ConformanceLevel.pass_
+        : Hazfe022A16ConformanceLevel.fail_;
     return Hazfe022A16ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +235,14 @@ class Hazfe022A16Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-HAZFE-022-A16',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Version Control Compliance (%)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +251,8 @@ class Hazfe022A16Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> hazfe_022_a16Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> hazfe_022_a16Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -278,30 +278,35 @@ class Hazfe022A16Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('HAZFE-022-A16',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
               backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.assetId,
+                title: Text(c.animationId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +324,16 @@ void main() async {
   final configs = [
     Hazfe022A16Config(
       configId: 'hazfe022a16-cfg-001',
-      assetId: 'hazfe-022-a16_assetId',
-      mediaType: 'hazfe-022-a16_mediaType',
-      aspectRatio: 'hazfe-022-a16_aspectRatio',
-      loadStrategy: 'hazfe-022-a16_loadStrategy',
+      animationId: 'hazfe-022-a16_animationId',
+      durationMs: 'hazfe-022-a16_durationMs',
+      easingCurve: 'hazfe-022-a16_easingCurve',
+      triggerState: 'hazfe-022-a16_triggerState',
       traceId:                 'trace-hazfe022a16-001',
       originSourceId:          'origin-hazfe022a16',
       immediatePredecessorId:  'pred-hazfe022a16-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Hazfe022A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('HAZFE-022-A16 → $result');
+  final out = await Hazfe022A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('HAZFE-022-A16 [Pass / Fail] → $out');
 }

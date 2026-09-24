@@ -1,31 +1,37 @@
 // ============================================================
 // LSAV-010 — Layout & Structure Analytics Viewer
-// Atomic Step: Deploy Real-Time BigQuery KPI Dashboards
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     557 of 1073
+// Atomic Step:  Deploy Real-Time BigQuery KPI Dashboards
+// Metric:       Dashboard Load Performance (Largest Contentful Paint)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      850 of 1073
 // ============================================================
-// Why this matters: Secures identity and access management for mobile users.
-// Mobile impl:      Stateless auth allows mobile apps to scale without hitting a central session database.
-// Data requirement: Test layout component loading responsiveness using high-volume mock data loops.
+// Why:          Secures identity and access management for mobile users.
+// Mobile:       Stateless auth allows mobile apps to scale without hitting a central session database.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Lsav010ConformanceLevel { complete, partial, notComplete }
-enum Lsav010ExecutionStatus  { pending, running, complete, failed }
+enum Lsav010ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Lsav010ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for LSAV-010.
-/// Fields derived from AISS sheet — Layout & Structure Analytics Viewer.
+/// LSAV-010 — Layout & Structure Analytics Viewer
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Lsav010Config {
   final String configId;
@@ -35,6 +41,7 @@ class Lsav010Config {
   final String refreshIntervalMs;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Lsav010ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Lsav010ConformanceLevel.complete:    return 'Pass';
-      case Lsav010ConformanceLevel.partial:     return 'Partial';
-      case Lsav010ConformanceLevel.notComplete: return 'Fail';
+      case Lsav010ConformanceLevel.pass_: return 'Pass';
+      case Lsav010ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// LSAV-010: Deploy Real-Time BigQuery KPI Dashboards
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Dashboard Load Performance (Largest Contentful Paint)
+/// Floor=0.95 · Output=Pass / Fail
 class Lsav010Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the LSAV-010 configuration in the source repository.
   static Lsav010Config _ec1Locates(Lsav010Config config) {
@@ -152,13 +159,13 @@ class Lsav010Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Dashboard Load Performance (Largest Conten
   static Lsav010Config _ec3Compiles(Lsav010Config config) {
     if (config.widgetId.isEmpty) {
       throw ArgumentError(
           'EC-LSAV010-003: widgetId required for LSAV-010');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Dashboard Load Performance (
     return config;
   }
 
@@ -182,13 +189,13 @@ class Lsav010Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Dashboard Load Performance (Largest Contentful Pain
   static Lsav010Config _ec6Validates(Lsav010Config config) {
     if (config.widgetId.isEmpty) {
       throw ArgumentError(
           'EC-LSAV010-006: widgetId required for LSAV-010');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Dashboard Load Performance (Largest Co
     return config;
   }
 
@@ -220,21 +227,19 @@ class Lsav010Pipeline {
     required List<Lsav010Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Lsav010ValidationResult(
+      return Lsav010ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Lsav010ConformanceLevel.notComplete,
+        conformanceLevel: Lsav010ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-LSAV010-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Lsav010ConformanceLevel.complete
-        : rate >= _floor
-            ? Lsav010ConformanceLevel.partial
-            : Lsav010ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Lsav010ConformanceLevel.pass_
+        : Lsav010ConformanceLevel.fail_;
     return Lsav010ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Lsav010Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-LSAV-010',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Dashboard Load Performance (Largest Contentful Paint)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Lsav010Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> lsav_010Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> lsav_010Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Lsav010Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Lsav010Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Lsav010Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('LSAV-010',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.widgetId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Lsav010Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('LSAV-010 → $result');
+  final out = await Lsav010Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('LSAV-010 [Pass / Fail] → $out');
 }

@@ -1,47 +1,48 @@
 // ============================================================
 // TTIAS-001-A12 — Token Integration & Automation System
-// Atomic Step: Configure System-Verb Iconography Matrix.
-// Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     410 of 440
+// Atomic Step:  Configure System-Verb Iconography Matrix.
+// Metric:       Implementation Completeness Against Spec
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1032 of 1073
 // ============================================================
-// Why this matters: Shifts user mindset from manual processing or manual approvals to real-time data pipeline monitoring
-// Mobile impl:      Minimized text label wrapping on smaller viewports by replacing heavy manual text with compact vecto
+// Why:          Shifts user mindset from manual processing or manual approvals to real-time data pipeline monitoring
+// Mobile:       Minimized text label wrapping on smaller viewports by replacing heavy manual text with compact vecto
+// col41:        Complete (Scale: Complete/Partial/Not Complete)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Ttias001A12ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Ttias001A12ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttias001A12ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTIAS-001-A12.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTIAS-001-A12 — Token Integration & Automation System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttias001A12Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +51,10 @@ class Ttias001A12Config {
 
   const Ttias001A12Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +72,33 @@ class Ttias001A12Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Ttias001A12Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -125,21 +132,20 @@ class Ttias001A12ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// TTIAS-001-A12: Configure System-Verb Iconography Matrix.
-///
-/// Metric: Implementation Conformance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Complete / Partial / Not Complete
+/// Metric: Implementation Completeness Against Spec
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Ttias001A12Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — Audit MD3 icon library variants
   static Ttias001A12Config _ec1Execute(Ttias001A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS001A12-001: configId required for TTIAS-001-A12');
+          'EC-TTIAS001A12-001: colorToken required for TTIAS-001-A12');
     }
     // Audit MD3 icon library variants
     return config;
@@ -147,9 +153,9 @@ class Ttias001A12Pipeline {
 
   // EC:2 — Select unified icon for 'Transfers' actions
   static Ttias001A12Config _ec2Execute(Ttias001A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS001A12-002: configId required for TTIAS-001-A12');
+          'EC-TTIAS001A12-002: colorToken required for TTIAS-001-A12');
     }
     // Select unified icon for 'Transfers' actions
     return config;
@@ -157,9 +163,9 @@ class Ttias001A12Pipeline {
 
   // EC:3 — Select unified icon for 'Calculates' actions
   static Ttias001A12Config _ec3Execute(Ttias001A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS001A12-003: configId required for TTIAS-001-A12');
+          'EC-TTIAS001A12-003: colorToken required for TTIAS-001-A12');
     }
     // Select unified icon for 'Calculates' actions
     return config;
@@ -167,9 +173,9 @@ class Ttias001A12Pipeline {
 
   // EC:4 — Map icons directly to the English Code (EC) glossary
   static Ttias001A12Config _ec4Execute(Ttias001A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS001A12-004: configId required for TTIAS-001-A12');
+          'EC-TTIAS001A12-004: colorToken required for TTIAS-001-A12');
     }
     // Map icons directly to the English Code (EC) glossary
     return config;
@@ -179,23 +185,21 @@ class Ttias001A12Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Ttias001A12ValidationResult calculateConformance({
     required List<Ttias001A12Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttias001A12ValidationResult(
+      return Ttias001A12ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ttias001A12ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTIAS001A12-VAL',
+        gatePass: false, ecLineRef: 'EC-TTIAS001A12-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ttias001A12ConformanceLevel.complete
         : rate >= _floor
             ? Ttias001A12ConformanceLevel.partial
@@ -228,7 +232,7 @@ class Ttias001A12Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTIAS001A12-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTIAS001A12-000: configs must not be empty for TTIAS-001-A12');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -236,21 +240,19 @@ class Ttias001A12Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-TTIAS001A12-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTIAS001A12-TRI: triangular check failed for TTIAS-001-A12');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTIAS-001-A12',
-      'metric':             'Implementation Conformance Rate',
+      'metric':             'Implementation Completeness Against Spec',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -260,9 +262,7 @@ class Ttias001A12Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttias_001_a12Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -281,6 +281,7 @@ class Ttias001A12Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttias001A12Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -288,18 +289,13 @@ class Ttias001A12Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTIAS-001-A12',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -308,24 +304,22 @@ class Ttias001A12Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -340,16 +334,17 @@ class Ttias001A12Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Ttias001A12Config(
-      configId:                'ttias001a12-cfg-001',
-      ruleKey:                 'ttias-001-a12_rule',
-      ruleValue:               'ttias-001-a12_value',
+      configId: 'ttias001a12-cfg-001',
+      colorToken: 'ttias-001-a12_colorToken',
+      hexValue: 'ttias-001-a12_hexValue',
+      wcagRatio: 'ttias-001-a12_wcagRatio',
+      usageContext: 'ttias-001-a12_usageContext',
       traceId:                 'trace-ttias001a12-001',
       originSourceId:          'origin-ttias001a12',
       immediatePredecessorId:  'pred-ttias001a12-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttias001A12Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTIAS-001-A12 → $result');
+  final out = await Ttias001A12Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTIAS-001-A12 [Complete / Partial / Not Complete] → $out');
 }

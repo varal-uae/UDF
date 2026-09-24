@@ -1,31 +1,37 @@
 // ============================================================
 // GEN-02685 — GEN Backend Utility Module
-// Atomic Step: Create the performance scorecard BigQuery table with fields for engineer ID, metric name, score, dat
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     814 of 1073
+// Atomic Step:  Create the performance scorecard BigQuery table with fields for engineer ID, metric name, score, dat
+// Metric:       BigQuery Schema Alignment Rate
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      527 of 1073
 // ============================================================
-// Why this matters: Create the performance scorecard BigQuery table with fields for engineer ID, metric name, score, dat
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Create the performance scorecard BigQuery table with fields for engineer ID, metric name, score, dat
+// Why:          Create the performance scorecard BigQuery table with fields for engineer ID, metric name, score, dat
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen02685ConformanceLevel { complete, partial, notComplete }
-enum Gen02685ExecutionStatus  { pending, running, complete, failed }
+enum Gen02685ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen02685ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-02685.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-02685 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen02685Config {
   final String configId;
@@ -35,6 +41,7 @@ class Gen02685Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Gen02685ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen02685ConformanceLevel.complete:    return 'Complete';
-      case Gen02685ConformanceLevel.partial:     return 'Partial';
-      case Gen02685ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen02685ConformanceLevel.pass_: return 'Pass';
+      case Gen02685ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-02685: Create the performance scorecard BigQuery table with fields for engineer ID, met
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: BigQuery Schema Alignment Rate
+/// Floor=0.95 · Output=Pass / Fail
 class Gen02685Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen02685Config _ec1Execute(Gen02685Config config) {
@@ -180,21 +187,19 @@ class Gen02685Pipeline {
     required List<Gen02685Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen02685ValidationResult(
+      return Gen02685ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen02685ConformanceLevel.notComplete,
+        conformanceLevel: Gen02685ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN02685-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen02685ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen02685ConformanceLevel.partial
-            : Gen02685ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen02685ConformanceLevel.pass_
+        : Gen02685ConformanceLevel.fail_;
     return Gen02685ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen02685Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-02685',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'BigQuery Schema Alignment Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen02685Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_02685Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_02685Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen02685Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen02685Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen02685Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-02685',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen02685Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-02685 → $result');
+  final out = await Gen02685Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-02685 [Pass / Fail] → $out');
 }

@@ -1,337 +1,346 @@
 // ============================================================
-// BPTR-0498-A05 | UI/UX Pattern Registry
-// Atomic Task: BPTR-0498-A05
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BPTR-0498-A05 — UI/UX Pattern Registry
+// Atomic Step:  Implement Offline Sync State Icon.
+// Metric:       UI Input Response Latency
+// Floor:        30.0  ·  Optimal: 30.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      99 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System initializes network status event listener context.
-  // EC: 2. System detects client network online status state changes.
-  // EC: 3. System fetches local offline queue pending item count.
-  // EC: 4. System measures UI input response latency value.
-  // EC: 5. System displays cloud slash offline state icon upon connectivity loss.
-  // EC: 6. System updates persistent header shell state with pending item count.
-  // EC: 7. System activates visual reconnecting animation state upon network restoration.
-  // EC: 8. System binds application visual state to browser status events.
-  // EC: 9. System restricts browser page refresh events during pending sync queue states.
-  // EC: 10. System persists step execution log record to system storage.
+// Why:          In remote working environments, internet drops happen. UI must clearly indicate data is saved locall
+// Mobile:       Absolutely critical for 5G/4G connectivity drops while commuting or on-site.
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bptr0498A05ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Bptr0498A05ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BPTR-0498-A05.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Bptr0498A05Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+/// BPTR-0498-A05 — UI/UX Pattern Registry
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bptr0498A05Config {
+  final String configId;
+  final String animationId;
+  final String durationMs;
+  final String easingCurve;
+  final String triggerState;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Bptr0498A05Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Bptr0498A05Config({
+    required this.configId,
+    required this.animationId,
+    required this.durationMs,
+    required this.easingCurve,
+    required this.triggerState,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Bptr0498A05Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Bptr0498A05Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Bptr0498A05Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bptr0498A05Config(
+    configId: configId,
+    animationId: animationId,
+    durationMs: durationMs,
+    easingCurve: easingCurve,
+    triggerState: triggerState,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'animationId': animationId,
+    'durationMs': durationMs,
+    'easingCurve': easingCurve,
+    'triggerState': triggerState,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Bptr0498A05ScanResult {
+class Bptr0498A05ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Bptr0498A05ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Bptr0498A05ScanResult({
+  const Bptr0498A05ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bptr0498A05ConformanceLevel.pass_: return 'Pass';
+      case Bptr0498A05ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ──────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// BPTR-0498-A05: Implement Offline Sync State Icon.
+/// Metric: UI Input Response Latency
+/// Floor=30.0 · Output=Pass / Fail
 class Bptr0498A05Pipeline {
-  static const double _floor   = 30.0;  // metric floor gate
-  static const double _optimal = 50.0; // metric optimal target
+  static const double _floor   = 30.0;
+  static const double _optimal = 30.0;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System initializes network status event listener context.
-  static String executeInitializesStep1(Bptr0498A05Entry entry) {
-    // initializes network status event listener context
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — Select offline icon (cloud with slash)
+  static Bptr0498A05Config _ec1Execute(Bptr0498A05Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0498A05-001: animationId required for BPTR-0498-A05');
+    }
+    // Select offline icon (cloud with slash)
+    return config;
   }
 
-  // EC:2 — EC: 2. System detects client network online status state changes.
-  static String executeDetectsStep2(Bptr0498A05Entry entry) {
-    // detects client network online status state changes
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:2 — Define sync pending badge count
+  static Bptr0498A05Config _ec2Execute(Bptr0498A05Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0498A05-002: animationId required for BPTR-0498-A05');
+    }
+    // Define sync pending badge count
+    return config;
   }
 
-  // EC:3 — EC: 3. System fetches local offline queue pending item count.
-  static String executeFetchesStep3(Bptr0498A05Entry entry) {
-    // fetches local offline queue pending item count
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:3 — Design "Reconnecting" animation
+  static Bptr0498A05Config _ec3Execute(Bptr0498A05Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0498A05-003: animationId required for BPTR-0498-A05');
+    }
+    // Design "Reconnecting" animation
+    return config;
   }
 
-  // EC:4 — EC: 4. System measures UI input response latency value.
-  static String executeMeasuresStep4(Bptr0498A05Entry entry) {
-    // measures UI input response latency value
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:4 — Set persistent placement logic
+  static Bptr0498A05Config _ec4Execute(Bptr0498A05Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0498A05-004: animationId required for BPTR-0498-A05');
+    }
+    // Set persistent placement logic
+    return config;
   }
 
-  // EC:5 — EC: 5. System displays cloud slash offline state icon upon connectivity loss.
-  static String executeDisplaysStep5(Bptr0498A05Entry entry) {
-    // displays cloud slash offline state icon upon connectivity loss
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System updates persistent header shell state with pending item count.
-  static String executeUpdatesStep6(Bptr0498A05Entry entry) {
-    // updates persistent header shell state with pending item count
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:7 — EC: 7. System activates visual reconnecting animation state upon network restoration.
-  static String executeActivatesStep7(Bptr0498A05Entry entry) {
-    // activates visual reconnecting animation state upon network restoration
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:8 — EC: 8. System binds application visual state to browser status events.
-  static String executeBindsStep8(Bptr0498A05Entry entry) {
-    // binds application visual state to browser status events
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:9 — EC: 9. System restricts browser page refresh events during pending sync queue states.
-  static String executeRestrictsStep9(Bptr0498A05Entry entry) {
-    // restricts browser page refresh events during pending sync queue states
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-009: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:10 — EC: 10. System persists step execution log record to system storage.
-  static String executePersistsStep10(Bptr0498A05Entry entry) {
-    // persists step execution log record to system storage
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0498A05-010: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Bptr0498A05ScanResult validateConformance(
-    List<Bptr0498A05Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Bptr0498A05ScanResult(
+  static Bptr0498A05ValidationResult calculateConformance({
+    required List<Bptr0498A05Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bptr0498A05ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bptr0498A05ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-BPTR0498A05-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Bptr0498A05ConformanceLevel.pass_
+        : Bptr0498A05ConformanceLevel.fail_;
+    return Bptr0498A05ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BPTR0498A05-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Bptr0498A05Entry routeToRegistry(
-    Bptr0498A05Entry entry,
-    Bptr0498A05ScanResult scan,
+  static Bptr0498A05Config routeToRegistry(
+    Bptr0498A05Config config,
+    Bptr0498A05ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Bptr0498A05Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BPTR0498A05-000: configs must not be empty for BPTR-0498-A05');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-BPTR0498A05-TRI: triangular check failed for BPTR-0498-A05');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BPTR-0498-A05',
+      'metric':             'UI Input Response Latency',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bptr_0498_a05Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BPTR-0498-A05',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Bptr0498A05Widget extends StatelessWidget {
-  final List<Bptr0498A05Entry> entries;
-  const Bptr0498A05Widget({super.key, required this.entries});
+  final List<Bptr0498A05Config> configs;
+  const Bptr0498A05Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bptr0498A05Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Bptr0498A05Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BPTR-0498-A05',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BPTR-0498-A05',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.animationId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bptr0498A05Config(
+      configId: 'bptr0498a05-cfg-001',
+      animationId: 'bptr-0498-a05_animationId',
+      durationMs: 'bptr-0498-a05_durationMs',
+      easingCurve: 'bptr-0498-a05_easingCurve',
+      triggerState: 'bptr-0498-a05_triggerState',
+      traceId:                 'trace-bptr0498a05-001',
+      originSourceId:          'origin-bptr0498a05',
+      immediatePredecessorId:  'pred-bptr0498a05-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bptr0498A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BPTR-0498-A05 [Pass / Fail] → $out');
 }

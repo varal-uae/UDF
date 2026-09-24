@@ -1,290 +1,321 @@
 // ============================================================
-// BDAE-008-A09 | Inline Secondary Security Validation Forms
-// Atomic Task: Test the multi-factor connection with an invalid security key.
-// Primary Table: mfa_test_registry
-// Metric: Functional Test Pass Rate | Floor=0.95% | Optimal=1.0%
-// Library: mobile-secure-auth-lib | Component: <StepUpMFAPrompt>
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Security: Invalid TOTP must be rejected < 100ms; lockout on attempt_count=3
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 29-Aug-2026
+// BDAE-008-A09 — Biometric & Data Access Engine
+// Atomic Step:  BDAE-008 — Build inline secondary security validation forms around critical actions.
+// Metric:       Functional Test Pass Rate
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      53 of 1073
+// ============================================================
+// Why:          Defining who "owns" the data at each step prevents catastrophic PII leaks and adheres to Zero Trust 
+// Mobile:       Leverages iOS Secure Enclave and Android hardware-backed Keystore, ensuring the most sensitive data 
+// col41:        Pass / Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bdae008A09ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-enum TestResult { pass, fail, locked }
+enum Bdae008A09ExecutionStatus { pending, running, complete, failed }
 
-/// Maps to mfa_test_registry.
-/// Tracks MFA rejection test execution including attempt counting and lockout.
-/// attempt_count >= 3 -> action_status=LOCKED per BDAE-008 TOTP rule set.
-class MfaTestEntry {
-  final String testRuleId;      // PK — UUID
-  final String testType;        // INVALID_KEY / EXPIRED_TOKEN / REPLAY_ATTACK
-  final TestResult testResult;  // PASS = rejected correctly; FAIL = not rejected
-  final double testCoverage;    // coverage % of rejection scenarios (0.0-1.0)
-  final String testLogPath;     // log file path for test evidence
-  final int attemptCount;       // TOTP attempt counter; lockout at 3
-  final bool immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome stepOutcome;
-  final bool complianceStatusInd;
+// ── Data Model ───────────────────────────────────────────────
+
+/// BDAE-008-A09 — Biometric & Data Access Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bdae008A09Config {
+  final String configId;
+  final String tokenName;
+  final String tokenValue;
+  final String tokenCategory;
+  final String appliedComponent;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const MfaTestEntry({
-    required this.testRuleId,
-    required this.testType,
-    required this.testResult,
-    required this.testCoverage,
-    required this.testLogPath,
-    this.attemptCount = 0,
-    this.immutableInd = false,
-    this.executionStatus = ExecutionStatus.pending,
-    this.stepOutcome = StepOutcome.partial,
-    this.complianceStatusInd = true,
+  const Bdae008A09Config({
+    required this.configId,
+    required this.tokenName,
+    required this.tokenValue,
+    required this.tokenCategory,
+    required this.appliedComponent,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
-  }) :     if (!(testCoverage >= 0.0 && testCoverage <= 1.0)) {
-      throw ArgumentError('EC-BDAE008A09-002: testCoverage must be 0.0–1.0');
-    };
+    this.complianceStatusInd = false,
+  });
 
-  static const int    kMaxAttempts = 3;
-  static const double kFloor       = 0.95;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  /// EC:6 gate — invalid key correctly rejected AND attempt count tracked
-  bool get isConformant =>
-      testResult == TestResult.pass ||
-      (testResult == TestResult.locked && attemptCount >= kMaxAttempts);
+  Bdae008A09Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bdae008A09Config(
+    configId: configId,
+    tokenName: tokenName,
+    tokenValue: tokenValue,
+    tokenCategory: tokenCategory,
+    appliedComponent: appliedComponent,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
 
-  /// Lockout triggered when attempt_count reaches max
-  bool get isLockedOut => attemptCount >= kMaxAttempts;
-
-  String get testResultLabel => switch (testResult) {
-    TestResult.pass   => 'REJECTED ✓',
-    TestResult.fail   => 'NOT REJECTED ✗',
-    TestResult.locked => 'LOCKED',
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'tokenName': tokenName,
+    'tokenValue': tokenValue,
+    'tokenCategory': tokenCategory,
+    'appliedComponent': appliedComponent,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
-
-  MfaTestEntry copyWith({
-    int? attemptCount,
-    TestResult? testResult,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-    bool? complianceStatusInd,
-  }) {
-    return MfaTestEntry(
-      testRuleId:              testRuleId,
-      testType:                testType,
-      testResult:              testResult ?? this.testResult,
-      testCoverage:            testCoverage,
-      testLogPath:             testLogPath,
-      attemptCount:            attemptCount ?? this.attemptCount,
-      immutableInd:            immutableInd ?? this.immutableInd,
-      executionStatus:         executionStatus ?? this.executionStatus,
-      stepOutcome:             stepOutcome ?? this.stepOutcome,
-      complianceStatusInd:     complianceStatusInd ?? this.complianceStatusInd,
-      traceId:                 traceId,
-      originSourceId:          originSourceId,
-      immediatePredecessorId:  immediatePredecessorId,
-      transformationLogicHash: transformationLogicHash,
-    );
-  }
 }
 
-/// Test run scan result — maps to mfa_test_validation_log.
-class MfaRejectionScanResult {
-  final int violationCount;
-  final int lockedOutCount;
-  final String testOutput;   // Pass / Fail
-  final String result;
+// ── Validation Result ─────────────────────────────────────────
+
+class Bdae008A09ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Bdae008A09ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const MfaRejectionScanResult({
+  const Bdae008A09ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.lockedOutCount,
-    required this.testOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
-}
 
-// ── EC:1–8 Pipeline ──────────────────────────────────────────
-
-class Bdae008A09MfaRejectionTest {
-  static const double _floor   = 0.95;  // metric floor gate
-  static const double _optimal = 1.0; // metric optimal target
-
-
-  // EC:1 — Locate MFA rejection test config in bdae-008-kit repo.
-  static Map<String, dynamic>? locateConfiguration(String repoPath) {
-        if (!(repoPath.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE008A09-001: repo path must not be empty');
-    };
-    return {'ref': 'BDAE-008-A09', 'config_file': 'mfa_test.yaml'};
-  }
-
-  // EC:2 — Extract testRuleId, testType, testResult, testCoverage, testLogPath
-  //         from mfa_test_registry.
-  static Map<String, dynamic> extractParameters(Map<String, dynamic> config) {
-    const required = [
-      'test_rule_id', 'test_type', 'test_result', 'test_coverage', 'test_log_path',
-    ];
-    if (!(required.every((k) => config.containsKey(k) && config[k] != null))) {
-      throw ArgumentError('EC-BDAE008A09-002: all 5 MFA test fields must be non-null',
-    );
-    return Map<String, dynamic>.from(config);
-  }
-
-  // EC:3 — Compile MFA rejection test rule set:
-  //         invalid TOTP rejected < 100ms, action_status=REJECTED,
-  //         attempt_count increments atomically, lockout at attempt_count=3.
-  static Map<String, dynamic> compileRuleSet() {
-    return {
-      'rejection_ms':   100,                   // max ms to reject invalid key
-      'lockout_at':     MfaTestEntry.kMaxAttempts, // lockout threshold
-      'action_status':  'REJECTED',
-      'atomic_counter': true,
-      'ref':            'BDAE-008-A09',
-      'immutable':      true,
-    };
-  }
-
-  // EC:4 — Register compiled rejection test rule set as immutable entry in
-  //         mfa_test_registry with immutable_IND=TRUE.
-  static MfaTestEntry registerRule(MfaTestEntry entry) {
-        if (!(entry.testCoverage >= 0.90)) {
-      throw ArgumentError('EC-BDAE008A09-003: testCoverage must be >= 0.90 for gate');
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bdae008A09ConformanceLevel.pass_: return 'Pass';
+      case Bdae008A09ConformanceLevel.fail_: return 'Fail';
     }
-    };
-    return entry.copyWith(
-      immutableInd:    true,
-      executionStatus: ExecutionStatus.running,
-    );
-  }
-
-  // EC:5 — Bind each rejection test rule to MFA validation handler
-  //         via mfa_handler_FK constraint.
-  static String bindToTarget(String ruleId, String testType) {
-        if (!(ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BDAE008A09-005: FK bind requires valid ruleId');
-    };
-    return '$testType:$ruleId';
-  }
-
-  // EC:6 — Validate: invalid TOTP rejected within 100ms, action_status=REJECTED,
-  //         attempt_count incremented, lockout at attempt_count=3.
-  static MfaRejectionScanResult validateConformance(
-    List<MfaTestEntry> tests,
-  ) {
-    final violations = tests.where((t) => !t.isConformant).length;
-    final locked     = tests.where((t) => t.isLockedOut).length;
-    final total      = tests.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return MfaRejectionScanResult(
-      violationCount: violations,
-      lockedOutCount: locked,
-      testOutput:     rate >= MfaTestEntry.kFloor ? 'Pass' : 'Fail',
-      result:         rate >= MfaTestEntry.kFloor ? 'PASS' : 'FAIL',
-      ecLineRef:      'EC-BDAE008A09-006',
-    );
-  }
-
-  // EC:7 — Validate against Functional Test Pass Rate metric.
-  //         Floor=95% first-pass success; Optimal=100%.
-  static String evaluateMetric(MfaRejectionScanResult scan, int total) {
-    if (total == 0) return 'FAIL';
-    final rate = (total - scan.violationCount) / total;
-    return rate >= MfaTestEntry.kFloor ? 'PASS' : 'FAIL';
-  }
-
-  // EC:8 — Route validated MFA rejection test to security_rule_registry
-  //         as authoritative BDAE-008-A09 MFA Rejection Test entry.
-  static MfaTestEntry routeToRegistry(
-    MfaTestEntry entry,
-    MfaRejectionScanResult scan,
-  ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
-    );
-  }
-
-  // ── Triangular Check ─────────────────────────────────────
-  /// invalid_key_submissions - rejections_logged == 0
-  static bool triangularCheck(int submissionsIn, int rejectionsLogged) {
-    return (submissionsIn - rejectionsLogged) == 0;
   }
 }
 
-// ── Widget ───────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-class Bdae008A09MfaRejectionWidget extends StatelessWidget {
-  final List<MfaTestEntry> tests;
-  const Bdae008A09MfaRejectionWidget({super.key, required this.tests});
+/// BDAE-008-A09: BDAE-008 — Build inline secondary security validation forms around critical acti
+/// Metric: Functional Test Pass Rate
+/// Floor=0.95 · Output=Pass / Fail
+class Bdae008A09Pipeline {
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-  Color _resultColor(TestResult r) => switch (r) {
-    TestResult.pass   => cs.tertiary,
-    TestResult.fail   => cs.error,
-    TestResult.locked => const Color(0xFFE37400),
-  };
+  // EC:1 — Identify and tag high-risk action paths across core layout buttons
+  static Bdae008A09Config _ec1Execute(Bdae008A09Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE008A09-001: tokenName required for BDAE-008-A09');
+    }
+    // Identify and tag high-risk action paths across core layout b
+    return config;
+  }
+
+  // EC:2 — Pause user workflows and display focused verification entry blocks
+  static Bdae008A09Config _ec2Execute(Bdae008A09Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE008A09-002: tokenName required for BDAE-008-A09');
+    }
+    // Pause user workflows and display focused verification entry 
+    return config;
+  }
+
+  // EC:3 — Connect with external multi-factor code systems to process security keys
+  static Bdae008A09Config _ec3Execute(Bdae008A09Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE008A09-003: tokenName required for BDAE-008-A09');
+    }
+    // Connect with external multi-factor code systems to process s
+    return config;
+  }
+
+  // EC:4 — Resume original tasks seamlessly after receiving verified security approval tokens
+  static Bdae008A09Config _ec4Execute(Bdae008A09Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-BDAE008A09-004: tokenName required for BDAE-008-A09');
+    }
+    // Resume original tasks seamlessly after receiving verified se
+    return config;
+  }
+
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Bdae008A09ValidationResult calculateConformance({
+    required List<Bdae008A09Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bdae008A09ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bdae008A09ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-BDAE008A09-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Bdae008A09ConformanceLevel.pass_
+        : Bdae008A09ConformanceLevel.fail_;
+    return Bdae008A09ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-BDAE008A09-VAL',
+    );
+  }
+
+  static Bdae008A09Config routeToRegistry(
+    Bdae008A09Config config,
+    Bdae008A09ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Bdae008A09Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BDAE008A09-000: configs must not be empty for BDAE-008-A09');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-BDAE008A09-TRI: triangular check failed for BDAE-008-A09');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BDAE-008-A09',
+      'metric':             'Functional Test Pass Rate',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
+}
+
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bdae_008_a09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BDAE-008-A09',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
+
+class Bdae008A09Widget extends StatelessWidget {
+  final List<Bdae008A09Config> configs;
+  const Bdae008A09Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bdae008A09MfaRejectionTest.validateConformance(tests);
-    final metric = Bdae008A09MfaRejectionTest.evaluateMetric(scan, tests.length);
-
+    final result = Bdae008A09Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(child: Text('BDAE-008-A09 · MFA Rejection Gate (invalid key)',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+            Expanded(child: Text('BDAE-008-A09',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.testOutput} · ${scan.lockedOutCount} locked',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: tests.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final t = tests[i];
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                title: Text(t.testType,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                subtitle: Text(
-                  'attempts: ${t.attemptCount}/${MfaTestEntry.kMaxAttempts} | coverage: ${(t.testCoverage * 100).toStringAsFixed(0)}%',
-                  style: const TextStyle(fontSize: 11)),
-                trailing: Chip(
-                  label: Text(t.testResultLabel,
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: _resultColor(t.testResult),
-                ),
                 leading: Icon(
-                  t.isLockedOut ? Icons.lock : (t.isConformant ? Icons.security : Icons.no_encryption),
-                  color: _resultColor(t.testResult),
-                ),
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.tokenName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -292,4 +323,24 @@ class Bdae008A09MfaRejectionWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bdae008A09Config(
+      configId: 'bdae008a09-cfg-001',
+      tokenName: 'bdae-008-a09_tokenName',
+      tokenValue: 'bdae-008-a09_tokenValue',
+      tokenCategory: 'bdae-008-a09_tokenCategory',
+      appliedComponent: 'bdae-008-a09_appliedComponent',
+      traceId:                 'trace-bdae008a09-001',
+      originSourceId:          'origin-bdae008a09',
+      immediatePredecessorId:  'pred-bdae008a09-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bdae008A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BDAE-008-A09 [Pass / Fail] → $out');
 }

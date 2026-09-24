@@ -1,50 +1,46 @@
 // ============================================================
-// IS03-CSIVW-007-AS01-A01 — Implementation System 03
-// Atomic Step: Hardcode format constraints directly inside layout entry cells.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     521 of 530
+// IS03-CSIVW-007-AS01-A01 — IS03 System Module
+// Atomic Step:  Hardcode format constraints directly inside layout entry cells.
+// Metric:       Asset & Component Discovery Completeness - Layout entry cell component
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      801 of 1073
 // ============================================================
-// Why this matters: Blocks incorrect data inputs at the interaction phase before validation sweeps fail downstream.
-// Mobile impl:      Client-side input masking rejects bad text locally before network calls execute, saving bandwidth.
-// Data requirement: Identify target layout entry cell components in the frontend interface architecture.
+// Why:          Blocks incorrect data inputs at the interaction phase before validation sweeps fail downstream.
+// Mobile:       Client-side input masking rejects bad text locally before network calls execute, saving bandwidth.
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Is03Csivw007As01A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Is03Csivw007As01A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is03Csivw007As01A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS03-CSIVW-007-AS01-A01.
-/// Fields derived from AISS sheet — Implementation System 03.
+/// IS03-CSIVW-007-AS01-A01 — IS03 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is03Csivw007As01A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String componentId;
   final String targetSizeDp;
   final String actualSizeDp;
   final String complianceStatus;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,14 +132,14 @@ class Is03Csivw007As01A01ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS03-CSIVW-007-AS01-A01: Hardcode format constraints directly inside layout entry cells.
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Asset & Component Discovery Completeness - Layout entry cell
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Is03Csivw007As01A01Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — * Connect format verification rules directly to text input cells
   static Is03Csivw007As01A01Config _ec1Execute(Is03Csivw007As01A01Config config) {
@@ -193,7 +189,7 @@ class Is03Csivw007As01A01Pipeline {
     required List<Is03Csivw007As01A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is03Csivw007As01A01ValidationResult(
+      return Is03Csivw007As01A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is03Csivw007As01A01ConformanceLevel.notComplete,
@@ -203,7 +199,7 @@ class Is03Csivw007As01A01Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Is03Csivw007As01A01ConformanceLevel.complete
         : rate >= _floor
             ? Is03Csivw007As01A01ConformanceLevel.partial
@@ -246,19 +242,17 @@ class Is03Csivw007As01A01Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-IS03CSIVW007-TRI: triangular check failed for IS03-CSIVW-007-AS01-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS03-CSIVW-007-AS01-A01',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Asset & Component Discovery Completeness - Layout entry cell',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Is03Csivw007As01A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is03_csivw_007_as01_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Is03Csivw007As01A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is03Csivw007As01A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Is03Csivw007As01A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS03-CSIVW-007-AS01-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Is03Csivw007As01A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is03Csivw007As01A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS03-CSIVW-007-AS01-A01 → $result');
+  final out = await Is03Csivw007As01A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS03-CSIVW-007-AS01-A01 [Complete / Partial / Not Complete] → $out');
 }

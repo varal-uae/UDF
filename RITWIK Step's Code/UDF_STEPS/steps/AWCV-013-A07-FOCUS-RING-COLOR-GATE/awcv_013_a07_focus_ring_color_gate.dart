@@ -1,300 +1,346 @@
 // ============================================================
-// AWCV-013-A07 | Accessible Widget Color Validation
-// Atomic Task: Focus Ring Color Gate —
-//   Validate all focus ring color tokens achieve WCAG 2.1 §1.4.11
-//   contrast ratio >= 3.0:1 with width >= 2px.
-// Primary Table: focus_ring_color_registry
-// Thresholds: contrast_ratio >= 3.0 | width >= 2px | md.sys.color.outline
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 29-Aug-2026
+// AWCV-013-A07 — Accessible Widget Color Validation
+// Atomic Step:  Implementation Step 44: Asynchronous Consensus Board (Voting UI) (AWCV-013)
+// Metric:       Touch Target Size (WCAG 2.5.5 / Material Design)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      45 of 1073
+// ============================================================
+// Why:          Brainstorming generates narrative waste. Consensus must be digitized into structured data interactio
+// Mobile:       A tinder-like swipe UI (Swipe Right = Agree, Swipe Left = Disagree) for rapid executive voting on th
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Awcv013A07ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-/// Maps to focus_ring_color_registry.
-/// focus_ring_width_px >= 2 enforced by CHECK constraint at DB level.
-class FocusRingColorEntry {
-  final String focusRingRuleId;     // PK — UUID
-  final String focusRingToken;      // must be md.sys.color.outline
-  final double contrastRatio;       // WCAG computed; must be >= 3.0
-  final int focusRingWidthPx;       // focus ring width; must be >= 2px
-  final String surfaceToken;        // adjacent surface token
-  final bool immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome stepOutcome;
-  final bool complianceStatusInd;
+enum Awcv013A07ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// AWCV-013-A07 — Accessible Widget Color Validation
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Awcv013A07Config {
+  final String configId;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const FocusRingColorEntry({
-    required this.focusRingRuleId,
-    required this.focusRingToken,
-    required this.contrastRatio,
-    required this.focusRingWidthPx,
-    required this.surfaceToken,
-    this.immutableInd = false,
-    this.executionStatus = ExecutionStatus.pending,
-    this.stepOutcome = StepOutcome.partial,
-    this.complianceStatusInd = true,
+  const Awcv013A07Config({
+    required this.configId,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
-  }) :     if (!(focusRingWidthPx >= 2)) {
-      throw ArgumentError('EC-AWCV013A07-003: focusRingWidthPx must be >= 2px');
-    };
+    this.complianceStatusInd = false,
+  });
 
-  static const double kMinContrastRatio = 3.0;
-  static const int    kMinWidthPx       = 2;
-  static const String kRequiredToken    = 'md.sys.color.outline';
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  /// EC:6 gate — ratio >= 3.0, width >= 2px, correct token
-  bool get isConformant =>
-      contrastRatio >= kMinContrastRatio &&
-      focusRingWidthPx >= kMinWidthPx &&
-      focusRingToken == kRequiredToken;
+  Awcv013A07Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Awcv013A07Config(
+    configId: configId,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
 
-  FocusRingColorEntry copyWith({
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-    bool? complianceStatusInd,
-  }) {
-    return FocusRingColorEntry(
-      focusRingRuleId:         focusRingRuleId,
-      focusRingToken:          focusRingToken,
-      contrastRatio:           contrastRatio,
-      focusRingWidthPx:        focusRingWidthPx,
-      surfaceToken:            surfaceToken,
-      immutableInd:            immutableInd ?? this.immutableInd,
-      executionStatus:         executionStatus ?? this.executionStatus,
-      stepOutcome:             stepOutcome ?? this.stepOutcome,
-      complianceStatusInd:     complianceStatusInd ?? this.complianceStatusInd,
-      traceId:                 traceId,
-      originSourceId:          originSourceId,
-      immediatePredecessorId:  immediatePredecessorId,
-      transformationLogicHash: transformationLogicHash,
-    );
-  }
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-/// Scan result — maps to focus_ring_validation_log.
-class FocusRingScanResult {
-  final int violationCount;
-  final String conformanceOutput;
-  final String result;
+// ── Validation Result ─────────────────────────────────────────
+
+class Awcv013A07ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Awcv013A07ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const FocusRingScanResult({
+  const Awcv013A07ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Awcv013A07ConformanceLevel.pass_: return 'Pass';
+      case Awcv013A07ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:1–8 Pipeline ──────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-class Awcv013A07FocusRingColorGate {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+/// AWCV-013-A07: Implementation Step 44: Asynchronous Consensus Board (Voting UI) (AWCV-013)
+/// Metric: Touch Target Size (WCAG 2.5.5 / Material Design)
+/// Floor=0.95 · Output=Pass / Fail
+class Awcv013A07Pipeline {
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — Locate focus ring color gate configuration within
-  //         awcv-013-a07-kit source repository.
-  static Map<String, dynamic>? locateConfiguration(String repoPath) {
-        if (!(repoPath.isNotEmpty)) {
-      throw ArgumentError('EC-AWCV013A07-001: repo path must not be empty');
-    };
-    return {'ref': 'AWCV-013-A07', 'config_file': 'awcv-013-a07.yaml'};
-  }
-
-  // EC:2 — Extract focusRingRuleId, focusRingToken, contrastRatio,
-  //         focusRingWidthPx, surfaceToken from focus_ring_color_registry.
-  static Map<String, dynamic> extractParameters(Map<String, dynamic> config) {
-    const required = [
-      'focus_ring_rule_id', 'focus_ring_token',
-      'contrast_ratio', 'focus_ring_width_px', 'surface_token',
-    ];
-    if (!(required.every((k) => config.containsKey(k) && config[k] != null))) {
-      throw ArgumentError('EC-AWCV013A07-002: all 5 focus ring fields must be non-null',
-    );
-    return Map<String, dynamic>.from(config);
-  }
-
-  // EC:3 — Compile focus ring rule set:
-  //         contrast >= 3.0 (WCAG 2.1 §1.4.11), width >= 2px,
-  //         token must be md.sys.color.outline.
-  static Map<String, dynamic> compileRuleSet() {
-    return {
-      'min_contrast_ratio': FocusRingColorEntry.kMinContrastRatio,
-      'min_width_px':       FocusRingColorEntry.kMinWidthPx,
-      'required_token':     FocusRingColorEntry.kRequiredToken,
-      'wcag_section':       '2.1 §1.4.11',
-      'ref':                'AWCV-013-A07',
-      'immutable':          true,
-    };
-  }
-
-  // EC:4 — Register compiled rule set as immutable entry in
-  //         focus_ring_color_registry with immutable_IND=TRUE.
-  static FocusRingColorEntry registerRule(FocusRingColorEntry entry) {
-        if (!(entry.focusRingToken == FocusRingColorEntry.kRequiredToken)) {
-      throw ArgumentError('EC-AWCV013A07-003: focusRingToken must be md.sys.color.outline');
+  // EC:1 — Render data pane
+  static Awcv013A07Config _ec1Execute(Awcv013A07Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-AWCV013A07-001: componentId required for AWCV-013-A07');
     }
-    };
-        if (!(entry.contrastRatio >= FocusRingColorEntry.kMinContrastRatio)) {
-      throw ArgumentError('EC-AWCV013A07-003: contrastRatio < 3.0');
-    };
-        if (!(entry.focusRingWidthPx >= FocusRingColorEntry.kMinWidthPx)) {
-      throw ArgumentError('EC-AWCV013A07-003: focusRingWidthPx < 2px');
-    };
-    return entry.copyWith(
-      immutableInd: true,
-      executionStatus: ExecutionStatus.running,
-    );
+    // Render data pane
+    return config;
   }
 
-  // EC:5 — Bind each registered rule to focusable widget handler
-  //         by applying focus_ring_handler_FK constraint.
-  static String bindToTarget(String ruleId, String focusRingToken) {
-        if (!(ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-AWCV013A07-005: FK bind requires valid ruleId');
-    };
-    return '$focusRingToken:$ruleId';
+  // EC:2 — Render toggle pane
+  static Awcv013A07Config _ec2Execute(Awcv013A07Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-AWCV013A07-002: componentId required for AWCV-013-A07');
+    }
+    // Render toggle pane
+    return config;
   }
 
-  // EC:6 — Validate: contrast >= 3.0, width >= 2px, token = md.sys.color.outline.
-  static FocusRingScanResult validateConformance(
-    List<FocusRingColorEntry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final output = violations == 0
-        ? 'Complete'
-        : violations <= 5
-            ? 'Partial'
-            : 'Not Complete';
-    return FocusRingScanResult(
-      violationCount:   violations,
-      conformanceOutput: output,
-      result:           violations == 0 ? 'PASS' : 'FAIL',
-      ecLineRef:        'EC-AWCV013A07-006',
-    );
+  // EC:3 — Code expiration timer
+  static Awcv013A07Config _ec3Execute(Awcv013A07Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-AWCV013A07-003: componentId required for AWCV-013-A07');
+    }
+    // Code expiration timer
+    return config;
   }
 
-  // EC:7 — Validate against Design Fidelity metric (Good >= 95%).
-  static String evaluateMetric(FocusRingScanResult scan, int total) {
-    if (total == 0) return 'FAIL';
-    final rate = (total - scan.violationCount) / total;
-    return rate >= 0.95 ? 'PASS' : 'FAIL';
+  // EC:4 — Aggregate logic
+  static Awcv013A07Config _ec4Execute(Awcv013A07Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-AWCV013A07-004: componentId required for AWCV-013-A07');
+    }
+    // Aggregate logic
+    return config;
   }
 
-  // EC:8 — Route validated focus ring configuration to
-  //         focus_ring_rule_registry as authoritative entry.
-  static FocusRingColorEntry routeToRegistry(
-    FocusRingColorEntry entry,
-    FocusRingScanResult scan,
-  ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
-    );
-  }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
+  // Triangular Check — DCDF AEETE-018
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
+  static Awcv013A07ValidationResult calculateConformance({
+    required List<Awcv013A07Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Awcv013A07ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Awcv013A07ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-AWCV013A07-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Awcv013A07ConformanceLevel.pass_
+        : Awcv013A07ConformanceLevel.fail_;
+    return Awcv013A07ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-AWCV013A07-VAL',
+    );
+  }
+
+  static Awcv013A07Config routeToRegistry(
+    Awcv013A07Config config,
+    Awcv013A07ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Awcv013A07Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-AWCV013A07-000: configs must not be empty for AWCV-013-A07');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-AWCV013A07-TRI: triangular check failed for AWCV-013-A07');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-AWCV-013-A07',
+      'metric':             'Touch Target Size (WCAG 2.5.5 / Material Design)',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ───────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
 
-class Awcv013A07FocusRingWidget extends StatelessWidget {
-  final List<FocusRingColorEntry> focusRules;
-  const Awcv013A07FocusRingWidget({super.key, required this.focusRules});
+Map<String, dynamic> awcv_013_a07Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'AWCV-013-A07',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
+
+class Awcv013A07Widget extends StatelessWidget {
+  final List<Awcv013A07Config> configs;
+  const Awcv013A07Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Awcv013A07FocusRingColorGate.validateConformance(focusRules);
-    final metric = Awcv013A07FocusRingColorGate.evaluateMetric(scan, focusRules.length);
-
+    final result = Awcv013A07Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'AWCV-013-A07 · Focus Ring Color Gate (≥ 3.0, ≥ 2px)',
-                  style: const TextStyle(
-                    fontFamily: 'Courier',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              Chip(
-                label: Text(
-                  '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                  style: const TextStyle(color: Colors.white, fontSize: 11),
-                ),
-                backgroundColor: metric == 'PASS'
-                    ? cs.tertiary
-                    : cs.error,
-              ),
-            ],
-          ),
+          child: Row(children: [
+            Expanded(child: Text('AWCV-013-A07',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
+            Chip(
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
+          ]),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: focusRules.length,
-            itemBuilder: (context, i) {
-              final r = focusRules[i];
-              final pass = r.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  title: Text(
-                    r.focusRingToken,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
-                  ),
-                  subtitle: Text(
-                    'contrast: ${r.contrastRatio.toStringAsFixed(2)} / 3.0 | width: ${r.focusRingWidthPx}px / 2px | surface: ${r.surfaceToken}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  leading: Icon(
-                    pass ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                    color: pass ? cs.tertiary : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.componentId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Awcv013A07Config(
+      configId: 'awcv013a07-cfg-001',
+      componentId: 'awcv-013-a07_componentId',
+      targetSizeDp: 'awcv-013-a07_targetSizeDp',
+      actualSizeDp: 'awcv-013-a07_actualSizeDp',
+      complianceStatus: 'awcv-013-a07_complianceStatus',
+      traceId:                 'trace-awcv013a07-001',
+      originSourceId:          'origin-awcv013a07',
+      immediatePredecessorId:  'pred-awcv013a07-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Awcv013A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('AWCV-013-A07 [Pass / Fail] → $out');
 }

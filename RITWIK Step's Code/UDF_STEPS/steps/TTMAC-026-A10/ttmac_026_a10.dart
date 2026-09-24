@@ -1,52 +1,48 @@
 // ============================================================
 // TTMAC-026-A10 — Touch Target & Material Accessibility Compliance
-// Atomic Step: TTMAC-026 - Standardize Touch Target Minimums.
-// Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     381 of 396
+// Atomic Step:  TTMAC-026 - Standardize Touch Target Minimums.
+// Metric:       Enforcement / Binding Compliance Rate
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1054 of 1073
 // ============================================================
-// Why this matters: Physically prevents accidental taps, ensuring native mobile precision.
-// Mobile impl:      Mandates a touch-first foundation that treats thumb-driven contact areas as structural priorities, r
-// Data requirement: Apply generous whitespace guidelines to highlight high-priority action targets.
+// Why:          Physically prevents accidental taps, ensuring native mobile precision.
+// Mobile:       Mandates a touch-first foundation that treats thumb-driven contact areas as structural priorities, r
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Ttmac026A10ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Ttmac026A10ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttmac026A10ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTMAC-026-A10.
-/// Fields derived from AISS sheet row — Touch Target & Material Accessibility Compliance.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTMAC-026-A10 — Touch Target & Material Accessibility Compliance
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttmac026A10Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String componentId;
   final String targetSizeDp;
   final String actualSizeDp;
   final String complianceStatus;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Ttmac026A10Config {
     'targetSizeDp': targetSizeDp,
     'actualSizeDp': actualSizeDp,
     'complianceStatus': complianceStatus,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,15 +132,14 @@ class Ttmac026A10ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// TTMAC-026-A10: TTMAC-026 - Standardize Touch Target Minimums.
-///
-/// Metric: Touch Target Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Enforcement / Binding Compliance Rate
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Ttmac026A10Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — Set global button min-height to 48dp
   static Ttmac026A10Config _ec1Execute(Ttmac026A10Config config) {
@@ -190,23 +185,21 @@ class Ttmac026A10Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Ttmac026A10ValidationResult calculateConformance({
     required List<Ttmac026A10Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttmac026A10ValidationResult(
+      return Ttmac026A10ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ttmac026A10ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTMAC026A10-VAL',
+        gatePass: false, ecLineRef: 'EC-TTMAC026A10-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ttmac026A10ConformanceLevel.complete
         : rate >= _floor
             ? Ttmac026A10ConformanceLevel.partial
@@ -239,7 +232,7 @@ class Ttmac026A10Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTMAC026A10-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTMAC026A10-000: configs must not be empty for TTMAC-026-A10');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Ttmac026A10Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-TTMAC026A10-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTMAC026A10-TRI: triangular check failed for TTMAC-026-A10');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMAC-026-A10',
-      'metric':             'Touch Target Compliance Rate',
+      'metric':             'Enforcement / Binding Compliance Rate',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Ttmac026A10Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttmac_026_a10Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Ttmac026A10Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttmac026A10Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Ttmac026A10Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTMAC-026-A10',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Ttmac026A10Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${componentId} | ${targetSizeDp}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Ttmac026A10Config(
       configId: 'ttmac026a10-cfg-001',
-      componentId: 'ttmac-026-a10_componentId_value',
-      targetSizeDp: 'ttmac-026-a10_targetSizeDp_value',
-      actualSizeDp: 'ttmac-026-a10_actualSizeDp_value',
-      complianceStatus: 'ttmac-026-a10_complianceStatus_value',
+      componentId: 'ttmac-026-a10_componentId',
+      targetSizeDp: 'ttmac-026-a10_targetSizeDp',
+      actualSizeDp: 'ttmac-026-a10_actualSizeDp',
+      complianceStatus: 'ttmac-026-a10_complianceStatus',
       traceId:                 'trace-ttmac026a10-001',
       originSourceId:          'origin-ttmac026a10',
       immediatePredecessorId:  'pred-ttmac026a10-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttmac026A10Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTMAC-026-A10 → $result');
+  final out = await Ttmac026A10Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTMAC-026-A10 [Complete / Partial / Not Complete] → $out');
 }

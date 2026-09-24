@@ -1,40 +1,48 @@
 // ============================================================
 // GEN-04603 — GEN Backend Utility Module
-// Atomic Step: Profile device battery consumption during extended application usage sessions.
-// Metric:      Schema Lineage Conformance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     988 of 1073
+// Atomic Step:  Profile device battery consumption during extended application usage sessions.
+// Metric:       Battery Consumption per Session
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      701 of 1073
 // ============================================================
-// Why this matters: Profile device battery consumption during extended application usage sessions. is a critical impleme
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Profile device battery consumption during extended application usage sessions.
+// Why:          Profile device battery consumption during extended application usage sessions. is a critical impleme
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen04603ConformanceLevel { complete, partial, notComplete }
-enum Gen04603ExecutionStatus  { pending, running, complete, failed }
+enum Gen04603ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen04603ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-04603.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-04603 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen04603Config {
   final String configId;
-  final String documentId;
-  final String predecessorId;
-  final String lineageHash;
-  final String complianceRef;
+  final String sessionId;
+  final String userId;
+  final String jwtClaim;
+  final String expiryTs;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gen04603Config {
 
   const Gen04603Config({
     required this.configId,
-    required this.documentId,
-    required this.predecessorId,
-    required this.lineageHash,
-    required this.complianceRef,
+    required this.sessionId,
+    required this.userId,
+    required this.jwtClaim,
+    required this.expiryTs,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gen04603Config {
     bool?   complianceStatusInd,
   }) => Gen04603Config(
     configId: configId,
-    documentId: documentId,
-    predecessorId: predecessorId,
-    lineageHash: lineageHash,
-    complianceRef: complianceRef,
+    sessionId: sessionId,
+    userId: userId,
+    jwtClaim: jwtClaim,
+    expiryTs: expiryTs,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gen04603Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'documentId': documentId,
-    'predecessorId': predecessorId,
-    'lineageHash': lineageHash,
-    'complianceRef': complianceRef,
+    'sessionId': sessionId,
+    'userId': userId,
+    'jwtClaim': jwtClaim,
+    'expiryTs': expiryTs,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +125,27 @@ class Gen04603ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen04603ConformanceLevel.complete:    return 'Complete';
-      case Gen04603ConformanceLevel.partial:     return 'Partial';
-      case Gen04603ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen04603ConformanceLevel.good:    return 'Good';
+      case Gen04603ConformanceLevel.average: return 'Average';
+      case Gen04603ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-04603: Profile device battery consumption during extended application usage sessions.
-/// Metric: Schema Lineage Conformance Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Battery Consumption per Session
+/// Floor=0.9 · Output=Good / Average / Poor
 class Gen04603Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Plan and scope this step
   static Gen04603Config _ec1Execute(Gen04603Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04603-001: documentId required for GEN-04603');
+          'EC-GEN04603-001: sessionId required for GEN-04603');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +153,9 @@ class Gen04603Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen04603Config _ec2Execute(Gen04603Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04603-002: documentId required for GEN-04603');
+          'EC-GEN04603-002: sessionId required for GEN-04603');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +163,9 @@ class Gen04603Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen04603Config _ec3Execute(Gen04603Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04603-003: documentId required for GEN-04603');
+          'EC-GEN04603-003: sessionId required for GEN-04603');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +173,9 @@ class Gen04603Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen04603Config _ec4Execute(Gen04603Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.sessionId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN04603-004: documentId required for GEN-04603');
+          'EC-GEN04603-004: sessionId required for GEN-04603');
     }
     // Document and commit to runbook
     return config;
@@ -180,7 +189,7 @@ class Gen04603Pipeline {
     required List<Gen04603Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen04603ValidationResult(
+      return Gen04603ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen04603ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen04603Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen04603ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen04603ConformanceLevel.good
         : rate >= _floor
-            ? Gen04603ConformanceLevel.partial
-            : Gen04603ConformanceLevel.notComplete;
+            ? Gen04603ConformanceLevel.average
+            : Gen04603ConformanceLevel.poor;
     return Gen04603ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen04603Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-04603',
-      'metric':             'Schema Lineage Conformance Rate',
+      'metric':             'Battery Consumption per Session',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen04603Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_04603Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_04603Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen04603Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen04603Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen04603Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-04603',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.documentId,
+                title: Text(c.sessionId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +335,16 @@ void main() async {
   final configs = [
     Gen04603Config(
       configId: 'gen04603-cfg-001',
-      documentId: 'gen-04603_documentId',
-      predecessorId: 'gen-04603_predecessorId',
-      lineageHash: 'gen-04603_lineageHash',
-      complianceRef: 'gen-04603_complianceRef',
+      sessionId: 'gen-04603_sessionId',
+      userId: 'gen-04603_userId',
+      jwtClaim: 'gen-04603_jwtClaim',
+      expiryTs: 'gen-04603_expiryTs',
       traceId:                 'trace-gen04603-001',
       originSourceId:          'origin-gen04603',
       immediatePredecessorId:  'pred-gen04603-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen04603Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-04603 → $result');
+  final out = await Gen04603Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-04603 [Good / Average / Poor] → $out');
 }

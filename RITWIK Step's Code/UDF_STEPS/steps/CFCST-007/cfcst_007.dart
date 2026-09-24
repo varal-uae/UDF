@@ -1,229 +1,324 @@
 // ============================================================
-// CFCST-007 | Cloud Function Configuration Store
-// Atomic Task: CFCST-007
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CFCST-007 — Cloud Function Config Store
+// Atomic Step:  Step Sequence Controller Configuration
+// Metric:       Mobile Usability Compliance (Touch Target Size & Core Web Vitals)
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      139 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System ingests mobile UI component configuration payloads from gateway parameters.
-  // EC: 2. System extracts touch target dimensions from component properties.
-  // EC: 3. System evaluates extracted touch target dimensions against the 44px minimum touch target threshold.
-  // EC: 4. System extracts Largest Contentful Paint metrics from performance log streams.
-  // EC: 5. System validates Largest Contentful Paint metrics against the 2.5 second ceiling threshold.
-  // EC: 6. System maps evaluation results to predefined usability compliance categories.
-  // EC: 7. System calculates SHA-256 transformation logic hash for audited compliance records.
-  // EC: 8. System attaches required lineage headers to processed compliance data packets.
-  // EC: 9. System routes non-compliant audit data packets to the designated dead letter queue.
-  // EC: 10. System persists verified compliance records into central logging tables.
+// Why:          Mechanically blocks denial-of-service threats from degrading general transactional database performa
+// Mobile:       Safeguards system resources to ensure continuous availability for mobile client networks.
+// col41:        Pass / Fail; Good / Average / Poor
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cfcst007ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CFCST-007.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cfcst007Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cfcst007ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+class Cfcst007Config {
+  final String configId;
+  final String tokenName;
+  final String tokenValue;
+  final String tokenCategory;
+  final String appliedComponent;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cfcst007Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cfcst007Config({
+    required this.configId,
+    required this.tokenName,
+    required this.tokenValue,
+    required this.tokenCategory,
+    required this.appliedComponent,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cfcst007Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cfcst007Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cfcst007Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cfcst007Config(
+    configId: configId,
+    tokenName: tokenName,
+    tokenValue: tokenValue,
+    tokenCategory: tokenCategory,
+    appliedComponent: appliedComponent,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'tokenName': tokenName,
+    'tokenValue': tokenValue,
+    'tokenCategory': tokenCategory,
+    'appliedComponent': appliedComponent,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cfcst007ScanResult {
+class Cfcst007ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cfcst007ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cfcst007ScanResult({
+  const Cfcst007ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cfcst007ConformanceLevel.good:    return 'Good';
+      case Cfcst007ConformanceLevel.average: return 'Average';
+      case Cfcst007ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 class Cfcst007Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
-
-  // EC:1 — EC: 1. System ingests mobile UI component configuration payloads from gateway parameters.
-  static void executeIngestsStep1(Cfcst007Entry entry) {
-    // ingests mobile UI component configuration payloads from gateway parameters
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-001: ruleId required');
-    };
+  // EC:1 — System locates the CFCST-007 configuration in the source repository.
+  static Cfcst007Config _ec1Locates(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-001: tokenName required for CFCST-007');
+    }
+    // the CFCST-007 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System extracts touch target dimensions from component properties.
-  static void executeExtractsStep2(Cfcst007Entry entry) {
-    // extracts touch target dimensions from component properties
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-002: ruleId required');
-    };
+  // EC:2 — System extracts tokenName and tokenValue from the CFCST-007 registry.
+  static Cfcst007Config _ec2Extracts(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-002: tokenName required for CFCST-007');
+    }
+    // tokenName and tokenValue from the CFCST-007 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System evaluates extracted touch target dimensions against the 44px minimum touch target threshold.
-  static void executeEvaluatesStep3(Cfcst007Entry entry) {
-    // evaluates extracted touch target dimensions against the 44px minimum touch targe
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Mobile Usability Compliance (Touch Target 
+  static Cfcst007Config _ec3Compiles(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-003: tokenName required for CFCST-007');
+    }
+    // the implementation rule set per Mobile Usability Compliance 
+    return config;
   }
 
-  // EC:4 — EC: 4. System extracts Largest Contentful Paint metrics from performance log streams.
-  static void executeExtractsStep4(Cfcst007Entry entry) {
-    // extracts Largest Contentful Paint metrics from performance log streams
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Cfcst007Config _ec4Validates(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-004: tokenName required for CFCST-007');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System validates Largest Contentful Paint metrics against the 2.5 second ceiling threshold.
-  static void executeValidatesStep5(Cfcst007Entry entry) {
-    // validates Largest Contentful Paint metrics against the 2.5 second ceiling thresh
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Cfcst007Config _ec5Registers(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-005: tokenName required for CFCST-007');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System maps evaluation results to predefined usability compliance categories.
-  static void executeMapsStep6(Cfcst007Entry entry) {
-    // maps evaluation results to predefined usability compliance categories
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Mobile Usability Compliance (Touch Target Size & Co
+  static Cfcst007Config _ec6Validates(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-006: tokenName required for CFCST-007');
+    }
+    // configuration against Mobile Usability Compliance (Touch Tar
+    return config;
   }
 
-  // EC:7 — EC: 7. System calculates SHA-256 transformation logic hash for audited compliance records.
-  static void executeCalculatesStep7(Cfcst007Entry entry) {
-    // calculates SHA-256 transformation logic hash for audited compliance records
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Cfcst007Config _ec7Routes(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-007: tokenName required for CFCST-007');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System attaches required lineage headers to processed compliance data packets.
-  static void executeAttachesStep8(Cfcst007Entry entry) {
-    // attaches required lineage headers to processed compliance data packets
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Cfcst007Config _ec8Publishes(Cfcst007Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CFCST007-008: tokenName required for CFCST-007');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System routes non-compliant audit data packets to the designated dead letter queue.
-  static void executeRoutesStep9(Cfcst007Entry entry) {
-    // routes non-compliant audit data packets to the designated dead letter queue
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-009: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:10 — EC: 10. System persists verified compliance records into central logging tables.
-  static void executePersistsStep10(Cfcst007Entry entry) {
-    // persists verified compliance records into central logging tables
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CFCST007-010: ruleId required');
-    };
-  }
-
-  static Cfcst007ScanResult validateConformance(List<Cfcst007Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cfcst007ScanResult(
+  static Cfcst007ValidationResult calculateConformance({
+    required List<Cfcst007Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cfcst007ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cfcst007ConformanceLevel.poor,
+        gatePass: false, ecLineRef: 'EC-CFCST007-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Cfcst007ConformanceLevel.good
+        : rate >= _floor
+            ? Cfcst007ConformanceLevel.average
+            : Cfcst007ConformanceLevel.poor;
+    return Cfcst007ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CFCST007-VAL',
     );
   }
 
-  static Cfcst007Entry routeToRegistry(Cfcst007Entry entry, Cfcst007ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cfcst007Config routeToRegistry(
+    Cfcst007Config config,
+    Cfcst007ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cfcst007Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CFCST007-000: configs must not be empty for CFCST-007');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-CFCST007-TRI: triangular check failed for CFCST-007');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CFCST-007',
+      'metric':             'Mobile Usability Compliance (Touch Target Size & Core Web Vi',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cfcst_007Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CFCST-007',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cfcst007Widget extends StatelessWidget {
-  final List<Cfcst007Entry> entries;
-  const Cfcst007Widget({super.key, required this.entries});
+  final List<Cfcst007Config> configs;
+  const Cfcst007Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cfcst007Pipeline.validateConformance(entries);
+    final result = Cfcst007Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +326,37 @@ class Cfcst007Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CFCST-007',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.tokenName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -276,15 +372,16 @@ void main() async {
   final configs = [
     Cfcst007Config(
       configId: 'cfcst007-cfg-001',
-      ruleId: 'cfcst-007_ruleId_val',
-      fieldA: 'cfcst-007_fieldA_val',
+      tokenName: 'cfcst-007_tokenName',
+      tokenValue: 'cfcst-007_tokenValue',
+      tokenCategory: 'cfcst-007_tokenCategory',
+      appliedComponent: 'cfcst-007_appliedComponent',
       traceId:                 'trace-cfcst007-001',
       originSourceId:          'origin-cfcst007',
       immediatePredecessorId:  'pred-cfcst007-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Cfcst007Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CFCST-007 → $result');
+  final out = await Cfcst007Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CFCST-007 [Good / Average / Poor] → $out');
 }

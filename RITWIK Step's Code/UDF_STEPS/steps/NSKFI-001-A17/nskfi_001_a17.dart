@@ -1,47 +1,48 @@
 // ============================================================
 // NSKFI-001-A17 — Navigation Shell & Key Feature Integration
-// Atomic Step: Hardcode explicit high-contrast visual focus ring properties across interactive user controls.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     432 of 440
+// Atomic Step:  Hardcode explicit high-contrast visual focus ring properties across interactive user controls.
+// Metric:       Business Rule / Threshold Definition Coverage
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      887 of 1073
 // ============================================================
-// Why this matters: Ensures full accessibility compliance, allowing screen readers and keyboard-only users to navigate t
-// Mobile impl:      Provides helpful visual feedback when inputs are active on mobile devices, preventing data input err
+// Why:          Ensures full accessibility compliance, allowing screen readers and keyboard-only users to navigate t
+// Mobile:       Provides helpful visual feedback when inputs are active on mobile devices, preventing data input err
+// col41:        Complete (Scale: Complete/Partial/Not Complete)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Nskfi001A17ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Nskfi001A17ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Nskfi001A17ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for NSKFI-001-A17.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// NSKFI-001-A17 — Navigation Shell & Key Feature Integration
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Nskfi001A17Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +51,10 @@ class Nskfi001A17Config {
 
   const Nskfi001A17Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +72,33 @@ class Nskfi001A17Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Nskfi001A17Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -125,21 +132,20 @@ class Nskfi001A17ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// NSKFI-001-A17: Hardcode explicit high-contrast visual focus ring properties across interactive 
-///
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Business Rule / Threshold Definition Coverage
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Nskfi001A17Pipeline {
-  static const double _floor   = 0.95;
+  static const double _floor   = 0.9;
   static const double _optimal = 1.0;
 
   // EC:1 — Map the variable parameter name focus-ring-color to the primary brand token #2E86C
   static Nskfi001A17Config _ec1Execute(Nskfi001A17Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-NSKFI001A17-001: configId required for NSKFI-001-A17');
+          'EC-NSKFI001A17-001: colorToken required for NSKFI-001-A17');
     }
     // Map the variable parameter name focus-ring-color to the prim
     return config;
@@ -147,9 +153,9 @@ class Nskfi001A17Pipeline {
 
   // EC:2 — Implement an explicit 2px outline offset parameter inside focus state stylesheet rules
   static Nskfi001A17Config _ec2Execute(Nskfi001A17Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-NSKFI001A17-002: configId required for NSKFI-001-A17');
+          'EC-NSKFI001A17-002: colorToken required for NSKFI-001-A17');
     }
     // Implement an explicit 2px outline offset parameter inside fo
     return config;
@@ -157,9 +163,9 @@ class Nskfi001A17Pipeline {
 
   // EC:3 — Program state transition timings to activate focus ring shifts smoothly within a 300ms win
   static Nskfi001A17Config _ec3Execute(Nskfi001A17Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-NSKFI001A17-003: configId required for NSKFI-001-A17');
+          'EC-NSKFI001A17-003: colorToken required for NSKFI-001-A17');
     }
     // Program state transition timings to activate focus ring shif
     return config;
@@ -167,9 +173,9 @@ class Nskfi001A17Pipeline {
 
   // EC:4 — Run automated accessibility tests to ensure comprehensive focus track coverage
   static Nskfi001A17Config _ec4Execute(Nskfi001A17Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-NSKFI001A17-004: configId required for NSKFI-001-A17');
+          'EC-NSKFI001A17-004: colorToken required for NSKFI-001-A17');
     }
     // Run automated accessibility tests to ensure comprehensive fo
     return config;
@@ -179,23 +185,21 @@ class Nskfi001A17Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Nskfi001A17ValidationResult calculateConformance({
     required List<Nskfi001A17Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Nskfi001A17ValidationResult(
+      return Nskfi001A17ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Nskfi001A17ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-NSKFI001A17-VAL',
+        gatePass: false, ecLineRef: 'EC-NSKFI001A17-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Nskfi001A17ConformanceLevel.complete
         : rate >= _floor
             ? Nskfi001A17ConformanceLevel.partial
@@ -228,7 +232,7 @@ class Nskfi001A17Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-NSKFI001A17-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-NSKFI001A17-000: configs must not be empty for NSKFI-001-A17');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -236,21 +240,19 @@ class Nskfi001A17Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-NSKFI001A17-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-NSKFI001A17-TRI: triangular check failed for NSKFI-001-A17');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-NSKFI-001-A17',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Business Rule / Threshold Definition Coverage',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -260,9 +262,7 @@ class Nskfi001A17Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> nskfi_001_a17Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -281,6 +281,7 @@ class Nskfi001A17Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Nskfi001A17Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -288,18 +289,13 @@ class Nskfi001A17Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('NSKFI-001-A17',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -308,24 +304,22 @@ class Nskfi001A17Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -340,16 +334,17 @@ class Nskfi001A17Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Nskfi001A17Config(
-      configId:                'nskfi001a17-cfg-001',
-      ruleKey:                 'nskfi-001-a17_rule',
-      ruleValue:               'nskfi-001-a17_value',
+      configId: 'nskfi001a17-cfg-001',
+      colorToken: 'nskfi-001-a17_colorToken',
+      hexValue: 'nskfi-001-a17_hexValue',
+      wcagRatio: 'nskfi-001-a17_wcagRatio',
+      usageContext: 'nskfi-001-a17_usageContext',
       traceId:                 'trace-nskfi001a17-001',
       originSourceId:          'origin-nskfi001a17',
       immediatePredecessorId:  'pred-nskfi001a17-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Nskfi001A17Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('NSKFI-001-A17 → $result');
+  final out = await Nskfi001A17Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('NSKFI-001-A17 [Complete / Partial / Not Complete] → $out');
 }

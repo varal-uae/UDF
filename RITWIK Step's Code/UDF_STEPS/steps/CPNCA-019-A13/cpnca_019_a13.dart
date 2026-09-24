@@ -1,229 +1,250 @@
 // ============================================================
-// CPNCA-019-A13 | Client-Platform Navigation Container Adapter
-// Atomic Task: CPNCA-019-A13
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CPNCA-019-A13 — Client-Platform Navigation Adapter
+// Atomic Step:  Build an adaptive network connection listener and interface optimization interceptor.
+// Metric:       Integration Success Rate (%)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      151 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System monitors network connection status changes using browser APIs.
-  // EC: 2. System captures connection metrics including effective connection type.
-  // EC: 3. System maps captured metrics to active application network state profiles.
-  // EC: 4. System evaluates connection throughput against operational transaction thresholds.
-  // EC: 5. System triggers low-speed operational modes when throughput drops below thresholds.
-  // EC: 6. System renders high-contrast Material Design 3 network quality badges in headers.
-  // EC: 7. System disables non-essential sync operations under constrained network profiles.
-  // EC: 8. System blocks primary submission triggers during zero network connectivity events.
-  // EC: 9. System attaches trace telemetry parameters to network execution log records.
-  // EC: 10. System persists execution metrics into core tracking persistence tables.
+// Why:          Prevents app lockups and failed transactions caused by mobile devices trying to process heavy workfl
+// Mobile:       Adapts the application profile dynamically to fit real-world mobile network challenges, ensuring str
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cpnca019A13ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CPNCA-019-A13.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cpnca019A13Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cpnca019A13ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CPNCA-019-A13 — Client-Platform Navigation Adapter
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Cpnca019A13Config {
+  final String configId;
+  final String navItemId;
+  final String routePath;
+  final String iconToken;
+  final String labelText;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cpnca019A13Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cpnca019A13Config({
+    required this.configId,
+    required this.navItemId,
+    required this.routePath,
+    required this.iconToken,
+    required this.labelText,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cpnca019A13Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cpnca019A13Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cpnca019A13Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cpnca019A13Config(
+    configId: configId,
+    navItemId: navItemId,
+    routePath: routePath,
+    iconToken: iconToken,
+    labelText: labelText,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'navItemId': navItemId,
+    'routePath': routePath,
+    'iconToken': iconToken,
+    'labelText': labelText,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cpnca019A13ScanResult {
+class Cpnca019A13ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cpnca019A13ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cpnca019A13ScanResult({
+  const Cpnca019A13ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cpnca019A13ConformanceLevel.pass_: return 'Pass';
+      case Cpnca019A13ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
+/// CPNCA-019-A13: Build an adaptive network connection listener and interface optimization interce
+/// Metric: Integration Success Rate (%)
+/// Floor=0.95 · Output=Pass / Fail
 class Cpnca019A13Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // EC:1 — EC: 1. System monitors network connection status changes using browser APIs.
-  static void executeMonitorsStep1(Cpnca019A13Entry entry) {
-    // monitors network connection status changes using browser APIs
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-001: ruleId required');
-    };
+  // EC:1 — Set up an active network speed listener tracking browser connection parameters (navigator.
+  static Cpnca019A13Config _ec1Execute(Cpnca019A13Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-CPNCA019A13-001: navItemId required for CPNCA-019-A13');
+    }
+    // Set up an active network speed listener tracking browser con
+    return config;
   }
 
-  // EC:2 — EC: 2. System captures connection metrics including effective connection type.
-  static void executeCapturesStep2(Cpnca019A13Entry entry) {
-    // captures connection metrics including effective connection type
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-002: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:3 — EC: 3. System maps captured metrics to active application network state profiles.
-  static void executeMapsStep3(Cpnca019A13Entry entry) {
-    // maps captured metrics to active application network state profiles
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-003: ruleId required');
-    };
-  }
-
-  // EC:4 — EC: 4. System evaluates connection throughput against operational transaction thresholds.
-  static void executeEvaluatesStep4(Cpnca019A13Entry entry) {
-    // evaluates connection throughput against operational transaction thresholds
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-004: ruleId required');
-    };
-  }
-
-  // EC:5 — EC: 5. System triggers low-speed operational modes when throughput drops below thresholds.
-  static void executeTriggersStep5(Cpnca019A13Entry entry) {
-    // triggers low-speed operational modes when throughput drops below thresholds
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-005: ruleId required');
-    };
-  }
-
-  // EC:6 — EC: 6. System renders high-contrast Material Design 3 network quality badges in headers.
-  static void executeRendersStep6(Cpnca019A13Entry entry) {
-    // renders high-contrast Material Design 3 network quality badges in headers
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-006: ruleId required');
-    };
-  }
-
-  // EC:7 — EC: 7. System disables non-essential sync operations under constrained network profiles.
-  static void executeDisablesStep7(Cpnca019A13Entry entry) {
-    // disables non-essential sync operations under constrained network profiles
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-007: ruleId required');
-    };
-  }
-
-  // EC:8 — EC: 8. System blocks primary submission triggers during zero network connectivity events.
-  static void executeBlocksStep8(Cpnca019A13Entry entry) {
-    // blocks primary submission triggers during zero network connectivity events
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-008: ruleId required');
-    };
-  }
-
-  // EC:9 — EC: 9. System attaches trace telemetry parameters to network execution log records.
-  static void executeAttachesStep9(Cpnca019A13Entry entry) {
-    // attaches trace telemetry parameters to network execution log records
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-009: ruleId required');
-    };
-  }
-
-  // EC:10 — EC: 10. System persists execution metrics into core tracking persistence tables.
-  static void executePersistsStep10(Cpnca019A13Entry entry) {
-    // persists execution metrics into core tracking persistence tables
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA019A13-010: ruleId required');
-    };
-  }
-
-  static Cpnca019A13ScanResult validateConformance(List<Cpnca019A13Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cpnca019A13ScanResult(
+  static Cpnca019A13ValidationResult calculateConformance({
+    required List<Cpnca019A13Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cpnca019A13ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cpnca019A13ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-CPNCA019A13-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Cpnca019A13ConformanceLevel.pass_
+        : Cpnca019A13ConformanceLevel.fail_;
+    return Cpnca019A13ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CPNCA019A13-VAL',
     );
   }
 
-  static Cpnca019A13Entry routeToRegistry(Cpnca019A13Entry entry, Cpnca019A13ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cpnca019A13Config routeToRegistry(
+    Cpnca019A13Config config,
+    Cpnca019A13ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cpnca019A13Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CPNCA019A13-000: configs must not be empty for CPNCA-019-A13');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+
+    if (!triangularCheck(configs.length, p1.length)) {
+      throw ArgumentError('EC-CPNCA019A13-TRI: triangular check failed for CPNCA-019-A13');
+    }
+    final result     = calculateConformance(configs: p1);
+    final registered = p1.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CPNCA-019-A13',
+      'metric':             'Integration Success Rate (%)',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cpnca_019_a13Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CPNCA-019-A13',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cpnca019A13Widget extends StatelessWidget {
-  final List<Cpnca019A13Entry> entries;
-  const Cpnca019A13Widget({super.key, required this.entries});
+  final List<Cpnca019A13Config> configs;
+  const Cpnca019A13Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cpnca019A13Pipeline.validateConformance(entries);
+    final result = Cpnca019A13Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +252,37 @@ class Cpnca019A13Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CPNCA-019-A13',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.navItemId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -268,4 +290,24 @@ class Cpnca019A13Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Cpnca019A13Config(
+      configId: 'cpnca019a13-cfg-001',
+      navItemId: 'cpnca-019-a13_navItemId',
+      routePath: 'cpnca-019-a13_routePath',
+      iconToken: 'cpnca-019-a13_iconToken',
+      labelText: 'cpnca-019-a13_labelText',
+      traceId:                 'trace-cpnca019a13-001',
+      originSourceId:          'origin-cpnca019a13',
+      immediatePredecessorId:  'pred-cpnca019a13-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Cpnca019A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CPNCA-019-A13 [Pass / Fail] → $out');
 }

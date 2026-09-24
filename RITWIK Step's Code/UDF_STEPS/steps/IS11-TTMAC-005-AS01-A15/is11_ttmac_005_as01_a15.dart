@@ -1,52 +1,47 @@
 // ============================================================
-// IS11-TTMAC-005-AS01-A15 — Implementation System 11
-// Atomic Step: Embed clear layout spacing standards inside the master UI design kit.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     246 of 396
+// IS11-TTMAC-005-AS01-A15 — IS11 System Module
+// Atomic Step:  Embed clear layout spacing standards inside the master UI design kit.
+// Metric:       Data Processing / Extraction Accuracy - Obsolete design kit spacing as
+// Floor:        0.99  ·  Optimal: 0.99
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      812 of 1073
 // ============================================================
-// Why this matters: Blocks frustrating accidental clicks and wrong selections, essential for users typing on the go.
-// Mobile impl:      Hardcodes a thick 48x48dp interactive frame layout across all selections to ensure touch input safet
-// Data requirement: Archive obsolete design kit spacing asset files.
+// Why:          Blocks frustrating accidental clicks and wrong selections, essential for users typing on the go.
+// Mobile:       Hardcodes a thick 48x48dp interactive frame layout across all selections to ensure touch input safet
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Is11Ttmac005As01A15ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Is11Ttmac005As01A15ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is11Ttmac005As01A15ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS11-TTMAC-005-AS01-A15.
-/// Fields derived from AISS sheet row — Implementation System 11.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// IS11-TTMAC-005-AS01-A15 — IS11 System Module
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is11Ttmac005As01A15Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String componentId;
   final String targetSizeDp;
   final String actualSizeDp;
   final String complianceStatus;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Is11Ttmac005As01A15Config {
     'targetSizeDp': targetSizeDp,
     'actualSizeDp': actualSizeDp,
     'complianceStatus': complianceStatus,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Is11Ttmac005As01A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is11Ttmac005As01A15ConformanceLevel.complete:    return 'Pass';
-      case Is11Ttmac005As01A15ConformanceLevel.partial:     return 'Partial';
-      case Is11Ttmac005As01A15ConformanceLevel.notComplete: return 'Fail';
+      case Is11Ttmac005As01A15ConformanceLevel.pass_: return 'Pass';
+      case Is11Ttmac005As01A15ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS11-TTMAC-005-AS01-A15: Embed clear layout spacing standards inside the master UI design kit.
-///
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Data Processing / Extraction Accuracy - Obsolete design kit 
+/// Floor=0.99 · Output=Pass / Fail
 class Is11Ttmac005As01A15Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.99;
+  static const double _optimal = 0.99;
 
   // EC:1 — Inspect design asset properties for all interactive elements inside code files
   static Is11Ttmac005As01A15Config _ec1Execute(Is11Ttmac005As01A15Config config) {
@@ -190,27 +183,23 @@ class Is11Ttmac005As01A15Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Is11Ttmac005As01A15ValidationResult calculateConformance({
     required List<Is11Ttmac005As01A15Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is11Ttmac005As01A15ValidationResult(
+      return Is11Ttmac005As01A15ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is11Ttmac005As01A15ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-IS11TTMAC005-VAL',
+        conformanceLevel: Is11Ttmac005As01A15ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-IS11TTMAC005-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is11Ttmac005As01A15ConformanceLevel.complete
-        : rate >= _floor
-            ? Is11Ttmac005As01A15ConformanceLevel.partial
-            : Is11Ttmac005As01A15ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is11Ttmac005As01A15ConformanceLevel.pass_
+        : Is11Ttmac005As01A15ConformanceLevel.fail_;
     return Is11Ttmac005As01A15ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Is11Ttmac005As01A15Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-IS11TTMAC005-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-IS11TTMAC005-000: configs must not be empty for IS11-TTMAC-005-AS01-A15');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Is11Ttmac005As01A15Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-IS11TTMAC005-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-IS11TTMAC005-TRI: triangular check failed for IS11-TTMAC-005-AS01-A15');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS11-TTMAC-005-AS01-A15',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Data Processing / Extraction Accuracy - Obsolete design kit ',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Is11Ttmac005As01A15Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is11_ttmac_005_as01_a15Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Is11Ttmac005As01A15Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is11Ttmac005As01A15Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Is11Ttmac005As01A15Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS11-TTMAC-005-AS01-A15',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Is11Ttmac005As01A15Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${componentId} | ${targetSizeDp}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Is11Ttmac005As01A15Config(
       configId: 'is11ttmac005-cfg-001',
-      componentId: 'is11-ttmac-005-as01-a15_componentId_value',
-      targetSizeDp: 'is11-ttmac-005-as01-a15_targetSizeDp_value',
-      actualSizeDp: 'is11-ttmac-005-as01-a15_actualSizeDp_value',
-      complianceStatus: 'is11-ttmac-005-as01-a15_complianceStatus_value',
+      componentId: 'is11-ttmac-005-as01-a15_componentId',
+      targetSizeDp: 'is11-ttmac-005-as01-a15_targetSizeDp',
+      actualSizeDp: 'is11-ttmac-005-as01-a15_actualSizeDp',
+      complianceStatus: 'is11-ttmac-005-as01-a15_complianceStatus',
       traceId:                 'trace-is11ttmac005-001',
       originSourceId:          'origin-is11ttmac005',
       immediatePredecessorId:  'pred-is11ttmac005-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is11Ttmac005As01A15Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS11-TTMAC-005-AS01-A15 → $result');
+  final out = await Is11Ttmac005As01A15Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS11-TTMAC-005-AS01-A15 [Pass / Fail] → $out');
 }

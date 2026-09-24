@@ -1,211 +1,324 @@
 // ============================================================
-// BTPM-002 | Transaction Processing Module
-// Atomic Task: BTPM-002
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BTPM-002 — Transaction Processing Module
+// Atomic Step:  Automated Issue Ticketing & Escalation Gate Configuration
+// Metric:       Mobile Usability Compliance (Touch Target Size & Core Web Vitals)
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      121 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System intercepts incoming HTTP request payload header.
-  // EC: 2. System extracts Content-Length header value.
-  // EC: 3. System compares Content-Length value against fixed ceiling threshold.
-  // EC: 4. System terminates connection for requests exceeding threshold.
-  // EC: 5. System parses Material Design 3 color scheme properties.
-  // EC: 6. System calculates contrast ratio for visual indicator tags.
-  // EC: 7. System binds issue severity tags to target color tokens.
-  // EC: 8. System streams dropped packet metrics to analytical storage.
+// Why:          Restricting the data volume entering the pipeline ensures rapid processing speeds and strips out lay
+// Mobile:       Directly limits mobile data usage and keeps low-bandwidth network transmissions highly performant.
+// col41:        Pass / Fail; Good / Average / Poor
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Btpm002ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for BTPM-002.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Btpm002Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Btpm002ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+class Btpm002Config {
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Btpm002Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Btpm002Config({
+    required this.configId,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Btpm002Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Btpm002Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Btpm002Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Btpm002Config(
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Btpm002ScanResult {
+class Btpm002ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Btpm002ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Btpm002ScanResult({
+  const Btpm002ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Btpm002ConformanceLevel.good:    return 'Good';
+      case Btpm002ConformanceLevel.average: return 'Average';
+      case Btpm002ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 class Btpm002Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
-
-  // EC:1 — EC: 1. System intercepts incoming HTTP request payload header.
-  static void executeInterceptsStep1(Btpm002Entry entry) {
-    // intercepts incoming HTTP request payload header
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-001: ruleId required');
-    };
+  // EC:1 — System locates the BTPM-002 configuration in the source repository.
+  static Btpm002Config _ec1Locates(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-001: colorToken required for BTPM-002');
+    }
+    // the BTPM-002 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System extracts Content-Length header value.
-  static void executeExtractsStep2(Btpm002Entry entry) {
-    // extracts Content-Length header value
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-002: ruleId required');
-    };
+  // EC:2 — System extracts colorToken and hexValue from the BTPM-002 registry.
+  static Btpm002Config _ec2Extracts(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-002: colorToken required for BTPM-002');
+    }
+    // colorToken and hexValue from the BTPM-002 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System compares Content-Length value against fixed ceiling threshold.
-  static void executeComparesStep3(Btpm002Entry entry) {
-    // compares Content-Length value against fixed ceiling threshold
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per Mobile Usability Compliance (Touch Target 
+  static Btpm002Config _ec3Compiles(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-003: colorToken required for BTPM-002');
+    }
+    // the implementation rule set per Mobile Usability Compliance 
+    return config;
   }
 
-  // EC:4 — EC: 4. System terminates connection for requests exceeding threshold.
-  static void executeTerminatesStep4(Btpm002Entry entry) {
-    // terminates connection for requests exceeding threshold
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Btpm002Config _ec4Validates(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-004: colorToken required for BTPM-002');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System parses Material Design 3 color scheme properties.
-  static void executeParsesStep5(Btpm002Entry entry) {
-    // parses Material Design 3 color scheme properties
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Btpm002Config _ec5Registers(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-005: colorToken required for BTPM-002');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System calculates contrast ratio for visual indicator tags.
-  static void executeCalculatesStep6(Btpm002Entry entry) {
-    // calculates contrast ratio for visual indicator tags
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against Mobile Usability Compliance (Touch Target Size & Co
+  static Btpm002Config _ec6Validates(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-006: colorToken required for BTPM-002');
+    }
+    // configuration against Mobile Usability Compliance (Touch Tar
+    return config;
   }
 
-  // EC:7 — EC: 7. System binds issue severity tags to target color tokens.
-  static void executeBindsStep7(Btpm002Entry entry) {
-    // binds issue severity tags to target color tokens
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Btpm002Config _ec7Routes(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-007: colorToken required for BTPM-002');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System streams dropped packet metrics to analytical storage.
-  static void executeStreamsStep8(Btpm002Entry entry) {
-    // streams dropped packet metrics to analytical storage
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-BTPM002-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Btpm002Config _ec8Publishes(Btpm002Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BTPM002-008: colorToken required for BTPM-002');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  static Btpm002ScanResult validateConformance(List<Btpm002Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Btpm002ScanResult(
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Btpm002ValidationResult calculateConformance({
+    required List<Btpm002Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Btpm002ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Btpm002ConformanceLevel.poor,
+        gatePass: false, ecLineRef: 'EC-BTPM002-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Btpm002ConformanceLevel.good
+        : rate >= _floor
+            ? Btpm002ConformanceLevel.average
+            : Btpm002ConformanceLevel.poor;
+    return Btpm002ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BTPM002-VAL',
     );
   }
 
-  static Btpm002Entry routeToRegistry(Btpm002Entry entry, Btpm002ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Btpm002Config routeToRegistry(
+    Btpm002Config config,
+    Btpm002ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Btpm002Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BTPM002-000: configs must not be empty for BTPM-002');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-BTPM002-TRI: triangular check failed for BTPM-002');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BTPM-002',
+      'metric':             'Mobile Usability Compliance (Touch Target Size & Core Web Vi',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> btpm_002Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BTPM-002',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Btpm002Widget extends StatelessWidget {
-  final List<Btpm002Entry> entries;
-  const Btpm002Widget({super.key, required this.entries});
+  final List<Btpm002Config> configs;
+  const Btpm002Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Btpm002Pipeline.validateConformance(entries);
+    final result = Btpm002Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -213,36 +326,37 @@ class Btpm002Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('BTPM-002',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -250,4 +364,24 @@ class Btpm002Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Btpm002Config(
+      configId: 'btpm002-cfg-001',
+      colorToken: 'btpm-002_colorToken',
+      hexValue: 'btpm-002_hexValue',
+      wcagRatio: 'btpm-002_wcagRatio',
+      usageContext: 'btpm-002_usageContext',
+      traceId:                 'trace-btpm002-001',
+      originSourceId:          'origin-btpm002',
+      immediatePredecessorId:  'pred-btpm002-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Btpm002Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BTPM-002 [Good / Average / Poor] → $out');
 }

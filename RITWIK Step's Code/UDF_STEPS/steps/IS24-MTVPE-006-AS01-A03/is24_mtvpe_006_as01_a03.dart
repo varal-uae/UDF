@@ -1,31 +1,37 @@
 // ============================================================
-// IS24-MTVPE-006-AS01-A03 — Implementation System 24
-// Atomic Step: Build an optimized media playback player inside the task interface.
-// Metric:      Media Rendering Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     537 of 1073
+// IS24-MTVPE-006-AS01-A03 — IS24 System Module
+// Atomic Step:  Build an optimized media playback player inside the task interface.
+// Metric:       Configuration Conformance Rate - Media source url parameter micro-task
+// Floor:        0.97  ·  Optimal: 0.97
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      819 of 1073
 // ============================================================
-// Why this matters: Human traits cannot be subjectively assessed. UI must let users generate data proving willingness to
-// Mobile impl:      Ensures playback forces landscape full-screen natively, blocking swipe-to-skip OS gestures.
-// Data requirement: Bind media source URL parameter from micro-task payload to video element.
+// Why:          Human traits cannot be subjectively assessed. UI must let users generate data proving willingness to
+// Mobile:       Ensures playback forces landscape full-screen natively, blocking swipe-to-skip OS gestures.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Is24Mtvpe006As01A03ConformanceLevel { complete, partial, notComplete }
-enum Is24Mtvpe006As01A03ExecutionStatus  { pending, running, complete, failed }
+enum Is24Mtvpe006As01A03ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is24Mtvpe006As01A03ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS24-MTVPE-006-AS01-A03.
-/// Fields derived from AISS sheet — Implementation System 24.
+/// IS24-MTVPE-006-AS01-A03 — IS24 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is24Mtvpe006As01A03Config {
   final String configId;
@@ -35,6 +41,7 @@ class Is24Mtvpe006As01A03Config {
   final String loadStrategy;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,19 +124,19 @@ class Is24Mtvpe006As01A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is24Mtvpe006As01A03ConformanceLevel.complete:    return 'Pass';
-      case Is24Mtvpe006As01A03ConformanceLevel.partial:     return 'Partial';
-      case Is24Mtvpe006As01A03ConformanceLevel.notComplete: return 'Fail';
+      case Is24Mtvpe006As01A03ConformanceLevel.pass_: return 'Pass';
+      case Is24Mtvpe006As01A03ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS24-MTVPE-006-AS01-A03: Build an optimized media playback player inside the task interface.
-/// Metric: Media Rendering Compliance Rate · Floor=0.90 · Optimal=0.97
+/// Metric: Configuration Conformance Rate - Media source url parameter 
+/// Floor=0.97 · Output=Pass / Fail
 class Is24Mtvpe006As01A03Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.97;
   static const double _optimal = 0.97;
 
   // EC:1 — Embed a lightweight video processing core module into frontend code wrappers
@@ -180,21 +187,19 @@ class Is24Mtvpe006As01A03Pipeline {
     required List<Is24Mtvpe006As01A03Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is24Mtvpe006As01A03ValidationResult(
+      return Is24Mtvpe006As01A03ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is24Mtvpe006As01A03ConformanceLevel.notComplete,
+        conformanceLevel: Is24Mtvpe006As01A03ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS24MTVPE006-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is24Mtvpe006As01A03ConformanceLevel.complete
-        : rate >= _floor
-            ? Is24Mtvpe006As01A03ConformanceLevel.partial
-            : Is24Mtvpe006As01A03ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is24Mtvpe006As01A03ConformanceLevel.pass_
+        : Is24Mtvpe006As01A03ConformanceLevel.fail_;
     return Is24Mtvpe006As01A03ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Is24Mtvpe006As01A03Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS24-MTVPE-006-AS01-A03',
-      'metric':             'Media Rendering Compliance Rate',
+      'metric':             'Configuration Conformance Rate - Media source url parameter ',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Is24Mtvpe006As01A03Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is24_mtvpe_006_as01_a03Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is24_mtvpe_006_as01_a03Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Is24Mtvpe006As01A03Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is24Mtvpe006As01A03Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Is24Mtvpe006As01A03Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS24-MTVPE-006-AS01-A03',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.assetId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is24Mtvpe006As01A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS24-MTVPE-006-AS01-A03 → $result');
+  final out = await Is24Mtvpe006As01A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS24-MTVPE-006-AS01-A03 [Pass / Fail] → $out');
 }

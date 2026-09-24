@@ -1,31 +1,38 @@
 // ============================================================
 // GEN-01284 — GEN Backend Utility Module
-// Atomic Step: Build auto-keyboard scroll adjustments to push chat feeds upward when input focus activates.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     688 of 1073
+// Atomic Step:  Build auto-keyboard scroll adjustments to push chat feeds upward when input focus activates.
+// Metric:       In-App Message Delivery Latency
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      399 of 1073
 // ============================================================
-// Why this matters: Build auto-keyboard scroll adjustments to push chat feeds upward when input focus activates. is a cr
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Build auto-keyboard scroll adjustments to push chat feeds upward when input focus activates.
+// Why:          Build auto-keyboard scroll adjustments to push chat feeds upward when input focus activates. is a cr
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen01284ConformanceLevel { complete, partial, notComplete }
-enum Gen01284ExecutionStatus  { pending, running, complete, failed }
+enum Gen01284ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen01284ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-01284.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-01284 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen01284Config {
   final String configId;
@@ -35,6 +42,7 @@ class Gen01284Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Gen01284ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen01284ConformanceLevel.complete:    return 'Complete';
-      case Gen01284ConformanceLevel.partial:     return 'Partial';
-      case Gen01284ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen01284ConformanceLevel.good:    return 'Good';
+      case Gen01284ConformanceLevel.average: return 'Average';
+      case Gen01284ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-01284: Build auto-keyboard scroll adjustments to push chat feeds upward when input focu
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: In-App Message Delivery Latency
+/// Floor=0.9 · Output=Good / Average / Poor
 class Gen01284Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Plan and scope this step
   static Gen01284Config _ec1Execute(Gen01284Config config) {
@@ -180,7 +189,7 @@ class Gen01284Pipeline {
     required List<Gen01284Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen01284ValidationResult(
+      return Gen01284ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen01284ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen01284Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen01284ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen01284ConformanceLevel.good
         : rate >= _floor
-            ? Gen01284ConformanceLevel.partial
-            : Gen01284ConformanceLevel.notComplete;
+            ? Gen01284ConformanceLevel.average
+            : Gen01284ConformanceLevel.poor;
     return Gen01284ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen01284Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-01284',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'In-App Message Delivery Latency',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen01284Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_01284Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_01284Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen01284Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen01284Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen01284Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-01284',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen01284Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-01284 → $result');
+  final out = await Gen01284Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-01284 [Good / Average / Poor] → $out');
 }

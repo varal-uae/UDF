@@ -1,50 +1,45 @@
 // ============================================================
-// IS29-SCTAS-007-AS01-A04 — Implementation System 29
-// Atomic Step: Implement High-Contrast Mobile Status Badge System
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     479 of 530
+// IS29-SCTAS-007-AS01-A04 — IS29 System Module
+// Atomic Step:  Implement High-Contrast Mobile Status Badge System
+// Metric:       Configuration Conformance Rate - Minimum color contrast ratio 7 1
+// Floor:        0.97  ·  Optimal: 0.97
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      824 of 1073
 // ============================================================
-// Why this matters: Reading long status text blocks breaks row layouts on small screens. Color-coded badges communicate 
-// Mobile impl:      Condenses workflow progress details into small visual icons tailored for tight layout grids.
-// Data requirement: Set minimum color contrast ratio of $7:1$ for textual elements on badge background fields.
+// Why:          Reading long status text blocks breaks row layouts on small screens. Color-coded badges communicate 
+// Mobile:       Condenses workflow progress details into small visual icons tailored for tight layout grids.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Is29Sctas007As01A04ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Is29Sctas007As01A04ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is29Sctas007As01A04ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS29-SCTAS-007-AS01-A04.
-/// Fields derived from AISS sheet — Implementation System 29.
+/// IS29-SCTAS-007-AS01-A04 — IS29 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is29Sctas007As01A04Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Is29Sctas007As01A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is29Sctas007As01A04ConformanceLevel.complete:    return 'Pass';
-      case Is29Sctas007As01A04ConformanceLevel.partial:     return 'Partial';
-      case Is29Sctas007As01A04ConformanceLevel.notComplete: return 'Fail';
+      case Is29Sctas007As01A04ConformanceLevel.pass_: return 'Pass';
+      case Is29Sctas007As01A04ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS29-SCTAS-007-AS01-A04: Implement High-Contrast Mobile Status Badge System
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Configuration Conformance Rate - Minimum color contrast rati
+/// Floor=0.97 · Output=Pass / Fail
 class Is29Sctas007As01A04Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.97;
+  static const double _optimal = 0.97;
 
   // EC:1 — Define status configuration maps matching data states to target token colors
   static Is29Sctas007As01A04Config _ec1Execute(Is29Sctas007As01A04Config config) {
@@ -193,21 +187,19 @@ class Is29Sctas007As01A04Pipeline {
     required List<Is29Sctas007As01A04Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is29Sctas007As01A04ValidationResult(
+      return Is29Sctas007As01A04ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is29Sctas007As01A04ConformanceLevel.notComplete,
+        conformanceLevel: Is29Sctas007As01A04ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS29SCTAS007-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is29Sctas007As01A04ConformanceLevel.complete
-        : rate >= _floor
-            ? Is29Sctas007As01A04ConformanceLevel.partial
-            : Is29Sctas007As01A04ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is29Sctas007As01A04ConformanceLevel.pass_
+        : Is29Sctas007As01A04ConformanceLevel.fail_;
     return Is29Sctas007As01A04ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Is29Sctas007As01A04Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-IS29SCTAS007-TRI: triangular check failed for IS29-SCTAS-007-AS01-A04');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS29-SCTAS-007-AS01-A04',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Configuration Conformance Rate - Minimum color contrast rati',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Is29Sctas007As01A04Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is29_sctas_007_as01_a04Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Is29Sctas007As01A04Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is29Sctas007As01A04Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Is29Sctas007As01A04Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS29-SCTAS-007-AS01-A04',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Is29Sctas007As01A04Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is29Sctas007As01A04Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS29-SCTAS-007-AS01-A04 → $result');
+  final out = await Is29Sctas007As01A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS29-SCTAS-007-AS01-A04 [Pass / Fail] → $out');
 }

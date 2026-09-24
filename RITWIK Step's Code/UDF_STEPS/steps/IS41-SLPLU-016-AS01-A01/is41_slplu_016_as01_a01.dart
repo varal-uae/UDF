@@ -1,50 +1,46 @@
 // ============================================================
-// IS41-SLPLU-016-AS01-A01 — Implementation System 41
-// Atomic Step: Build and map placeholder skeleton loaders within dynamic view layer components.
-// Metric:      UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     522 of 530
+// IS41-SLPLU-016-AS01-A01 — IS41 System Module
+// Atomic Step:  Build and map placeholder skeleton loaders within dynamic view layer components.
+// Metric:       Asset & Component Discovery Completeness - Dynamic view layer componen
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      838 of 1073
 // ============================================================
-// Why this matters: Eliminates jarring transitions and blank white states, maintaining user engagement during high-laten
-// Mobile impl:      Keeps the app looking responsive and stable over unstable cellular data setups, preventing users fro
-// Data requirement: Locate dynamic view layer component module within frontend UI project.
+// Why:          Eliminates jarring transitions and blank white states, maintaining user engagement during high-laten
+// Mobile:       Keeps the app looking responsive and stable over unstable cellular data setups, preventing users fro
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Is41Slplu016As01A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Is41Slplu016As01A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is41Slplu016As01A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS41-SLPLU-016-AS01-A01.
-/// Fields derived from AISS sheet — Implementation System 41.
+/// IS41-SLPLU-016-AS01-A01 — IS41 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is41Slplu016As01A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,14 +132,14 @@ class Is41Slplu016As01A01ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS41-SLPLU-016-AS01-A01: Build and map placeholder skeleton loaders within dynamic view layer components.
-/// Metric: UI Animation Compliance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Asset & Component Discovery Completeness - Dynamic view laye
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Is41Slplu016As01A01Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — Construct neutral-colored placeholder card component templates matching core data cards
   static Is41Slplu016As01A01Config _ec1Execute(Is41Slplu016As01A01Config config) {
@@ -193,7 +189,7 @@ class Is41Slplu016As01A01Pipeline {
     required List<Is41Slplu016As01A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is41Slplu016As01A01ValidationResult(
+      return Is41Slplu016As01A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is41Slplu016As01A01ConformanceLevel.notComplete,
@@ -203,7 +199,7 @@ class Is41Slplu016As01A01Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Is41Slplu016As01A01ConformanceLevel.complete
         : rate >= _floor
             ? Is41Slplu016As01A01ConformanceLevel.partial
@@ -246,19 +242,17 @@ class Is41Slplu016As01A01Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-IS41SLPLU016-TRI: triangular check failed for IS41-SLPLU-016-AS01-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS41-SLPLU-016-AS01-A01',
-      'metric':             'UI Animation Compliance Rate',
+      'metric':             'Asset & Component Discovery Completeness - Dynamic view laye',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +262,7 @@ class Is41Slplu016As01A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is41_slplu_016_as01_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +281,7 @@ class Is41Slplu016As01A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is41Slplu016As01A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +289,13 @@ class Is41Slplu016As01A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS41-SLPLU-016-AS01-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Is41Slplu016As01A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is41Slplu016As01A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS41-SLPLU-016-AS01-A01 → $result');
+  final out = await Is41Slplu016As01A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS41-SLPLU-016-AS01-A01 [Complete / Partial / Not Complete] → $out');
 }

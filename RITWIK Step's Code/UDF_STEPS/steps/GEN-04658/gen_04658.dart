@@ -1,31 +1,38 @@
 // ============================================================
 // GEN-04658 — GEN Backend Utility Module
-// Atomic Step: Add a clear "Skip Onboarding" button option on all guide screens.
-// Metric:      Schema Lineage Conformance Rate · Floor=0.6 · Optimal=0.8
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     993 of 1073
+// Atomic Step:  Add a clear "Skip Onboarding" button option on all guide screens.
+// Metric:       Onboarding Completion Rate
+// Floor:        0.6  ·  Optimal: 0.8
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      706 of 1073
 // ============================================================
-// Why this matters: Add a clear "Skip Onboarding" button option on all guide screens. is a critical implementation step.
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Add a clear "Skip Onboarding" button option on all guide screens.
+// Why:          Add a clear "Skip Onboarding" button option on all guide screens. is a critical implementation step.
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen04658ConformanceLevel { complete, partial, notComplete }
-enum Gen04658ExecutionStatus  { pending, running, complete, failed }
+enum Gen04658ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen04658ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-04658.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-04658 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen04658Config {
   final String configId;
@@ -35,6 +42,7 @@ class Gen04658Config {
   final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,17 +125,18 @@ class Gen04658ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen04658ConformanceLevel.complete:    return 'Complete';
-      case Gen04658ConformanceLevel.partial:     return 'Partial';
-      case Gen04658ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen04658ConformanceLevel.good:    return 'Good';
+      case Gen04658ConformanceLevel.average: return 'Average';
+      case Gen04658ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-04658: Add a clear "Skip Onboarding" button option on all guide screens.
-/// Metric: Schema Lineage Conformance Rate · Floor=0.6 · Optimal=0.8
+/// Metric: Onboarding Completion Rate
+/// Floor=0.6 · Output=Good / Average / Poor
 class Gen04658Pipeline {
   static const double _floor   = 0.6;
   static const double _optimal = 0.8;
@@ -180,7 +189,7 @@ class Gen04658Pipeline {
     required List<Gen04658Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen04658ValidationResult(
+      return Gen04658ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen04658ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen04658Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen04658ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen04658ConformanceLevel.good
         : rate >= _floor
-            ? Gen04658ConformanceLevel.partial
-            : Gen04658ConformanceLevel.notComplete;
+            ? Gen04658ConformanceLevel.average
+            : Gen04658ConformanceLevel.poor;
     return Gen04658ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen04658Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-04658',
-      'metric':             'Schema Lineage Conformance Rate',
+      'metric':             'Onboarding Completion Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen04658Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_04658Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_04658Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen04658Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen04658Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen04658Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-04658',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen04658Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-04658 → $result');
+  final out = await Gen04658Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-04658 [Good / Average / Poor] → $out');
 }

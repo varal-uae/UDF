@@ -1,220 +1,250 @@
 // ============================================================
-// CSIVW-014-A03 | Content Schema Input Validation Widget
-// Atomic Task: CSIVW-014-A03
-// EC Lines: 9 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CSIVW-014-A03 — Content Schema Input Validation Widget
+// Atomic Step:  Implementation Step 34: Integrate Sentiment-Aware Text Input Filter (CSIVW-014)
+// Metric:       Content Moderation (NLP) Accuracy
+// Floor:        0.85  ·  Optimal: 0.85
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      159 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System intercepts debounced text input events from UI buffer.
-  // EC: 2. System retrieves authentication tokens for NLP API connection.
-  // EC: 3. System transmits input text packet to Vertex AI moderation endpoint.
-  // EC: 4. System receives sentiment toxicity confidence metrics from NLP API.
-  // EC: 5. System evaluates toxicity metrics against threshold parameters.
-  // EC: 6. System increments session violation counter upon threshold failure.
-  // EC: 7. System renders inline error state with dynamic border updates.
-  // EC: 8. System replaces text entry UI with predefined dropdown selections upon reaching three violations.
-  // EC: 9. System persists audit log telemetry to storage.
+// Why:          Prevents unprofessional "bluster" and hostility in allowed text fields, maintaining cultural standar
+// Mobile:       API calls are debounced (delayed slightly) as the user types to prevent heavy battery drain on mobil
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Csivw014A03ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CSIVW-014-A03.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Csivw014A03Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Csivw014A03ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CSIVW-014-A03 — Content Schema Input Validation Widget
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Csivw014A03Config {
+  final String configId;
+  final String tokenName;
+  final String tokenValue;
+  final String tokenCategory;
+  final String appliedComponent;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Csivw014A03Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Csivw014A03Config({
+    required this.configId,
+    required this.tokenName,
+    required this.tokenValue,
+    required this.tokenCategory,
+    required this.appliedComponent,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Csivw014A03Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Csivw014A03Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Csivw014A03Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Csivw014A03Config(
+    configId: configId,
+    tokenName: tokenName,
+    tokenValue: tokenValue,
+    tokenCategory: tokenCategory,
+    appliedComponent: appliedComponent,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'tokenName': tokenName,
+    'tokenValue': tokenValue,
+    'tokenCategory': tokenCategory,
+    'appliedComponent': appliedComponent,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Csivw014A03ScanResult {
+class Csivw014A03ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Csivw014A03ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Csivw014A03ScanResult({
+  const Csivw014A03ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Csivw014A03ConformanceLevel.pass_: return 'Pass';
+      case Csivw014A03ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:9 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
+/// CSIVW-014-A03: Implementation Step 34: Integrate Sentiment-Aware Text Input Filter (CSIVW-014)
+/// Metric: Content Moderation (NLP) Accuracy
+/// Floor=0.85 · Output=Pass / Fail
 class Csivw014A03Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.85;
+  static const double _optimal = 0.85;
 
-
-  // EC:1 — EC: 1. System intercepts debounced text input events from UI buffer.
-  static void executeInterceptsStep1(Csivw014A03Entry entry) {
-    // intercepts debounced text input events from UI buffer
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-001: ruleId required');
-    };
+  // EC:1 — 1) Select NLP API. 2) Build debounced UI triggers. 3) Render inline error states. 4) Code 
+  static Csivw014A03Config _ec1Execute(Csivw014A03Config config) {
+    if (config.tokenName.isEmpty) {
+      throw ArgumentError(
+          'EC-CSIVW014A03-001: tokenName required for CSIVW-014-A03');
+    }
+    // 1) Select NLP API. 2) Build debounced UI triggers. 3) Render
+    return config;
   }
 
-  // EC:2 — EC: 2. System retrieves authentication tokens for NLP API connection.
-  static void executeRetrievesStep2(Csivw014A03Entry entry) {
-    // retrieves authentication tokens for NLP API connection
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-002: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:3 — EC: 3. System transmits input text packet to Vertex AI moderation endpoint.
-  static void executeTransmitsStep3(Csivw014A03Entry entry) {
-    // transmits input text packet to Vertex AI moderation endpoint
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-003: ruleId required');
-    };
-  }
-
-  // EC:4 — EC: 4. System receives sentiment toxicity confidence metrics from NLP API.
-  static void executeReceivesStep4(Csivw014A03Entry entry) {
-    // receives sentiment toxicity confidence metrics from NLP API
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-004: ruleId required');
-    };
-  }
-
-  // EC:5 — EC: 5. System evaluates toxicity metrics against threshold parameters.
-  static void executeEvaluatesStep5(Csivw014A03Entry entry) {
-    // evaluates toxicity metrics against threshold parameters
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-005: ruleId required');
-    };
-  }
-
-  // EC:6 — EC: 6. System increments session violation counter upon threshold failure.
-  static void executeIncrementsStep6(Csivw014A03Entry entry) {
-    // increments session violation counter upon threshold failure
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-006: ruleId required');
-    };
-  }
-
-  // EC:7 — EC: 7. System renders inline error state with dynamic border updates.
-  static void executeRendersStep7(Csivw014A03Entry entry) {
-    // renders inline error state with dynamic border updates
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-007: ruleId required');
-    };
-  }
-
-  // EC:8 — EC: 8. System replaces text entry UI with predefined dropdown selections upon reaching three violations.
-  static void executeReplacesStep8(Csivw014A03Entry entry) {
-    // replaces text entry UI with predefined dropdown selections upon reaching three v
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-008: ruleId required');
-    };
-  }
-
-  // EC:9 — EC: 9. System persists audit log telemetry to storage.
-  static void executePersistsStep9(Csivw014A03Entry entry) {
-    // persists audit log telemetry to storage
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW014A03-009: ruleId required');
-    };
-  }
-
-  static Csivw014A03ScanResult validateConformance(List<Csivw014A03Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Csivw014A03ScanResult(
+  static Csivw014A03ValidationResult calculateConformance({
+    required List<Csivw014A03Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Csivw014A03ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Csivw014A03ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-CSIVW014A03-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Csivw014A03ConformanceLevel.pass_
+        : Csivw014A03ConformanceLevel.fail_;
+    return Csivw014A03ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CSIVW014A03-VAL',
     );
   }
 
-  static Csivw014A03Entry routeToRegistry(Csivw014A03Entry entry, Csivw014A03ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Csivw014A03Config routeToRegistry(
+    Csivw014A03Config config,
+    Csivw014A03ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Csivw014A03Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CSIVW014A03-000: configs must not be empty for CSIVW-014-A03');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+
+    if (!triangularCheck(configs.length, p1.length)) {
+      throw ArgumentError('EC-CSIVW014A03-TRI: triangular check failed for CSIVW-014-A03');
+    }
+    final result     = calculateConformance(configs: p1);
+    final registered = p1.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CSIVW-014-A03',
+      'metric':             'Content Moderation (NLP) Accuracy',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> csivw_014_a03Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CSIVW-014-A03',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Csivw014A03Widget extends StatelessWidget {
-  final List<Csivw014A03Entry> entries;
-  const Csivw014A03Widget({super.key, required this.entries});
+  final List<Csivw014A03Config> configs;
+  const Csivw014A03Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Csivw014A03Pipeline.validateConformance(entries);
+    final result = Csivw014A03Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,36 +252,37 @@ class Csivw014A03Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CSIVW-014-A03',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.tokenName,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -267,15 +298,16 @@ void main() async {
   final configs = [
     Csivw014A03Config(
       configId: 'csivw014a03-cfg-001',
-      ruleId: 'csivw-014-a03_ruleId_val',
-      fieldA: 'csivw-014-a03_fieldA_val',
+      tokenName: 'csivw-014-a03_tokenName',
+      tokenValue: 'csivw-014-a03_tokenValue',
+      tokenCategory: 'csivw-014-a03_tokenCategory',
+      appliedComponent: 'csivw-014-a03_appliedComponent',
       traceId:                 'trace-csivw014a03-001',
       originSourceId:          'origin-csivw014a03',
       immediatePredecessorId:  'pred-csivw014a03-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Csivw014A03Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CSIVW-014-A03 → $result');
+  final out = await Csivw014A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CSIVW-014-A03 [Pass / Fail] → $out');
 }

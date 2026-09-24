@@ -1,50 +1,46 @@
 // ============================================================
 // MUFCE-011-A01 — Mobile UX Flow & Content Engine
-// Atomic Step: MUFCE-011 - Integrate Image Ingress Smooth Animation Motion Curves
-// Metric:      UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     514 of 530
+// Atomic Step:  MUFCE-011 - Integrate Image Ingress Smooth Animation Motion Curves
+// Metric:       Scope Coverage / Audit Completeness
+// Floor:        0.8  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      877 of 1073
 // ============================================================
-// Why this matters: Eliminates jarring, erratic element layout jumps when high-weight media renders over unstable cellul
-// Mobile impl:      Employs basic GPU hardware acceleration tokens locally, protecting mobile processors from calculatio
-// Data requirement: Identify all media rendering slots that display incoming images.
+// Why:          Eliminates jarring, erratic element layout jumps when high-weight media renders over unstable cellul
+// Mobile:       Employs basic GPU hardware acceleration tokens locally, protecting mobile processors from calculatio
+// col41:        Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Mufce011A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Mufce011A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Mufce011A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MUFCE-011-A01.
-/// Fields derived from AISS sheet — Mobile UX Flow & Content Engine.
+/// MUFCE-011-A01 — Mobile UX Flow & Content Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mufce011A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String animationId;
   final String durationMs;
   final String easingCurve;
   final String triggerState;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -136,14 +132,14 @@ class Mufce011A01ValidationResult {
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MUFCE-011-A01: MUFCE-011 - Integrate Image Ingress Smooth Animation Motion Curves
-/// Metric: UI Animation Compliance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Scope Coverage / Audit Completeness
+/// Floor=0.8 · Output=Complete / Partial / Not Complete
 class Mufce011A01Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.8;
+  static const double _optimal = 1.0;
 
   // EC:1 — System locates the MUFCE-011-A01 configuration in the source repository.
   static Mufce011A01Config _ec1Locates(Mufce011A01Config config) {
@@ -165,23 +161,23 @@ class Mufce011A01Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per UI Animation Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Scope Coverage / Audit Completeness.
   static Mufce011A01Config _ec3Compiles(Mufce011A01Config config) {
     if (config.animationId.isEmpty) {
       throw ArgumentError(
           'EC-MUFCE011A01-003: animationId required for MUFCE-011-A01');
     }
-    // the implementation rule set per UI Animation Compliance Rate
+    // the implementation rule set per Scope Coverage / Audit Compl
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Mufce011A01Config _ec4Validates(Mufce011A01Config config) {
     if (config.animationId.isEmpty) {
       throw ArgumentError(
           'EC-MUFCE011A01-004: animationId required for MUFCE-011-A01');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +191,13 @@ class Mufce011A01Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against UI Animation Compliance Rate gate (floor=0.90).
+  // EC:6 — System validates configuration against Scope Coverage / Audit Completeness gate (floor=0.8
   static Mufce011A01Config _ec6Validates(Mufce011A01Config config) {
     if (config.animationId.isEmpty) {
       throw ArgumentError(
           'EC-MUFCE011A01-006: animationId required for MUFCE-011-A01');
     }
-    // configuration against UI Animation Compliance Rate gate (flo
+    // configuration against Scope Coverage / Audit Completeness ga
     return config;
   }
 
@@ -233,7 +229,7 @@ class Mufce011A01Pipeline {
     required List<Mufce011A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mufce011A01ValidationResult(
+      return Mufce011A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Mufce011A01ConformanceLevel.notComplete,
@@ -243,7 +239,7 @@ class Mufce011A01Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Mufce011A01ConformanceLevel.complete
         : rate >= _floor
             ? Mufce011A01ConformanceLevel.partial
@@ -290,19 +286,17 @@ class Mufce011A01Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-MUFCE011A01-TRI: triangular check failed for MUFCE-011-A01');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MUFCE-011-A01',
-      'metric':             'UI Animation Compliance Rate',
+      'metric':             'Scope Coverage / Audit Completeness',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Mufce011A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> mufce_011_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Mufce011A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mufce011A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Mufce011A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MUFCE-011-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Mufce011A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.animationId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mufce011A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('MUFCE-011-A01 → $result');
+  final out = await Mufce011A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MUFCE-011-A01 [Complete / Partial / Not Complete] → $out');
 }

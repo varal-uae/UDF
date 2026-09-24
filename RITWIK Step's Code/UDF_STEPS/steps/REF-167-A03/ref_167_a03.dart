@@ -1,50 +1,45 @@
 // ============================================================
 // REF-167-A03 — Reference Implementation Framework
-// Atomic Step: Build Input Architecture with Contextual Mobile Keyboard Hooks
-// Metric:      Input Validation Coverage Rate · Floor=99.0 · Optimal=100.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     475 of 530
+// Atomic Step:  Build Input Architecture with Contextual Mobile Keyboard Hooks
+// Metric:       Mapping Accuracy
+// Floor:        99.0  ·  Optimal: 99.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      943 of 1073
 // ============================================================
-// Why this matters: Forcing mobile users to repeatedly swap keyboard profiles manually to insert numbers or characters i
-// Mobile impl:      Mitigates the friction of manual typing on glass screens by aligning keyboard inputs perfectly with 
-// Data requirement: Map each input field to its optimal HTML5 inputmode attribute (e.g., numeric, email, tel).
+// Why:          Forcing mobile users to repeatedly swap keyboard profiles manually to insert numbers or characters i
+// Mobile:       Mitigates the friction of manual typing on glass screens by aligning keyboard inputs perfectly with 
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ref167A03ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ref167A03ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ref167A03ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for REF-167-A03.
-/// Fields derived from AISS sheet — Reference Implementation Framework.
+/// REF-167-A03 — Reference Implementation Framework
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ref167A03Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Ref167A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref167A03ConformanceLevel.complete:    return 'Pass';
-      case Ref167A03ConformanceLevel.partial:     return 'Partial';
-      case Ref167A03ConformanceLevel.notComplete: return 'Fail';
+      case Ref167A03ConformanceLevel.pass_: return 'Pass';
+      case Ref167A03ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// REF-167-A03: Build Input Architecture with Contextual Mobile Keyboard Hooks
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Mapping Accuracy
+/// Floor=99.0 · Output=Pass / Fail
 class Ref167A03Pipeline {
   static const double _floor   = 99.0;
-  static const double _optimal = 100.0;
+  static const double _optimal = 99.0;
 
   // EC:1 — Map input fields with precise HTML5 semantic attributes (type="email", inputmode="numeric"
   static Ref167A03Config _ec1Execute(Ref167A03Config config) {
@@ -193,21 +187,19 @@ class Ref167A03Pipeline {
     required List<Ref167A03Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ref167A03ValidationResult(
+      return Ref167A03ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ref167A03ConformanceLevel.notComplete,
+        conformanceLevel: Ref167A03ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-REF167A03-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ref167A03ConformanceLevel.complete
-        : rate >= _floor
-            ? Ref167A03ConformanceLevel.partial
-            : Ref167A03ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ref167A03ConformanceLevel.pass_
+        : Ref167A03ConformanceLevel.fail_;
     return Ref167A03ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Ref167A03Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-REF167A03-TRI: triangular check failed for REF-167-A03');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-REF-167-A03',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Mapping Accuracy',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Ref167A03Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ref_167_a03Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Ref167A03Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ref167A03Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Ref167A03Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('REF-167-A03',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Ref167A03Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ref167A03Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('REF-167-A03 → $result');
+  final out = await Ref167A03Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('REF-167-A03 [Pass / Fail] → $out');
 }

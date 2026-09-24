@@ -1,31 +1,38 @@
 // ============================================================
-// IS38-SGTIM-018-AS01-A08 — Implementation System 38
-// Atomic Step: Apply M3 Overscroll Stretch on MTOI Lists
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     558 of 1073
+// IS38-SGTIM-018-AS01-A08 — IS38 System Module
+// Atomic Step:  Apply M3 Overscroll Stretch on MTOI Lists
+// Metric:       UI Response / Rendering Latency - Vertical transform property list ite
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      836 of 1073
 // ============================================================
-// Why this matters: Delivers a native, high-quality mobile feel. Visual feedback like overscroll prevents users from thi
-// Mobile impl:      
-// Data requirement: Scale vertical transform property of list items proportionally relative to overscroll distance.
+// Why:          Delivers a native, high-quality mobile feel. Visual feedback like overscroll prevents users from thi
+// Mobile:       
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Is38Sgtim018As01A08ConformanceLevel { complete, partial, notComplete }
-enum Is38Sgtim018As01A08ExecutionStatus  { pending, running, complete, failed }
+enum Is38Sgtim018As01A08ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is38Sgtim018As01A08ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS38-SGTIM-018-AS01-A08.
-/// Fields derived from AISS sheet — Implementation System 38.
+/// IS38-SGTIM-018-AS01-A08 — IS38 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is38Sgtim018As01A08Config {
   final String configId;
@@ -35,6 +42,7 @@ class Is38Sgtim018As01A08Config {
   final String breakpointLabel;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Is38Sgtim018As01A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is38Sgtim018As01A08ConformanceLevel.complete:    return 'Good';
-      case Is38Sgtim018As01A08ConformanceLevel.partial:     return 'Average';
-      case Is38Sgtim018As01A08ConformanceLevel.notComplete: return 'Poor';
+      case Is38Sgtim018As01A08ConformanceLevel.good:    return 'Good';
+      case Is38Sgtim018As01A08ConformanceLevel.average: return 'Average';
+      case Is38Sgtim018As01A08ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// IS38-SGTIM-018-AS01-A08: Apply M3 Overscroll Stretch on MTOI Lists
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: UI Response / Rendering Latency - Vertical transform propert
+/// Floor=0.9 · Output=Good / Average / Poor
 class Is38Sgtim018As01A08Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — 1) Update to Compose Foundation 1.1.0+. 2) Apply to LazyColumn task lists. 3) Test scrolli
   static Is38Sgtim018As01A08Config _ec1Execute(Is38Sgtim018As01A08Config config) {
@@ -150,7 +159,7 @@ class Is38Sgtim018As01A08Pipeline {
     required List<Is38Sgtim018As01A08Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is38Sgtim018As01A08ValidationResult(
+      return Is38Sgtim018As01A08ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is38Sgtim018As01A08ConformanceLevel.notComplete,
@@ -160,11 +169,11 @@ class Is38Sgtim018As01A08Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is38Sgtim018As01A08ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Is38Sgtim018As01A08ConformanceLevel.good
         : rate >= _floor
-            ? Is38Sgtim018As01A08ConformanceLevel.partial
-            : Is38Sgtim018As01A08ConformanceLevel.notComplete;
+            ? Is38Sgtim018As01A08ConformanceLevel.average
+            : Is38Sgtim018As01A08ConformanceLevel.poor;
     return Is38Sgtim018As01A08ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -203,14 +212,14 @@ class Is38Sgtim018As01A08Pipeline {
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS38-SGTIM-018-AS01-A08',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'UI Response / Rendering Latency - Vertical transform propert',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -219,7 +228,8 @@ class Is38Sgtim018As01A08Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is38_sgtim_018_as01_a08Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is38_sgtim_018_as01_a08Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -238,6 +248,7 @@ class Is38Sgtim018As01A08Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is38Sgtim018As01A08Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,30 +256,35 @@ class Is38Sgtim018As01A08Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS38-SGTIM-018-AS01-A08',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -296,6 +312,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is38Sgtim018As01A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS38-SGTIM-018-AS01-A08 → $result');
+  final out = await Is38Sgtim018As01A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS38-SGTIM-018-AS01-A08 [Good / Average / Poor] → $out');
 }

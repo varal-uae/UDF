@@ -1,50 +1,46 @@
 // ============================================================
 // FLADE-008-10 — Friction Logging & Analytics Data Engine
-// Atomic Step: Build Friction Log Cascades.
-// Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     496 of 530
+// Atomic Step:  Build Friction Log Cascades.
+// Metric:       Process Execution Quality Score
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      273 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Physically disable the interface "Submit" button until a valid system trace_id is selected.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Flade00810ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Flade00810ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Flade00810ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FLADE-008-10.
-/// Fields derived from AISS sheet — Friction Logging & Analytics Data Engine.
+/// FLADE-008-10 — Friction Logging & Analytics Data Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Flade00810Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
-  final String eventId;
-  final String sessionId;
-  final String frictionType;
-  final String resolutionMs;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String gateId;
+  final String checkRule;
+  final String passThreshold;
+  final String failureReason;
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -55,10 +51,10 @@ class Flade00810Config {
 
   const Flade00810Config({
     required this.configId,
-    required this.eventId,
-    required this.sessionId,
-    required this.frictionType,
-    required this.resolutionMs,
+    required this.gateId,
+    required this.checkRule,
+    required this.passThreshold,
+    required this.failureReason,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +73,10 @@ class Flade00810Config {
     bool?   complianceStatusInd,
   }) => Flade00810Config(
     configId: configId,
-    eventId: eventId,
-    sessionId: sessionId,
-    frictionType: frictionType,
-    resolutionMs: resolutionMs,
+    gateId: gateId,
+    checkRule: checkRule,
+    passThreshold: passThreshold,
+    failureReason: failureReason,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,10 +88,10 @@ class Flade00810Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'eventId': eventId,
-    'sessionId': sessionId,
-    'frictionType': frictionType,
-    'resolutionMs': resolutionMs,
+    'gateId': gateId,
+    'checkRule': checkRule,
+    'passThreshold': passThreshold,
+    'failureReason': failureReason,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -129,87 +125,87 @@ class Flade00810ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade00810ConformanceLevel.complete:    return 'Good';
-      case Flade00810ConformanceLevel.partial:     return 'Average';
-      case Flade00810ConformanceLevel.notComplete: return 'Poor';
+      case Flade00810ConformanceLevel.good:    return 'Good';
+      case Flade00810ConformanceLevel.average: return 'Average';
+      case Flade00810ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// FLADE-008-10: Build Friction Log Cascades.
-/// Metric: Telemetry Coverage Rate
-/// Floor=0.92 · Optimal=0.98 · Output=Complete / Partial / Not Complete
+/// Metric: Process Execution Quality Score
+/// Floor=0.9 · Output=Good / Average / Poor
 class Flade00810Pipeline {
-  static const double _floor   = 0.92;
-  static const double _optimal = 0.98;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the FLADE-008-10 configuration in the source repository.
   static Flade00810Config _ec1Locates(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-001: eventId required for FLADE-008-10');
+          'EC-FLADE00810-001: gateId required for FLADE-008-10');
     }
     // the FLADE-008-10 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts eventId and sessionId from the FLADE-008-10 registry.
+  // EC:2 — System extracts gateId and checkRule from the FLADE-008-10 registry.
   static Flade00810Config _ec2Extracts(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-002: eventId required for FLADE-008-10');
+          'EC-FLADE00810-002: gateId required for FLADE-008-10');
     }
-    // eventId and sessionId from the FLADE-008-10 registry
+    // gateId and checkRule from the FLADE-008-10 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Telemetry Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality Score.
   static Flade00810Config _ec3Compiles(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-003: eventId required for FLADE-008-10');
+          'EC-FLADE00810-003: gateId required for FLADE-008-10');
     }
-    // the implementation rule set per Telemetry Coverage Rate
+    // the implementation rule set per Process Execution Quality Sc
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Flade00810Config _ec4Validates(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-004: eventId required for FLADE-008-10');
+          'EC-FLADE00810-004: gateId required for FLADE-008-10');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Flade00810Config _ec5Registers(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-005: eventId required for FLADE-008-10');
+          'EC-FLADE00810-005: gateId required for FLADE-008-10');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against Telemetry Coverage Rate gate (floor=0.92).
+  // EC:6 — System validates configuration against Process Execution Quality Score gate (floor=0.9).
   static Flade00810Config _ec6Validates(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-006: eventId required for FLADE-008-10');
+          'EC-FLADE00810-006: gateId required for FLADE-008-10');
     }
-    // configuration against Telemetry Coverage Rate gate (floor=0.
+    // configuration against Process Execution Quality Score gate (
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Flade00810Config _ec7Routes(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-007: eventId required for FLADE-008-10');
+          'EC-FLADE00810-007: gateId required for FLADE-008-10');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -217,9 +213,9 @@ class Flade00810Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Flade00810Config _ec8Publishes(Flade00810Config config) {
-    if (config.eventId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-FLADE00810-008: eventId required for FLADE-008-10');
+          'EC-FLADE00810-008: gateId required for FLADE-008-10');
     }
     // validated configuration to the rule registry
     return config;
@@ -233,7 +229,7 @@ class Flade00810Pipeline {
     required List<Flade00810Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Flade00810ValidationResult(
+      return Flade00810ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Flade00810ConformanceLevel.notComplete,
@@ -243,11 +239,11 @@ class Flade00810Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Flade00810ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Flade00810ConformanceLevel.good
         : rate >= _floor
-            ? Flade00810ConformanceLevel.partial
-            : Flade00810ConformanceLevel.notComplete;
+            ? Flade00810ConformanceLevel.average
+            : Flade00810ConformanceLevel.poor;
     return Flade00810ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +286,17 @@ class Flade00810Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-FLADE00810-TRI: triangular check failed for FLADE-008-10');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FLADE-008-10',
-      'metric':             'Telemetry Coverage Rate',
+      'metric':             'Process Execution Quality Score',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Flade00810Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> flade_008_10Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Flade00810Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Flade00810Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Flade00810Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FLADE-008-10',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Flade00810Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.eventId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.gateId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -389,17 +379,16 @@ void main() async {
   final configs = [
     Flade00810Config(
       configId: 'flade00810-cfg-001',
-      eventId: 'flade-008-10_eventId',
-      sessionId: 'flade-008-10_sessionId',
-      frictionType: 'flade-008-10_frictionType',
-      resolutionMs: 'flade-008-10_resolutionMs',
+      gateId: 'flade-008-10_gateId',
+      checkRule: 'flade-008-10_checkRule',
+      passThreshold: 'flade-008-10_passThreshold',
+      failureReason: 'flade-008-10_failureReason',
       traceId:                 'trace-flade00810-001',
       originSourceId:          'origin-flade00810',
       immediatePredecessorId:  'pred-flade00810-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Flade00810Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('FLADE-008-10 → $result');
+  final out = await Flade00810Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FLADE-008-10 [Good / Average / Poor] → $out');
 }

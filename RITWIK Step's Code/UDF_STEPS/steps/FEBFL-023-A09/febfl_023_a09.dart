@@ -1,31 +1,37 @@
 // ============================================================
 // FEBFL-023-A09 — Frontend Element Build & Feature Library
-// Atomic Step: Enforce strict visual isolation parameters on parent dashboard cards.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     565 of 1073
+// Atomic Step:  Enforce strict visual isolation parameters on parent dashboard cards.
+// Metric:       Configuration Accuracy (%)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      241 of 1073
 // ============================================================
-// Why this matters: Replaces overwhelming choice layouts with a single, highly explicit transaction path.
-// Mobile impl:      Strict visual isolation fits mobile device limitations perfectly, maximizing remote conversion speed
-// Data requirement: Apply explicit CSS border-radius attributes to round container corners per style guides.
+// Why:          Replaces overwhelming choice layouts with a single, highly explicit transaction path.
+// Mobile:       Strict visual isolation fits mobile device limitations perfectly, maximizing remote conversion speed
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Febfl023A09ConformanceLevel { complete, partial, notComplete }
-enum Febfl023A09ExecutionStatus  { pending, running, complete, failed }
+enum Febfl023A09ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Febfl023A09ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FEBFL-023-A09.
-/// Fields derived from AISS sheet — Frontend Element Build & Feature Library.
+/// FEBFL-023-A09 — Frontend Element Build & Feature Library
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Febfl023A09Config {
   final String configId;
@@ -35,6 +41,7 @@ class Febfl023A09Config {
   final String refreshIntervalMs;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Febfl023A09ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Febfl023A09ConformanceLevel.complete:    return 'Pass';
-      case Febfl023A09ConformanceLevel.partial:     return 'Partial';
-      case Febfl023A09ConformanceLevel.notComplete: return 'Fail';
+      case Febfl023A09ConformanceLevel.pass_: return 'Pass';
+      case Febfl023A09ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FEBFL-023-A09: Enforce strict visual isolation parameters on parent dashboard cards.
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Configuration Accuracy (%)
+/// Floor=0.95 · Output=Pass / Fail
 class Febfl023A09Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Audit interface design layouts to track active component button counts
   static Febfl023A09Config _ec1Execute(Febfl023A09Config config) {
@@ -180,21 +187,19 @@ class Febfl023A09Pipeline {
     required List<Febfl023A09Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Febfl023A09ValidationResult(
+      return Febfl023A09ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Febfl023A09ConformanceLevel.notComplete,
+        conformanceLevel: Febfl023A09ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-FEBFL023A09-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Febfl023A09ConformanceLevel.complete
-        : rate >= _floor
-            ? Febfl023A09ConformanceLevel.partial
-            : Febfl023A09ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Febfl023A09ConformanceLevel.pass_
+        : Febfl023A09ConformanceLevel.fail_;
     return Febfl023A09ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Febfl023A09Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FEBFL-023-A09',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Configuration Accuracy (%)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Febfl023A09Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> febfl_023_a09Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> febfl_023_a09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Febfl023A09Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Febfl023A09Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Febfl023A09Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FEBFL-023-A09',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.widgetId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Febfl023A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FEBFL-023-A09 → $result');
+  final out = await Febfl023A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FEBFL-023-A09 [Pass / Fail] → $out');
 }

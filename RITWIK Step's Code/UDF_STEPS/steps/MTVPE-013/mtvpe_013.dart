@@ -1,50 +1,45 @@
 // ============================================================
 // MTVPE-013 — Mobile Touch & Viewport Platform Engine
-// Atomic Step: Contextual Interactive Guidance and User Onboarding Framework'
-// Metric:      UI Component Compliance Rate · Floor=95.0 · Optimal=99.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     528 of 530
+// Atomic Step:  Contextual Interactive Guidance and User Onboarding Framework'
+// Metric:       Process Execution Quality (%)
+// Floor:        95.0  ·  Optimal: 95.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      866 of 1073
 // ============================================================
-// Why this matters: Enforcing strict subDomain origin boundaries blocks external sites from executing unauthorized reque
-// Mobile impl:      Ensures that web-based micro-frontends embedded within mobile viewports interact only with trusted b
-// Data requirement: 7. Create step-by-step feature tour content for each feature.
+// Why:          Enforcing strict subDomain origin boundaries blocks external sites from executing unauthorized reque
+// Mobile:       Ensures that web-based micro-frontends embedded within mobile viewports interact only with trusted b
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Mtvpe013ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Mtvpe013ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Mtvpe013ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MTVPE-013.
-/// Fields derived from AISS sheet — Mobile Touch & Viewport Platform Engine.
+/// MTVPE-013 — Mobile Touch & Viewport Platform Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mtvpe013Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
-  final String stepId;
-  final String stepTitle;
-  final String completionFlag;
-  final String nextStepId;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -55,10 +50,10 @@ class Mtvpe013Config {
 
   const Mtvpe013Config({
     required this.configId,
-    required this.stepId,
-    required this.stepTitle,
-    required this.completionFlag,
-    required this.nextStepId,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +72,10 @@ class Mtvpe013Config {
     bool?   complianceStatusInd,
   }) => Mtvpe013Config(
     configId: configId,
-    stepId: stepId,
-    stepTitle: stepTitle,
-    completionFlag: completionFlag,
-    nextStepId: nextStepId,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,10 +87,10 @@ class Mtvpe013Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'stepId': stepId,
-    'stepTitle': stepTitle,
-    'completionFlag': completionFlag,
-    'nextStepId': nextStepId,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -129,87 +124,86 @@ class Mtvpe013ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mtvpe013ConformanceLevel.complete:    return 'Pass';
-      case Mtvpe013ConformanceLevel.partial:     return 'Partial';
-      case Mtvpe013ConformanceLevel.notComplete: return 'Fail';
+      case Mtvpe013ConformanceLevel.pass_: return 'Pass';
+      case Mtvpe013ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MTVPE-013: Contextual Interactive Guidance and User Onboarding Framework'
-/// Metric: UI Component Compliance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Process Execution Quality (%)
+/// Floor=95.0 · Output=Pass / Fail
 class Mtvpe013Pipeline {
   static const double _floor   = 95.0;
-  static const double _optimal = 99.0;
+  static const double _optimal = 95.0;
 
   // EC:1 — System locates the MTVPE-013 configuration in the source repository.
   static Mtvpe013Config _ec1Locates(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-001: stepId required for MTVPE-013');
+          'EC-MTVPE013-001: ruleKey required for MTVPE-013');
     }
     // the MTVPE-013 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts stepId and stepTitle from the MTVPE-013 registry.
+  // EC:2 — System extracts ruleKey and ruleValue from the MTVPE-013 registry.
   static Mtvpe013Config _ec2Extracts(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-002: stepId required for MTVPE-013');
+          'EC-MTVPE013-002: ruleKey required for MTVPE-013');
     }
-    // stepId and stepTitle from the MTVPE-013 registry
+    // ruleKey and ruleValue from the MTVPE-013 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per UI Component Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality (%).
   static Mtvpe013Config _ec3Compiles(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-003: stepId required for MTVPE-013');
+          'EC-MTVPE013-003: ruleKey required for MTVPE-013');
     }
-    // the implementation rule set per UI Component Compliance Rate
+    // the implementation rule set per Process Execution Quality (%
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Mtvpe013Config _ec4Validates(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-004: stepId required for MTVPE-013');
+          'EC-MTVPE013-004: ruleKey required for MTVPE-013');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Mtvpe013Config _ec5Registers(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-005: stepId required for MTVPE-013');
+          'EC-MTVPE013-005: ruleKey required for MTVPE-013');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against UI Component Compliance Rate gate (floor=0.90).
+  // EC:6 — System validates configuration against Process Execution Quality (%) gate (floor=95.0).
   static Mtvpe013Config _ec6Validates(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-006: stepId required for MTVPE-013');
+          'EC-MTVPE013-006: ruleKey required for MTVPE-013');
     }
-    // configuration against UI Component Compliance Rate gate (flo
+    // configuration against Process Execution Quality (%) gate (fl
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Mtvpe013Config _ec7Routes(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-007: stepId required for MTVPE-013');
+          'EC-MTVPE013-007: ruleKey required for MTVPE-013');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -217,9 +211,9 @@ class Mtvpe013Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Mtvpe013Config _ec8Publishes(Mtvpe013Config config) {
-    if (config.stepId.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-MTVPE013-008: stepId required for MTVPE-013');
+          'EC-MTVPE013-008: ruleKey required for MTVPE-013');
     }
     // validated configuration to the rule registry
     return config;
@@ -233,21 +227,19 @@ class Mtvpe013Pipeline {
     required List<Mtvpe013Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mtvpe013ValidationResult(
+      return Mtvpe013ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Mtvpe013ConformanceLevel.notComplete,
+        conformanceLevel: Mtvpe013ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-MTVPE013-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Mtvpe013ConformanceLevel.complete
-        : rate >= _floor
-            ? Mtvpe013ConformanceLevel.partial
-            : Mtvpe013ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Mtvpe013ConformanceLevel.pass_
+        : Mtvpe013ConformanceLevel.fail_;
     return Mtvpe013ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +282,17 @@ class Mtvpe013Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-MTVPE013-TRI: triangular check failed for MTVPE-013');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MTVPE-013',
-      'metric':             'UI Component Compliance Rate',
+      'metric':             'Process Execution Quality (%)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +302,7 @@ class Mtvpe013Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> mtvpe_013Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +321,7 @@ class Mtvpe013Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mtvpe013Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +329,13 @@ class Mtvpe013Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MTVPE-013',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +344,22 @@ class Mtvpe013Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.stepId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.ruleKey,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -389,17 +375,16 @@ void main() async {
   final configs = [
     Mtvpe013Config(
       configId: 'mtvpe013-cfg-001',
-      stepId: 'mtvpe-013_stepId',
-      stepTitle: 'mtvpe-013_stepTitle',
-      completionFlag: 'mtvpe-013_completionFlag',
-      nextStepId: 'mtvpe-013_nextStepId',
+      ruleKey: 'mtvpe-013_ruleKey',
+      ruleValue: 'mtvpe-013_ruleValue',
+      metricLabel: 'mtvpe-013_metricLabel',
+      complianceTarget: 'mtvpe-013_complianceTarget',
       traceId:                 'trace-mtvpe013-001',
       originSourceId:          'origin-mtvpe013',
       immediatePredecessorId:  'pred-mtvpe013-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mtvpe013Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('MTVPE-013 → $result');
+  final out = await Mtvpe013Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MTVPE-013 [Pass / Fail] → $out');
 }

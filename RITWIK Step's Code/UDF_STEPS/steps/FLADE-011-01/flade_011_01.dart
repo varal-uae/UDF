@@ -1,50 +1,46 @@
 // ============================================================
 // FLADE-011-01 — Friction Logging & Analytics Data Engine
-// Atomic Step: "Shakti Alert Panel" (Critical System Breach UI). (Un-ignorable, global red banners alerting all use
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     525 of 530
+// Atomic Step:  "Shakti Alert Panel" (Critical System Breach UI). (Un-ignorable, global red banners alerting all use
+// Metric:       UI Design-System Adherence Rate
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      275 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Open the mobile application root view hierarchy and global layout controller codebase.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Flade01101ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Flade01101ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Flade01101ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FLADE-011-01.
-/// Fields derived from AISS sheet — Friction Logging & Analytics Data Engine.
+/// FLADE-011-01 — Friction Logging & Analytics Data Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Flade01101Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String modalId;
   final String triggerEvent;
   final String contentType;
   final String dismissBehaviour;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,20 +125,20 @@ class Flade01101ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade01101ConformanceLevel.complete:    return 'Good';
-      case Flade01101ConformanceLevel.partial:     return 'Average';
-      case Flade01101ConformanceLevel.notComplete: return 'Poor';
+      case Flade01101ConformanceLevel.good:    return 'Good';
+      case Flade01101ConformanceLevel.average: return 'Average';
+      case Flade01101ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// FLADE-011-01: "Shakti Alert Panel" (Critical System Breach UI). (Un-ignorable, global red bann
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: UI Design-System Adherence Rate
+/// Floor=0.9 · Output=Good / Average / Poor
 class Flade01101Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — System locates the FLADE-011-01 configuration in the source repository.
@@ -165,23 +161,23 @@ class Flade01101Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per UI Design-System Adherence Rate.
   static Flade01101Config _ec3Compiles(Flade01101Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FLADE01101-003: modalId required for FLADE-011-01');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per UI Design-System Adherence R
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Flade01101Config _ec4Validates(Flade01101Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FLADE01101-004: modalId required for FLADE-011-01');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +191,13 @@ class Flade01101Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against UI Design-System Adherence Rate gate (floor=0.9).
   static Flade01101Config _ec6Validates(Flade01101Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FLADE01101-006: modalId required for FLADE-011-01');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against UI Design-System Adherence Rate gate (
     return config;
   }
 
@@ -233,7 +229,7 @@ class Flade01101Pipeline {
     required List<Flade01101Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Flade01101ValidationResult(
+      return Flade01101ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Flade01101ConformanceLevel.notComplete,
@@ -243,11 +239,11 @@ class Flade01101Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Flade01101ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Flade01101ConformanceLevel.good
         : rate >= _floor
-            ? Flade01101ConformanceLevel.partial
-            : Flade01101ConformanceLevel.notComplete;
+            ? Flade01101ConformanceLevel.average
+            : Flade01101ConformanceLevel.poor;
     return Flade01101ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +286,17 @@ class Flade01101Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-FLADE01101-TRI: triangular check failed for FLADE-011-01');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FLADE-011-01',
-      'metric':             'Layout Consistency Score',
+      'metric':             'UI Design-System Adherence Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Flade01101Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> flade_011_01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Flade01101Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Flade01101Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Flade01101Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FLADE-011-01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Flade01101Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Flade01101Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('FLADE-011-01 → $result');
+  final out = await Flade01101Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FLADE-011-01 [Good / Average / Poor] → $out');
 }

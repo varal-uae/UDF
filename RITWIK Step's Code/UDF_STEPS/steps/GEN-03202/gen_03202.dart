@@ -1,40 +1,47 @@
 // ============================================================
 // GEN-03202 — GEN Backend Utility Module
-// Atomic Step: Add high-contrast status badge widgets (Green = Clocked In, Gray = Clocked Out).
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     861 of 1073
+// Atomic Step:  Add high-contrast status badge widgets (Green = Clocked In, Gray = Clocked Out).
+// Metric:       Badge Contrast Ratio
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      574 of 1073
 // ============================================================
-// Why this matters: Add high-contrast status badge widgets (Green = Clocked In, Gray = Clocked Out). is a critical imple
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Add high-contrast status badge widgets (Green = Clocked In, Gray = Clocked Out).
+// Why:          Add high-contrast status badge widgets (Green = Clocked In, Gray = Clocked Out). is a critical imple
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen03202ConformanceLevel { complete, partial, notComplete }
-enum Gen03202ExecutionStatus  { pending, running, complete, failed }
+enum Gen03202ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen03202ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-03202.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-03202 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen03202Config {
   final String configId;
-  final String documentId;
-  final String predecessorId;
-  final String lineageHash;
-  final String complianceRef;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +50,10 @@ class Gen03202Config {
 
   const Gen03202Config({
     required this.configId,
-    required this.documentId,
-    required this.predecessorId,
-    required this.lineageHash,
-    required this.complianceRef,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +72,10 @@ class Gen03202Config {
     bool?   complianceStatusInd,
   }) => Gen03202Config(
     configId: configId,
-    documentId: documentId,
-    predecessorId: predecessorId,
-    lineageHash: lineageHash,
-    complianceRef: complianceRef,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +87,10 @@ class Gen03202Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'documentId': documentId,
-    'predecessorId': predecessorId,
-    'lineageHash': lineageHash,
-    'complianceRef': complianceRef,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +124,26 @@ class Gen03202ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen03202ConformanceLevel.complete:    return 'Complete';
-      case Gen03202ConformanceLevel.partial:     return 'Partial';
-      case Gen03202ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen03202ConformanceLevel.pass_: return 'Pass';
+      case Gen03202ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-03202: Add high-contrast status badge widgets (Green = Clocked In, Gray = Clocked Out).
-/// Metric: WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Badge Contrast Ratio
+/// Floor=0.95 · Output=Pass / Fail
 class Gen03202Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen03202Config _ec1Execute(Gen03202Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03202-001: documentId required for GEN-03202');
+          'EC-GEN03202-001: colorToken required for GEN-03202');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +151,9 @@ class Gen03202Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen03202Config _ec2Execute(Gen03202Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03202-002: documentId required for GEN-03202');
+          'EC-GEN03202-002: colorToken required for GEN-03202');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +161,9 @@ class Gen03202Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen03202Config _ec3Execute(Gen03202Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03202-003: documentId required for GEN-03202');
+          'EC-GEN03202-003: colorToken required for GEN-03202');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +171,9 @@ class Gen03202Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen03202Config _ec4Execute(Gen03202Config config) {
-    if (config.documentId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03202-004: documentId required for GEN-03202');
+          'EC-GEN03202-004: colorToken required for GEN-03202');
     }
     // Document and commit to runbook
     return config;
@@ -180,21 +187,19 @@ class Gen03202Pipeline {
     required List<Gen03202Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen03202ValidationResult(
+      return Gen03202ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen03202ConformanceLevel.notComplete,
+        conformanceLevel: Gen03202ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN03202-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen03202ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen03202ConformanceLevel.partial
-            : Gen03202ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen03202ConformanceLevel.pass_
+        : Gen03202ConformanceLevel.fail_;
     return Gen03202ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen03202Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-03202',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Badge Contrast Ratio',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen03202Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_03202Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_03202Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen03202Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen03202Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen03202Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-03202',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.documentId,
+                title: Text(c.colorToken,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +331,16 @@ void main() async {
   final configs = [
     Gen03202Config(
       configId: 'gen03202-cfg-001',
-      documentId: 'gen-03202_documentId',
-      predecessorId: 'gen-03202_predecessorId',
-      lineageHash: 'gen-03202_lineageHash',
-      complianceRef: 'gen-03202_complianceRef',
+      colorToken: 'gen-03202_colorToken',
+      hexValue: 'gen-03202_hexValue',
+      wcagRatio: 'gen-03202_wcagRatio',
+      usageContext: 'gen-03202_usageContext',
       traceId:                 'trace-gen03202-001',
       originSourceId:          'origin-gen03202',
       immediatePredecessorId:  'pred-gen03202-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen03202Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-03202 → $result');
+  final out = await Gen03202Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-03202 [Pass / Fail] → $out');
 }

@@ -1,47 +1,47 @@
 // ============================================================
 // REF-001-A05 — Reference Implementation Framework
-// Atomic Step: Configure the global frontend SubmitInterceptor and full-screen Scrim Lock layer to freeze interacti
-// Metric:      Implementation Conformance Rate · Floor=100.0 · Optimal=30.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     401 of 440
+// Atomic Step:  Configure the global frontend SubmitInterceptor and full-screen Scrim Lock layer to freeze interacti
+// Metric:       Component Render Time
+// Floor:        100.0  ·  Optimal: 100.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      937 of 1073
 // ============================================================
-// Why this matters: Mobile users in low-connectivity zones often double-tap buttons when network latency occurs; this ca
-// Mobile impl:      Directly protects the database engine from chaotic mobile connection behavior, ensuring single-packe
+// Why:          Mobile users in low-connectivity zones often double-tap buttons when network latency occurs; this ca
+// Mobile:       Directly protects the database engine from chaotic mobile connection behavior, ensuring single-packe
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Ref001A05ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Ref001A05ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ref001A05ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for REF-001-A05.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// REF-001-A05 — Reference Implementation Framework
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ref001A05Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +50,10 @@ class Ref001A05Config {
 
   const Ref001A05Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +71,33 @@ class Ref001A05Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Ref001A05Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -118,28 +124,26 @@ class Ref001A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref001A05ConformanceLevel.complete:    return 'Pass';
-      case Ref001A05ConformanceLevel.partial:     return 'Partial';
-      case Ref001A05ConformanceLevel.notComplete: return 'Fail';
+      case Ref001A05ConformanceLevel.pass_: return 'Pass';
+      case Ref001A05ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// REF-001-A05: Configure the global frontend SubmitInterceptor and full-screen Scrim Lock layer
-///
-/// Metric: Implementation Conformance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Complete / Partial / Not Complete
+/// Metric: Component Render Time
+/// Floor=100.0 · Output=Pass / Fail
 class Ref001A05Pipeline {
   static const double _floor   = 100.0;
-  static const double _optimal = 30.0;
+  static const double _optimal = 100.0;
 
   // EC:1 — Build a high-contrast <ScrimLock> container component anchored to a high layer hierarchy (
   static Ref001A05Config _ec1Execute(Ref001A05Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-REF001A05-001: configId required for REF-001-A05');
+          'EC-REF001A05-001: colorToken required for REF-001-A05');
     }
     // Build a high-contrast <ScrimLock> container component anchor
     return config;
@@ -149,27 +153,23 @@ class Ref001A05Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Ref001A05ValidationResult calculateConformance({
     required List<Ref001A05Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ref001A05ValidationResult(
+      return Ref001A05ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ref001A05ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-REF001A05-VAL',
+        conformanceLevel: Ref001A05ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-REF001A05-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ref001A05ConformanceLevel.complete
-        : rate >= _floor
-            ? Ref001A05ConformanceLevel.partial
-            : Ref001A05ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ref001A05ConformanceLevel.pass_
+        : Ref001A05ConformanceLevel.fail_;
     return Ref001A05ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -198,26 +198,24 @@ class Ref001A05Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-REF001A05-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-REF001A05-000: configs must not be empty for REF-001-A05');
     }
     final p1 = configs.map(_ec1Execute).toList();
 
     if (!triangularCheck(configs.length, p1.length)) {
-      return {'error': 'EC-REF001A05-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-REF001A05-TRI: triangular check failed for REF-001-A05');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-REF-001-A05',
-      'metric':             'Implementation Conformance Rate',
+      'metric':             'Component Render Time',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -227,9 +225,7 @@ class Ref001A05Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ref_001_a05Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -248,6 +244,7 @@ class Ref001A05Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ref001A05Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -255,18 +252,13 @@ class Ref001A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('REF-001-A05',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -275,24 +267,22 @@ class Ref001A05Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -307,16 +297,17 @@ class Ref001A05Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Ref001A05Config(
-      configId:                'ref001a05-cfg-001',
-      ruleKey:                 'ref-001-a05_rule',
-      ruleValue:               'ref-001-a05_value',
+      configId: 'ref001a05-cfg-001',
+      colorToken: 'ref-001-a05_colorToken',
+      hexValue: 'ref-001-a05_hexValue',
+      wcagRatio: 'ref-001-a05_wcagRatio',
+      usageContext: 'ref-001-a05_usageContext',
       traceId:                 'trace-ref001a05-001',
       originSourceId:          'origin-ref001a05',
       immediatePredecessorId:  'pred-ref001a05-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ref001A05Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('REF-001-A05 → $result');
+  final out = await Ref001A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('REF-001-A05 [Pass / Fail] → $out');
 }

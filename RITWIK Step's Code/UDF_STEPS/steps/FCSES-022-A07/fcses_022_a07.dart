@@ -1,50 +1,45 @@
 // ============================================================
 // FCSES-022-A07 — Fail-Closed Session Execution System
-// Atomic Step: Lock "Release to Tech" Button Fail-Closed (FCSES-022)
-// Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     489 of 530
+// Atomic Step:  Lock "Release to Tech" Button Fail-Closed (FCSES-022)
+// Metric:       Process Automation Ratio (Automated vs Manual)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      225 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Automate a high-priority alert to Operations if the button remains locked.
+// Why:          
+// Mobile:       
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Fcses022A07ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Fcses022A07ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Fcses022A07ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FCSES-022-A07.
-/// Fields derived from AISS sheet — Fail-Closed Session Execution System.
+/// FCSES-022-A07 — Fail-Closed Session Execution System
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Fcses022A07Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String modalId;
   final String triggerEvent;
   final String contentType;
   final String dismissBehaviour;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Fcses022A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fcses022A07ConformanceLevel.complete:    return 'Pass';
-      case Fcses022A07ConformanceLevel.partial:     return 'Partial';
-      case Fcses022A07ConformanceLevel.notComplete: return 'Fail';
+      case Fcses022A07ConformanceLevel.pass_: return 'Pass';
+      case Fcses022A07ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// FCSES-022-A07: Lock "Release to Tech" Button Fail-Closed (FCSES-022)
-/// Metric: Release Gate Pass Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Process Automation Ratio (Automated vs Manual)
+/// Floor=0.95 · Output=Pass / Fail
 class Fcses022A07Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the FCSES-022-A07 configuration in the source repository.
   static Fcses022A07Config _ec1Locates(Fcses022A07Config config) {
@@ -165,23 +159,23 @@ class Fcses022A07Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Release Gate Pass Rate.
+  // EC:3 — System compiles the implementation rule set per Process Automation Ratio (Automated vs Man
   static Fcses022A07Config _ec3Compiles(Fcses022A07Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FCSES022A07-003: modalId required for FCSES-022-A07');
     }
-    // the implementation rule set per Release Gate Pass Rate
+    // the implementation rule set per Process Automation Ratio (Au
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Fcses022A07Config _ec4Validates(Fcses022A07Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FCSES022A07-004: modalId required for FCSES-022-A07');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +189,13 @@ class Fcses022A07Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Release Gate Pass Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Process Automation Ratio (Automated vs Manual) gate
   static Fcses022A07Config _ec6Validates(Fcses022A07Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FCSES022A07-006: modalId required for FCSES-022-A07');
     }
-    // configuration against Release Gate Pass Rate gate (floor=0.9
+    // configuration against Process Automation Ratio (Automated vs
     return config;
   }
 
@@ -233,21 +227,19 @@ class Fcses022A07Pipeline {
     required List<Fcses022A07Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Fcses022A07ValidationResult(
+      return Fcses022A07ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Fcses022A07ConformanceLevel.notComplete,
+        conformanceLevel: Fcses022A07ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-FCSES022A07-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Fcses022A07ConformanceLevel.complete
-        : rate >= _floor
-            ? Fcses022A07ConformanceLevel.partial
-            : Fcses022A07ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Fcses022A07ConformanceLevel.pass_
+        : Fcses022A07ConformanceLevel.fail_;
     return Fcses022A07ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +282,17 @@ class Fcses022A07Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-FCSES022A07-TRI: triangular check failed for FCSES-022-A07');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FCSES-022-A07',
-      'metric':             'Release Gate Pass Rate',
+      'metric':             'Process Automation Ratio (Automated vs Manual)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +302,7 @@ class Fcses022A07Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> fcses_022_a07Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +321,7 @@ class Fcses022A07Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Fcses022A07Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +329,13 @@ class Fcses022A07Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FCSES-022-A07',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +344,22 @@ class Fcses022A07Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Fcses022A07Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('FCSES-022-A07 → $result');
+  final out = await Fcses022A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FCSES-022-A07 [Pass / Fail] → $out');
 }

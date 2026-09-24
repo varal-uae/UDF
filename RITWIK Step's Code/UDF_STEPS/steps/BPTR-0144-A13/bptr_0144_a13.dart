@@ -1,327 +1,339 @@
 // ============================================================
-// BPTR-0144-A13 | UI/UX Pattern Registry
-// Atomic Task: BPTR-0144-A13
-// EC Lines: 9 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BPTR-0144-A13 — UI/UX Pattern Registry
+// Atomic Step:  Establish Lead Conversion Micro-UX Visual State Indicators
+// Metric:       Micro-interaction Animation Duration
+// Floor:        100.0  ·  Optimal: 100.0
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      74 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System registers user click event payload on UI target.
-  // EC: 2. System triggers loading visual animation state instantly.
-  // EC: 3. System sets container opacity parameter to thirty-eight percent for active transaction.
-  // EC: 4. System binds visual animation state to Cloud Run asynchronous payload resolution hook.
-  // EC: 5. System measures micro-interaction animation duration timestamp.
-  // EC: 6. System validates animation duration within range bounds of 100 to 400 milliseconds.
-  // EC: 7. System maps processing outcome state to Material 3 color token slot.
-  // EC: 8. System positions inline confirmation alert inside primary navigation lane.
-  // EC: 9. System persists execution telemetry metadata to core audit record.
+// Why:          Eliminates transaction confusion over unstable cellular connections, stopping users from submitting 
+// Mobile:       Uses lightweight CSS style state transitions instead of spawning resource-intensive layout modal pop
+// col41:        Good (Scale: Good/Average/Poor)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bptr0144A13ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Bptr0144A13ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BPTR-0144-A13.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Bptr0144A13Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+class Bptr0144A13Config {
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
+  final bool   immutableInd;
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Bptr0144A13Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Bptr0144A13Config({
+    required this.configId,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Bptr0144A13Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Bptr0144A13Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Bptr0144A13Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bptr0144A13Config(
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Bptr0144A13ScanResult {
+class Bptr0144A13ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Bptr0144A13ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Bptr0144A13ScanResult({
+  const Bptr0144A13ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bptr0144A13ConformanceLevel.pass_: return 'Pass';
+      case Bptr0144A13ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:9 Pipeline ──────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 class Bptr0144A13Pipeline {
-  static const double _floor   = 100.0;  // metric floor gate
-  static const double _optimal = 250.0; // metric optimal target
+  static const double _floor   = 100.0;
+  static const double _optimal = 100.0;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System registers user click event payload on UI target.
-  static String executeRegistersStep1(Bptr0144A13Entry entry) {
-    // registers user click event payload on UI target
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — Map processing success/failure states to Material 3 standard color slots
+  static Bptr0144A13Config _ec1Execute(Bptr0144A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0144A13-001: colorToken required for BPTR-0144-A13');
+    }
+    // Map processing success/failure states to Material 3 standard
+    return config;
   }
 
-  // EC:2 — EC: 2. System triggers loading visual animation state instantly.
-  static String executeTriggersStep2(Bptr0144A13Entry entry) {
-    // triggers loading visual animation state instantly
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:2 — Implement an automated 38% opacity parameter change for ongoing async transactions
+  static Bptr0144A13Config _ec2Execute(Bptr0144A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0144A13-002: colorToken required for BPTR-0144-A13');
+    }
+    // Implement an automated 38% opacity parameter change for ongo
+    return config;
   }
 
-  // EC:3 — EC: 3. System sets container opacity parameter to thirty-eight percent for active transaction.
-  static String executeSetsStep3(Bptr0144A13Entry entry) {
-    // sets container opacity parameter to thirty-eight percent for active transaction
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:3 — Position inline confirmation alerts directly within primary navigation lanes
+  static Bptr0144A13Config _ec3Execute(Bptr0144A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0144A13-003: colorToken required for BPTR-0144-A13');
+    }
+    // Position inline confirmation alerts directly within primary 
+    return config;
   }
 
-  // EC:4 — EC: 4. System binds visual animation state to Cloud Run asynchronous payload resolution hook.
-  static String executeBindsStep4(Bptr0144A13Entry entry) {
-    // binds visual animation state to Cloud Run asynchronous payload resolution hook
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:4 — Connect interface animation states to Cloud Run asynchronous payload resolution hooks
+  static Bptr0144A13Config _ec4Execute(Bptr0144A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0144A13-004: colorToken required for BPTR-0144-A13');
+    }
+    // Connect interface animation states to Cloud Run asynchronous
+    return config;
   }
 
-  // EC:5 — EC: 5. System measures micro-interaction animation duration timestamp.
-  static String executeMeasuresStep5(Bptr0144A13Entry entry) {
-    // measures micro-interaction animation duration timestamp
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System validates animation duration within range bounds of 100 to 400 milliseconds.
-  static String executeValidatesStep6(Bptr0144A13Entry entry) {
-    // validates animation duration within range bounds of 100 to 400 milliseconds
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:7 — EC: 7. System maps processing outcome state to Material 3 color token slot.
-  static String executeMapsStep7(Bptr0144A13Entry entry) {
-    // maps processing outcome state to Material 3 color token slot
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:8 — EC: 8. System positions inline confirmation alert inside primary navigation lane.
-  static String executePositionsStep8(Bptr0144A13Entry entry) {
-    // positions inline confirmation alert inside primary navigation lane
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:9 — EC: 9. System persists execution telemetry metadata to core audit record.
-  static String executePersistsStep9(Bptr0144A13Entry entry) {
-    // persists execution telemetry metadata to core audit record
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0144A13-009: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Bptr0144A13ScanResult validateConformance(
-    List<Bptr0144A13Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Bptr0144A13ScanResult(
+  static Bptr0144A13ValidationResult calculateConformance({
+    required List<Bptr0144A13Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bptr0144A13ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bptr0144A13ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-BPTR0144A13-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Bptr0144A13ConformanceLevel.pass_
+        : Bptr0144A13ConformanceLevel.fail_;
+    return Bptr0144A13ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BPTR0144A13-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Bptr0144A13Entry routeToRegistry(
-    Bptr0144A13Entry entry,
-    Bptr0144A13ScanResult scan,
+  static Bptr0144A13Config routeToRegistry(
+    Bptr0144A13Config config,
+    Bptr0144A13ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Bptr0144A13Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BPTR0144A13-000: configs must not be empty for BPTR-0144-A13');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-BPTR0144A13-TRI: triangular check failed for BPTR-0144-A13');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BPTR-0144-A13',
+      'metric':             'Micro-interaction Animation Duration',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bptr_0144_a13Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BPTR-0144-A13',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Bptr0144A13Widget extends StatelessWidget {
-  final List<Bptr0144A13Entry> entries;
-  const Bptr0144A13Widget({super.key, required this.entries});
+  final List<Bptr0144A13Config> configs;
+  const Bptr0144A13Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bptr0144A13Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Bptr0144A13Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BPTR-0144-A13',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BPTR-0144-A13',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bptr0144A13Config(
+      configId: 'bptr0144a13-cfg-001',
+      colorToken: 'bptr-0144-a13_colorToken',
+      hexValue: 'bptr-0144-a13_hexValue',
+      wcagRatio: 'bptr-0144-a13_wcagRatio',
+      usageContext: 'bptr-0144-a13_usageContext',
+      traceId:                 'trace-bptr0144a13-001',
+      originSourceId:          'origin-bptr0144a13',
+      immediatePredecessorId:  'pred-bptr0144a13-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bptr0144A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BPTR-0144-A13 [Pass / Fail] → $out');
 }

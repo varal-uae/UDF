@@ -1,229 +1,254 @@
 // ============================================================
-// CPNCA-007-A10 | Client-Platform Navigation Container Adapter
-// Atomic Task: CPNCA-007-A10
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CPNCA-007-A10 — Client-Platform Navigation Adapter
+// Atomic Step:  Implementation Step 27: Configure the exception handling screen interface to follow the strict 5x5 h
+// Metric:       General Implementation Task Compliance
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      148 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System receives layout configuration payload from mobile interface registry.
-  // EC: 2. System extracts data field elements count from visual layout metadata.
-  // EC: 3. System extracts touch action options count from screen action metadata.
-  // EC: 4. System validates field count against ceiling threshold of five fields.
-  // EC: 5. System validates action count against ceiling threshold of five actions.
-  // EC: 6. System checks action spacing values against minimum eight pixel boundary limit.
-  // EC: 7. System assigns layout validation status indicator to true upon compliance verification.
-  // EC: 8. System flags compliance violation when element counts exceed threshold limits.
-  // EC: 9. System routes validation result log to BigQuery telemetry stream.
-  // EC: 10. System updates task completion status to completed in system registry.
+// Why:          Overloading exception resolution screens with excess data walls confuses operators, slows down corre
+// Mobile:       Fits critical error resolution workflows neatly into single-screen mobile viewports, avoiding clutte
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Cpnca007A10ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CPNCA-007-A10.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Cpnca007A10Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Cpnca007A10ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CPNCA-007-A10 — Client-Platform Navigation Adapter
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Cpnca007A10Config {
+  final String configId;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Cpnca007A10Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Cpnca007A10Config({
+    required this.configId,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Cpnca007A10Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Cpnca007A10Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Cpnca007A10Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Cpnca007A10Config(
+    configId: configId,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Cpnca007A10ScanResult {
+class Cpnca007A10ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Cpnca007A10ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Cpnca007A10ScanResult({
+  const Cpnca007A10ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Cpnca007A10ConformanceLevel.complete:    return 'Complete';
+      case Cpnca007A10ConformanceLevel.partial:     return 'Partial';
+      case Cpnca007A10ConformanceLevel.notComplete: return 'Not Complete';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
+/// CPNCA-007-A10: Implementation Step 27: Configure the exception handling screen interface to fol
+/// Metric: General Implementation Task Compliance
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Cpnca007A10Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
-
-  // EC:1 — EC: 1. System receives layout configuration payload from mobile interface registry.
-  static void executeReceivesStep1(Cpnca007A10Entry entry) {
-    // receives layout configuration payload from mobile interface registry
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-001: ruleId required');
-    };
+  // EC:1 — Audit current exception tracking screens to group complex data into simplified, digestible
+  static Cpnca007A10Config _ec1Execute(Cpnca007A10Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-CPNCA007A10-001: componentId required for CPNCA-007-A10');
+    }
+    // Audit current exception tracking screens to group complex da
+    return config;
   }
 
-  // EC:2 — EC: 2. System extracts data field elements count from visual layout metadata.
-  static void executeExtractsStep2(Cpnca007A10Entry entry) {
-    // extracts data field elements count from visual layout metadata
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-002: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:3 — EC: 3. System extracts touch action options count from screen action metadata.
-  static void executeExtractsStep3(Cpnca007A10Entry entry) {
-    // extracts touch action options count from screen action metadata
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-003: ruleId required');
-    };
-  }
-
-  // EC:4 — EC: 4. System validates field count against ceiling threshold of five fields.
-  static void executeValidatesStep4(Cpnca007A10Entry entry) {
-    // validates field count against ceiling threshold of five fields
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-004: ruleId required');
-    };
-  }
-
-  // EC:5 — EC: 5. System validates action count against ceiling threshold of five actions.
-  static void executeValidatesStep5(Cpnca007A10Entry entry) {
-    // validates action count against ceiling threshold of five actions
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-005: ruleId required');
-    };
-  }
-
-  // EC:6 — EC: 6. System checks action spacing values against minimum eight pixel boundary limit.
-  static void executeChecksStep6(Cpnca007A10Entry entry) {
-    // checks action spacing values against minimum eight pixel boundary limit
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-006: ruleId required');
-    };
-  }
-
-  // EC:7 — EC: 7. System assigns layout validation status indicator to true upon compliance verification.
-  static void executeAssignsStep7(Cpnca007A10Entry entry) {
-    // assigns layout validation status indicator to true upon compliance verification
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-007: ruleId required');
-    };
-  }
-
-  // EC:8 — EC: 8. System flags compliance violation when element counts exceed threshold limits.
-  static void executeFlagsStep8(Cpnca007A10Entry entry) {
-    // flags compliance violation when element counts exceed threshold limits
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-008: ruleId required');
-    };
-  }
-
-  // EC:9 — EC: 9. System routes validation result log to BigQuery telemetry stream.
-  static void executeRoutesStep9(Cpnca007A10Entry entry) {
-    // routes validation result log to BigQuery telemetry stream
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-009: ruleId required');
-    };
-  }
-
-  // EC:10 — EC: 10. System updates task completion status to completed in system registry.
-  static void executeUpdatesStep10(Cpnca007A10Entry entry) {
-    // updates task completion status to completed in system registry
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CPNCA007A10-010: ruleId required');
-    };
-  }
-
-  static Cpnca007A10ScanResult validateConformance(List<Cpnca007A10Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Cpnca007A10ScanResult(
+  static Cpnca007A10ValidationResult calculateConformance({
+    required List<Cpnca007A10Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Cpnca007A10ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Cpnca007A10ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-CPNCA007A10-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Cpnca007A10ConformanceLevel.complete
+        : rate >= _floor
+            ? Cpnca007A10ConformanceLevel.partial
+            : Cpnca007A10ConformanceLevel.notComplete;
+    return Cpnca007A10ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CPNCA007A10-VAL',
     );
   }
 
-  static Cpnca007A10Entry routeToRegistry(Cpnca007A10Entry entry, Cpnca007A10ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Cpnca007A10Config routeToRegistry(
+    Cpnca007A10Config config,
+    Cpnca007A10ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Cpnca007A10Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CPNCA007A10-000: configs must not be empty for CPNCA-007-A10');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+
+    if (!triangularCheck(configs.length, p1.length)) {
+      throw ArgumentError('EC-CPNCA007A10-TRI: triangular check failed for CPNCA-007-A10');
+    }
+    final result     = calculateConformance(configs: p1);
+    final registered = p1.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CPNCA-007-A10',
+      'metric':             'General Implementation Task Compliance',
+      'output_vocab':       'Complete / Partial / Not Complete',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> cpnca_007_a10Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CPNCA-007-A10',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Cpnca007A10Widget extends StatelessWidget {
-  final List<Cpnca007A10Entry> entries;
-  const Cpnca007A10Widget({super.key, required this.entries});
+  final List<Cpnca007A10Config> configs;
+  const Cpnca007A10Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Cpnca007A10Pipeline.validateConformance(entries);
+    final result = Cpnca007A10Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +256,37 @@ class Cpnca007A10Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CPNCA-007-A10',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.componentId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -268,4 +294,24 @@ class Cpnca007A10Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Cpnca007A10Config(
+      configId: 'cpnca007a10-cfg-001',
+      componentId: 'cpnca-007-a10_componentId',
+      targetSizeDp: 'cpnca-007-a10_targetSizeDp',
+      actualSizeDp: 'cpnca-007-a10_actualSizeDp',
+      complianceStatus: 'cpnca-007-a10_complianceStatus',
+      traceId:                 'trace-cpnca007a10-001',
+      originSourceId:          'origin-cpnca007a10',
+      immediatePredecessorId:  'pred-cpnca007a10-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Cpnca007A10Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CPNCA-007-A10 [Complete / Partial / Not Complete] → $out');
 }

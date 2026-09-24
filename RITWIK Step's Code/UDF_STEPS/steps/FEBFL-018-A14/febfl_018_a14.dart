@@ -1,52 +1,44 @@
 // ============================================================
 // FEBFL-018-A14 — Frontend Element Build & Feature Library
-// Atomic Step: Unified "Error Boundary" Fallback UI (Mobile).
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     212 of 396
+// Atomic Step:  Unified "Error Boundary" Fallback UI (Mobile).
+// Metric:       UI/UX Design-System Consistency (%)
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      237 of 1073
 // ============================================================
-// Why this matters: Prevents blank screens during API failures, providing a graceful degradation path and user feedback.
-// Mobile impl:      Crucial for mobile environments where network connectivity drops frequently (e.g., driving through a
-// Data requirement: Wrap all high-risk feature components and Byt modules inside the UnifiedErrorBoundary layout.
+// Why:          Prevents blank screens during API failures, providing a graceful degradation path and user feedback.
+// Mobile:       Crucial for mobile environments where network connectivity drops frequently (e.g., driving through a
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Febfl018A14ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Febfl018A14ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Febfl018A14ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FEBFL-018-A14.
-/// Fields derived from AISS sheet row — Frontend Element Build & Feature Library.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
 class Febfl018A14Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
-  final String fieldId;
-  final String validationRule;
-  final String errorMessage;
-  final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String errorCode;
+  final String exceptionType;
+  final String fallbackRoute;
+  final String resolvedBy;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -55,10 +47,10 @@ class Febfl018A14Config {
 
   const Febfl018A14Config({
     required this.configId,
-    required this.fieldId,
-    required this.validationRule,
-    required this.errorMessage,
-    required this.inputType,
+    required this.errorCode,
+    required this.exceptionType,
+    required this.fallbackRoute,
+    required this.resolvedBy,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +69,10 @@ class Febfl018A14Config {
     bool?   complianceStatusInd,
   }) => Febfl018A14Config(
     configId: configId,
-    fieldId: fieldId,
-    validationRule: validationRule,
-    errorMessage: errorMessage,
-    inputType: inputType,
+    errorCode: errorCode,
+    exceptionType: exceptionType,
+    fallbackRoute: fallbackRoute,
+    resolvedBy: resolvedBy,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,17 +84,17 @@ class Febfl018A14Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'fieldId': fieldId,
-    'validationRule': validationRule,
-    'errorMessage': errorMessage,
-    'inputType': inputType,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'errorCode': errorCode,
+    'exceptionType': exceptionType,
+    'fallbackRoute': fallbackRoute,
+    'resolvedBy': resolvedBy,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,28 +121,23 @@ class Febfl018A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Febfl018A14ConformanceLevel.complete:    return 'Good';
-      case Febfl018A14ConformanceLevel.partial:     return 'Average';
-      case Febfl018A14ConformanceLevel.notComplete: return 'Poor';
+      case Febfl018A14ConformanceLevel.pass_: return 'Pass';
+      case Febfl018A14ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// FEBFL-018-A14: Unified "Error Boundary" Fallback UI (Mobile).
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Febfl018A14Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — Implement React Error Boundaries around all major mobile components
   static Febfl018A14Config _ec1Execute(Febfl018A14Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.errorCode.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL018A14-001: fieldId required for FEBFL-018-A14');
+          'EC-FEBFL018A14-001: errorCode required for FEBFL-018-A14');
     }
     // Implement React Error Boundaries around all major mobile com
     return config;
@@ -158,9 +145,9 @@ class Febfl018A14Pipeline {
 
   // EC:2 — Design standard "Service Unavailable" UI
   static Febfl018A14Config _ec2Execute(Febfl018A14Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.errorCode.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL018A14-002: fieldId required for FEBFL-018-A14');
+          'EC-FEBFL018A14-002: errorCode required for FEBFL-018-A14');
     }
     // Design standard "Service Unavailable" UI
     return config;
@@ -168,9 +155,9 @@ class Febfl018A14Pipeline {
 
   // EC:3 — Code logic to catch render errors
   static Febfl018A14Config _ec3Execute(Febfl018A14Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.errorCode.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL018A14-003: fieldId required for FEBFL-018-A14');
+          'EC-FEBFL018A14-003: errorCode required for FEBFL-018-A14');
     }
     // Code logic to catch render errors
     return config;
@@ -178,9 +165,9 @@ class Febfl018A14Pipeline {
 
   // EC:4 — Route error telemetry to BigQuery/Logging
   static Febfl018A14Config _ec4Execute(Febfl018A14Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.errorCode.isEmpty) {
       throw ArgumentError(
-          'EC-FEBFL018A14-004: fieldId required for FEBFL-018-A14');
+          'EC-FEBFL018A14-004: errorCode required for FEBFL-018-A14');
     }
     // Route error telemetry to BigQuery/Logging
     return config;
@@ -190,27 +177,23 @@ class Febfl018A14Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Febfl018A14ValidationResult calculateConformance({
     required List<Febfl018A14Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Febfl018A14ValidationResult(
+      return Febfl018A14ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Febfl018A14ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-FEBFL018A14-VAL',
+        conformanceLevel: Febfl018A14ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-FEBFL018A14-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Febfl018A14ConformanceLevel.complete
-        : rate >= _floor
-            ? Febfl018A14ConformanceLevel.partial
-            : Febfl018A14ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Febfl018A14ConformanceLevel.pass_
+        : Febfl018A14ConformanceLevel.fail_;
     return Febfl018A14ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +222,7 @@ class Febfl018A14Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-FEBFL018A14-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-FEBFL018A14-000: configs must not be empty for FEBFL-018-A14');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +230,19 @@ class Febfl018A14Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-FEBFL018A14-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-FEBFL018A14-TRI: triangular check failed for FEBFL-018-A14');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FEBFL-018-A14',
-      'metric':             'Layout Consistency Score',
+      'metric':             'UI/UX Design-System Consistency (%)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +252,7 @@ class Febfl018A14Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> febfl_018_a14Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -299,16 +278,13 @@ class Febfl018A14Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FEBFL-018-A14',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +293,22 @@ class Febfl018A14Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.errorCode,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${fieldId} | ${validationRule}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +324,16 @@ void main() async {
   final configs = [
     Febfl018A14Config(
       configId: 'febfl018a14-cfg-001',
-      fieldId: 'febfl-018-a14_fieldId_value',
-      validationRule: 'febfl-018-a14_validationRule_value',
-      errorMessage: 'febfl-018-a14_errorMessage_value',
-      inputType: 'febfl-018-a14_inputType_value',
+      errorCode: 'febfl-018-a14_errorCode',
+      exceptionType: 'febfl-018-a14_exceptionType',
+      fallbackRoute: 'febfl-018-a14_fallbackRoute',
+      resolvedBy: 'febfl-018-a14_resolvedBy',
       traceId:                 'trace-febfl018a14-001',
       originSourceId:          'origin-febfl018a14',
       immediatePredecessorId:  'pred-febfl018a14-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Febfl018A14Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('FEBFL-018-A14 → $result');
+  final out = await Febfl018A14Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FEBFL-018-A14 [Pass / Fail] → $out');
 }

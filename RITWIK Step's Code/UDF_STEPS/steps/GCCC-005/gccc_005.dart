@@ -1,40 +1,48 @@
 // ============================================================
 // GCCC-005 — Global Compliance & Classification Controller
-// Atomic Step: Build a binary legal classification gate for corporate revenue buckets.
-// Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     604 of 1073
+// Atomic Step:  Build a binary legal classification gate for corporate revenue buckets.
+// Metric:       Data Classification Accuracy Rate
+// Floor:        0.92  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      282 of 1073
 // ============================================================
-// Why this matters: Guarantees that corrupted or malicious data cannot breach internal pipelines, enforcing data integri
-// Mobile impl:      Reduces mobile app latency by validating payload structures at the nearest edge gateway before full 
-// Data requirement: Obtain the list of the 9 regulatory business categories for gross income classification.
+// Why:          Guarantees that corrupted or malicious data cannot breach internal pipelines, enforcing data integri
+// Mobile:       Reduces mobile app latency by validating payload structures at the nearest edge gateway before full 
+// col41:        High / Medium / Low
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gccc005ConformanceLevel { complete, partial, notComplete }
-enum Gccc005ExecutionStatus  { pending, running, complete, failed }
+enum Gccc005ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gccc005ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GCCC-005.
-/// Fields derived from AISS sheet — Global Compliance & Classification Controller.
+/// GCCC-005 — Global Compliance & Classification Controller
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gccc005Config {
   final String configId;
-  final String ruleId;
-  final String classificationTag;
-  final String complianceFlag;
-  final String auditRef;
+  final String gateId;
+  final String checkRule;
+  final String passThreshold;
+  final String failureReason;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gccc005Config {
 
   const Gccc005Config({
     required this.configId,
-    required this.ruleId,
-    required this.classificationTag,
-    required this.complianceFlag,
-    required this.auditRef,
+    required this.gateId,
+    required this.checkRule,
+    required this.passThreshold,
+    required this.failureReason,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gccc005Config {
     bool?   complianceStatusInd,
   }) => Gccc005Config(
     configId: configId,
-    ruleId: ruleId,
-    classificationTag: classificationTag,
-    complianceFlag: complianceFlag,
-    auditRef: auditRef,
+    gateId: gateId,
+    checkRule: checkRule,
+    passThreshold: passThreshold,
+    failureReason: failureReason,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gccc005Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'ruleId': ruleId,
-    'classificationTag': classificationTag,
-    'complianceFlag': complianceFlag,
-    'auditRef': auditRef,
+    'gateId': gateId,
+    'checkRule': checkRule,
+    'passThreshold': passThreshold,
+    'failureReason': failureReason,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,56 +125,57 @@ class Gccc005ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gccc005ConformanceLevel.complete:    return 'Good';
-      case Gccc005ConformanceLevel.partial:     return 'Average';
-      case Gccc005ConformanceLevel.notComplete: return 'Poor';
+      case Gccc005ConformanceLevel.good:    return 'Good';
+      case Gccc005ConformanceLevel.average: return 'Average';
+      case Gccc005ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// GCCC-005: Build a binary legal classification gate for corporate revenue buckets.
-/// Metric: Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Data Classification Accuracy Rate
+/// Floor=0.92 · Output=Good / Average / Poor
 class Gccc005Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.92;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the GCCC-005 configuration in the source repository.
   static Gccc005Config _ec1Locates(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-001: ruleId required for GCCC-005');
+          'EC-GCCC005-001: gateId required for GCCC-005');
     }
     // the GCCC-005 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts ruleId and classificationTag from the GCCC-005 registry.
+  // EC:2 — System extracts gateId and checkRule from the GCCC-005 registry.
   static Gccc005Config _ec2Extracts(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-002: ruleId required for GCCC-005');
+          'EC-GCCC005-002: gateId required for GCCC-005');
     }
-    // ruleId and classificationTag from the GCCC-005 registry
+    // gateId and checkRule from the GCCC-005 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Release Gate Pass Rate.
+  // EC:3 — System compiles the implementation rule set per Data Classification Accuracy Rate.
   static Gccc005Config _ec3Compiles(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-003: ruleId required for GCCC-005');
+          'EC-GCCC005-003: gateId required for GCCC-005');
     }
-    // the implementation rule set per Release Gate Pass Rate
+    // the implementation rule set per Data Classification Accuracy
     return config;
   }
 
   // EC:4 — System validates configuration against required constraints.
   static Gccc005Config _ec4Validates(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-004: ruleId required for GCCC-005');
+          'EC-GCCC005-004: gateId required for GCCC-005');
     }
     // configuration against required constraints
     return config;
@@ -174,29 +183,29 @@ class Gccc005Pipeline {
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Gccc005Config _ec5Registers(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-005: ruleId required for GCCC-005');
+          'EC-GCCC005-005: gateId required for GCCC-005');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against Release Gate Pass Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Data Classification Accuracy Rate gate (floor=0.92)
   static Gccc005Config _ec6Validates(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-006: ruleId required for GCCC-005');
+          'EC-GCCC005-006: gateId required for GCCC-005');
     }
-    // configuration against Release Gate Pass Rate gate (floor=0.9
+    // configuration against Data Classification Accuracy Rate gate
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Gccc005Config _ec7Routes(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-007: ruleId required for GCCC-005');
+          'EC-GCCC005-007: gateId required for GCCC-005');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -204,9 +213,9 @@ class Gccc005Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Gccc005Config _ec8Publishes(Gccc005Config config) {
-    if (config.ruleId.isEmpty) {
+    if (config.gateId.isEmpty) {
       throw ArgumentError(
-          'EC-GCCC005-008: ruleId required for GCCC-005');
+          'EC-GCCC005-008: gateId required for GCCC-005');
     }
     // validated configuration to the rule registry
     return config;
@@ -220,7 +229,7 @@ class Gccc005Pipeline {
     required List<Gccc005Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gccc005ValidationResult(
+      return Gccc005ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gccc005ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Gccc005Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gccc005ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gccc005ConformanceLevel.good
         : rate >= _floor
-            ? Gccc005ConformanceLevel.partial
-            : Gccc005ConformanceLevel.notComplete;
+            ? Gccc005ConformanceLevel.average
+            : Gccc005ConformanceLevel.poor;
     return Gccc005ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Gccc005Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GCCC-005',
-      'metric':             'Release Gate Pass Rate',
+      'metric':             'Data Classification Accuracy Rate',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Gccc005Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gccc_005Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gccc_005Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Gccc005Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gccc005Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Gccc005Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GCCC-005',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.ruleId,
+                title: Text(c.gateId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -363,16 +379,16 @@ void main() async {
   final configs = [
     Gccc005Config(
       configId: 'gccc005-cfg-001',
-      ruleId: 'gccc-005_ruleId',
-      classificationTag: 'gccc-005_classificationTag',
-      complianceFlag: 'gccc-005_complianceFlag',
-      auditRef: 'gccc-005_auditRef',
+      gateId: 'gccc-005_gateId',
+      checkRule: 'gccc-005_checkRule',
+      passThreshold: 'gccc-005_passThreshold',
+      failureReason: 'gccc-005_failureReason',
       traceId:                 'trace-gccc005-001',
       originSourceId:          'origin-gccc005',
       immediatePredecessorId:  'pred-gccc005-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gccc005Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GCCC-005 → $result');
+  final out = await Gccc005Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GCCC-005 [Good / Average / Poor] → $out');
 }

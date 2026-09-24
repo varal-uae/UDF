@@ -1,31 +1,38 @@
 // ============================================================
 // MCCEA-019 — Mobile Client Commerce & Engagement Analytics
-// Atomic Step: Build and deploy an interactive analytics board visualizing campaign metrics.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     631 of 1073
+// Atomic Step:  Build and deploy an interactive analytics board visualizing campaign metrics.
+// Metric:       Develop Responsive Analytics Quality Index
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      855 of 1073
 // ============================================================
-// Why this matters: Governs list hygiene automatically, enforcing high standards without subjective manager reviews.
-// Mobile impl:      Immediately invalidates session tokens on the worker's mobile app, forcing a secure logout and preve
-// Data requirement: Develop responsive analytics overview layouts featuring interactive chart components.
+// Why:          Governs list hygiene automatically, enforcing high standards without subjective manager reviews.
+// Mobile:       Immediately invalidates session tokens on the worker's mobile app, forcing a secure logout and preve
+// col41:        Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Mccea019ConformanceLevel { complete, partial, notComplete }
-enum Mccea019ExecutionStatus  { pending, running, complete, failed }
+enum Mccea019ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Mccea019ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MCCEA-019.
-/// Fields derived from AISS sheet — Mobile Client Commerce & Engagement Analytics.
+/// MCCEA-019 — Mobile Client Commerce & Engagement Analytics
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mccea019Config {
   final String configId;
@@ -35,6 +42,7 @@ class Mccea019Config {
   final String refreshIntervalMs;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -124,12 +132,13 @@ class Mccea019ValidationResult {
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// MCCEA-019: Build and deploy an interactive analytics board visualizing campaign metrics.
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Develop Responsive Analytics Quality Index
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Mccea019Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — System locates the MCCEA-019 configuration in the source repository.
@@ -152,13 +161,13 @@ class Mccea019Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Develop Responsive Analytics Quality Index
   static Mccea019Config _ec3Compiles(Mccea019Config config) {
     if (config.widgetId.isEmpty) {
       throw ArgumentError(
           'EC-MCCEA019-003: widgetId required for MCCEA-019');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Develop Responsive Analytics
     return config;
   }
 
@@ -182,13 +191,13 @@ class Mccea019Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Develop Responsive Analytics Quality Index gate (fl
   static Mccea019Config _ec6Validates(Mccea019Config config) {
     if (config.widgetId.isEmpty) {
       throw ArgumentError(
           'EC-MCCEA019-006: widgetId required for MCCEA-019');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Develop Responsive Analytics Quality I
     return config;
   }
 
@@ -220,7 +229,7 @@ class Mccea019Pipeline {
     required List<Mccea019Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mccea019ValidationResult(
+      return Mccea019ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Mccea019ConformanceLevel.notComplete,
@@ -230,7 +239,7 @@ class Mccea019Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Mccea019ConformanceLevel.complete
         : rate >= _floor
             ? Mccea019ConformanceLevel.partial
@@ -280,14 +289,14 @@ class Mccea019Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MCCEA-019',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Develop Responsive Analytics Quality Index',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Mccea019Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> mccea_019Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> mccea_019Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Mccea019Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mccea019Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Mccea019Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MCCEA-019',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.widgetId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mccea019Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('MCCEA-019 → $result');
+  final out = await Mccea019Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MCCEA-019 [Complete / Partial / Not Complete] → $out');
 }

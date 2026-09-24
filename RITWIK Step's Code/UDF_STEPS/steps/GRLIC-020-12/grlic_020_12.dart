@@ -1,31 +1,38 @@
 // ============================================================
 // GRLIC-020-12 — Grid Layout & Interaction Compliance
-// Atomic Step: Constructing Passive_Timeout_Escalation_Record Fields
-// Metric:      UI Component Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     594 of 1073
+// Atomic Step:  Constructing Passive_Timeout_Escalation_Record Fields
+// Metric:       Observability / Alert Coverage
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      779 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Present clear friendly timeout notices using standard alert dialog views.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Grlic02012ConformanceLevel { complete, partial, notComplete }
-enum Grlic02012ExecutionStatus  { pending, running, complete, failed }
+enum Grlic02012ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Grlic02012ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GRLIC-020-12.
-/// Fields derived from AISS sheet — Grid Layout & Interaction Compliance.
+/// GRLIC-020-12 — Grid Layout & Interaction Compliance
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Grlic02012Config {
   final String configId;
@@ -35,6 +42,7 @@ class Grlic02012Config {
   final String dismissBehaviour;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Grlic02012ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Grlic02012ConformanceLevel.complete:    return 'Good';
-      case Grlic02012ConformanceLevel.partial:     return 'Average';
-      case Grlic02012ConformanceLevel.notComplete: return 'Poor';
+      case Grlic02012ConformanceLevel.good:    return 'Good';
+      case Grlic02012ConformanceLevel.average: return 'Average';
+      case Grlic02012ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// GRLIC-020-12: Constructing Passive_Timeout_Escalation_Record Fields
-/// Metric: UI Component Compliance Rate · Floor=0.90 · Optimal=0.97
+/// Metric: Observability / Alert Coverage
+/// Floor=0.9 · Output=Good / Average / Poor
 class Grlic02012Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — System locates the GRLIC-020-12 configuration in the source repository.
   static Grlic02012Config _ec1Locates(Grlic02012Config config) {
@@ -152,13 +161,13 @@ class Grlic02012Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per UI Component Compliance Rate.
+  // EC:3 — System compiles the implementation rule set per Observability / Alert Coverage.
   static Grlic02012Config _ec3Compiles(Grlic02012Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-GRLIC02012-003: modalId required for GRLIC-020-12');
     }
-    // the implementation rule set per UI Component Compliance Rate
+    // the implementation rule set per Observability / Alert Covera
     return config;
   }
 
@@ -182,13 +191,13 @@ class Grlic02012Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against UI Component Compliance Rate gate (floor=0.90).
+  // EC:6 — System validates configuration against Observability / Alert Coverage gate (floor=0.9).
   static Grlic02012Config _ec6Validates(Grlic02012Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-GRLIC02012-006: modalId required for GRLIC-020-12');
     }
-    // configuration against UI Component Compliance Rate gate (flo
+    // configuration against Observability / Alert Coverage gate (f
     return config;
   }
 
@@ -220,7 +229,7 @@ class Grlic02012Pipeline {
     required List<Grlic02012Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Grlic02012ValidationResult(
+      return Grlic02012ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Grlic02012ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Grlic02012Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Grlic02012ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Grlic02012ConformanceLevel.good
         : rate >= _floor
-            ? Grlic02012ConformanceLevel.partial
-            : Grlic02012ConformanceLevel.notComplete;
+            ? Grlic02012ConformanceLevel.average
+            : Grlic02012ConformanceLevel.poor;
     return Grlic02012ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Grlic02012Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GRLIC-020-12',
-      'metric':             'UI Component Compliance Rate',
+      'metric':             'Observability / Alert Coverage',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Grlic02012Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> grlic_020_12Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> grlic_020_12Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Grlic02012Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Grlic02012Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Grlic02012Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GRLIC-020-12',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Grlic02012Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GRLIC-020-12 → $result');
+  final out = await Grlic02012Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GRLIC-020-12 [Good / Average / Poor] → $out');
 }

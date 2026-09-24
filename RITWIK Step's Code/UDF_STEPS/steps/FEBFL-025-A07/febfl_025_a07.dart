@@ -1,31 +1,38 @@
 // ============================================================
 // FEBFL-025-A07 — Frontend Element Build & Feature Library
-// Atomic Step: Deploy Material 3 Layout Scaffolds.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     549 of 1073
+// Atomic Step:  Deploy Material 3 Layout Scaffolds.
+// Metric:       Component/Style Adoption Coverage Rate (%) - left pane containers to d
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      244 of 1073
 // ============================================================
-// Why this matters: Minimizes customer conversion friction by replacing erratic layout behavior with predictable, intuit
-// Mobile impl:      Sets single-column stacked scrolling parameters as the root application layout, ensuring smooth gest
-// Data requirement: Bind left pane containers to display item summary lists.
+// Why:          Minimizes customer conversion friction by replacing erratic layout behavior with predictable, intuit
+// Mobile:       Sets single-column stacked scrolling parameters as the root application layout, ensuring smooth gest
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Febfl025A07ConformanceLevel { complete, partial, notComplete }
-enum Febfl025A07ExecutionStatus  { pending, running, complete, failed }
+enum Febfl025A07ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Febfl025A07ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FEBFL-025-A07.
-/// Fields derived from AISS sheet — Frontend Element Build & Feature Library.
+/// FEBFL-025-A07 — Frontend Element Build & Feature Library
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Febfl025A07Config {
   final String configId;
@@ -35,6 +42,7 @@ class Febfl025A07Config {
   final String breakpointLabel;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,19 +125,20 @@ class Febfl025A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Febfl025A07ConformanceLevel.complete:    return 'Good';
-      case Febfl025A07ConformanceLevel.partial:     return 'Average';
-      case Febfl025A07ConformanceLevel.notComplete: return 'Poor';
+      case Febfl025A07ConformanceLevel.good:    return 'Good';
+      case Febfl025A07ConformanceLevel.average: return 'Average';
+      case Febfl025A07ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FEBFL-025-A07: Deploy Material 3 Layout Scaffolds.
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Component/Style Adoption Coverage Rate (%) - left pane conta
+/// Floor=0.9 · Output=Good / Average / Poor
 class Febfl025A07Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — Apply adaptive "Feed" card layouts onto primary service discovery views
@@ -180,7 +189,7 @@ class Febfl025A07Pipeline {
     required List<Febfl025A07Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Febfl025A07ValidationResult(
+      return Febfl025A07ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Febfl025A07ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Febfl025A07Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Febfl025A07ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Febfl025A07ConformanceLevel.good
         : rate >= _floor
-            ? Febfl025A07ConformanceLevel.partial
-            : Febfl025A07ConformanceLevel.notComplete;
+            ? Febfl025A07ConformanceLevel.average
+            : Febfl025A07ConformanceLevel.poor;
     return Febfl025A07ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Febfl025A07Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FEBFL-025-A07',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Component/Style Adoption Coverage Rate (%) - left pane conta',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Febfl025A07Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> febfl_025_a07Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> febfl_025_a07Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Febfl025A07Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Febfl025A07Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Febfl025A07Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FEBFL-025-A07',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Febfl025A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FEBFL-025-A07 → $result');
+  final out = await Febfl025A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FEBFL-025-A07 [Good / Average / Poor] → $out');
 }

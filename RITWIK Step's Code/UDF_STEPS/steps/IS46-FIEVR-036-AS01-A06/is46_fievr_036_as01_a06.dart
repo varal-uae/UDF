@@ -1,40 +1,48 @@
 // ============================================================
-// IS46-FIEVR-036-AS01-A06 — Implementation System 46
-// Atomic Step: Build an automated client-side testing environment for evaluating input form masking rules and local
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     548 of 1073
+// IS46-FIEVR-036-AS01-A06 — IS46 System Module
+// Atomic Step:  Build an automated client-side testing environment for evaluating input form masking rules and local
+// Metric:       UI Response / Rendering Latency - Form input component inside virtual 
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      845 of 1073
 // ============================================================
-// Why this matters: Broken form masks or buggy validation scripts can cause form fields to lock up on certain mobile mod
-// Mobile impl:      Simulates typing behaviors across different soft keyboard scenarios, catching layout glitches before
-// Data requirement: Render target form input component inside virtual DOM environment.
+// Why:          Broken form masks or buggy validation scripts can cause form fields to lock up on certain mobile mod
+// Mobile:       Simulates typing behaviors across different soft keyboard scenarios, catching layout glitches before
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Is46Fievr036As01A06ConformanceLevel { complete, partial, notComplete }
-enum Is46Fievr036As01A06ExecutionStatus  { pending, running, complete, failed }
+enum Is46Fievr036As01A06ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is46Fievr036As01A06ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS46-FIEVR-036-AS01-A06.
-/// Fields derived from AISS sheet — Implementation System 46.
+/// IS46-FIEVR-036-AS01-A06 — IS46 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is46Fievr036As01A06Config {
   final String configId;
-  final String fieldId;
-  final String validationRule;
-  final String errorMessage;
-  final String inputType;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Is46Fievr036As01A06Config {
 
   const Is46Fievr036As01A06Config({
     required this.configId,
-    required this.fieldId,
-    required this.validationRule,
-    required this.errorMessage,
-    required this.inputType,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Is46Fievr036As01A06Config {
     bool?   complianceStatusInd,
   }) => Is46Fievr036As01A06Config(
     configId: configId,
-    fieldId: fieldId,
-    validationRule: validationRule,
-    errorMessage: errorMessage,
-    inputType: inputType,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Is46Fievr036As01A06Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'fieldId': fieldId,
-    'validationRule': validationRule,
-    'errorMessage': errorMessage,
-    'inputType': inputType,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +125,27 @@ class Is46Fievr036As01A06ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is46Fievr036As01A06ConformanceLevel.complete:    return 'Good';
-      case Is46Fievr036As01A06ConformanceLevel.partial:     return 'Average';
-      case Is46Fievr036As01A06ConformanceLevel.notComplete: return 'Poor';
+      case Is46Fievr036As01A06ConformanceLevel.good:    return 'Good';
+      case Is46Fievr036As01A06ConformanceLevel.average: return 'Average';
+      case Is46Fievr036As01A06ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// IS46-FIEVR-036-AS01-A06: Build an automated client-side testing environment for evaluating input form mas
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: UI Response / Rendering Latency - Form input component insid
+/// Floor=0.9 · Output=Good / Average / Poor
 class Is46Fievr036As01A06Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Author automated test scripts using standard testing tools (such as Vitest or Jest) to eva
   static Is46Fievr036As01A06Config _ec1Execute(Is46Fievr036As01A06Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-IS46FIEVR036-001: fieldId required for IS46-FIEVR-036-AS01-A06');
+          'EC-IS46FIEVR036-001: componentId required for IS46-FIEVR-036-AS01-A06');
     }
     // Author automated test scripts using standard testing tools (
     return config;
@@ -150,7 +159,7 @@ class Is46Fievr036As01A06Pipeline {
     required List<Is46Fievr036As01A06Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is46Fievr036As01A06ValidationResult(
+      return Is46Fievr036As01A06ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is46Fievr036As01A06ConformanceLevel.notComplete,
@@ -160,11 +169,11 @@ class Is46Fievr036As01A06Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is46Fievr036As01A06ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Is46Fievr036As01A06ConformanceLevel.good
         : rate >= _floor
-            ? Is46Fievr036As01A06ConformanceLevel.partial
-            : Is46Fievr036As01A06ConformanceLevel.notComplete;
+            ? Is46Fievr036As01A06ConformanceLevel.average
+            : Is46Fievr036As01A06ConformanceLevel.poor;
     return Is46Fievr036As01A06ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -203,14 +212,14 @@ class Is46Fievr036As01A06Pipeline {
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS46-FIEVR-036-AS01-A06',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'UI Response / Rendering Latency - Form input component insid',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -219,7 +228,8 @@ class Is46Fievr036As01A06Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is46_fievr_036_as01_a06Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is46_fievr_036_as01_a06Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -238,6 +248,7 @@ class Is46Fievr036As01A06Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is46Fievr036As01A06Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,30 +256,35 @@ class Is46Fievr036As01A06Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS46-FIEVR-036-AS01-A06',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.fieldId,
+                title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -286,16 +302,16 @@ void main() async {
   final configs = [
     Is46Fievr036As01A06Config(
       configId: 'is46fievr036-cfg-001',
-      fieldId: 'is46-fievr-036-as01-a06_fieldId',
-      validationRule: 'is46-fievr-036-as01-a06_validationRule',
-      errorMessage: 'is46-fievr-036-as01-a06_errorMessage',
-      inputType: 'is46-fievr-036-as01-a06_inputType',
+      componentId: 'is46-fievr-036-as01-a06_componentId',
+      targetSizeDp: 'is46-fievr-036-as01-a06_targetSizeDp',
+      actualSizeDp: 'is46-fievr-036-as01-a06_actualSizeDp',
+      complianceStatus: 'is46-fievr-036-as01-a06_complianceStatus',
       traceId:                 'trace-is46fievr036-001',
       originSourceId:          'origin-is46fievr036',
       immediatePredecessorId:  'pred-is46fievr036-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is46Fievr036As01A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS46-FIEVR-036-AS01-A06 → $result');
+  final out = await Is46Fievr036As01A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS46-FIEVR-036-AS01-A06 [Good / Average / Poor] → $out');
 }

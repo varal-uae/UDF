@@ -1,40 +1,47 @@
 // ============================================================
 // GEN-00110 — GEN Backend Utility Module
-// Atomic Step: Restrict MTO screen inputs to strictly the required target field.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     641 of 1073
+// Atomic Step:  Restrict MTO screen inputs to strictly the required target field.
+// Metric:       State Control Enforcement Accuracy
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      292 of 1073
 // ============================================================
-// Why this matters: Restrict MTO screen inputs to strictly the required target field. is a critical implementation step.
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Restrict MTO screen inputs to strictly the required target field.
+// Why:          Restrict MTO screen inputs to strictly the required target field. is a critical implementation step.
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen00110ConformanceLevel { complete, partial, notComplete }
-enum Gen00110ExecutionStatus  { pending, running, complete, failed }
+enum Gen00110ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen00110ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-00110.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-00110 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen00110Config {
   final String configId;
-  final String fieldId;
-  final String validationRule;
-  final String errorMessage;
-  final String inputType;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +50,10 @@ class Gen00110Config {
 
   const Gen00110Config({
     required this.configId,
-    required this.fieldId,
-    required this.validationRule,
-    required this.errorMessage,
-    required this.inputType,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +72,10 @@ class Gen00110Config {
     bool?   complianceStatusInd,
   }) => Gen00110Config(
     configId: configId,
-    fieldId: fieldId,
-    validationRule: validationRule,
-    errorMessage: errorMessage,
-    inputType: inputType,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +87,10 @@ class Gen00110Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'fieldId': fieldId,
-    'validationRule': validationRule,
-    'errorMessage': errorMessage,
-    'inputType': inputType,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +124,26 @@ class Gen00110ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen00110ConformanceLevel.complete:    return 'Complete';
-      case Gen00110ConformanceLevel.partial:     return 'Partial';
-      case Gen00110ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen00110ConformanceLevel.pass_: return 'Pass';
+      case Gen00110ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-00110: Restrict MTO screen inputs to strictly the required target field.
-/// Metric: Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: State Control Enforcement Accuracy
+/// Floor=0.95 · Output=Pass / Fail
 class Gen00110Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen00110Config _ec1Execute(Gen00110Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00110-001: fieldId required for GEN-00110');
+          'EC-GEN00110-001: componentId required for GEN-00110');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +151,9 @@ class Gen00110Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen00110Config _ec2Execute(Gen00110Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00110-002: fieldId required for GEN-00110');
+          'EC-GEN00110-002: componentId required for GEN-00110');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +161,9 @@ class Gen00110Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen00110Config _ec3Execute(Gen00110Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00110-003: fieldId required for GEN-00110');
+          'EC-GEN00110-003: componentId required for GEN-00110');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +171,9 @@ class Gen00110Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen00110Config _ec4Execute(Gen00110Config config) {
-    if (config.fieldId.isEmpty) {
+    if (config.componentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00110-004: fieldId required for GEN-00110');
+          'EC-GEN00110-004: componentId required for GEN-00110');
     }
     // Document and commit to runbook
     return config;
@@ -180,21 +187,19 @@ class Gen00110Pipeline {
     required List<Gen00110Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen00110ValidationResult(
+      return Gen00110ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen00110ConformanceLevel.notComplete,
+        conformanceLevel: Gen00110ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN00110-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen00110ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen00110ConformanceLevel.partial
-            : Gen00110ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen00110ConformanceLevel.pass_
+        : Gen00110ConformanceLevel.fail_;
     return Gen00110ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen00110Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-00110',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'State Control Enforcement Accuracy',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen00110Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_00110Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_00110Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen00110Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen00110Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen00110Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-00110',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.fieldId,
+                title: Text(c.componentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +331,16 @@ void main() async {
   final configs = [
     Gen00110Config(
       configId: 'gen00110-cfg-001',
-      fieldId: 'gen-00110_fieldId',
-      validationRule: 'gen-00110_validationRule',
-      errorMessage: 'gen-00110_errorMessage',
-      inputType: 'gen-00110_inputType',
+      componentId: 'gen-00110_componentId',
+      targetSizeDp: 'gen-00110_targetSizeDp',
+      actualSizeDp: 'gen-00110_actualSizeDp',
+      complianceStatus: 'gen-00110_complianceStatus',
       traceId:                 'trace-gen00110-001',
       originSourceId:          'origin-gen00110',
       immediatePredecessorId:  'pred-gen00110-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen00110Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-00110 → $result');
+  final out = await Gen00110Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-00110 [Pass / Fail] → $out');
 }

@@ -1,51 +1,48 @@
 // ============================================================
 // SCTSS-017-A02 — Semantic Color Token Styling System
-// Atomic Step: Create AI Draft vs Human Edit Split Ratio to decide exact viewport ratio for the dual-pane workspace
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     317 of 396
+// Atomic Step:  Create AI Draft vs Human Edit Split Ratio to decide exact viewport ratio for the dual-pane workspace
+// Metric:       Requirement & Asset Discovery Coverage (%) — screen real estate requir
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      967 of 1073
 // ============================================================
-// Why this matters: AI speeds up drafting, but UI must present splits cleanly for Human-in-the-Loop (HITL) verification 
-// Mobile impl:      Switches from side-by-side (desktop) to top-and-bottom stacked (mobile) view smoothly without data l
-// Data requirement: Identify screen real estate requirements for reviewing AI draft visuals versus editing blueprint par
+// Why:          AI speeds up drafting, but UI must present splits cleanly for Human-in-the-Loop (HITL) verification 
+// Mobile:       Switches from side-by-side (desktop) to top-and-bottom stacked (mobile) view smoothly without data l
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Sctss017A02ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Sctss017A02ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sctss017A02ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SCTSS-017-A02.
-/// Fields derived from AISS sheet row — Semantic Color Token Styling System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// SCTSS-017-A02 — Semantic Color Token Styling System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sctss017A02Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
-  final String identify;
-  final String screen;
-  final String estate;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String animationId;
+  final String durationMs;
+  final String easingCurve;
+  final String triggerState;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -54,9 +51,10 @@ class Sctss017A02Config {
 
   const Sctss017A02Config({
     required this.configId,
-    required this.identify,
-    required this.screen,
-    required this.estate,
+    required this.animationId,
+    required this.durationMs,
+    required this.easingCurve,
+    required this.triggerState,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -75,9 +73,10 @@ class Sctss017A02Config {
     bool?   complianceStatusInd,
   }) => Sctss017A02Config(
     configId: configId,
-    identify: identify,
-    screen: screen,
-    estate: estate,
+    animationId: animationId,
+    durationMs: durationMs,
+    easingCurve: easingCurve,
+    triggerState: triggerState,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -89,16 +88,17 @@ class Sctss017A02Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'identify': identify,
-    'screen': screen,
-    'estate': estate,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'animationId': animationId,
+    'durationMs': durationMs,
+    'easingCurve': easingCurve,
+    'triggerState': triggerState,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -132,21 +132,20 @@ class Sctss017A02ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SCTSS-017-A02: Create AI Draft vs Human Edit Split Ratio to decide exact viewport ratio for the
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Requirement & Asset Discovery Coverage (%) — screen real est
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Sctss017A02Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — Set percentage width of AI suggestion pane
   static Sctss017A02Config _ec1Execute(Sctss017A02Config config) {
-    if (config.identify.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-SCTSS017A02-001: identify required for SCTSS-017-A02');
+          'EC-SCTSS017A02-001: animationId required for SCTSS-017-A02');
     }
     // Set percentage width of AI suggestion pane
     return config;
@@ -154,9 +153,9 @@ class Sctss017A02Pipeline {
 
   // EC:2 — Define responsive stacking order
   static Sctss017A02Config _ec2Execute(Sctss017A02Config config) {
-    if (config.identify.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-SCTSS017A02-002: identify required for SCTSS-017-A02');
+          'EC-SCTSS017A02-002: animationId required for SCTSS-017-A02');
     }
     // Define responsive stacking order
     return config;
@@ -164,9 +163,9 @@ class Sctss017A02Pipeline {
 
   // EC:3 — Decide if splitter is draggable
   static Sctss017A02Config _ec3Execute(Sctss017A02Config config) {
-    if (config.identify.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-SCTSS017A02-003: identify required for SCTSS-017-A02');
+          'EC-SCTSS017A02-003: animationId required for SCTSS-017-A02');
     }
     // Decide if splitter is draggable
     return config;
@@ -174,9 +173,9 @@ class Sctss017A02Pipeline {
 
   // EC:4 — Determine scroll synchronization
   static Sctss017A02Config _ec4Execute(Sctss017A02Config config) {
-    if (config.identify.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-SCTSS017A02-004: identify required for SCTSS-017-A02');
+          'EC-SCTSS017A02-004: animationId required for SCTSS-017-A02');
     }
     // Determine scroll synchronization
     return config;
@@ -186,23 +185,21 @@ class Sctss017A02Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Sctss017A02ValidationResult calculateConformance({
     required List<Sctss017A02Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sctss017A02ValidationResult(
+      return Sctss017A02ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sctss017A02ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-SCTSS017A02-VAL',
+        gatePass: false, ecLineRef: 'EC-SCTSS017A02-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Sctss017A02ConformanceLevel.complete
         : rate >= _floor
             ? Sctss017A02ConformanceLevel.partial
@@ -235,7 +232,7 @@ class Sctss017A02Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-SCTSS017A02-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-SCTSS017A02-000: configs must not be empty for SCTSS-017-A02');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -243,21 +240,19 @@ class Sctss017A02Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-SCTSS017A02-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-SCTSS017A02-TRI: triangular check failed for SCTSS-017-A02');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SCTSS-017-A02',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Requirement & Asset Discovery Coverage (%) — screen real est',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -267,9 +262,7 @@ class Sctss017A02Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sctss_017_a02Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -288,6 +281,7 @@ class Sctss017A02Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sctss017A02Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -295,16 +289,13 @@ class Sctss017A02Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SCTSS-017-A02',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +304,22 @@ class Sctss017A02Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.identify,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.animationId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${identify} | ${screen}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -345,16 +335,16 @@ void main() async {
   final configs = [
     Sctss017A02Config(
       configId: 'sctss017a02-cfg-001',
-      identify: 'sctss-017-a02_identify_value',
-      screen: 'sctss-017-a02_screen_value',
-      estate: 'sctss-017-a02_estate_value',
+      animationId: 'sctss-017-a02_animationId',
+      durationMs: 'sctss-017-a02_durationMs',
+      easingCurve: 'sctss-017-a02_easingCurve',
+      triggerState: 'sctss-017-a02_triggerState',
       traceId:                 'trace-sctss017a02-001',
       originSourceId:          'origin-sctss017a02',
       immediatePredecessorId:  'pred-sctss017a02-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sctss017A02Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SCTSS-017-A02 → $result');
+  final out = await Sctss017A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SCTSS-017-A02 [Complete / Partial / Not Complete] → $out');
 }

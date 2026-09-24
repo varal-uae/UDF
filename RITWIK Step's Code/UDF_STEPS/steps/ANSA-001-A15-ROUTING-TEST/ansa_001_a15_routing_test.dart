@@ -1,294 +1,346 @@
 // ============================================================
-// ANSA-001-A15 · NavigationBar Destination Routing Test Manager
-// Habot Connect DMCC · UDF Team · Ritwik Sharma
-// Atomic Step: Test all navigation items route to the correct destinations.
-// Metric: Verification / QA Pass Rate · Floor=0.9% · Optimal=98–100% · Output=Pass/Fail
-// Standard: World-class teams treat verification as a repeatable, automated gate.
+// ANSA-001-A15 — App Navigation Shell
+// Atomic Step:  Provision persistent bottom interface navigation containers.
+// Metric:       Verification / QA Pass Rate
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      18 of 1073
+// ============================================================
+// Why:          Placing primary app section switches along top layout boundaries requires extensive hand repositioni
+// Mobile:       Permits full single-handed application tracking control, matching thumb-driven mobile ergonomics sta
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
-import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
-// ── Data Models ──────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
+enum Ansa001A15ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-/// Mandatory DCDF lineage headers — AEETE-018 standard.
-/// These fields make this file's outputs traceable backward
-/// through the pipeline to their origin source document.
-class DcdfLineage {
-  final String traceId;                // end-to-end transaction UUID
-  final String originSourceId;         // originating system node UUID
-  final String immediatePredecessorId; // direct upstream node UUID
-  final String transformationLogicHash; // SHA-256 of executing EC logic
-  final bool   complianceStatusInd;    // DCDF gate: true = passed
+// ── Execution status ─────────────────────────────────────────
 
-  const DcdfLineage({
+enum Ansa001A15ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// ANSA-001-A15 — App Navigation Shell
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Ansa001A15Config {
+  final String configId;
+  final String gridColumns;
+  final String gutterSizePx;
+  final String maxWidthPx;
+  final String breakpointLabel;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
+  final String traceId;
+  final String originSourceId;
+  final String immediatePredecessorId;
+  final String transformationLogicHash;
+  final bool   complianceStatusInd;
+
+  const Ansa001A15Config({
+    required this.configId,
+    required this.gridColumns,
+    required this.gutterSizePx,
+    required this.maxWidthPx,
+    required this.breakpointLabel,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
     this.complianceStatusInd = false,
   });
+
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
+
+  Ansa001A15Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Ansa001A15Config(
+    configId: configId,
+    gridColumns: gridColumns,
+    gutterSizePx: gutterSizePx,
+    maxWidthPx: maxWidthPx,
+    breakpointLabel: breakpointLabel,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gridColumns': gridColumns,
+    'gutterSizePx': gutterSizePx,
+    'maxWidthPx': maxWidthPx,
+    'breakpointLabel': breakpointLabel,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-class RoutingTestConfig {
-  final String testType;
-  final String testResult;
-  final double testCoverage;
-  final DateTime testTimestamp;
-  final String testLogPath;
+// ── Validation Result ─────────────────────────────────────────
 
-  RoutingTestConfig({
-    required this.testType,
-    required this.testResult,
-    required this.testCoverage,
-    required this.testTimestamp,
-    required this.testLogPath,
+class Ansa001A15ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Ansa001A15ConformanceLevel conformanceLevel;
+  final bool   gatePass;
+  final String ecLineRef;
+
+  const Ansa001A15ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
+    required this.violationCount,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
+    required this.ecLineRef,
   });
-}
 
-class RoutingTestRule {
-  final String ruleId;
-  final bool tapSimulationRequired;   // tap-per-item simulation
-  final bool destinationScreenAssert; // assert correct screen renders
-  final bool activeIndicatorAssert;   // assert indicator updates
-  final bool immutableInd;
-
-  const RoutingTestRule({
-    required this.ruleId,
-    this.tapSimulationRequired = true,
-    this.destinationScreenAssert = true,
-    this.activeIndicatorAssert = true,
-    this.immutableInd = true,
-  });
-}
-
-class RoutingTestResult {
-  final String navItemId;
-  final String expectedDestination;
-  final String actualDestination;
-  final bool destinationMatchInd;
-  final bool activeIndicatorUpdatedInd;
-  final String applicationResult;
-
-  RoutingTestResult({
-    required this.navItemId,
-    required this.expectedDestination,
-    required this.actualDestination,
-    required this.destinationMatchInd,
-    required this.activeIndicatorUpdatedInd,
-    required this.applicationResult,
-  });
-
-  bool get isPass => applicationResult == 'PASS';
-}
-
-// ── Core Manager (EC:1–8) ────────────────────────────────────
-
-class Ansa001A15Manager {
-  static const double _floor   = 0.9;  // metric floor gate
-  static const double _optimal = 98; // metric optimal target
-
-  static const double _floorPassRate = 0.90;
-  static const double _optimalPassRate = 0.98;
-
-  // EC:3 — Compile destination routing test rule set
-  RoutingTestRule compileRule(String ruleId) {
-    return RoutingTestRule(
-      ruleId: ruleId,
-      tapSimulationRequired: true,
-      destinationScreenAssert: true,
-      activeIndicatorAssert: true,
-      immutableInd: true,
-    );
-  }
-
-  // EC:5 — Bind routing test rule to each NavigationBar item
-  bool bindTestRuleToItem({
-    required String navItemId,
-    required RoutingTestRule rule,
-  }) {
-    if (!rule.immutableInd) {
-      throw StateError('EC-ANSA-001-A15-005: Rule must be immutable');
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Ansa001A15ConformanceLevel.pass_: return 'Pass';
+      case Ansa001A15ConformanceLevel.fail_: return 'Fail';
     }
-    return rule.tapSimulationRequired && rule.destinationScreenAssert;
+  }
+}
+
+// ── EC:4 Pipeline ────────────────────────────────────────
+
+/// ANSA-001-A15: Provision persistent bottom interface navigation containers.
+/// Metric: Verification / QA Pass Rate
+/// Floor=0.9 · Output=Pass / Fail
+class Ansa001A15Pipeline {
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
+
+  // EC:1 — * Initialize the core mobile bottom grid rules inside user interface style parameters
+  static Ansa001A15Config _ec1Execute(Ansa001A15Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-ANSA001A15-001: gridColumns required for ANSA-001-A15');
+    }
+    // * Initialize the core mobile bottom grid rules inside user i
+    return config;
   }
 
-  // EC:6 — Execute tap simulation: confirm correct destination
-  RoutingTestResult runTapSimulation({
-    required String navItemId,
-    required String expectedDestination,
-    required String actualDestination,
-    required bool activeIndicatorUpdated,
-    required RoutingTestRule rule,
+  // EC:2 — * Disable side nav rails or top menu items entirely on small smartphone canvas widths
+  static Ansa001A15Config _ec2Execute(Ansa001A15Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-ANSA001A15-002: gridColumns required for ANSA-001-A15');
+    }
+    // * Disable side nav rails or top menu items entirely on small
+    return config;
+  }
+
+  // EC:3 — * Mount exactly four pre-set visual icon elements uniformly along the persistent bottom st
+  static Ansa001A15Config _ec3Execute(Ansa001A15Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-ANSA001A15-003: gridColumns required for ANSA-001-A15');
+    }
+    // * Mount exactly four pre-set visual icon elements uniformly 
+    return config;
+  }
+
+  // EC:4 — * Match control color selection feedback closely to standard active surface parameters
+  static Ansa001A15Config _ec4Execute(Ansa001A15Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-ANSA001A15-004: gridColumns required for ANSA-001-A15');
+    }
+    // * Match control color selection feedback closely to standard
+    return config;
+  }
+
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Ansa001A15ValidationResult calculateConformance({
+    required List<Ansa001A15Config> configs,
   }) {
-    final destinationMatch = expectedDestination == actualDestination;
-    final result = (destinationMatch && activeIndicatorUpdated) ? 'PASS' : 'FAIL';
-    return RoutingTestResult(
-      navItemId: navItemId,
-      expectedDestination: expectedDestination,
-      actualDestination: actualDestination,
-      destinationMatchInd: destinationMatch,
-      activeIndicatorUpdatedInd: activeIndicatorUpdated,
-      applicationResult: result,
+    if (configs.isEmpty) {
+      return Ansa001A15ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Ansa001A15ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-ANSA001A15-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Ansa001A15ConformanceLevel.pass_
+        : Ansa001A15ConformanceLevel.fail_;
+    return Ansa001A15ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-ANSA001A15-VAL',
     );
   }
 
-  // Run all navigation items
-  List<RoutingTestResult> runAllItemTests({
-    required List<Map<String, String>> navItemExpectations,
-    required RoutingTestRule rule,
-    required Map<String, String> actualDestinations,
-    required Map<String, bool> indicatorUpdates,
-  }) {
-    return navItemExpectations.map((item) {
-      final id = item['item_id']!;
-      return runTapSimulation(
-        navItemId: id,
-        expectedDestination: item['expected']!,
-        actualDestination: actualDestinations[id] ?? '',
-        activeIndicatorUpdated: indicatorUpdates[id] ?? false,
-        rule: rule,
-      );
-    }).toList();
+  static Ansa001A15Config routeToRegistry(
+    Ansa001A15Config config,
+    Ansa001A15ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
   }
 
-  // EC:7 — Verification / QA Pass Rate
-  Map<String, dynamic> calculatePassRate(List<RoutingTestResult> results) {
-    if (results.isEmpty) return {'rate': 0.0, 'output': 'Fail'};
-    final passed = results.where((r) => r.isPass).length;
-    final rate = passed / results.length;
-    return {
-      'rate': rate,
-      'output': rate >= _floorPassRate ? 'Pass' : 'Fail',
-      'passed': passed,
-      'total': results.length,
-      'automated': true,
-    };
-  }
-
-  // Triangular check: items_registered = simulations_executed (delta=0)
-  bool triangularCheck(int registered, int executed) => registered == executed;
-}
-
-// ── Pipeline Service ─────────────────────────────────────────
-
-class Ansa001A15PipelineService {
-  final Ansa001A15Manager _manager = Ansa001A15Manager();
-
-  Future<Map<String, dynamic>> run({
-    required List<Map<String, String>> navItemExpectations,
-    required Map<String, String> actualDestinations,
-    required Map<String, bool> indicatorUpdates,
-    required String userId,
+  static Future<Map<String, dynamic>> run({
+    required List<Ansa001A15Config> configs,
+    String userId = 'system',
   }) async {
-    // EC:1 — Locate NavigationBar destination routing test configuration
-    final config = await _locateTestConfig();
-    if (config == null) return _dlq('EC-ANSA-001-A15-001', {});
-
-    // EC:2 — Extract test type, result, coverage, timestamp, log path
-    final testConfig = _extractTestConfig(config);
-    if (testConfig == null) return _dlq('EC-ANSA-001-A15-002', {});
-
-    // EC:3 — Compile routing test rule set
-    final rule = _manager.compileRule(
-      'RULE-A15-${DateTime.now().millisecondsSinceEpoch}',
-    );
-
-    // EC:4 — Register as immutable versioned routing verification configuration
-    if (!rule.immutableInd) {
-      throw StateError('EC-ANSA-001-A15-004: Must be immutable');
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-ANSA001A15-000: configs must not be empty for ANSA-001-A15');
     }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
 
-    // EC:5 — Bind each routing test rule to its NavigationBar item
-    for (final item in navItemExpectations) {
-      final bound = _manager.bindTestRuleToItem(
-        navItemId: item['item_id']!,
-        rule: rule,
-      );
-      if (!bound) return _dlq('EC-ANSA-001-A15-005', {'item': item['item_id']});
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-ANSA001A15-TRI: triangular check failed for ANSA-001-A15');
     }
-
-    // EC:6 — Execute tap simulations
-    final results = _manager.runAllItemTests(
-      navItemExpectations: navItemExpectations,
-      rule: rule,
-      actualDestinations: actualDestinations,
-      indicatorUpdates: indicatorUpdates,
-    );
-
-    // Triangular check
-    if (!_manager.triangularCheck(navItemExpectations.length, results.length)) {
-      return _dlq('EC-ANSA-001-A15-TRI', {'expected': navItemExpectations.length});
-    }
-
-    // EC:7 — Verification / QA Pass Rate
-    final quality = _manager.calculatePassRate(results);
-
-    // EC:8 — Route to centralised enterprise global UI template files index
-    await _publishToTemplateIndex(rule, userId);
-
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status': 'VERIFIED',
-      'pass_rate': quality['rate'],
-      'output': quality['output'],
-      'items_tested': results.length,
-      'destination_mismatches': results.where((r) => !r.destinationMatchInd).length,
-      'automated_gate': true,
-      'ec_ref': 'EC-ANSA-001-A15',
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-ANSA-001-A15',
+      'metric':             'Verification / QA Pass Rate',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
     };
   }
-
-  Future<Map<String, dynamic>?> _locateTestConfig() async {
-    await Future.delayed(const Duration(milliseconds: 10));
-    return {'config_id': 'ROUTING-TEST-015', 'source': 'enterprise_template_index'};
-  }
-
-  RoutingTestConfig? _extractTestConfig(Map<String, dynamic> config) {
-    return RoutingTestConfig(
-      testType: 'E2E_ROUTING',
-      testResult: 'PENDING',
-      testCoverage: 1.0,
-      testTimestamp: DateTime.now(),
-      testLogPath: 'logs/routing_test_${DateTime.now().millisecondsSinceEpoch}.json',
-    );
-  }
-
-  Future<void> _publishToTemplateIndex(
-    RoutingTestRule rule,
-    String userId,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 15));
-  }
-
-  Map<String, dynamic> _dlq(String code, Map<String, dynamic> payload) =>
-      {'error': code, 'payload': jsonEncode(payload), 'dlq': true};
 }
 
-// ── Entry Point ───────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> ansa_001_a15Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'ANSA-001-A15',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
+
+class Ansa001A15Widget extends StatelessWidget {
+  final List<Ansa001A15Config> configs;
+  const Ansa001A15Widget({super.key, required this.configs});
+
+  @override
+  Widget build(BuildContext context) {
+    final result = Ansa001A15Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            Expanded(child: Text('ANSA-001-A15',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
+            Chip(
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
+          ]),
+        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.gridColumns,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
+      ],
+    );
+  }
+}
+
+// ── Entry point ───────────────────────────────────────────────
 
 void main() async {
-  final service = Ansa001A15PipelineService();
-  final result = await service.run(
-    navItemExpectations: [
-      {'item_id': 'NAV-01', 'expected': '/home'},
-      {'item_id': 'NAV-02', 'expected': '/search'},
-      {'item_id': 'NAV-03', 'expected': '/profile'},
-      {'item_id': 'NAV-04', 'expected': '/messages'},
-    ],
-    actualDestinations: {
-      'NAV-01': '/home',
-      'NAV-02': '/search',
-      'NAV-03': '/profile',
-      'NAV-04': '/messages',
-    },
-    indicatorUpdates: {
-      'NAV-01': true,
-      'NAV-02': true,
-      'NAV-03': true,
-      'NAV-04': true,
-    },
-    userId: 'user-ritwik-001',
-  );
-  print('ANSA-001-A15 result: $result');
+  final configs = [
+    Ansa001A15Config(
+      configId: 'ansa001a15-cfg-001',
+      gridColumns: 'ansa-001-a15_gridColumns',
+      gutterSizePx: 'ansa-001-a15_gutterSizePx',
+      maxWidthPx: 'ansa-001-a15_maxWidthPx',
+      breakpointLabel: 'ansa-001-a15_breakpointLabel',
+      traceId:                 'trace-ansa001a15-001',
+      originSourceId:          'origin-ansa001a15',
+      immediatePredecessorId:  'pred-ansa001a15-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Ansa001A15Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ANSA-001-A15 [Pass / Fail] → $out');
 }

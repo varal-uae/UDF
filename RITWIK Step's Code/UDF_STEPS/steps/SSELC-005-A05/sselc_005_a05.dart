@@ -1,50 +1,45 @@
 // ============================================================
 // SSELC-005-A05 — Split-Screen Element Layout Controller
-// Atomic Step: Implementation Step 50: Implement SVG Bounding Box Cropping Layer. (SSELC-005)
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     446 of 530
+// Atomic Step:  Implementation Step 50: Implement SVG Bounding Box Cropping Layer. (SSELC-005)
+// Metric:       SVG Clipping / Bounding Box Precision
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      996 of 1073
 // ============================================================
-// Why this matters: Prevents internal human verification workers from browsing sensitive client customer PII arrays.
-// Mobile impl:      Pre-crops media items server-side using bounding maps, sending tiny optimized image assets to preven
-// Data requirement: Construct a highly responsive, low-overhead client SVG layout container on the user interface templa
+// Why:          Prevents internal human verification workers from browsing sensitive client customer PII arrays.
+// Mobile:       Pre-crops media items server-side using bounding maps, sending tiny optimized image assets to preven
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Sselc005A05ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Sselc005A05ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sselc005A05ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SSELC-005-A05.
-/// Fields derived from AISS sheet — Split-Screen Element Layout Controller.
+/// SSELC-005-A05 — Split-Screen Element Layout Controller
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sselc005A05Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String componentId;
   final String targetSizeDp;
   final String actualSizeDp;
   final String complianceStatus;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Sselc005A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc005A05ConformanceLevel.complete:    return 'Pass';
-      case Sselc005A05ConformanceLevel.partial:     return 'Partial';
-      case Sselc005A05ConformanceLevel.notComplete: return 'Fail';
+      case Sselc005A05ConformanceLevel.pass_: return 'Pass';
+      case Sselc005A05ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// SSELC-005-A05: Implementation Step 50: Implement SVG Bounding Box Cropping Layer. (SSELC-005)
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: SVG Clipping / Bounding Box Precision
+/// Floor=0.95 · Output=Pass / Fail
 class Sselc005A05Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Parse incoming mask_coords arrays containing coordinates extracted by cloud recognition mo
   static Sselc005A05Config _ec1Execute(Sselc005A05Config config) {
@@ -163,21 +157,19 @@ class Sselc005A05Pipeline {
     required List<Sselc005A05Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sselc005A05ValidationResult(
+      return Sselc005A05ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Sselc005A05ConformanceLevel.notComplete,
+        conformanceLevel: Sselc005A05ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-SSELC005A05-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sselc005A05ConformanceLevel.complete
-        : rate >= _floor
-            ? Sselc005A05ConformanceLevel.partial
-            : Sselc005A05ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Sselc005A05ConformanceLevel.pass_
+        : Sselc005A05ConformanceLevel.fail_;
     return Sselc005A05ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -213,19 +205,17 @@ class Sselc005A05Pipeline {
     if (!triangularCheck(configs.length, p1.length)) {
       throw ArgumentError('EC-SSELC005A05-TRI: triangular check failed for SSELC-005-A05');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SSELC-005-A05',
-      'metric':             'Layout Consistency Score',
+      'metric':             'SVG Clipping / Bounding Box Precision',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -235,9 +225,7 @@ class Sselc005A05Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sselc_005_a05Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -256,6 +244,7 @@ class Sselc005A05Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sselc005A05Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -263,15 +252,13 @@ class Sselc005A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SSELC-005-A05',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -280,23 +267,22 @@ class Sselc005A05Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -322,7 +308,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sselc005A05Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SSELC-005-A05 → $result');
+  final out = await Sselc005A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SSELC-005-A05 [Pass / Fail] → $out');
 }

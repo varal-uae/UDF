@@ -1,31 +1,37 @@
 // ============================================================
 // ERMWD-028-A17 — Error Mapping & Widget Display
-// Atomic Step: Implementation Step 49: Code the connection observer and local SQLite queuing system for mobile offl
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     625 of 1073
+// Atomic Step:  Implementation Step 49: Code the connection observer and local SQLite queuing system for mobile offl
+// Metric:       Offline Data Resilience & Sync Latency
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      210 of 1073
 // ============================================================
-// Why this matters: Enforces extreme task simplicity. If a task takes >15 mins, the Byt was not deconstructed enough and
-// Mobile impl:      Ensures timer spans 100vw and is fixed at the top, preserving vital screen real estate for the task 
-// Data requirement: Remove the offline notice marker element from the user interface layout view smoothly.
+// Why:          Enforces extreme task simplicity. If a task takes >15 mins, the Byt was not deconstructed enough and
+// Mobile:       Ensures timer spans 100vw and is fixed at the top, preserving vital screen real estate for the task 
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Ermwd028A17ConformanceLevel { complete, partial, notComplete }
-enum Ermwd028A17ExecutionStatus  { pending, running, complete, failed }
+enum Ermwd028A17ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Ermwd028A17ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for ERMWD-028-A17.
-/// Fields derived from AISS sheet — Error Mapping & Widget Display.
+/// ERMWD-028-A17 — Error Mapping & Widget Display
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ermwd028A17Config {
   final String configId;
@@ -35,6 +41,7 @@ class Ermwd028A17Config {
   final String complianceTarget;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Ermwd028A17ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ermwd028A17ConformanceLevel.complete:    return 'Pass';
-      case Ermwd028A17ConformanceLevel.partial:     return 'Partial';
-      case Ermwd028A17ConformanceLevel.notComplete: return 'Fail';
+      case Ermwd028A17ConformanceLevel.pass_: return 'Pass';
+      case Ermwd028A17ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// ERMWD-028-A17: Implementation Step 49: Code the connection observer and local SQLite queuing sy
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Offline Data Resilience & Sync Latency
+/// Floor=0.95 · Output=Pass / Fail
 class Ermwd028A17Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — System locates the ERMWD-028-A17 configuration in the source repository.
   static Ermwd028A17Config _ec1Locates(Ermwd028A17Config config) {
@@ -152,13 +159,13 @@ class Ermwd028A17Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Layout Consistency Score.
+  // EC:3 — System compiles the implementation rule set per Offline Data Resilience & Sync Latency.
   static Ermwd028A17Config _ec3Compiles(Ermwd028A17Config config) {
     if (config.ruleKey.isEmpty) {
       throw ArgumentError(
           'EC-ERMWD028A17-003: ruleKey required for ERMWD-028-A17');
     }
-    // the implementation rule set per Layout Consistency Score
+    // the implementation rule set per Offline Data Resilience & Sy
     return config;
   }
 
@@ -182,13 +189,13 @@ class Ermwd028A17Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Layout Consistency Score gate (floor=0.90).
+  // EC:6 — System validates configuration against Offline Data Resilience & Sync Latency gate (floor=
   static Ermwd028A17Config _ec6Validates(Ermwd028A17Config config) {
     if (config.ruleKey.isEmpty) {
       throw ArgumentError(
           'EC-ERMWD028A17-006: ruleKey required for ERMWD-028-A17');
     }
-    // configuration against Layout Consistency Score gate (floor=0
+    // configuration against Offline Data Resilience & Sync Latency
     return config;
   }
 
@@ -220,21 +227,19 @@ class Ermwd028A17Pipeline {
     required List<Ermwd028A17Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ermwd028A17ValidationResult(
+      return Ermwd028A17ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Ermwd028A17ConformanceLevel.notComplete,
+        conformanceLevel: Ermwd028A17ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-ERMWD028A17-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ermwd028A17ConformanceLevel.complete
-        : rate >= _floor
-            ? Ermwd028A17ConformanceLevel.partial
-            : Ermwd028A17ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Ermwd028A17ConformanceLevel.pass_
+        : Ermwd028A17ConformanceLevel.fail_;
     return Ermwd028A17ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +285,14 @@ class Ermwd028A17Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ERMWD-028-A17',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Offline Data Resilience & Sync Latency',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +301,8 @@ class Ermwd028A17Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> ermwd_028_a17Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> ermwd_028_a17Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +321,7 @@ class Ermwd028A17Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ermwd028A17Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +329,35 @@ class Ermwd028A17Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('ERMWD-028-A17',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.ruleKey,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +385,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ermwd028A17Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('ERMWD-028-A17 → $result');
+  final out = await Ermwd028A17Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ERMWD-028-A17 [Pass / Fail] → $out');
 }

@@ -1,52 +1,48 @@
 // ============================================================
 // SCTAS-013-A02 — SCTAS System Module
-// Atomic Step: Establish DCYN Semantic Color Tokens.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.8 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     310 of 396
+// Atomic Step:  Establish DCYN Semantic Color Tokens.
+// Metric:       Design-Token Colour Coverage
+// Floor:        0.8  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      959 of 1073
 // ============================================================
-// Why this matters: Enforces immediate, undeniable visual recognition of compliance bottlenecks and system stops.
-// Mobile impl:      Maximizes screen visibility and element readability under varying mobile brightness and high-glare e
-// Data requirement: Define exact MD3 tonal theme color token values for "True" Success compliance states.
+// Why:          Enforces immediate, undeniable visual recognition of compliance bottlenecks and system stops.
+// Mobile:       Maximizes screen visibility and element readability under varying mobile brightness and high-glare e
+// col41:        Complete / Partial / Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Sctas013A02ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Sctas013A02ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sctas013A02ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SCTAS-013-A02.
-/// Fields derived from AISS sheet row — SCTAS System Module.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// SCTAS-013-A02 — SCTAS System Module
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sctas013A02Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Sctas013A02Config {
     'hexValue': hexValue,
     'wcagRatio': wcagRatio,
     'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,12 +132,11 @@ class Sctas013A02ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SCTAS-013-A02: Establish DCYN Semantic Color Tokens.
-///
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Design-Token Colour Coverage
+/// Floor=0.8 · Output=Complete / Partial / Not Complete
 class Sctas013A02Pipeline {
   static const double _floor   = 0.8;
   static const double _optimal = 1.0;
@@ -190,23 +185,21 @@ class Sctas013A02Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Sctas013A02ValidationResult calculateConformance({
     required List<Sctas013A02Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sctas013A02ValidationResult(
+      return Sctas013A02ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Sctas013A02ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-SCTAS013A02-VAL',
+        gatePass: false, ecLineRef: 'EC-SCTAS013A02-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Sctas013A02ConformanceLevel.complete
         : rate >= _floor
             ? Sctas013A02ConformanceLevel.partial
@@ -239,7 +232,7 @@ class Sctas013A02Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-SCTAS013A02-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-SCTAS013A02-000: configs must not be empty for SCTAS-013-A02');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Sctas013A02Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-SCTAS013A02-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-SCTAS013A02-TRI: triangular check failed for SCTAS-013-A02');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SCTAS-013-A02',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Design-Token Colour Coverage',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Sctas013A02Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sctas_013_a02Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Sctas013A02Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sctas013A02Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Sctas013A02Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SCTAS-013-A02',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Sctas013A02Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${colorToken} | ${hexValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Sctas013A02Config(
       configId: 'sctas013a02-cfg-001',
-      colorToken: 'sctas-013-a02_colorToken_value',
-      hexValue: 'sctas-013-a02_hexValue_value',
-      wcagRatio: 'sctas-013-a02_wcagRatio_value',
-      usageContext: 'sctas-013-a02_usageContext_value',
+      colorToken: 'sctas-013-a02_colorToken',
+      hexValue: 'sctas-013-a02_hexValue',
+      wcagRatio: 'sctas-013-a02_wcagRatio',
+      usageContext: 'sctas-013-a02_usageContext',
       traceId:                 'trace-sctas013a02-001',
       originSourceId:          'origin-sctas013a02',
       immediatePredecessorId:  'pred-sctas013a02-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sctas013A02Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SCTAS-013-A02 → $result');
+  final out = await Sctas013A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SCTAS-013-A02 [Complete / Partial / Not Complete] → $out');
 }

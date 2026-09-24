@@ -1,31 +1,38 @@
 // ============================================================
-// IS27-FEBFL-024-AS01-A02 — Implementation System 27
-// Atomic Step: Build a conditional visibility form component behind rating steps.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     532 of 1073
+// IS27-FEBFL-024-AS01-A02 — IS27 System Module
+// Atomic Step:  Build a conditional visibility form component behind rating steps.
+// Metric:       Asset & Component Discovery Completeness - Numerical rating control co
+// Floor:        0.9  ·  Optimal: 1.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      822 of 1073
 // ============================================================
-// Why this matters: Replaces vague complaints with explicitly categorized, actionable error tracking parameters.
-// Mobile impl:      Local conditional view injection operates instantly on client apps, avoiding slow network payload ro
-// Data requirement: Locate numerical rating control component step (e.g., scale 1.0 to 5.0).
+// Why:          Replaces vague complaints with explicitly categorized, actionable error tracking parameters.
+// Mobile:       Local conditional view injection operates instantly on client apps, avoiding slow network payload ro
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
-enum Is27Febfl024As01A02ConformanceLevel { complete, partial, notComplete }
-enum Is27Febfl024As01A02ExecutionStatus  { pending, running, complete, failed }
+enum Is27Febfl024As01A02ConformanceLevel {
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is27Febfl024As01A02ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS27-FEBFL-024-AS01-A02.
-/// Fields derived from AISS sheet — Implementation System 27.
+/// IS27-FEBFL-024-AS01-A02 — IS27 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is27Febfl024As01A02Config {
   final String configId;
@@ -35,6 +42,7 @@ class Is27Febfl024As01A02Config {
   final String weightToken;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -124,13 +132,14 @@ class Is27Febfl024As01A02ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS27-FEBFL-024-AS01-A02: Build a conditional visibility form component behind rating steps.
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Asset & Component Discovery Completeness - Numerical rating 
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Is27Febfl024As01A02Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 1.0;
 
   // EC:1 — Monitor post-session layout score variables during user entry tasks
   static Is27Febfl024As01A02Config _ec1Execute(Is27Febfl024As01A02Config config) {
@@ -180,7 +189,7 @@ class Is27Febfl024As01A02Pipeline {
     required List<Is27Febfl024As01A02Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is27Febfl024As01A02ValidationResult(
+      return Is27Febfl024As01A02ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is27Febfl024As01A02ConformanceLevel.notComplete,
@@ -190,7 +199,7 @@ class Is27Febfl024As01A02Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Is27Febfl024As01A02ConformanceLevel.complete
         : rate >= _floor
             ? Is27Febfl024As01A02ConformanceLevel.partial
@@ -236,14 +245,14 @@ class Is27Febfl024As01A02Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS27-FEBFL-024-AS01-A02',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Asset & Component Discovery Completeness - Numerical rating ',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Is27Febfl024As01A02Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is27_febfl_024_as01_a02Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is27_febfl_024_as01_a02Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Is27Febfl024As01A02Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is27Febfl024As01A02Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Is27Febfl024As01A02Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS27-FEBFL-024-AS01-A02',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fontFamily,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is27Febfl024As01A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS27-FEBFL-024-AS01-A02 → $result');
+  final out = await Is27Febfl024As01A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS27-FEBFL-024-AS01-A02 [Complete / Partial / Not Complete] → $out');
 }

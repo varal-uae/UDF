@@ -1,52 +1,48 @@
 // ============================================================
 // REF-046-A02 — Reference Implementation Framework
-// Atomic Step: Build an overlay card system that processes status updates.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     297 of 396
+// Atomic Step:  Build an overlay card system that processes status updates.
+// Metric:       Component Flexibility
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      939 of 1073
 // ============================================================
-// Why this matters: Provides immediate, clear feedback for user actions without interrupting active workflows with heavy
-// Mobile impl:      Displays quiet status popups near screen borders, keeping the center workspace free and interactive.
-// Data requirement: Create the base overlay card component with customizable slots for content.
+// Why:          Provides immediate, clear feedback for user actions without interrupting active workflows with heavy
+// Mobile:       Displays quiet status popups near screen borders, keeping the center workspace free and interactive.
+// col41:        High/Medium/Low
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Ref046A02ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Ref046A02ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ref046A02ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for REF-046-A02.
-/// Fields derived from AISS sheet row — Reference Implementation Framework.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// REF-046-A02 — Reference Implementation Framework
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ref046A02Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String modalId;
   final String triggerEvent;
   final String contentType;
   final String dismissBehaviour;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Ref046A02Config {
     'triggerEvent': triggerEvent,
     'contentType': contentType,
     'dismissBehaviour': dismissBehaviour,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,21 +125,20 @@ class Ref046A02ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref046A02ConformanceLevel.complete:    return 'Good';
-      case Ref046A02ConformanceLevel.partial:     return 'Average';
-      case Ref046A02ConformanceLevel.notComplete: return 'Poor';
+      case Ref046A02ConformanceLevel.good:    return 'Good';
+      case Ref046A02ConformanceLevel.average: return 'Average';
+      case Ref046A02ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// REF-046-A02: Build an overlay card system that processes status updates.
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Component Flexibility
+/// Floor=0.9 · Output=Good / Average / Poor
 class Ref046A02Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — Construct an overlay alert portal that mounts above main workspace rows
@@ -190,27 +185,25 @@ class Ref046A02Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Ref046A02ValidationResult calculateConformance({
     required List<Ref046A02Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ref046A02ValidationResult(
+      return Ref046A02ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ref046A02ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-REF046A02-VAL',
+        gatePass: false, ecLineRef: 'EC-REF046A02-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ref046A02ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Ref046A02ConformanceLevel.good
         : rate >= _floor
-            ? Ref046A02ConformanceLevel.partial
-            : Ref046A02ConformanceLevel.notComplete;
+            ? Ref046A02ConformanceLevel.average
+            : Ref046A02ConformanceLevel.poor;
     return Ref046A02ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +232,7 @@ class Ref046A02Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-REF046A02-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-REF046A02-000: configs must not be empty for REF-046-A02');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Ref046A02Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-REF046A02-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-REF046A02-TRI: triangular check failed for REF-046-A02');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-REF-046-A02',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Component Flexibility',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Ref046A02Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ref_046_a02Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Ref046A02Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ref046A02Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Ref046A02Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('REF-046-A02',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Ref046A02Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${modalId} | ${triggerEvent}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Ref046A02Config(
       configId: 'ref046a02-cfg-001',
-      modalId: 'ref-046-a02_modalId_value',
-      triggerEvent: 'ref-046-a02_triggerEvent_value',
-      contentType: 'ref-046-a02_contentType_value',
-      dismissBehaviour: 'ref-046-a02_dismissBehaviour_value',
+      modalId: 'ref-046-a02_modalId',
+      triggerEvent: 'ref-046-a02_triggerEvent',
+      contentType: 'ref-046-a02_contentType',
+      dismissBehaviour: 'ref-046-a02_dismissBehaviour',
       traceId:                 'trace-ref046a02-001',
       originSourceId:          'origin-ref046a02',
       immediatePredecessorId:  'pred-ref046a02-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ref046A02Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('REF-046-A02 → $result');
+  final out = await Ref046A02Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('REF-046-A02 [Good / Average / Poor] → $out');
 }

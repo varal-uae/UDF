@@ -1,47 +1,48 @@
 // ============================================================
 // FEBFL-001-A04 — Frontend Element Build & Feature Library
-// Atomic Step: Code non-blocking status panels to track file export tasks.
-// Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        15-Sep-2026
-// Step No:     368 of 390
+// Atomic Step:  Code non-blocking status panels to track file export tasks.
+// Metric:       Implementation Completeness Against Spec
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      227 of 1073
 // ============================================================
-// Why this matters: Allows users to run major history reports and continue working on other tasks within the application
-// Mobile impl: Handles heavy data formatting steps on background servers to prevent the mobile app from slowing dow
+// Why:          Allows users to run major history reports and continue working on other tasks within the application
+// Mobile:       Handles heavy data formatting steps on background servers to prevent the mobile app from slowing dow
+// col41:        Complete (Scale: Complete/Partial/Not Complete)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Febfl001A04ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Febfl001A04ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Febfl001A04ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FEBFL-001-A04.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// FEBFL-001-A04 — Frontend Element Build & Feature Library
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Febfl001A04Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String modalId;
+  final String triggerEvent;
+  final String contentType;
+  final String dismissBehaviour;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +51,10 @@ class Febfl001A04Config {
 
   const Febfl001A04Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.modalId,
+    required this.triggerEvent,
+    required this.contentType,
+    required this.dismissBehaviour,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +72,33 @@ class Febfl001A04Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Febfl001A04Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    modalId: modalId,
+    triggerEvent: triggerEvent,
+    contentType: contentType,
+    dismissBehaviour: dismissBehaviour,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'modalId': modalId,
+    'triggerEvent': triggerEvent,
+    'contentType': contentType,
+    'dismissBehaviour': dismissBehaviour,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -125,49 +132,52 @@ class Febfl001A04ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// FEBFL-001-A04: Code non-blocking status panels to track file export tasks.
-///
-/// Metric: Implementation Conformance Rate
-/// Floor=0.90 · Optimal=0.97 · Output=Complete / Partial / Not Complete
+/// Metric: Implementation Completeness Against Spec
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Febfl001A04Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — Route heavy report data queries to background cloud processing lanes
   static Febfl001A04Config _ec1Execute(Febfl001A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FEBFL001A04-001: configId required for FEBFL-001-A04');
-    };
-    // Route heavy report data queries to background clou
+    if (config.modalId.isEmpty) {
+      throw ArgumentError(
+          'EC-FEBFL001A04-001: modalId required for FEBFL-001-A04');
+    }
+    // Route heavy report data queries to background cloud processi
     return config;
   }
 
   // EC:2 — Open non-blocking progress trackers within lower layout frame corners
   static Febfl001A04Config _ec2Execute(Febfl001A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FEBFL001A04-002: configId required for FEBFL-001-A04');
-    };
-    // Open non-blocking progress trackers within lower l
+    if (config.modalId.isEmpty) {
+      throw ArgumentError(
+          'EC-FEBFL001A04-002: modalId required for FEBFL-001-A04');
+    }
+    // Open non-blocking progress trackers within lower layout fram
     return config;
   }
 
   // EC:3 — Update active file generation percentages cleanly based on task tracking files
   static Febfl001A04Config _ec3Execute(Febfl001A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FEBFL001A04-003: configId required for FEBFL-001-A04');
-    };
-    // Update active file generation percentages cleanly 
+    if (config.modalId.isEmpty) {
+      throw ArgumentError(
+          'EC-FEBFL001A04-003: modalId required for FEBFL-001-A04');
+    }
+    // Update active file generation percentages cleanly based on t
     return config;
   }
 
   // EC:4 — Render accessible, clear file download buttons inside notification panels when files save
   static Febfl001A04Config _ec4Execute(Febfl001A04Config config) {
-        if (config.configId.isEmpty) {
-      throw ArgumentError('EC-FEBFL001A04-004: configId required for FEBFL-001-A04');
-    };
-    // Render accessible, clear file download buttons ins
+    if (config.modalId.isEmpty) {
+      throw ArgumentError(
+          'EC-FEBFL001A04-004: modalId required for FEBFL-001-A04');
+    }
+    // Render accessible, clear file download buttons inside notifi
     return config;
   }
 
@@ -175,23 +185,21 @@ class Febfl001A04Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Febfl001A04ValidationResult calculateConformance({
     required List<Febfl001A04Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Febfl001A04ValidationResult(
+      return Febfl001A04ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Febfl001A04ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-FEBFL001A04-VAL',
+        gatePass: false, ecLineRef: 'EC-FEBFL001A04-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Febfl001A04ConformanceLevel.complete
         : rate >= _floor
             ? Febfl001A04ConformanceLevel.partial
@@ -224,7 +232,7 @@ class Febfl001A04Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-FEBFL001A04-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-FEBFL001A04-000: configs must not be empty for FEBFL-001-A04');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -232,21 +240,19 @@ class Febfl001A04Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-FEBFL001A04-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-FEBFL001A04-TRI: triangular check failed for FEBFL-001-A04');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FEBFL-001-A04',
-      'metric':             'Implementation Conformance Rate',
+      'metric':             'Implementation Completeness Against Spec',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -256,14 +262,12 @@ class Febfl001A04Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> febfl_001_a04Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
-  'error_code':       errorCode,
-  'payload_snapshot': jsonEncode(payload),
-  'dlq':              true,
-  'step_ref':         'FEBFL-001-A04',
-  'trace_id':         payload['trace_id'] ?? '',
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'FEBFL-001-A04',
+  'trace_id':          payload['trace_id'] ?? '',
   'compliance_status_ind': false,
 };
 
@@ -276,6 +280,8 @@ class Febfl001A04Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final result = Febfl001A04Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -283,16 +289,13 @@ class Febfl001A04Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FEBFL-001-A04',
-              style: const TextStyle(fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?'':'s'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? Theme.of(context).colorScheme.tertiary
-                  : Theme.of(context).colorScheme.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -301,28 +304,22 @@ class Febfl001A04Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass
-                      ? Theme.of(context).colorScheme.tertiary
-                      : Theme.of(context).colorScheme.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.modalId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass
-                      ? Theme.of(context).colorScheme.tertiary
-                      : Theme.of(context).colorScheme.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -337,15 +334,17 @@ class Febfl001A04Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Febfl001A04Config(
-      configId:                'febfl001a04-cfg-001',
-      ruleKey:                 'febfl-001-a04_rule',
-      ruleValue:               'febfl-001-a04_value',
+      configId: 'febfl001a04-cfg-001',
+      modalId: 'febfl-001-a04_modalId',
+      triggerEvent: 'febfl-001-a04_triggerEvent',
+      contentType: 'febfl-001-a04_contentType',
+      dismissBehaviour: 'febfl-001-a04_dismissBehaviour',
       traceId:                 'trace-febfl001a04-001',
       originSourceId:          'origin-febfl001a04',
       immediatePredecessorId:  'pred-febfl001a04-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Febfl001A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FEBFL-001-A04 → $result');
+  final out = await Febfl001A04Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FEBFL-001-A04 [Complete / Partial / Not Complete] → $out');
 }

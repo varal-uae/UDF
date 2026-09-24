@@ -1,50 +1,45 @@
 // ============================================================
 // MUFCE-004-A07 — Mobile UX Flow & Content Engine
-// Atomic Step: Initial Mobile Onboarding Journey & Dynamic Additional Information Required Form (AIF) Delivery.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     448 of 530
+// Atomic Step:  Initial Mobile Onboarding Journey & Dynamic Additional Information Required Form (AIF) Delivery.
+// Metric:       Responsive Breakpoint Accuracy (Material Design 3 Window Size Classes)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      875 of 1073
 // ============================================================
-// Why this matters: Vague, static registration forms cause user data submission errors, dragging onboarding speeds.
-// Mobile impl:      Restricts layout field entries to single data milestones per viewport canvas to maximize focus.
-// Data requirement: Restrict layout field entries to single data milestones per viewport canvas.
+// Why:          Vague, static registration forms cause user data submission errors, dragging onboarding speeds.
+// Mobile:       Restricts layout field entries to single data milestones per viewport canvas to maximize focus.
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Mufce004A07ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Mufce004A07ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Mufce004A07ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for MUFCE-004-A07.
-/// Fields derived from AISS sheet — Mobile UX Flow & Content Engine.
+/// MUFCE-004-A07 — Mobile UX Flow & Content Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Mufce004A07Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String componentId;
   final String targetSizeDp;
   final String actualSizeDp;
   final String complianceStatus;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Mufce004A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mufce004A07ConformanceLevel.complete:    return 'Pass';
-      case Mufce004A07ConformanceLevel.partial:     return 'Partial';
-      case Mufce004A07ConformanceLevel.notComplete: return 'Fail';
+      case Mufce004A07ConformanceLevel.pass_: return 'Pass';
+      case Mufce004A07ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// MUFCE-004-A07: Initial Mobile Onboarding Journey & Dynamic Additional Information Required Form
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Responsive Breakpoint Accuracy (Material Design 3 Window Siz
+/// Floor=0.95 · Output=Pass / Fail
 class Mufce004A07Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Assess backend product tracks to isolate missing configuration inputs
   static Mufce004A07Config _ec1Execute(Mufce004A07Config config) {
@@ -193,21 +187,19 @@ class Mufce004A07Pipeline {
     required List<Mufce004A07Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Mufce004A07ValidationResult(
+      return Mufce004A07ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Mufce004A07ConformanceLevel.notComplete,
+        conformanceLevel: Mufce004A07ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-MUFCE004A07-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Mufce004A07ConformanceLevel.complete
-        : rate >= _floor
-            ? Mufce004A07ConformanceLevel.partial
-            : Mufce004A07ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Mufce004A07ConformanceLevel.pass_
+        : Mufce004A07ConformanceLevel.fail_;
     return Mufce004A07ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Mufce004A07Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-MUFCE004A07-TRI: triangular check failed for MUFCE-004-A07');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MUFCE-004-A07',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Responsive Breakpoint Accuracy (Material Design 3 Window Siz',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Mufce004A07Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> mufce_004_a07Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Mufce004A07Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Mufce004A07Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Mufce004A07Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('MUFCE-004-A07',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Mufce004A07Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.componentId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Mufce004A07Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('MUFCE-004-A07 → $result');
+  final out = await Mufce004A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('MUFCE-004-A07 [Pass / Fail] → $out');
 }

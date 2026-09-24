@@ -1,52 +1,48 @@
 // ============================================================
 // REF-046-A01 — Reference Implementation Framework
-// Atomic Step: Build an overlay card system that processes status updates.
-// Metric:      Layout Consistency Score · Floor=95.0 · Optimal=100.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     296 of 396
+// Atomic Step:  Build an overlay card system that processes status updates.
+// Metric:       Spec Adherence
+// Floor:        95.0  ·  Optimal: 100.0
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      938 of 1073
 // ============================================================
-// Why this matters: Provides immediate, clear feedback for user actions without interrupting active workflows with heavy
-// Mobile impl:      Displays quiet status popups near screen borders, keeping the center workspace free and interactive.
-// Data requirement: Define the UI design specifications and layout for the overlay card system.
+// Why:          Provides immediate, clear feedback for user actions without interrupting active workflows with heavy
+// Mobile:       Displays quiet status popups near screen borders, keeping the center workspace free and interactive.
+// col41:        Complete/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Ref046A01ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Ref046A01ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ref046A01ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for REF-046-A01.
-/// Fields derived from AISS sheet row — Reference Implementation Framework.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// REF-046-A01 — Reference Implementation Framework
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ref046A01Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String modalId;
   final String triggerEvent;
   final String contentType;
   final String dismissBehaviour;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Ref046A01Config {
     'triggerEvent': triggerEvent,
     'contentType': contentType,
     'dismissBehaviour': dismissBehaviour,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,12 +132,11 @@ class Ref046A01ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// REF-046-A01: Build an overlay card system that processes status updates.
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Spec Adherence
+/// Floor=95.0 · Output=Complete / Partial / Not Complete
 class Ref046A01Pipeline {
   static const double _floor   = 95.0;
   static const double _optimal = 100.0;
@@ -190,23 +185,21 @@ class Ref046A01Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Ref046A01ValidationResult calculateConformance({
     required List<Ref046A01Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ref046A01ValidationResult(
+      return Ref046A01ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ref046A01ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-REF046A01-VAL',
+        gatePass: false, ecLineRef: 'EC-REF046A01-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ref046A01ConformanceLevel.complete
         : rate >= _floor
             ? Ref046A01ConformanceLevel.partial
@@ -239,7 +232,7 @@ class Ref046A01Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-REF046A01-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-REF046A01-000: configs must not be empty for REF-046-A01');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Ref046A01Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-REF046A01-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-REF046A01-TRI: triangular check failed for REF-046-A01');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-REF-046-A01',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Spec Adherence',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Ref046A01Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ref_046_a01Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Ref046A01Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ref046A01Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Ref046A01Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('REF-046-A01',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Ref046A01Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${modalId} | ${triggerEvent}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Ref046A01Config(
       configId: 'ref046a01-cfg-001',
-      modalId: 'ref-046-a01_modalId_value',
-      triggerEvent: 'ref-046-a01_triggerEvent_value',
-      contentType: 'ref-046-a01_contentType_value',
-      dismissBehaviour: 'ref-046-a01_dismissBehaviour_value',
+      modalId: 'ref-046-a01_modalId',
+      triggerEvent: 'ref-046-a01_triggerEvent',
+      contentType: 'ref-046-a01_contentType',
+      dismissBehaviour: 'ref-046-a01_dismissBehaviour',
       traceId:                 'trace-ref046a01-001',
       originSourceId:          'origin-ref046a01',
       immediatePredecessorId:  'pred-ref046a01-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ref046A01Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('REF-046-A01 → $result');
+  final out = await Ref046A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('REF-046-A01 [Complete / Partial / Not Complete] → $out');
 }

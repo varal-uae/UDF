@@ -1,52 +1,48 @@
 // ============================================================
 // TTIAS-014-A07 — Token Integration & Automation System
-// Atomic Step: TTIAS-014 - Configure Viewport-Adaptive Dynamic Font Resizing Engine.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     367 of 396
+// Atomic Step:  TTIAS-014 - Configure Viewport-Adaptive Dynamic Font Resizing Engine.
+// Metric:       Enforcement / Binding Compliance Rate
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1038 of 1073
 // ============================================================
-// Why this matters: String wrapping or layout clipping completely breaks scannability on small screens, causing processi
-// Mobile impl:      Forces explicit limits on character counts before a dataset reaches the DOM.
-// Data requirement: Apply automated CSS properties (text-overflow: ellipsis) to dynamic field wrappers.
+// Why:          String wrapping or layout clipping completely breaks scannability on small screens, causing processi
+// Mobile:       Forces explicit limits on character counts before a dataset reaches the DOM.
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Ttias014A07ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Ttias014A07ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttias014A07ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTIAS-014-A07.
-/// Fields derived from AISS sheet row — Token Integration & Automation System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTIAS-014-A07 — Token Integration & Automation System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttias014A07Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
-  final String fontFamily;
-  final String scaleStep;
-  final String sizePx;
-  final String weightToken;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -55,10 +51,10 @@ class Ttias014A07Config {
 
   const Ttias014A07Config({
     required this.configId,
-    required this.fontFamily,
-    required this.scaleStep,
-    required this.sizePx,
-    required this.weightToken,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -77,10 +73,10 @@ class Ttias014A07Config {
     bool?   complianceStatusInd,
   }) => Ttias014A07Config(
     configId: configId,
-    fontFamily: fontFamily,
-    scaleStep: scaleStep,
-    sizePx: sizePx,
-    weightToken: weightToken,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -92,17 +88,17 @@ class Ttias014A07Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'fontFamily': fontFamily,
-    'scaleStep': scaleStep,
-    'sizePx': sizePx,
-    'weightToken': weightToken,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,21 +132,20 @@ class Ttias014A07ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// TTIAS-014-A07: TTIAS-014 - Configure Viewport-Adaptive Dynamic Font Resizing Engine.
-///
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Enforcement / Binding Compliance Rate
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Ttias014A07Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — Define base font variables using fluid rem units tied to the root container viewport layou
   static Ttias014A07Config _ec1Execute(Ttias014A07Config config) {
-    if (config.fontFamily.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS014A07-001: fontFamily required for TTIAS-014-A07');
+          'EC-TTIAS014A07-001: colorToken required for TTIAS-014-A07');
     }
     // Define base font variables using fluid rem units tied to the
     return config;
@@ -158,9 +153,9 @@ class Ttias014A07Pipeline {
 
   // EC:2 — Establish defensive clamping limits (e.g., maximum font scale for compact screens)
   static Ttias014A07Config _ec2Execute(Ttias014A07Config config) {
-    if (config.fontFamily.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS014A07-002: fontFamily required for TTIAS-014-A07');
+          'EC-TTIAS014A07-002: colorToken required for TTIAS-014-A07');
     }
     // Establish defensive clamping limits (e.g., maximum font scal
     return config;
@@ -168,9 +163,9 @@ class Ttias014A07Pipeline {
 
   // EC:3 — Apply automated CSS properties (text-overflow: ellipsis) to all dynamic field wrappers
   static Ttias014A07Config _ec3Execute(Ttias014A07Config config) {
-    if (config.fontFamily.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS014A07-003: fontFamily required for TTIAS-014-A07');
+          'EC-TTIAS014A07-003: colorToken required for TTIAS-014-A07');
     }
     // Apply automated CSS properties (text-overflow: ellipsis) to 
     return config;
@@ -178,9 +173,9 @@ class Ttias014A07Pipeline {
 
   // EC:4 — Validate typography readability against WCAG mobile outdoor light contrast settings
   static Ttias014A07Config _ec4Execute(Ttias014A07Config config) {
-    if (config.fontFamily.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-TTIAS014A07-004: fontFamily required for TTIAS-014-A07');
+          'EC-TTIAS014A07-004: colorToken required for TTIAS-014-A07');
     }
     // Validate typography readability against WCAG mobile outdoor 
     return config;
@@ -190,23 +185,21 @@ class Ttias014A07Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Ttias014A07ValidationResult calculateConformance({
     required List<Ttias014A07Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttias014A07ValidationResult(
+      return Ttias014A07ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ttias014A07ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTIAS014A07-VAL',
+        gatePass: false, ecLineRef: 'EC-TTIAS014A07-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ttias014A07ConformanceLevel.complete
         : rate >= _floor
             ? Ttias014A07ConformanceLevel.partial
@@ -239,7 +232,7 @@ class Ttias014A07Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTIAS014A07-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTIAS014A07-000: configs must not be empty for TTIAS-014-A07');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Ttias014A07Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-TTIAS014A07-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTIAS014A07-TRI: triangular check failed for TTIAS-014-A07');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTIAS-014-A07',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Enforcement / Binding Compliance Rate',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Ttias014A07Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttias_014_a07Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Ttias014A07Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttias014A07Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Ttias014A07Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTIAS-014-A07',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Ttias014A07Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.fontFamily,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${fontFamily} | ${scaleStep}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Ttias014A07Config(
       configId: 'ttias014a07-cfg-001',
-      fontFamily: 'ttias-014-a07_fontFamily_value',
-      scaleStep: 'ttias-014-a07_scaleStep_value',
-      sizePx: 'ttias-014-a07_sizePx_value',
-      weightToken: 'ttias-014-a07_weightToken_value',
+      colorToken: 'ttias-014-a07_colorToken',
+      hexValue: 'ttias-014-a07_hexValue',
+      wcagRatio: 'ttias-014-a07_wcagRatio',
+      usageContext: 'ttias-014-a07_usageContext',
       traceId:                 'trace-ttias014a07-001',
       originSourceId:          'origin-ttias014a07',
       immediatePredecessorId:  'pred-ttias014a07-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttias014A07Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTIAS-014-A07 → $result');
+  final out = await Ttias014A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTIAS-014-A07 [Complete / Partial / Not Complete] → $out');
 }

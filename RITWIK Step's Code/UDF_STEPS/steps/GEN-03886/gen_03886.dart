@@ -1,31 +1,37 @@
 // ============================================================
 // GEN-03886 — GEN Backend Utility Module
-// Atomic Step: Create the top panel container TopEvidencePanel taking up 45% of the viewport height. [cite: 519]
-// Metric:      Layout Consistency Score · Floor=0.45 · Optimal=0.45
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     923 of 1073
+// Atomic Step:  Create the top panel container TopEvidencePanel taking up 45% of the viewport height. [cite: 519]
+// Metric:       Viewport Dimension Allocation
+// Floor:        0.45  ·  Optimal: 0.45
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      636 of 1073
 // ============================================================
-// Why this matters: Create the top panel container TopEvidencePanel taking up 45% of the viewport height. [cite: 519] is
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Create the top panel container TopEvidencePanel taking up 45% of the viewport height. [cite: 519]
+// Why:          Create the top panel container TopEvidencePanel taking up 45% of the viewport height. [cite: 519] is
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Gen03886ConformanceLevel { complete, partial, notComplete }
-enum Gen03886ExecutionStatus  { pending, running, complete, failed }
+enum Gen03886ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen03886ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-03886.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-03886 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen03886Config {
   final String configId;
@@ -35,6 +41,7 @@ class Gen03886Config {
   final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,17 +124,17 @@ class Gen03886ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen03886ConformanceLevel.complete:    return 'Complete';
-      case Gen03886ConformanceLevel.partial:     return 'Partial';
-      case Gen03886ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen03886ConformanceLevel.pass_: return 'Pass';
+      case Gen03886ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-03886: Create the top panel container TopEvidencePanel taking up 45% of the viewport he
-/// Metric: Layout Consistency Score · Floor=0.45 · Optimal=0.45
+/// Metric: Viewport Dimension Allocation
+/// Floor=0.45 · Output=Pass / Fail
 class Gen03886Pipeline {
   static const double _floor   = 0.45;
   static const double _optimal = 0.45;
@@ -180,21 +187,19 @@ class Gen03886Pipeline {
     required List<Gen03886Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen03886ValidationResult(
+      return Gen03886ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen03886ConformanceLevel.notComplete,
+        conformanceLevel: Gen03886ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-GEN03886-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen03886ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen03886ConformanceLevel.partial
-            : Gen03886ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen03886ConformanceLevel.pass_
+        : Gen03886ConformanceLevel.fail_;
     return Gen03886ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Gen03886Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-03886',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Viewport Dimension Allocation',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Gen03886Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_03886Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_03886Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Gen03886Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen03886Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Gen03886Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-03886',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen03886Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-03886 → $result');
+  final out = await Gen03886Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-03886 [Pass / Fail] → $out');
 }

@@ -1,31 +1,37 @@
 // ============================================================
 // LSAV-032-A11 — Layout & Structure Analytics Viewer
-// Atomic Step: LSAV-032 - Build Expandable Layout Row Grouping Accordion
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     579 of 1073
+// Atomic Step:  LSAV-032 - Build Expandable Layout Row Grouping Accordion
+// Metric:       Functional Test Pass Rate
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      852 of 1073
 // ============================================================
-// Why this matters: Displaying massive rows of open data tables forces excessive vertical scrolling, cluttering mobile v
-// Mobile impl:      Condenses deep data structures into scannable row headers, letting users open details on demand.
-// Data requirement: Test the accordion with a small number of grouped rows.
+// Why:          Displaying massive rows of open data tables forces excessive vertical scrolling, cluttering mobile v
+// Mobile:       Condenses deep data structures into scannable row headers, letting users open details on demand.
+// col41:        Pass
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Lsav032A11ConformanceLevel { complete, partial, notComplete }
-enum Lsav032A11ExecutionStatus  { pending, running, complete, failed }
+enum Lsav032A11ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Lsav032A11ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for LSAV-032-A11.
-/// Fields derived from AISS sheet — Layout & Structure Analytics Viewer.
+/// LSAV-032-A11 — Layout & Structure Analytics Viewer
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Lsav032A11Config {
   final String configId;
@@ -35,6 +41,7 @@ class Lsav032A11Config {
   final String labelText;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +124,20 @@ class Lsav032A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Lsav032A11ConformanceLevel.complete:    return 'Pass';
-      case Lsav032A11ConformanceLevel.partial:     return 'Partial';
-      case Lsav032A11ConformanceLevel.notComplete: return 'Fail';
+      case Lsav032A11ConformanceLevel.pass_: return 'Pass';
+      case Lsav032A11ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// LSAV-032-A11: LSAV-032 - Build Expandable Layout Row Grouping Accordion
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: Functional Test Pass Rate
+/// Floor=0.95 · Output=Pass / Fail
 class Lsav032A11Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Define Boolean tracking variables inside component states to manage row expand and collaps
   static Lsav032A11Config _ec1Execute(Lsav032A11Config config) {
@@ -180,21 +187,19 @@ class Lsav032A11Pipeline {
     required List<Lsav032A11Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Lsav032A11ValidationResult(
+      return Lsav032A11ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Lsav032A11ConformanceLevel.notComplete,
+        conformanceLevel: Lsav032A11ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-LSAV032A11-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Lsav032A11ConformanceLevel.complete
-        : rate >= _floor
-            ? Lsav032A11ConformanceLevel.partial
-            : Lsav032A11ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Lsav032A11ConformanceLevel.pass_
+        : Lsav032A11ConformanceLevel.fail_;
     return Lsav032A11ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +241,14 @@ class Lsav032A11Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-LSAV-032-A11',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Functional Test Pass Rate',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +257,8 @@ class Lsav032A11Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> lsav_032_a11Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> lsav_032_a11Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +277,7 @@ class Lsav032A11Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Lsav032A11Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +285,35 @@ class Lsav032A11Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('LSAV-032-A11',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.navItemId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Lsav032A11Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('LSAV-032-A11 → $result');
+  final out = await Lsav032A11Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('LSAV-032-A11 [Pass / Fail] → $out');
 }

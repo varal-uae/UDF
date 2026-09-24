@@ -1,52 +1,47 @@
 // ============================================================
-// IS21-RIMV-015-AS01-A05 — Implementation System 21
-// Atomic Step: Implement Strict Input Masking (Poka-Yoke). Overlay 15-Minute Execution Timer (Self-Chasing).
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     247 of 396
+// IS21-RIMV-015-AS01-A05 — IS21 System Module
+// Atomic Step:  Implement Strict Input Masking (Poka-Yoke). Overlay 15-Minute Execution Timer (Self-Chasing).
+// Metric:       Configuration Conformance Rate - Native soft keyboard triggers numeric
+// Floor:        0.97  ·  Optimal: 0.97
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      818 of 1073
 // ============================================================
-// Why this matters: Blocks invalid characters from entering the application context, completely removing downstream data
-// Mobile impl:      Automatically triggers specific numeric or alphanumeric keyboards on mobile viewports to prevent use
-// Data requirement: Set native soft keyboard triggers (numeric, email, telephone) based on input field constraints.
+// Why:          Blocks invalid characters from entering the application context, completely removing downstream data
+// Mobile:       Automatically triggers specific numeric or alphanumeric keyboards on mobile viewports to prevent use
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Is21Rimv015As01A05ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Is21Rimv015As01A05ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is21Rimv015As01A05ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS21-RIMV-015-AS01-A05.
-/// Fields derived from AISS sheet row — Implementation System 21.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// IS21-RIMV-015-AS01-A05 — IS21 System Module
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is21Rimv015As01A05Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +91,13 @@ class Is21Rimv015As01A05Config {
     'validationRule': validationRule,
     'errorMessage': errorMessage,
     'inputType': inputType,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -129,22 +124,20 @@ class Is21Rimv015As01A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is21Rimv015As01A05ConformanceLevel.complete:    return 'Pass';
-      case Is21Rimv015As01A05ConformanceLevel.partial:     return 'Partial';
-      case Is21Rimv015As01A05ConformanceLevel.notComplete: return 'Fail';
+      case Is21Rimv015As01A05ConformanceLevel.pass_: return 'Pass';
+      case Is21Rimv015As01A05ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS21-RIMV-015-AS01-A05: Implement Strict Input Masking (Poka-Yoke). Overlay 15-Minute Execution Timer (S
-///
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Configuration Conformance Rate - Native soft keyboard trigge
+/// Floor=0.97 · Output=Pass / Fail
 class Is21Rimv015As01A05Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.97;
+  static const double _optimal = 0.97;
 
   // EC:1 — Map schemas to inputs
   static Is21Rimv015As01A05Config _ec1Execute(Is21Rimv015As01A05Config config) {
@@ -190,27 +183,23 @@ class Is21Rimv015As01A05Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Is21Rimv015As01A05ValidationResult calculateConformance({
     required List<Is21Rimv015As01A05Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is21Rimv015As01A05ValidationResult(
+      return Is21Rimv015As01A05ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is21Rimv015As01A05ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-IS21RIMV015A-VAL',
+        conformanceLevel: Is21Rimv015As01A05ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-IS21RIMV015A-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is21Rimv015As01A05ConformanceLevel.complete
-        : rate >= _floor
-            ? Is21Rimv015As01A05ConformanceLevel.partial
-            : Is21Rimv015As01A05ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is21Rimv015As01A05ConformanceLevel.pass_
+        : Is21Rimv015As01A05ConformanceLevel.fail_;
     return Is21Rimv015As01A05ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -239,7 +228,7 @@ class Is21Rimv015As01A05Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-IS21RIMV015A-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-IS21RIMV015A-000: configs must not be empty for IS21-RIMV-015-AS01-A05');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +236,19 @@ class Is21Rimv015As01A05Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-IS21RIMV015A-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-IS21RIMV015A-TRI: triangular check failed for IS21-RIMV-015-AS01-A05');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS21-RIMV-015-AS01-A05',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Configuration Conformance Rate - Native soft keyboard trigge',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +258,7 @@ class Is21Rimv015As01A05Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is21_rimv_015_as01_a05Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +277,7 @@ class Is21Rimv015As01A05Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is21Rimv015As01A05Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +285,13 @@ class Is21Rimv015As01A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS21-RIMV-015-AS01-A05',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +300,22 @@ class Is21Rimv015As01A05Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${fieldId} | ${validationRule}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +331,16 @@ void main() async {
   final configs = [
     Is21Rimv015As01A05Config(
       configId: 'is21rimv015a-cfg-001',
-      fieldId: 'is21-rimv-015-as01-a05_fieldId_value',
-      validationRule: 'is21-rimv-015-as01-a05_validationRule_value',
-      errorMessage: 'is21-rimv-015-as01-a05_errorMessage_value',
-      inputType: 'is21-rimv-015-as01-a05_inputType_value',
+      fieldId: 'is21-rimv-015-as01-a05_fieldId',
+      validationRule: 'is21-rimv-015-as01-a05_validationRule',
+      errorMessage: 'is21-rimv-015-as01-a05_errorMessage',
+      inputType: 'is21-rimv-015-as01-a05_inputType',
       traceId:                 'trace-is21rimv015a-001',
       originSourceId:          'origin-is21rimv015a',
       immediatePredecessorId:  'pred-is21rimv015a-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is21Rimv015As01A05Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS21-RIMV-015-AS01-A05 → $result');
+  final out = await Is21Rimv015As01A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS21-RIMV-015-AS01-A05 [Pass / Fail] → $out');
 }

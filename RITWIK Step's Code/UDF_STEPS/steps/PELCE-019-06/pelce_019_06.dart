@@ -1,50 +1,46 @@
 // ============================================================
-// PELCE-019-06 — Platform Element Logic & Config Engine
-// Atomic Step: English Code (EC) System Verbs on Mobile CTAs. (Restrict all mobile buttons to strict machine-action
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     485 of 530
+// PELCE-019-06 — PELCE System Module
+// Atomic Step:  English Code (EC) System Verbs on Mobile CTAs. (Restrict all mobile buttons to strict machine-action
+// Metric:       Process Execution Quality Score
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      903 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Remove general string input acceptance from the button label property to prevent arbitrary text assi
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
 enum Pelce01906ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
 }
 
-enum Pelce01906ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Pelce01906ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for PELCE-019-06.
-/// Fields derived from AISS sheet — Platform Element Logic & Config Engine.
+/// PELCE-019-06 — PELCE System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Pelce01906Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String fieldId;
   final String validationRule;
   final String errorMessage;
   final String inputType;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +125,21 @@ class Pelce01906ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Pelce01906ConformanceLevel.complete:    return 'Good';
-      case Pelce01906ConformanceLevel.partial:     return 'Average';
-      case Pelce01906ConformanceLevel.notComplete: return 'Poor';
+      case Pelce01906ConformanceLevel.good:    return 'Good';
+      case Pelce01906ConformanceLevel.average: return 'Average';
+      case Pelce01906ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// PELCE-019-06: English Code (EC) System Verbs on Mobile CTAs. (Restrict all mobile buttons to s
-/// Metric: Input Validation Coverage Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Process Execution Quality Score
+/// Floor=0.9 · Output=Good / Average / Poor
 class Pelce01906Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the PELCE-019-06 configuration in the source repository.
   static Pelce01906Config _ec1Locates(Pelce01906Config config) {
@@ -165,23 +161,23 @@ class Pelce01906Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Input Validation Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality Score.
   static Pelce01906Config _ec3Compiles(Pelce01906Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-PELCE01906-003: fieldId required for PELCE-019-06');
     }
-    // the implementation rule set per Input Validation Coverage Ra
+    // the implementation rule set per Process Execution Quality Sc
     return config;
   }
 
-  // EC:4 — System validates configuration against required constraints and schemas.
+  // EC:4 — System validates configuration against required constraints.
   static Pelce01906Config _ec4Validates(Pelce01906Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-PELCE01906-004: fieldId required for PELCE-019-06');
     }
-    // configuration against required constraints and schemas
+    // configuration against required constraints
     return config;
   }
 
@@ -195,13 +191,13 @@ class Pelce01906Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Input Validation Coverage Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Process Execution Quality Score gate (floor=0.9).
   static Pelce01906Config _ec6Validates(Pelce01906Config config) {
     if (config.fieldId.isEmpty) {
       throw ArgumentError(
           'EC-PELCE01906-006: fieldId required for PELCE-019-06');
     }
-    // configuration against Input Validation Coverage Rate gate (f
+    // configuration against Process Execution Quality Score gate (
     return config;
   }
 
@@ -233,7 +229,7 @@ class Pelce01906Pipeline {
     required List<Pelce01906Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Pelce01906ValidationResult(
+      return Pelce01906ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Pelce01906ConformanceLevel.notComplete,
@@ -243,11 +239,11 @@ class Pelce01906Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Pelce01906ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Pelce01906ConformanceLevel.good
         : rate >= _floor
-            ? Pelce01906ConformanceLevel.partial
-            : Pelce01906ConformanceLevel.notComplete;
+            ? Pelce01906ConformanceLevel.average
+            : Pelce01906ConformanceLevel.poor;
     return Pelce01906ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -290,19 +286,17 @@ class Pelce01906Pipeline {
     if (!triangularCheck(configs.length, p8.length)) {
       throw ArgumentError('EC-PELCE01906-TRI: triangular check failed for PELCE-019-06');
     }
-
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-PELCE-019-06',
-      'metric':             'Input Validation Coverage Rate',
+      'metric':             'Process Execution Quality Score',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -312,9 +306,7 @@ class Pelce01906Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> pelce_019_06Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -333,6 +325,7 @@ class Pelce01906Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Pelce01906Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,15 +333,13 @@ class Pelce01906Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('PELCE-019-06',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -357,23 +348,22 @@ class Pelce01906Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -399,7 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Pelce01906Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('PELCE-019-06 → $result');
+  final out = await Pelce01906Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('PELCE-019-06 [Good / Average / Poor] → $out');
 }

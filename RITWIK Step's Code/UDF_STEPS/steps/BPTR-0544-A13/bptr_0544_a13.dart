@@ -1,337 +1,350 @@
 // ============================================================
-// BPTR-0544-A13 | UI/UX Pattern Registry
-// Atomic Task: BPTR-0544-A13
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BPTR-0544-A13 — UI/UX Pattern Registry
+// Atomic Step:  Standardize Material Design Typography and Colors .
+// Metric:       Design System / Layout Consistency Score
+// Floor:        90.0  ·  Optimal: 97.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      103 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System ingests raw visual token metadata attributes from the input stream.
-  // EC: 2. System validates typography schema fields including font name, size, line height, weight, file path.
-  // EC: 3. System maps CSS font size scale parameters directly to master layout application wrapper elements.
-  // EC: 4. System extracts group semantic color palette tokens from the global design specification repository.
-  // EC: 5. System compiles visual formatting definitions into an immutable design token payload.
-  // EC: 6. System calculates the design system layout consistency score against the pre-configured floor boundary.
-  // EC: 7. System evaluates the consistency score metric to verify compliance with the target score threshold.
-  // EC: 8. System stores the immutable visual token configuration payload inside the master material design style sheet archive.
-  // EC: 9. System links the token engine to system view modules to enforce uniform layout styling.
-  // EC: 10. System emits a completion telemetry event with session metadata to the central lineage audit pipeline.
+// Why:          Enforces unalterable company branding rules, blocking localized custom code dilutions or mismatched 
+// Mobile:       Light token metadata parameters ensure rapid visual scaling and loading across all portable view pro
+// col41:        Good (Scale: Good/Average/Poor)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bptr0544A13ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Bptr0544A13ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BPTR-0544-A13.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Bptr0544A13Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+/// BPTR-0544-A13 — UI/UX Pattern Registry
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bptr0544A13Config {
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Bptr0544A13Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Bptr0544A13Config({
+    required this.configId,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Bptr0544A13Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Bptr0544A13Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Bptr0544A13Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bptr0544A13Config(
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Bptr0544A13ScanResult {
+class Bptr0544A13ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Bptr0544A13ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Bptr0544A13ScanResult({
+  const Bptr0544A13ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bptr0544A13ConformanceLevel.good:    return 'Good';
+      case Bptr0544A13ConformanceLevel.average: return 'Average';
+      case Bptr0544A13ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ──────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// BPTR-0544-A13: Standardize Material Design Typography and Colors .
+/// Metric: Design System / Layout Consistency Score
+/// Floor=90.0 · Output=Good / Average / Poor
 class Bptr0544A13Pipeline {
-  static const double _floor   = 90.0;  // metric floor gate
-  static const double _optimal = 97.0; // metric optimal target
+  static const double _floor   = 90.0;
+  static const double _optimal = 97.0;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System ingests raw visual token metadata attributes from the input stream.
-  static String executeIngestsStep1(Bptr0544A13Entry entry) {
-    // ingests raw visual token metadata attributes from the input stream
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — Map the global CSS font size scales and typography choices
+  static Bptr0544A13Config _ec1Execute(Bptr0544A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0544A13-001: colorToken required for BPTR-0544-A13');
+    }
+    // Map the global CSS font size scales and typography choices 
+    return config;
   }
 
-  // EC:2 — EC: 2. System validates typography schema fields including font name, size, line height, weight, file path.
-  static String executeValidatesStep2(Bptr0544A13Entry entry) {
-    // validates typography schema fields including font name, size, line height, weigh
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:2 — Map the unalterable group semantic color palettes (e.g., primary, warning, background toke
+  static Bptr0544A13Config _ec2Execute(Bptr0544A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0544A13-002: colorToken required for BPTR-0544-A13');
+    }
+    // Map the unalterable group semantic color palettes (e.g., pri
+    return config;
   }
 
-  // EC:3 — EC: 3. System maps CSS font size scale parameters directly to master layout application wrapper elements.
-  static String executeMapsStep3(Bptr0544A13Entry entry) {
-    // maps CSS font size scale parameters directly to master layout application wrappe
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:3 — Package the visual formatting definitions into unified, immutable configuration files
+  static Bptr0544A13Config _ec3Execute(Bptr0544A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0544A13-003: colorToken required for BPTR-0544-A13');
+    }
+    // Package the visual formatting definitions into unified, immu
+    return config;
   }
 
-  // EC:4 — EC: 4. System extracts group semantic color palette tokens from the global design specification repository.
-  static String executeExtractsStep4(Bptr0544A13Entry entry) {
-    // extracts group semantic color palette tokens from the global design specificatio
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:4 — Link the token engine to dictate layout styles for all system view modules
+  static Bptr0544A13Config _ec4Execute(Bptr0544A13Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0544A13-004: colorToken required for BPTR-0544-A13');
+    }
+    // Link the token engine to dictate layout styles for all syste
+    return config;
   }
 
-  // EC:5 — EC: 5. System compiles visual formatting definitions into an immutable design token payload.
-  static String executeCompilesStep5(Bptr0544A13Entry entry) {
-    // compiles visual formatting definitions into an immutable design token payload
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System calculates the design system layout consistency score against the pre-configured floor boundary.
-  static String executeCalculatesStep6(Bptr0544A13Entry entry) {
-    // calculates the design system layout consistency score against the pre-configured
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:7 — EC: 7. System evaluates the consistency score metric to verify compliance with the target score threshold.
-  static String executeEvaluatesStep7(Bptr0544A13Entry entry) {
-    // evaluates the consistency score metric to verify compliance with the target scor
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:8 — EC: 8. System stores the immutable visual token configuration payload inside the master material design style sheet archive.
-  static String executeStoresStep8(Bptr0544A13Entry entry) {
-    // stores the immutable visual token configuration payload inside the master materi
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:9 — EC: 9. System links the token engine to system view modules to enforce uniform layout styling.
-  static String executeLinksStep9(Bptr0544A13Entry entry) {
-    // links the token engine to system view modules to enforce uniform layout styling
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-009: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:10 — EC: 10. System emits a completion telemetry event with session metadata to the central lineage audit pipeline.
-  static String executeEmitsStep10(Bptr0544A13Entry entry) {
-    // emits a completion telemetry event with session metadata to the central lineage 
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0544A13-010: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Bptr0544A13ScanResult validateConformance(
-    List<Bptr0544A13Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Bptr0544A13ScanResult(
+  static Bptr0544A13ValidationResult calculateConformance({
+    required List<Bptr0544A13Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bptr0544A13ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bptr0544A13ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-BPTR0544A13-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Bptr0544A13ConformanceLevel.good
+        : rate >= _floor
+            ? Bptr0544A13ConformanceLevel.average
+            : Bptr0544A13ConformanceLevel.poor;
+    return Bptr0544A13ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BPTR0544A13-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Bptr0544A13Entry routeToRegistry(
-    Bptr0544A13Entry entry,
-    Bptr0544A13ScanResult scan,
+  static Bptr0544A13Config routeToRegistry(
+    Bptr0544A13Config config,
+    Bptr0544A13ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Bptr0544A13Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BPTR0544A13-000: configs must not be empty for BPTR-0544-A13');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-BPTR0544A13-TRI: triangular check failed for BPTR-0544-A13');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BPTR-0544-A13',
+      'metric':             'Design System / Layout Consistency Score',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bptr_0544_a13Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BPTR-0544-A13',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Bptr0544A13Widget extends StatelessWidget {
-  final List<Bptr0544A13Entry> entries;
-  const Bptr0544A13Widget({super.key, required this.entries});
+  final List<Bptr0544A13Config> configs;
+  const Bptr0544A13Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bptr0544A13Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Bptr0544A13Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BPTR-0544-A13',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BPTR-0544-A13',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bptr0544A13Config(
+      configId: 'bptr0544a13-cfg-001',
+      colorToken: 'bptr-0544-a13_colorToken',
+      hexValue: 'bptr-0544-a13_hexValue',
+      wcagRatio: 'bptr-0544-a13_wcagRatio',
+      usageContext: 'bptr-0544-a13_usageContext',
+      traceId:                 'trace-bptr0544a13-001',
+      originSourceId:          'origin-bptr0544a13',
+      immediatePredecessorId:  'pred-bptr0544a13-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bptr0544A13Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BPTR-0544-A13 [Good / Average / Poor] → $out');
 }

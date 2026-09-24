@@ -1,52 +1,44 @@
 // ============================================================
 // RCGLA-040-A06 — Responsive CSS Grid Layout Architecture
-// Atomic Step: Build standardized, standalone layout container blocks inside the client view framework.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     483 of 530
+// Atomic Step:  Build standardized, standalone layout container blocks inside the client view framework.
+// Metric:       Layout Structural Consistency (Responsive Grid Compliance)
+// Floor:        0.9  ·  Optimal: 0.9
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      933 of 1073
 // ============================================================
-// Why this matters: Replaces messy, confusing multi-form dashboards with isolated single-purpose interaction modules.
-// Mobile impl:      Card modules limit viewport payload complexity, ensuring lightning-fast layout render loops on mobil
-// Data requirement: Restrict card frameworks to embed no more than one input box per card module.
+// Why:          Replaces messy, confusing multi-form dashboards with isolated single-purpose interaction modules.
+// Mobile:       Card modules limit viewport payload complexity, ensuring lightning-fast layout render loops on mobil
+// col41:        Complete / Partial / Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Rcgla040A06ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Rcgla040A06ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Rcgla040A06ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for RCGLA-040-A06.
-/// Fields derived from AISS sheet — Responsive CSS Grid Layout Architecture.
-/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Rcgla040A06Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -129,21 +121,17 @@ class Rcgla040A06ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla040A06ConformanceLevel.complete:    return 'Complete';
-      case Rcgla040A06ConformanceLevel.partial:     return 'Partial';
-      case Rcgla040A06ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla040A06ConformanceLevel.pass_: return 'Pass';
+      case Rcgla040A06ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// RCGLA-040-A06: Build standardized, standalone layout container blocks inside the client view fr
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Rcgla040A06Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.9;
 
   // EC:1 — * Map the structural container wrapper bounding properties for standard cards
   static Rcgla040A06Config _ec1Execute(Rcgla040A06Config config) {
@@ -193,21 +181,19 @@ class Rcgla040A06Pipeline {
     required List<Rcgla040A06Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Rcgla040A06ValidationResult(
+      return Rcgla040A06ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Rcgla040A06ConformanceLevel.notComplete,
+        conformanceLevel: Rcgla040A06ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-RCGLA040A06-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Rcgla040A06ConformanceLevel.complete
-        : rate >= _floor
-            ? Rcgla040A06ConformanceLevel.partial
-            : Rcgla040A06ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Rcgla040A06ConformanceLevel.pass_
+        : Rcgla040A06ConformanceLevel.fail_;
     return Rcgla040A06ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +232,17 @@ class Rcgla040A06Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-RCGLA040A06-TRI: triangular check failed for RCGLA-040-A06');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-RCGLA-040-A06',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Layout Structural Consistency (Responsive Grid Compliance)',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +252,7 @@ class Rcgla040A06Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> rcgla_040_a06Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -296,15 +278,13 @@ class Rcgla040A06Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('RCGLA-040-A06',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +293,22 @@ class Rcgla040A06Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +334,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Rcgla040A06Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('RCGLA-040-A06 → $result');
+  final out = await Rcgla040A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('RCGLA-040-A06 [Pass / Fail] → $out');
 }

@@ -1,40 +1,48 @@
 // ============================================================
 // ERMWD-031-05 — Error Mapping & Widget Display
-// Atomic Step: Implement the frontend logic mapping failed mobile Byt JSON payloads to the worker UI task cards. (C
-// Metric:      Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     541 of 1073
+// Atomic Step:  Implement the frontend logic mapping failed mobile Byt JSON payloads to the worker UI task cards. (C
+// Metric:       Process Execution Quality Score
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      212 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Decode the base64 payload string into a raw text string within the deserialization function.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Ermwd03105ConformanceLevel { complete, partial, notComplete }
-enum Ermwd03105ExecutionStatus  { pending, running, complete, failed }
+enum Ermwd03105ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Ermwd03105ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for ERMWD-031-05.
-/// Fields derived from AISS sheet — Error Mapping & Widget Display.
+/// ERMWD-031-05 — Error Mapping & Widget Display
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ermwd03105Config {
   final String configId;
-  final String errorCode;
-  final String exceptionType;
-  final String fallbackRoute;
-  final String resolvedBy;
+  final String ruleKey;
+  final String ruleValue;
+  final String metricLabel;
+  final String complianceTarget;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Ermwd03105Config {
 
   const Ermwd03105Config({
     required this.configId,
-    required this.errorCode,
-    required this.exceptionType,
-    required this.fallbackRoute,
-    required this.resolvedBy,
+    required this.ruleKey,
+    required this.ruleValue,
+    required this.metricLabel,
+    required this.complianceTarget,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Ermwd03105Config {
     bool?   complianceStatusInd,
   }) => Ermwd03105Config(
     configId: configId,
-    errorCode: errorCode,
-    exceptionType: exceptionType,
-    fallbackRoute: fallbackRoute,
-    resolvedBy: resolvedBy,
+    ruleKey: ruleKey,
+    ruleValue: ruleValue,
+    metricLabel: metricLabel,
+    complianceTarget: complianceTarget,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Ermwd03105Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'errorCode': errorCode,
-    'exceptionType': exceptionType,
-    'fallbackRoute': fallbackRoute,
-    'resolvedBy': resolvedBy,
+    'ruleKey': ruleKey,
+    'ruleValue': ruleValue,
+    'metricLabel': metricLabel,
+    'complianceTarget': complianceTarget,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,56 +125,57 @@ class Ermwd03105ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ermwd03105ConformanceLevel.complete:    return 'Good';
-      case Ermwd03105ConformanceLevel.partial:     return 'Average';
-      case Ermwd03105ConformanceLevel.notComplete: return 'Poor';
+      case Ermwd03105ConformanceLevel.good:    return 'Good';
+      case Ermwd03105ConformanceLevel.average: return 'Average';
+      case Ermwd03105ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// ERMWD-031-05: Implement the frontend logic mapping failed mobile Byt JSON payloads to the work
-/// Metric: Error Handling Coverage Rate · Floor=0.95 · Optimal=1.0
+/// Metric: Process Execution Quality Score
+/// Floor=0.9 · Output=Good / Average / Poor
 class Ermwd03105Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the ERMWD-031-05 configuration in the source repository.
   static Ermwd03105Config _ec1Locates(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-001: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-001: ruleKey required for ERMWD-031-05');
     }
     // the ERMWD-031-05 configuration in the source repository
     return config;
   }
 
-  // EC:2 — System extracts errorCode and exceptionType from the ERMWD-031-05 registry.
+  // EC:2 — System extracts ruleKey and ruleValue from the ERMWD-031-05 registry.
   static Ermwd03105Config _ec2Extracts(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-002: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-002: ruleKey required for ERMWD-031-05');
     }
-    // errorCode and exceptionType from the ERMWD-031-05 registry
+    // ruleKey and ruleValue from the ERMWD-031-05 registry
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Error Handling Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Process Execution Quality Score.
   static Ermwd03105Config _ec3Compiles(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-003: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-003: ruleKey required for ERMWD-031-05');
     }
-    // the implementation rule set per Error Handling Coverage Rate
+    // the implementation rule set per Process Execution Quality Sc
     return config;
   }
 
   // EC:4 — System validates configuration against required constraints.
   static Ermwd03105Config _ec4Validates(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-004: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-004: ruleKey required for ERMWD-031-05');
     }
     // configuration against required constraints
     return config;
@@ -174,29 +183,29 @@ class Ermwd03105Pipeline {
 
   // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
   static Ermwd03105Config _ec5Registers(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-005: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-005: ruleKey required for ERMWD-031-05');
     }
     // compiled rules as immutable with immutable_IND=TRUE
     return config;
   }
 
-  // EC:6 — System validates configuration against Error Handling Coverage Rate gate (floor=0.95).
+  // EC:6 — System validates configuration against Process Execution Quality Score gate (floor=0.9).
   static Ermwd03105Config _ec6Validates(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-006: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-006: ruleKey required for ERMWD-031-05');
     }
-    // configuration against Error Handling Coverage Rate gate (flo
+    // configuration against Process Execution Quality Score gate (
     return config;
   }
 
   // EC:7 — System routes non-compliant records to the dead letter queue.
   static Ermwd03105Config _ec7Routes(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-007: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-007: ruleKey required for ERMWD-031-05');
     }
     // non-compliant records to the dead letter queue
     return config;
@@ -204,9 +213,9 @@ class Ermwd03105Pipeline {
 
   // EC:8 — System publishes validated configuration to the rule registry.
   static Ermwd03105Config _ec8Publishes(Ermwd03105Config config) {
-    if (config.errorCode.isEmpty) {
+    if (config.ruleKey.isEmpty) {
       throw ArgumentError(
-          'EC-ERMWD03105-008: errorCode required for ERMWD-031-05');
+          'EC-ERMWD03105-008: ruleKey required for ERMWD-031-05');
     }
     // validated configuration to the rule registry
     return config;
@@ -220,7 +229,7 @@ class Ermwd03105Pipeline {
     required List<Ermwd03105Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ermwd03105ValidationResult(
+      return Ermwd03105ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ermwd03105ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Ermwd03105Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Ermwd03105ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Ermwd03105ConformanceLevel.good
         : rate >= _floor
-            ? Ermwd03105ConformanceLevel.partial
-            : Ermwd03105ConformanceLevel.notComplete;
+            ? Ermwd03105ConformanceLevel.average
+            : Ermwd03105ConformanceLevel.poor;
     return Ermwd03105ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Ermwd03105Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ERMWD-031-05',
-      'metric':             'Error Handling Coverage Rate',
+      'metric':             'Process Execution Quality Score',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Ermwd03105Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> ermwd_031_05Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> ermwd_031_05Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Ermwd03105Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ermwd03105Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Ermwd03105Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('ERMWD-031-05',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.errorCode,
+                title: Text(c.ruleKey,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -363,16 +379,16 @@ void main() async {
   final configs = [
     Ermwd03105Config(
       configId: 'ermwd03105-cfg-001',
-      errorCode: 'ermwd-031-05_errorCode',
-      exceptionType: 'ermwd-031-05_exceptionType',
-      fallbackRoute: 'ermwd-031-05_fallbackRoute',
-      resolvedBy: 'ermwd-031-05_resolvedBy',
+      ruleKey: 'ermwd-031-05_ruleKey',
+      ruleValue: 'ermwd-031-05_ruleValue',
+      metricLabel: 'ermwd-031-05_metricLabel',
+      complianceTarget: 'ermwd-031-05_complianceTarget',
       traceId:                 'trace-ermwd03105-001',
       originSourceId:          'origin-ermwd03105',
       immediatePredecessorId:  'pred-ermwd03105-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ermwd03105Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('ERMWD-031-05 → $result');
+  final out = await Ermwd03105Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('ERMWD-031-05 [Good / Average / Poor] → $out');
 }

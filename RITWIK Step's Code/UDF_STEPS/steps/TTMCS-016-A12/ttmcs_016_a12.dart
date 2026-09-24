@@ -1,52 +1,48 @@
 // ============================================================
 // TTMCS-016-A12 — Material Design Token Configuration System
-// Atomic Step: TTMCS-016 - Construct the Design System token map across primary color ranges, typography, and struc
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     387 of 396
+// Atomic Step:  TTMCS-016 - Construct the Design System token map across primary color ranges, typography, and struc
+// Metric:       Enforcement / Binding Compliance Rate
+// Floor:        0.9  ·  Optimal: 0.98
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1061 of 1073
 // ============================================================
-// Why this matters: High-contrast interfaces prevent eye fatigue and accessibility failures when checking tax details in
-// Mobile impl:      Pre-compiled token properties eliminate runtime styling recalculations, keeping layout rendering hig
-// Data requirement: Configure dynamic light and dark theme alternatives using uniform styling keys.
+// Why:          High-contrast interfaces prevent eye fatigue and accessibility failures when checking tax details in
+// Mobile:       Pre-compiled token properties eliminate runtime styling recalculations, keeping layout rendering hig
+// col41:        Complete/Partial/Not Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Ttmcs016A12ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Ttmcs016A12ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttmcs016A12ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTMCS-016-A12.
-/// Fields derived from AISS sheet row — Material Design Token Configuration System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTMCS-016-A12 — Material Design Token Configuration System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttmcs016A12Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Ttmcs016A12Config {
     'hexValue': hexValue,
     'wcagRatio': wcagRatio,
     'usageContext': usageContext,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,15 +132,14 @@ class Ttmcs016A12ValidationResult {
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// TTMCS-016-A12: TTMCS-016 - Construct the Design System token map across primary color ranges, t
-///
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: Enforcement / Binding Compliance Rate
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Ttmcs016A12Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.98;
 
   // EC:1 — Define accessible contrast ratios for primary colors representing Dubai and India jurisdic
   static Ttmcs016A12Config _ec1Execute(Ttmcs016A12Config config) {
@@ -156,7 +151,7 @@ class Ttmcs016A12Pipeline {
     return config;
   }
 
-  // EC:2 — Establish clear typographic scaling rules using system fonts optimized for readability on
+  // EC:2 — Establish clear typographic scaling rules using system fonts optimized for readability on 
   static Ttmcs016A12Config _ec2Execute(Ttmcs016A12Config config) {
     if (config.colorToken.isEmpty) {
       throw ArgumentError(
@@ -190,23 +185,21 @@ class Ttmcs016A12Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.95 · Optimal=1.0
   static Ttmcs016A12ValidationResult calculateConformance({
     required List<Ttmcs016A12Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttmcs016A12ValidationResult(
+      return Ttmcs016A12ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ttmcs016A12ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTMCS016A12-VAL',
+        gatePass: false, ecLineRef: 'EC-TTMCS016A12-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ttmcs016A12ConformanceLevel.complete
         : rate >= _floor
             ? Ttmcs016A12ConformanceLevel.partial
@@ -239,7 +232,7 @@ class Ttmcs016A12Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTMCS016A12-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTMCS016A12-000: configs must not be empty for TTMCS-016-A12');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -247,21 +240,19 @@ class Ttmcs016A12Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-TTMCS016A12-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTMCS016A12-TRI: triangular check failed for TTMCS-016-A12');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMCS-016-A12',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'Enforcement / Binding Compliance Rate',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -271,9 +262,7 @@ class Ttmcs016A12Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttmcs_016_a12Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -292,6 +281,7 @@ class Ttmcs016A12Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttmcs016A12Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,16 +289,13 @@ class Ttmcs016A12Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTMCS-016-A12',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -317,23 +304,22 @@ class Ttmcs016A12Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${colorToken} | ${hexValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -349,17 +335,16 @@ void main() async {
   final configs = [
     Ttmcs016A12Config(
       configId: 'ttmcs016a12-cfg-001',
-      colorToken: 'ttmcs-016-a12_colorToken_value',
-      hexValue: 'ttmcs-016-a12_hexValue_value',
-      wcagRatio: 'ttmcs-016-a12_wcagRatio_value',
-      usageContext: 'ttmcs-016-a12_usageContext_value',
+      colorToken: 'ttmcs-016-a12_colorToken',
+      hexValue: 'ttmcs-016-a12_hexValue',
+      wcagRatio: 'ttmcs-016-a12_wcagRatio',
+      usageContext: 'ttmcs-016-a12_usageContext',
       traceId:                 'trace-ttmcs016a12-001',
       originSourceId:          'origin-ttmcs016a12',
       immediatePredecessorId:  'pred-ttmcs016a12-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttmcs016A12Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTMCS-016-A12 → $result');
+  final out = await Ttmcs016A12Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTMCS-016-A12 [Complete / Partial / Not Complete] → $out');
 }

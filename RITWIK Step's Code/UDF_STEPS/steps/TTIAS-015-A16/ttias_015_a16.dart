@@ -1,52 +1,48 @@
 // ============================================================
 // TTIAS-015-A16 — Token Integration & Automation System
-// Atomic Step: TTIAS-015 - Enforce Rigid Design Token Syncing via Master Figma-to-NPM Build Pipeline.
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     370 of 396
+// Atomic Step:  TTIAS-015 - Enforce Rigid Design Token Syncing via Master Figma-to-NPM Build Pipeline.
+// Metric:       Implementation Completeness & Code Quality
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Complete / Partial / Not Complete
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      1041 of 1073
 // ============================================================
-// Why this matters: Eliminates visual and functional deviations across downstream mobile viewports by preventing raw, un
-// Mobile impl:      Compresses styling configuration files to sub-kilobyte footprints, preventing initialization lags an
-// Data requirement: Add end-to-end pipeline tests from Figma source to published package.
+// Why:          Eliminates visual and functional deviations across downstream mobile viewports by preventing raw, un
+// Mobile:       Compresses styling configuration files to sub-kilobyte footprints, preventing initialization lags an
+// col41:        Complete
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Complete / Partial / Not Complete ─────────────
 
 enum Ttias015A16ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  complete,    // ≥ optimal
+  partial,     // ≥ floor
+  notComplete, // < floor
 }
 
-enum Ttias015A16ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Ttias015A16ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for TTIAS-015-A16.
-/// Fields derived from AISS sheet row — Token Integration & Automation System.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// TTIAS-015-A16 — Token Integration & Automation System
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Ttias015A16Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
+  final String configId;
   final String tokenName;
   final String tokenValue;
   final String tokenCategory;
   final String appliedComponent;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -96,13 +92,13 @@ class Ttias015A16Config {
     'tokenValue': tokenValue,
     'tokenCategory': tokenCategory,
     'appliedComponent': appliedComponent,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -136,15 +132,14 @@ class Ttias015A16ValidationResult {
   }
 }
 
-// ── EC:1 Pipeline ────────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
 /// TTIAS-015-A16: TTIAS-015 - Enforce Rigid Design Token Syncing via Master Figma-to-NPM Build Pip
-///
-/// Metric: Design System Token Coverage Rate
-/// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
+/// Metric: Implementation Completeness & Code Quality
+/// Floor=0.9 · Output=Complete / Partial / Not Complete
 class Ttias015A16Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — Configure the token compiler script within the workspace root folder. Implement a validati
   static Ttias015A16Config _ec1Execute(Ttias015A16Config config) {
@@ -160,23 +155,21 @@ class Ttias015A16Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=1.0
   static Ttias015A16ValidationResult calculateConformance({
     required List<Ttias015A16Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Ttias015A16ValidationResult(
+      return Ttias015A16ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Ttias015A16ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-TTIAS015A16-VAL',
+        gatePass: false, ecLineRef: 'EC-TTIAS015A16-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
+    final level = rate >= _optimal
         ? Ttias015A16ConformanceLevel.complete
         : rate >= _floor
             ? Ttias015A16ConformanceLevel.partial
@@ -209,26 +202,24 @@ class Ttias015A16Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-TTIAS015A16-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-TTIAS015A16-000: configs must not be empty for TTIAS-015-A16');
     }
     final p1 = configs.map(_ec1Execute).toList();
 
     if (!triangularCheck(configs.length, p1.length)) {
-      return {'error': 'EC-TTIAS015A16-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-TTIAS015A16-TRI: triangular check failed for TTIAS-015-A16');
     }
-
     final result     = calculateConformance(configs: p1);
     final registered = p1.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTIAS-015-A16',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'Implementation Completeness & Code Quality',
+      'output_vocab':       'Complete / Partial / Not Complete',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -238,9 +229,7 @@ class Ttias015A16Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> ttias_015_a16Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -259,6 +248,7 @@ class Ttias015A16Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Ttias015A16Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -266,16 +256,13 @@ class Ttias015A16Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('TTIAS-015-A16',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -284,23 +271,22 @@ class Ttias015A16Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
+                  color: pass ? cs.tertiary : cs.error),
                 title: Text(c.tokenName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${tokenName} | ${tokenValue}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Complete' : 'Not Complete',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -316,17 +302,16 @@ void main() async {
   final configs = [
     Ttias015A16Config(
       configId: 'ttias015a16-cfg-001',
-      tokenName: 'ttias-015-a16_tokenName_value',
-      tokenValue: 'ttias-015-a16_tokenValue_value',
-      tokenCategory: 'ttias-015-a16_tokenCategory_value',
-      appliedComponent: 'ttias-015-a16_appliedComponent_value',
+      tokenName: 'ttias-015-a16_tokenName',
+      tokenValue: 'ttias-015-a16_tokenValue',
+      tokenCategory: 'ttias-015-a16_tokenCategory',
+      appliedComponent: 'ttias-015-a16_appliedComponent',
       traceId:                 'trace-ttias015a16-001',
       originSourceId:          'origin-ttias015a16',
       immediatePredecessorId:  'pred-ttias015a16-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Ttias015A16Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('TTIAS-015-A16 → $result');
+  final out = await Ttias015A16Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('TTIAS-015-A16 [Complete / Partial / Not Complete] → $out');
 }

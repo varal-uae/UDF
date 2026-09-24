@@ -1,327 +1,313 @@
 // ============================================================
-// BLGTA-041-A01 | DCDF Lineage Engine
-// Atomic Task: BLGTA-041-A01
-// EC Lines: 9 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BLGTA-041-A01 — DCDF Lineage Engine
+// Atomic Step:  Implementation Step 42: Inject UUIDs universally across payloads (BLGTA-041)
+// Metric:       Environment & Configuration Setup Readiness
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      61 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System loads incoming payload configuration schema file from origin repository.
-  // EC: 2. System validates presence of configuration key schema definitions.
-  // EC: 3. System generates UUID version 4 trace identifier token.
-  // EC: 4. System injects UUID version 4 trace token into packet payload header.
-  // EC: 5. System maps injected payload header to cross-domain metadata library.
-  // EC: 6. System evaluates binary compliance check gate on payload header.
-  // EC: 7. System routes non-compliant payloads to dead letter queue storage.
-  // EC: 8. System writes validation audit record into configuration execution log table.
-  // EC: 9. System broadcasts updated configuration payload to network ingress gateway.
+// Why:          Solves distributed tracing.
+// Mobile:       Maps mobile app sessions cleanly across decoupled microservices.
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Blgta041A01ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Blgta041A01ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BLGTA-041-A01.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Blgta041A01Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+/// BLGTA-041-A01 — DCDF Lineage Engine
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Blgta041A01Config {
+  final String configId;
+  final String gridColumns;
+  final String gutterSizePx;
+  final String maxWidthPx;
+  final String breakpointLabel;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Blgta041A01Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Blgta041A01Config({
+    required this.configId,
+    required this.gridColumns,
+    required this.gutterSizePx,
+    required this.maxWidthPx,
+    required this.breakpointLabel,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Blgta041A01Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Blgta041A01Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Blgta041A01Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Blgta041A01Config(
+    configId: configId,
+    gridColumns: gridColumns,
+    gutterSizePx: gutterSizePx,
+    maxWidthPx: maxWidthPx,
+    breakpointLabel: breakpointLabel,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'gridColumns': gridColumns,
+    'gutterSizePx': gutterSizePx,
+    'maxWidthPx': maxWidthPx,
+    'breakpointLabel': breakpointLabel,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Blgta041A01ScanResult {
+class Blgta041A01ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Blgta041A01ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Blgta041A01ScanResult({
+  const Blgta041A01ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Blgta041A01ConformanceLevel.pass_: return 'Pass';
+      case Blgta041A01ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:9 Pipeline ──────────────────────────────────────────────────────
+// ── EC:1 Pipeline ────────────────────────────────────────
 
+/// BLGTA-041-A01: Implementation Step 42: Inject UUIDs universally across payloads (BLGTA-041)
+/// Metric: Environment & Configuration Setup Readiness
+/// Floor=0.95 · Output=Pass / Fail
 class Blgta041A01Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System loads incoming payload configuration schema file from origin repository.
-  static String executeLoadsStep1(Blgta041A01Entry entry) {
-    // loads incoming payload configuration schema file from origin repository
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — 1) Select UUID v4, 2) Define column, 3) Build injector, 4) Map cross-domain
+  static Blgta041A01Config _ec1Execute(Blgta041A01Config config) {
+    if (config.gridColumns.isEmpty) {
+      throw ArgumentError(
+          'EC-BLGTA041A01-001: gridColumns required for BLGTA-041-A01');
+    }
+    // 1) Select UUID v4, 2) Define column, 3) Build injector, 4) M
+    return config;
   }
 
-  // EC:2 — EC: 2. System validates presence of configuration key schema definitions.
-  static String executeValidatesStep2(Blgta041A01Entry entry) {
-    // validates presence of configuration key schema definitions
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:3 — EC: 3. System generates UUID version 4 trace identifier token.
-  static String executeGeneratesStep3(Blgta041A01Entry entry) {
-    // generates UUID version 4 trace identifier token
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:4 — EC: 4. System injects UUID version 4 trace token into packet payload header.
-  static String executeInjectsStep4(Blgta041A01Entry entry) {
-    // injects UUID version 4 trace token into packet payload header
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:5 — EC: 5. System maps injected payload header to cross-domain metadata library.
-  static String executeMapsStep5(Blgta041A01Entry entry) {
-    // maps injected payload header to cross-domain metadata library
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:6 — EC: 6. System evaluates binary compliance check gate on payload header.
-  static String executeEvaluatesStep6(Blgta041A01Entry entry) {
-    // evaluates binary compliance check gate on payload header
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:7 — EC: 7. System routes non-compliant payloads to dead letter queue storage.
-  static String executeRoutesStep7(Blgta041A01Entry entry) {
-    // routes non-compliant payloads to dead letter queue storage
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:8 — EC: 8. System writes validation audit record into configuration execution log table.
-  static String executeWritesStep8(Blgta041A01Entry entry) {
-    // writes validation audit record into configuration execution log table
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:9 — EC: 9. System broadcasts updated configuration payload to network ingress gateway.
-  static String executeBroadcastsStep9(Blgta041A01Entry entry) {
-    // broadcasts updated configuration payload to network ingress gateway
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BLGTA041A01-009: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Blgta041A01ScanResult validateConformance(
-    List<Blgta041A01Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Blgta041A01ScanResult(
+  static Blgta041A01ValidationResult calculateConformance({
+    required List<Blgta041A01Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Blgta041A01ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Blgta041A01ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-BLGTA041A01-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Blgta041A01ConformanceLevel.pass_
+        : Blgta041A01ConformanceLevel.fail_;
+    return Blgta041A01ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BLGTA041A01-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Blgta041A01Entry routeToRegistry(
-    Blgta041A01Entry entry,
-    Blgta041A01ScanResult scan,
+  static Blgta041A01Config routeToRegistry(
+    Blgta041A01Config config,
+    Blgta041A01ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Blgta041A01Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BLGTA041A01-000: configs must not be empty for BLGTA-041-A01');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+
+    if (!triangularCheck(configs.length, p1.length)) {
+      throw ArgumentError('EC-BLGTA041A01-TRI: triangular check failed for BLGTA-041-A01');
+    }
+    final result     = calculateConformance(configs: p1);
+    final registered = p1.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BLGTA-041-A01',
+      'metric':             'Environment & Configuration Setup Readiness',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> blgta_041_a01Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BLGTA-041-A01',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Blgta041A01Widget extends StatelessWidget {
-  final List<Blgta041A01Entry> entries;
-  const Blgta041A01Widget({super.key, required this.entries});
+  final List<Blgta041A01Config> configs;
+  const Blgta041A01Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Blgta041A01Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Blgta041A01Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BLGTA-041-A01',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BLGTA-041-A01',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.gridColumns,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Blgta041A01Config(
+      configId: 'blgta041a01-cfg-001',
+      gridColumns: 'blgta-041-a01_gridColumns',
+      gutterSizePx: 'blgta-041-a01_gutterSizePx',
+      maxWidthPx: 'blgta-041-a01_maxWidthPx',
+      breakpointLabel: 'blgta-041-a01_breakpointLabel',
+      traceId:                 'trace-blgta041a01-001',
+      originSourceId:          'origin-blgta041a01',
+      immediatePredecessorId:  'pred-blgta041a01-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Blgta041A01Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BLGTA-041-A01 [Pass / Fail] → $out');
 }

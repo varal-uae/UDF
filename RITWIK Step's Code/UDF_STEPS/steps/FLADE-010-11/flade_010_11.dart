@@ -1,31 +1,38 @@
 // ============================================================
 // FLADE-010-11 — Friction Logging & Analytics Data Engine
-// Atomic Step: Structured Friction Logging Engine (Cascading Modals)
-// Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     585 of 1073
+// Atomic Step:  Structured Friction Logging Engine (Cascading Modals)
+// Metric:       Data Pipeline Latency (Freshness SLA)
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      274 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Code SLA timers into the modal logic that activate upon log submission.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (≤1 min)
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Flade01011ConformanceLevel { complete, partial, notComplete }
-enum Flade01011ExecutionStatus  { pending, running, complete, failed }
+enum Flade01011ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Flade01011ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for FLADE-010-11.
-/// Fields derived from AISS sheet — Friction Logging & Analytics Data Engine.
+/// FLADE-010-11 — Friction Logging & Analytics Data Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Flade01011Config {
   final String configId;
@@ -35,6 +42,7 @@ class Flade01011Config {
   final String dismissBehaviour;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Flade01011ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade01011ConformanceLevel.complete:    return 'Good';
-      case Flade01011ConformanceLevel.partial:     return 'Average';
-      case Flade01011ConformanceLevel.notComplete: return 'Poor';
+      case Flade01011ConformanceLevel.good:    return 'Good';
+      case Flade01011ConformanceLevel.average: return 'Average';
+      case Flade01011ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// FLADE-010-11: Structured Friction Logging Engine (Cascading Modals)
-/// Metric: Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
+/// Metric: Data Pipeline Latency (Freshness SLA)
+/// Floor=0.9 · Output=Good / Average / Poor
 class Flade01011Pipeline {
-  static const double _floor   = 0.92;
-  static const double _optimal = 0.98;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the FLADE-010-11 configuration in the source repository.
   static Flade01011Config _ec1Locates(Flade01011Config config) {
@@ -152,13 +161,13 @@ class Flade01011Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Telemetry Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per Data Pipeline Latency (Freshness SLA).
   static Flade01011Config _ec3Compiles(Flade01011Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FLADE01011-003: modalId required for FLADE-010-11');
     }
-    // the implementation rule set per Telemetry Coverage Rate
+    // the implementation rule set per Data Pipeline Latency (Fresh
     return config;
   }
 
@@ -182,13 +191,13 @@ class Flade01011Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Telemetry Coverage Rate gate (floor=0.92).
+  // EC:6 — System validates configuration against Data Pipeline Latency (Freshness SLA) gate (floor=0
   static Flade01011Config _ec6Validates(Flade01011Config config) {
     if (config.modalId.isEmpty) {
       throw ArgumentError(
           'EC-FLADE01011-006: modalId required for FLADE-010-11');
     }
-    // configuration against Telemetry Coverage Rate gate (floor=0.
+    // configuration against Data Pipeline Latency (Freshness SLA) 
     return config;
   }
 
@@ -220,7 +229,7 @@ class Flade01011Pipeline {
     required List<Flade01011Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Flade01011ValidationResult(
+      return Flade01011ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Flade01011ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Flade01011Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Flade01011ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Flade01011ConformanceLevel.good
         : rate >= _floor
-            ? Flade01011ConformanceLevel.partial
-            : Flade01011ConformanceLevel.notComplete;
+            ? Flade01011ConformanceLevel.average
+            : Flade01011ConformanceLevel.poor;
     return Flade01011ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Flade01011Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-FLADE-010-11',
-      'metric':             'Telemetry Coverage Rate',
+      'metric':             'Data Pipeline Latency (Freshness SLA)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Flade01011Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> flade_010_11Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> flade_010_11Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Flade01011Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Flade01011Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Flade01011Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('FLADE-010-11',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.modalId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Flade01011Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('FLADE-010-11 → $result');
+  final out = await Flade01011Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('FLADE-010-11 [Good / Average / Poor] → $out');
 }

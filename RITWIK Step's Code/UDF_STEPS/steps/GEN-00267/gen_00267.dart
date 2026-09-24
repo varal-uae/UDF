@@ -1,51 +1,47 @@
 // ============================================================
-// GEN-00267 — GEN System Module
-// Atomic Step: Configure the viewport to auto-scroll dynamically so the keyboard cannot hide the active field.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     223 of 396
+// GEN-00267 — GEN Backend Utility Module
+// Atomic Step:  Configure the viewport to auto-scroll dynamically so the keyboard cannot hide the active field.
+// Metric:       Cross-Viewport Rendering Consistency
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      307 of 1073
 // ============================================================
-// Why this matters: Configure the viewport to auto-scroll dynamically so the keyboard cannot hide the active field. is a
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Configure the viewport to auto-scroll dynamically so the keyboard cannot hide the active field.
+// Why:          Configure the viewport to auto-scroll dynamically so the keyboard cannot hide the active field. is a
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Gen00267ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Gen00267ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen00267ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-00267.
-/// Fields derived from AISS sheet row — GEN System Module.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// GEN-00267 — GEN Backend Utility Module
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen00267Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields (from AISS data requirement)
-  final String configure;
-  final String viewport;
-  final String autoscroll;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String animationId;
+  final String durationMs;
+  final String easingCurve;
+  final String triggerState;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -54,9 +50,10 @@ class Gen00267Config {
 
   const Gen00267Config({
     required this.configId,
-    required this.configure,
-    required this.viewport,
-    required this.autoscroll,
+    required this.animationId,
+    required this.durationMs,
+    required this.easingCurve,
+    required this.triggerState,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -75,9 +72,10 @@ class Gen00267Config {
     bool?   complianceStatusInd,
   }) => Gen00267Config(
     configId: configId,
-    configure: configure,
-    viewport: viewport,
-    autoscroll: autoscroll,
+    animationId: animationId,
+    durationMs: durationMs,
+    easingCurve: easingCurve,
+    triggerState: triggerState,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -89,16 +87,17 @@ class Gen00267Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'configure': configure,
-    'viewport': viewport,
-    'autoscroll': autoscroll,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'animationId': animationId,
+    'durationMs': durationMs,
+    'easingCurve': easingCurve,
+    'triggerState': triggerState,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -125,28 +124,26 @@ class Gen00267ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen00267ConformanceLevel.complete:    return 'Complete';
-      case Gen00267ConformanceLevel.partial:     return 'Partial';
-      case Gen00267ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen00267ConformanceLevel.pass_: return 'Pass';
+      case Gen00267ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-00267: Configure the viewport to auto-scroll dynamically so the keyboard cannot hide th
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Cross-Viewport Rendering Consistency
+/// Floor=0.95 · Output=Pass / Fail
 class Gen00267Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Plan and scope this step
   static Gen00267Config _ec1Execute(Gen00267Config config) {
-    if (config.configure.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00267-001: configure required for GEN-00267');
+          'EC-GEN00267-001: animationId required for GEN-00267');
     }
     // Plan and scope this step
     return config;
@@ -154,9 +151,9 @@ class Gen00267Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen00267Config _ec2Execute(Gen00267Config config) {
-    if (config.configure.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00267-002: configure required for GEN-00267');
+          'EC-GEN00267-002: animationId required for GEN-00267');
     }
     // Implement the core configuration
     return config;
@@ -164,9 +161,9 @@ class Gen00267Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen00267Config _ec3Execute(Gen00267Config config) {
-    if (config.configure.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00267-003: configure required for GEN-00267');
+          'EC-GEN00267-003: animationId required for GEN-00267');
     }
     // Test and validate in staging
     return config;
@@ -174,9 +171,9 @@ class Gen00267Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen00267Config _ec4Execute(Gen00267Config config) {
-    if (config.configure.isEmpty) {
+    if (config.animationId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN00267-004: configure required for GEN-00267');
+          'EC-GEN00267-004: animationId required for GEN-00267');
     }
     // Document and commit to runbook
     return config;
@@ -186,27 +183,23 @@ class Gen00267Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Gen00267ValidationResult calculateConformance({
     required List<Gen00267Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen00267ValidationResult(
+      return Gen00267ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Gen00267ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-GEN00267-VAL',
+        conformanceLevel: Gen00267ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-GEN00267-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen00267ConformanceLevel.complete
-        : rate >= _floor
-            ? Gen00267ConformanceLevel.partial
-            : Gen00267ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Gen00267ConformanceLevel.pass_
+        : Gen00267ConformanceLevel.fail_;
     return Gen00267ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -235,7 +228,7 @@ class Gen00267Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-GEN00267-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-GEN00267-000: configs must not be empty for GEN-00267');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -243,21 +236,19 @@ class Gen00267Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-GEN00267-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-GEN00267-TRI: triangular check failed for GEN-00267');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-00267',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Cross-Viewport Rendering Consistency',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -267,9 +258,7 @@ class Gen00267Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> gen_00267Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -288,6 +277,7 @@ class Gen00267Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen00267Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -295,16 +285,13 @@ class Gen00267Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-00267',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Gen00267Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.configure,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.animationId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  '${configure} | ${viewport}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -345,16 +331,16 @@ void main() async {
   final configs = [
     Gen00267Config(
       configId: 'gen00267-cfg-001',
-      configure: 'gen-00267_configure_value',
-      viewport: 'gen-00267_viewport_value',
-      autoscroll: 'gen-00267_autoscroll_value',
+      animationId: 'gen-00267_animationId',
+      durationMs: 'gen-00267_durationMs',
+      easingCurve: 'gen-00267_easingCurve',
+      triggerState: 'gen-00267_triggerState',
       traceId:                 'trace-gen00267-001',
       originSourceId:          'origin-gen00267',
       immediatePredecessorId:  'pred-gen00267-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen00267Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('GEN-00267 → $result');
+  final out = await Gen00267Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-00267 [Pass / Fail] → $out');
 }

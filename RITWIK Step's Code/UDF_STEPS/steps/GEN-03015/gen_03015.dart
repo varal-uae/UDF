@@ -1,40 +1,48 @@
 // ============================================================
 // GEN-03015 — GEN Backend Utility Module
-// Atomic Step: Add Approve, Reject, and Edit buttons to the mobile review UI view.
-// Metric:      Release Gate Pass Rate · Floor=80.0 · Optimal=95.0
-// Output:      Pass / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     844 of 1073
+// Atomic Step:  Add Approve, Reject, and Edit buttons to the mobile review UI view.
+// Metric:       Mobile Usability Task Success Rate (%)
+// Floor:        80.0  ·  Optimal: 95.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      557 of 1073
 // ============================================================
-// Why this matters: Add Approve, Reject, and Edit buttons to the mobile review UI view. is a critical implementation ste
-// Mobile impl:      Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
-// Data requirement: Add Approve, Reject, and Edit buttons to the mobile review UI view.
+// Why:          Add Approve, Reject, and Edit buttons to the mobile review UI view. is a critical implementation ste
+// Mobile:       Ensures sub-100ms API response latencies on mobile clients via optimized backend configuration.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Gen03015ConformanceLevel { complete, partial, notComplete }
-enum Gen03015ExecutionStatus  { pending, running, complete, failed }
+enum Gen03015ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Gen03015ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for GEN-03015.
-/// Fields derived from AISS sheet — GEN Backend Utility Module.
+/// GEN-03015 — GEN Backend Utility Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Gen03015Config {
   final String configId;
-  final String gateId;
-  final String checkRule;
-  final String passThreshold;
-  final String failureReason;
+  final String documentId;
+  final String predecessorId;
+  final String lineageHash;
+  final String complianceRef;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -43,10 +51,10 @@ class Gen03015Config {
 
   const Gen03015Config({
     required this.configId,
-    required this.gateId,
-    required this.checkRule,
-    required this.passThreshold,
-    required this.failureReason,
+    required this.documentId,
+    required this.predecessorId,
+    required this.lineageHash,
+    required this.complianceRef,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -65,10 +73,10 @@ class Gen03015Config {
     bool?   complianceStatusInd,
   }) => Gen03015Config(
     configId: configId,
-    gateId: gateId,
-    checkRule: checkRule,
-    passThreshold: passThreshold,
-    failureReason: failureReason,
+    documentId: documentId,
+    predecessorId: predecessorId,
+    lineageHash: lineageHash,
+    complianceRef: complianceRef,
     validationStatus:         validationStatus  ?? this.validationStatus,
     immutableInd:             immutableInd      ?? this.immutableInd,
     traceId:                  traceId,
@@ -80,10 +88,10 @@ class Gen03015Config {
 
   Map<String, dynamic> toJson() => {
     'config_id': configId,
-    'gateId': gateId,
-    'checkRule': checkRule,
-    'passThreshold': passThreshold,
-    'failureReason': failureReason,
+    'documentId': documentId,
+    'predecessorId': predecessorId,
+    'lineageHash': lineageHash,
+    'complianceRef': complianceRef,
     'validation_status':         validationStatus,
     'immutable_ind':             immutableInd,
     'trace_id':                  traceId,
@@ -117,26 +125,27 @@ class Gen03015ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen03015ConformanceLevel.complete:    return 'Pass';
-      case Gen03015ConformanceLevel.partial:     return 'Partial';
-      case Gen03015ConformanceLevel.notComplete: return 'Fail';
+      case Gen03015ConformanceLevel.good:    return 'Good';
+      case Gen03015ConformanceLevel.average: return 'Average';
+      case Gen03015ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// GEN-03015: Add Approve, Reject, and Edit buttons to the mobile review UI view.
-/// Metric: Release Gate Pass Rate · Floor=80.0 · Optimal=95.0
+/// Metric: Mobile Usability Task Success Rate (%)
+/// Floor=80.0 · Output=Good / Average / Poor
 class Gen03015Pipeline {
   static const double _floor   = 80.0;
   static const double _optimal = 95.0;
 
   // EC:1 — Plan and scope this step
   static Gen03015Config _ec1Execute(Gen03015Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03015-001: gateId required for GEN-03015');
+          'EC-GEN03015-001: documentId required for GEN-03015');
     }
     // Plan and scope this step
     return config;
@@ -144,9 +153,9 @@ class Gen03015Pipeline {
 
   // EC:2 — Implement the core configuration
   static Gen03015Config _ec2Execute(Gen03015Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03015-002: gateId required for GEN-03015');
+          'EC-GEN03015-002: documentId required for GEN-03015');
     }
     // Implement the core configuration
     return config;
@@ -154,9 +163,9 @@ class Gen03015Pipeline {
 
   // EC:3 — Test and validate in staging
   static Gen03015Config _ec3Execute(Gen03015Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03015-003: gateId required for GEN-03015');
+          'EC-GEN03015-003: documentId required for GEN-03015');
     }
     // Test and validate in staging
     return config;
@@ -164,9 +173,9 @@ class Gen03015Pipeline {
 
   // EC:4 — Document and commit to runbook
   static Gen03015Config _ec4Execute(Gen03015Config config) {
-    if (config.gateId.isEmpty) {
+    if (config.documentId.isEmpty) {
       throw ArgumentError(
-          'EC-GEN03015-004: gateId required for GEN-03015');
+          'EC-GEN03015-004: documentId required for GEN-03015');
     }
     // Document and commit to runbook
     return config;
@@ -180,7 +189,7 @@ class Gen03015Pipeline {
     required List<Gen03015Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Gen03015ValidationResult(
+      return Gen03015ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Gen03015ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Gen03015Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Gen03015ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Gen03015ConformanceLevel.good
         : rate >= _floor
-            ? Gen03015ConformanceLevel.partial
-            : Gen03015ConformanceLevel.notComplete;
+            ? Gen03015ConformanceLevel.average
+            : Gen03015ConformanceLevel.poor;
     return Gen03015ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Gen03015Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-GEN-03015',
-      'metric':             'Release Gate Pass Rate',
+      'metric':             'Mobile Usability Task Success Rate (%)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Gen03015Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> gen_03015Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> gen_03015Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Gen03015Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Gen03015Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Gen03015Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('GEN-03015',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(c.gateId,
+                title: Text(c.documentId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -319,16 +335,16 @@ void main() async {
   final configs = [
     Gen03015Config(
       configId: 'gen03015-cfg-001',
-      gateId: 'gen-03015_gateId',
-      checkRule: 'gen-03015_checkRule',
-      passThreshold: 'gen-03015_passThreshold',
-      failureReason: 'gen-03015_failureReason',
+      documentId: 'gen-03015_documentId',
+      predecessorId: 'gen-03015_predecessorId',
+      lineageHash: 'gen-03015_lineageHash',
+      complianceRef: 'gen-03015_complianceRef',
       traceId:                 'trace-gen03015-001',
       originSourceId:          'origin-gen03015',
       immediatePredecessorId:  'pred-gen03015-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Gen03015Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('GEN-03015 → $result');
+  final out = await Gen03015Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('GEN-03015 [Good / Average / Poor] → $out');
 }

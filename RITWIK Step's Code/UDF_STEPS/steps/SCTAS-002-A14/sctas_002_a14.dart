@@ -1,50 +1,45 @@
 // ============================================================
-// SCTAS-002-A14 — Semantic Color Token Application System
-// Atomic Step: Hardcode the primary brand color token #2E86C1 across call-to-action component styling frameworks.
-// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     503 of 530
+// SCTAS-002-A14 — SCTAS System Module
+// Atomic Step:  Hardcode the primary brand color token #2E86C1 across call-to-action component styling frameworks.
+// Metric:       UI Motion & Transition Duration (Material Design Motion System)
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      958 of 1073
 // ============================================================
-// Why this matters: Establishes strong visual hierarchy across digital portals, guiding user attention instantly to key 
-// Mobile impl:      Ensures critical transaction triggers match prominent contrast rules to optimize visibility under br
-// Data requirement: Configure active background overlay percentages for button hover interaction frames.
+// Why:          Establishes strong visual hierarchy across digital portals, guiding user attention instantly to key 
+// Mobile:       Ensures critical transaction triggers match prominent contrast rules to optimize visibility under br
+// col41:        Pass / Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Sctas002A14ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Sctas002A14ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Sctas002A14ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for SCTAS-002-A14.
-/// Fields derived from AISS sheet — Semantic Color Token Application System.
+/// SCTAS-002-A14 — SCTAS System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Sctas002A14Config {
-  final String configId;               // PK — UUID v4
-  // Step-specific fields
+  final String configId;
   final String colorToken;
   final String hexValue;
   final String wcagRatio;
   final String usageContext;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String validationStatus;
   final bool   immutableInd;
   // DCDF lineage
   final String traceId;
@@ -129,21 +124,20 @@ class Sctas002A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctas002A14ConformanceLevel.complete:    return 'Pass';
-      case Sctas002A14ConformanceLevel.partial:     return 'Partial';
-      case Sctas002A14ConformanceLevel.notComplete: return 'Fail';
+      case Sctas002A14ConformanceLevel.pass_: return 'Pass';
+      case Sctas002A14ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// SCTAS-002-A14: Hardcode the primary brand color token #2E86C1 across call-to-action component s
-/// Metric: WCAG 2.1 Accessibility Compliance Rate
-/// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
+/// Metric: UI Motion & Transition Duration (Material Design Motion Syst
+/// Floor=0.95 · Output=Pass / Fail
 class Sctas002A14Pipeline {
   static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _optimal = 0.95;
 
   // EC:1 — Map the variable parameter name brand-primary to value #2E86C1 inside theme directories
   static Sctas002A14Config _ec1Execute(Sctas002A14Config config) {
@@ -193,21 +187,19 @@ class Sctas002A14Pipeline {
     required List<Sctas002A14Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Sctas002A14ValidationResult(
+      return Sctas002A14ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Sctas002A14ConformanceLevel.notComplete,
+        conformanceLevel: Sctas002A14ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-SCTAS002A14-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Sctas002A14ConformanceLevel.complete
-        : rate >= _floor
-            ? Sctas002A14ConformanceLevel.partial
-            : Sctas002A14ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Sctas002A14ConformanceLevel.pass_
+        : Sctas002A14ConformanceLevel.fail_;
     return Sctas002A14ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -246,19 +238,17 @@ class Sctas002A14Pipeline {
     if (!triangularCheck(configs.length, p4.length)) {
       throw ArgumentError('EC-SCTAS002A14-TRI: triangular check failed for SCTAS-002-A14');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-SCTAS-002-A14',
-      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'metric':             'UI Motion & Transition Duration (Material Design Motion Syst',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -268,9 +258,7 @@ class Sctas002A14Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> sctas_002_a14Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -289,6 +277,7 @@ class Sctas002A14Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Sctas002A14Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,15 +285,13 @@ class Sctas002A14Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('SCTAS-002-A14',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? "" : "s"}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -313,23 +300,22 @@ class Sctas002A14Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.colorToken,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -355,7 +341,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Sctas002A14Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('SCTAS-002-A14 → $result');
+  final out = await Sctas002A14Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('SCTAS-002-A14 [Pass / Fail] → $out');
 }

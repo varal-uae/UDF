@@ -1,8 +1,0 @@
-[
-  {
-    "//": "GEN-00355 — size-limit build tool: stop deployments breaching budget.",
-    "//metric": "Configuration Conformance Rate",
-    "path": "build/app/outputs/**/app-release.apk",
-    "limit": "25 MB"
-  }
-]

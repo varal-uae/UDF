@@ -1,31 +1,38 @@
 // ============================================================
-// IS20-FEBFL-020-AS01-A09 — Implementation System 20
-// Atomic Step: Build Mobile Viewport Error Boundary Fallback Screen System
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     566 of 1073
+// IS20-FEBFL-020-AS01-A09 — IS20 System Module
+// Atomic Step:  Build Mobile Viewport Error Boundary Fallback Screen System
+// Metric:       UI Response / Rendering Latency - Intercepted error details stack trac
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      817 of 1073
 // ============================================================
-// Why this matters: Uncaught layout bugs can freeze applications completely, forcing users to manually kill and restart 
-// Mobile impl:      Ensures the application handles unexpected runtime errors gracefully, preserving user sessions on mo
-// Data requirement: Log intercepted error details, stack trace, and device context to remote error tracking service.
+// Why:          Uncaught layout bugs can freeze applications completely, forcing users to manually kill and restart 
+// Mobile:       Ensures the application handles unexpected runtime errors gracefully, preserving user sessions on mo
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Is20Febfl020As01A09ConformanceLevel { complete, partial, notComplete }
-enum Is20Febfl020As01A09ExecutionStatus  { pending, running, complete, failed }
+enum Is20Febfl020As01A09ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is20Febfl020As01A09ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS20-FEBFL-020-AS01-A09.
-/// Fields derived from AISS sheet — Implementation System 20.
+/// IS20-FEBFL-020-AS01-A09 — IS20 System Module
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is20Febfl020As01A09Config {
   final String configId;
@@ -35,6 +42,7 @@ class Is20Febfl020As01A09Config {
   final String inputType;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,19 +125,20 @@ class Is20Febfl020As01A09ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is20Febfl020As01A09ConformanceLevel.complete:    return 'Good';
-      case Is20Febfl020As01A09ConformanceLevel.partial:     return 'Average';
-      case Is20Febfl020As01A09ConformanceLevel.notComplete: return 'Poor';
+      case Is20Febfl020As01A09ConformanceLevel.good:    return 'Good';
+      case Is20Febfl020As01A09ConformanceLevel.average: return 'Average';
+      case Is20Febfl020As01A09ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS20-FEBFL-020-AS01-A09: Build Mobile Viewport Error Boundary Fallback Screen System
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
+/// Metric: UI Response / Rendering Latency - Intercepted error details 
+/// Floor=0.9 · Output=Good / Average / Poor
 class Is20Febfl020As01A09Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.9;
   static const double _optimal = 0.97;
 
   // EC:1 — Implement react error boundary life-cycle hooks into the main layout container layers
@@ -180,7 +189,7 @@ class Is20Febfl020As01A09Pipeline {
     required List<Is20Febfl020As01A09Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is20Febfl020As01A09ValidationResult(
+      return Is20Febfl020As01A09ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Is20Febfl020As01A09ConformanceLevel.notComplete,
@@ -190,11 +199,11 @@ class Is20Febfl020As01A09Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is20Febfl020As01A09ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Is20Febfl020As01A09ConformanceLevel.good
         : rate >= _floor
-            ? Is20Febfl020As01A09ConformanceLevel.partial
-            : Is20Febfl020As01A09ConformanceLevel.notComplete;
+            ? Is20Febfl020As01A09ConformanceLevel.average
+            : Is20Febfl020As01A09ConformanceLevel.poor;
     return Is20Febfl020As01A09ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +245,14 @@ class Is20Febfl020As01A09Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS20-FEBFL-020-AS01-A09',
-      'metric':             'Layout Consistency Score',
+      'metric':             'UI Response / Rendering Latency - Intercepted error details ',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +261,8 @@ class Is20Febfl020As01A09Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is20_febfl_020_as01_a09Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is20_febfl_020_as01_a09Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -271,6 +281,7 @@ class Is20Febfl020As01A09Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is20Febfl020As01A09Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -278,30 +289,35 @@ class Is20Febfl020As01A09Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS20-FEBFL-020-AS01-A09',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.fieldId,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +345,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is20Febfl020As01A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS20-FEBFL-020-AS01-A09 → $result');
+  final out = await Is20Febfl020As01A09Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS20-FEBFL-020-AS01-A09 [Good / Average / Poor] → $out');
 }

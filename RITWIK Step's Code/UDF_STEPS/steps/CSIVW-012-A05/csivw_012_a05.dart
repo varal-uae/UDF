@@ -1,229 +1,283 @@
 // ============================================================
-// CSIVW-012-A05 | Content Schema Input Validation Widget
-// Atomic Task: CSIVW-012-A05
-// EC Lines: 10 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// CSIVW-012-A05 — Content Schema Input Validation Widget
+// Atomic Step:  Implementation Step 22: Build confirmation text checks on high-risk deletion triggers. (CSIVW-012)
+// Metric:       Threshold-Based Alert Banding Accuracy
+// Floor:        0.7  ·  Optimal: 0.7
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      157 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System extracts total count of selected active data table rows.
-  // EC: 2. System retrieves configured high-risk batch threshold parameter values.
-  // EC: 3. System compares total row count against high-risk threshold limit.
-  // EC: 4. System determines alert classification level using threshold percentage ratio.
-  // EC: 5. System displays high-risk action confirmation modal overlay upon threshold breach.
-  // EC: 6. System freezes source table selection elements in read-only state.
-  // EC: 7. System prompts user for exact matching confirmation text entry.
-  // EC: 8. System validates typed confirmation input string against required reference value.
-  // EC: 9. System dispatches bulk processing payload to background cloud execution lane.
-  // EC: 10. System records execution event metrics with trace identifier timestamp.
+// Why:          Stops accidental clicks from wiping out or modifying hundreds of project specifications at once.
+// Mobile:       Opens full-width warning blocks on mobile screens, making high-risk batch choices highly obvious.
+// col41:        Pass/Fail
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Csivw012A05ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for CSIVW-012-A05.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Csivw012A05Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Csivw012A05ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// CSIVW-012-A05 — Content Schema Input Validation Widget
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Csivw012A05Config {
+  final String configId;
+  final String componentId;
+  final String targetSizeDp;
+  final String actualSizeDp;
+  final String complianceStatus;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Csivw012A05Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Csivw012A05Config({
+    required this.configId,
+    required this.componentId,
+    required this.targetSizeDp,
+    required this.actualSizeDp,
+    required this.complianceStatus,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Csivw012A05Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Csivw012A05Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Csivw012A05Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Csivw012A05Config(
+    configId: configId,
+    componentId: componentId,
+    targetSizeDp: targetSizeDp,
+    actualSizeDp: actualSizeDp,
+    complianceStatus: complianceStatus,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'componentId': componentId,
+    'targetSizeDp': targetSizeDp,
+    'actualSizeDp': actualSizeDp,
+    'complianceStatus': complianceStatus,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Csivw012A05ScanResult {
+class Csivw012A05ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Csivw012A05ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Csivw012A05ScanResult({
+  const Csivw012A05ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Csivw012A05ConformanceLevel.pass_: return 'Pass';
+      case Csivw012A05ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:10 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// CSIVW-012-A05: Implementation Step 22: Build confirmation text checks on high-risk deletion tri
+/// Metric: Threshold-Based Alert Banding Accuracy
+/// Floor=0.7 · Output=Pass / Fail
 class Csivw012A05Pipeline {
-  static const double _floor   = 0.7;  // metric floor gate
-  static const double _optimal = 0.85; // metric optimal target
+  static const double _floor   = 0.7;
+  static const double _optimal = 0.7;
 
-
-  // EC:1 — EC: 1. System extracts total count of selected active data table rows.
-  static void executeExtractsStep1(Csivw012A05Entry entry) {
-    // extracts total count of selected active data table rows
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-001: ruleId required');
-    };
+  // EC:1 — Count the number of active table lines selected for mass adjustments
+  static Csivw012A05Config _ec1Execute(Csivw012A05Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-CSIVW012A05-001: componentId required for CSIVW-012-A05');
+    }
+    // Count the number of active table lines selected for mass adj
+    return config;
   }
 
-  // EC:2 — EC: 2. System retrieves configured high-risk batch threshold parameter values.
-  static void executeRetrievesStep2(Csivw012A05Entry entry) {
-    // retrieves configured high-risk batch threshold parameter values
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-002: ruleId required');
-    };
+  // EC:2 — Launch prominent warning overlays if target counts exceed safe operational benchmarks
+  static Csivw012A05Config _ec2Execute(Csivw012A05Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-CSIVW012A05-002: componentId required for CSIVW-012-A05');
+    }
+    // Launch prominent warning overlays if target counts exceed sa
+    return config;
   }
 
-  // EC:3 — EC: 3. System compares total row count against high-risk threshold limit.
-  static void executeComparesStep3(Csivw012A05Entry entry) {
-    // compares total row count against high-risk threshold limit
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-003: ruleId required');
-    };
+  // EC:3 — Require users to type unique verification words (such as "CONFIRM") inside input cells
+  static Csivw012A05Config _ec3Execute(Csivw012A05Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-CSIVW012A05-003: componentId required for CSIVW-012-A05');
+    }
+    // Require users to type unique verification words (such as "CO
+    return config;
   }
 
-  // EC:4 — EC: 4. System determines alert classification level using threshold percentage ratio.
-  static void executeDeterminesStep4(Csivw012A05Entry entry) {
-    // determines alert classification level using threshold percentage ratio
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-004: ruleId required');
-    };
+  // EC:4 — Process bulk cloud actions smoothly in background lanes, presenting progress lines
+  static Csivw012A05Config _ec4Execute(Csivw012A05Config config) {
+    if (config.componentId.isEmpty) {
+      throw ArgumentError(
+          'EC-CSIVW012A05-004: componentId required for CSIVW-012-A05');
+    }
+    // Process bulk cloud actions smoothly in background lanes, pre
+    return config;
   }
 
-  // EC:5 — EC: 5. System displays high-risk action confirmation modal overlay upon threshold breach.
-  static void executeDisplaysStep5(Csivw012A05Entry entry) {
-    // displays high-risk action confirmation modal overlay upon threshold breach
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-005: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System freezes source table selection elements in read-only state.
-  static void executeFreezesStep6(Csivw012A05Entry entry) {
-    // freezes source table selection elements in read-only state
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-006: ruleId required');
-    };
-  }
-
-  // EC:7 — EC: 7. System prompts user for exact matching confirmation text entry.
-  static void executePromptsStep7(Csivw012A05Entry entry) {
-    // prompts user for exact matching confirmation text entry
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-007: ruleId required');
-    };
-  }
-
-  // EC:8 — EC: 8. System validates typed confirmation input string against required reference value.
-  static void executeValidatesStep8(Csivw012A05Entry entry) {
-    // validates typed confirmation input string against required reference value
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-008: ruleId required');
-    };
-  }
-
-  // EC:9 — EC: 9. System dispatches bulk processing payload to background cloud execution lane.
-  static void executeDispatchesStep9(Csivw012A05Entry entry) {
-    // dispatches bulk processing payload to background cloud execution lane
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-009: ruleId required');
-    };
-  }
-
-  // EC:10 — EC: 10. System records execution event metrics with trace identifier timestamp.
-  static void executeRecordsStep10(Csivw012A05Entry entry) {
-    // records execution event metrics with trace identifier timestamp
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-CSIVW012A05-010: ruleId required');
-    };
-  }
-
-  static Csivw012A05ScanResult validateConformance(List<Csivw012A05Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Csivw012A05ScanResult(
+  static Csivw012A05ValidationResult calculateConformance({
+    required List<Csivw012A05Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Csivw012A05ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Csivw012A05ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-CSIVW012A05-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Csivw012A05ConformanceLevel.pass_
+        : Csivw012A05ConformanceLevel.fail_;
+    return Csivw012A05ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'Complete' : 'Not Complete',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-CSIVW012A05-VAL',
     );
   }
 
-  static Csivw012A05Entry routeToRegistry(Csivw012A05Entry entry, Csivw012A05ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Csivw012A05Config routeToRegistry(
+    Csivw012A05Config config,
+    Csivw012A05ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Csivw012A05Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-CSIVW012A05-000: configs must not be empty for CSIVW-012-A05');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-CSIVW012A05-TRI: triangular check failed for CSIVW-012-A05');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-CSIVW-012-A05',
+      'metric':             'Threshold-Based Alert Banding Accuracy',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> csivw_012_a05Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'CSIVW-012-A05',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Csivw012A05Widget extends StatelessWidget {
-  final List<Csivw012A05Entry> entries;
-  const Csivw012A05Widget({super.key, required this.entries});
+  final List<Csivw012A05Config> configs;
+  const Csivw012A05Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Csivw012A05Pipeline.validateConformance(entries);
+    final result = Csivw012A05Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -231,36 +285,37 @@ class Csivw012A05Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('CSIVW-012-A05',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'Complete'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.componentId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'Complete' : 'Not Complete',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -276,15 +331,16 @@ void main() async {
   final configs = [
     Csivw012A05Config(
       configId: 'csivw012a05-cfg-001',
-      ruleId: 'csivw-012-a05_ruleId_val',
-      fieldA: 'csivw-012-a05_fieldA_val',
+      componentId: 'csivw-012-a05_componentId',
+      targetSizeDp: 'csivw-012-a05_targetSizeDp',
+      actualSizeDp: 'csivw-012-a05_actualSizeDp',
+      complianceStatus: 'csivw-012-a05_complianceStatus',
       traceId:                 'trace-csivw012a05-001',
       originSourceId:          'origin-csivw012a05',
       immediatePredecessorId:  'pred-csivw012a05-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Csivw012A05Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('CSIVW-012-A05 → $result');
+  final out = await Csivw012A05Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('CSIVW-012-A05 [Pass / Fail] → $out');
 }

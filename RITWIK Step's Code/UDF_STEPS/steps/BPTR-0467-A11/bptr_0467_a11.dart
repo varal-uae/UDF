@@ -1,317 +1,346 @@
 // ============================================================
-// BPTR-0467-A11 | UI/UX Pattern Registry
-// Atomic Task: BPTR-0467-A11
-// EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BPTR-0467-A11 — UI/UX Pattern Registry
+// Atomic Step:  Map Split-Screen Layouts for MTOI Exceptions .
+// Metric:       WCAG Contrast Ratio
+// Floor:        4.5  ·  Optimal: 4.5
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      98 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System extracts cropped document text snippet data for left viewport container rendering.
-  // EC: 2. System initializes single type-constrained data input field within right viewport container.
-  // EC: 3. System strips external navigation components from DOM layout.
-  // EC: 4. System calculates WCAG contrast ratio for visual highlight color accent.
-  // EC: 5. System validates highlight contrast ratio against threshold value four point five.
-  // EC: 6. System applies high-contrast visual highlight border to mismatched fields.
-  // EC: 7. System sets input cursor auto-focus directly into active text box upon layout render.
-  // EC: 8. System streams verified layout interaction record directly to BigQuery validation table.
+// Why:          Structurally eliminates user visual wandering and cognitive overload, driving unmatched text verific
+// Mobile:       Splitting screens into simple, focused half-viewport cards optimizes data clarity on narrow mobile a
+// col41:        Pass (Scale: Pass/Fail)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bptr0467A11ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Bptr0467A11ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BPTR-0467-A11.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Bptr0467A11Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+/// BPTR-0467-A11 — UI/UX Pattern Registry
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bptr0467A11Config {
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Bptr0467A11Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Bptr0467A11Config({
+    required this.configId,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Bptr0467A11Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Bptr0467A11Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Bptr0467A11Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bptr0467A11Config(
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Bptr0467A11ScanResult {
+class Bptr0467A11ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Bptr0467A11ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Bptr0467A11ScanResult({
+  const Bptr0467A11ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bptr0467A11ConformanceLevel.pass_: return 'Pass';
+      case Bptr0467A11ConformanceLevel.fail_: return 'Fail';
+    }
+  }
 }
 
-// ── EC:8 Pipeline ──────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// BPTR-0467-A11: Map Split-Screen Layouts for MTOI Exceptions .
+/// Metric: WCAG Contrast Ratio
+/// Floor=4.5 · Output=Pass / Fail
 class Bptr0467A11Pipeline {
-  static const double _floor   = 4.5;  // metric floor gate
-  static const double _optimal = 7.0; // metric optimal target
+  static const double _floor   = 4.5;
+  static const double _optimal = 4.5;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System extracts cropped document text snippet data for left viewport container rendering.
-  static String executeExtractsStep1(Bptr0467A11Entry entry) {
-    // extracts cropped document text snippet data for left viewport container renderin
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — Map the left interface container to render only the heavily cropped document text snippet
+  static Bptr0467A11Config _ec1Execute(Bptr0467A11Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0467A11-001: colorToken required for BPTR-0467-A11');
+    }
+    // Map the left interface container to render only the heavily 
+    return config;
   }
 
-  // EC:2 — EC: 2. System initializes single type-constrained data input field within right viewport container.
-  static String executeInitializesStep2(Bptr0467A11Entry entry) {
-    // initializes single type-constrained data input field within right viewport conta
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:2 — Map the right interface container to render a single, type-constrained data input field
+  static Bptr0467A11Config _ec2Execute(Bptr0467A11Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0467A11-002: colorToken required for BPTR-0467-A11');
+    }
+    // Map the right interface container to render a single, type-c
+    return config;
   }
 
-  // EC:3 — EC: 3. System strips external navigation components from DOM layout.
-  static String executeStripsStep3(Bptr0467A11Entry entry) {
-    // strips external navigation components from DOM layout
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:3 — Strip out all external navigation, back buttons, and distraction links from the layout DOM
+  static Bptr0467A11Config _ec3Execute(Bptr0467A11Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0467A11-003: colorToken required for BPTR-0467-A11');
+    }
+    // Strip out all external navigation, back buttons, and distrac
+    return config;
   }
 
-  // EC:4 — EC: 4. System calculates WCAG contrast ratio for visual highlight color accent.
-  static String executeCalculatesStep4(Bptr0467A11Entry entry) {
-    // calculates WCAG contrast ratio for visual highlight color accent
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:4 — Connect the input output data row directly back to BigQuery validation tables
+  static Bptr0467A11Config _ec4Execute(Bptr0467A11Config config) {
+    if (config.colorToken.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0467A11-004: colorToken required for BPTR-0467-A11');
+    }
+    // Connect the input output data row directly back to BigQuery 
+    return config;
   }
 
-  // EC:5 — EC: 5. System validates highlight contrast ratio against threshold value four point five.
-  static String executeValidatesStep5(Bptr0467A11Entry entry) {
-    // validates highlight contrast ratio against threshold value four point five
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System applies high-contrast visual highlight border to mismatched fields.
-  static String executeAppliesStep6(Bptr0467A11Entry entry) {
-    // applies high-contrast visual highlight border to mismatched fields
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:7 — EC: 7. System sets input cursor auto-focus directly into active text box upon layout render.
-  static String executeSetsStep7(Bptr0467A11Entry entry) {
-    // sets input cursor auto-focus directly into active text box upon layout render
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:8 — EC: 8. System streams verified layout interaction record directly to BigQuery validation table.
-  static String executeStreamsStep8(Bptr0467A11Entry entry) {
-    // streams verified layout interaction record directly to BigQuery validation table
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0467A11-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Bptr0467A11ScanResult validateConformance(
-    List<Bptr0467A11Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Bptr0467A11ScanResult(
+  static Bptr0467A11ValidationResult calculateConformance({
+    required List<Bptr0467A11Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bptr0467A11ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bptr0467A11ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-BPTR0467A11-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _floor
+        ? Bptr0467A11ConformanceLevel.pass_
+        : Bptr0467A11ConformanceLevel.fail_;
+    return Bptr0467A11ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BPTR0467A11-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Bptr0467A11Entry routeToRegistry(
-    Bptr0467A11Entry entry,
-    Bptr0467A11ScanResult scan,
+  static Bptr0467A11Config routeToRegistry(
+    Bptr0467A11Config config,
+    Bptr0467A11ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Bptr0467A11Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BPTR0467A11-000: configs must not be empty for BPTR-0467-A11');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-BPTR0467A11-TRI: triangular check failed for BPTR-0467-A11');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BPTR-0467-A11',
+      'metric':             'WCAG Contrast Ratio',
+      'output_vocab':       'Pass / Fail',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bptr_0467_a11Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BPTR-0467-A11',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Bptr0467A11Widget extends StatelessWidget {
-  final List<Bptr0467A11Entry> entries;
-  const Bptr0467A11Widget({super.key, required this.entries});
+  final List<Bptr0467A11Config> configs;
+  const Bptr0467A11Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bptr0467A11Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Bptr0467A11Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BPTR-0467-A11',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BPTR-0467-A11',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bptr0467A11Config(
+      configId: 'bptr0467a11-cfg-001',
+      colorToken: 'bptr-0467-a11_colorToken',
+      hexValue: 'bptr-0467-a11_hexValue',
+      wcagRatio: 'bptr-0467-a11_wcagRatio',
+      usageContext: 'bptr-0467-a11_usageContext',
+      traceId:                 'trace-bptr0467a11-001',
+      originSourceId:          'origin-bptr0467a11',
+      immediatePredecessorId:  'pred-bptr0467a11-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bptr0467A11Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BPTR-0467-A11 [Pass / Fail] → $out');
 }

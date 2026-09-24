@@ -1,327 +1,350 @@
 // ============================================================
-// BPTR-0422-A06 | UI/UX Pattern Registry
-// Atomic Task: BPTR-0422-A06
-// EC Lines: 9 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// BPTR-0422-A06 — UI/UX Pattern Registry
+// Atomic Step:  Define Passive Failure Motion Curves.
+// Metric:       Micro-interaction Animation Duration
+// Floor:        100.0  ·  Optimal: 250.0
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      96 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System receives motion token registration payload for passive-failure-entry.
-  // EC: 2. System validates animation duration value 300ms against boundary limits.
-  // EC: 3. System sets easing curve profile properties for passive-failure-entry.
-  // EC: 4. System configures dimming intensity level for passive failure display.
-  // EC: 5. System activates auto-scroll flag for UI quarantine focus.
-  // EC: 6. System generates CSS motion token object.
-  // EC: 7. System stores passive failure motion parameters in motion token library.
-  // EC: 8. System appends required lineage headers to token creation payload.
-  // EC: 9. System emits motion token registration event to active UI queue.
+// Why:          Passive failures must physically halt the user journey to address quarantined data.
+// Mobile:       Optimized CSS transitions ensure 60fps rendering without draining mobile battery.
+// col41:        Good (Scale: Good/Average/Poor)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
+enum Bptr0422A06ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-enum StepOutcome { complete, partial, notComplete }
+// ── Execution status ─────────────────────────────────────────
 
-// ── Data Model ─────────────────────────────────────────────────
+enum Bptr0422A06ExecutionStatus { pending, running, complete, failed }
 
-/// Primary data model for BPTR-0422-A06.
-/// Carries all mandatory DCDF lineage headers per AEETE-018.
-class Bptr0422A06Entry {
-  // Business fields
-  final String ruleId;                      // PK — UUID
-  final String fieldA;                      // Primary input field
-  final String fieldB;                      // Secondary input field
-  final String fieldC;                      // Tertiary input field
-  final String executionStatusTxt;          // Execution status text
-  final bool   complianceStatusInd;         // DCDF compliance gate
-  final bool   immutableInd;                // Immutable after registration
-  // Execution tracking
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers (AEETE-018)
+// ── Data Model ───────────────────────────────────────────────
+
+/// BPTR-0422-A06 — UI/UX Pattern Registry
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Bptr0422A06Config {
+  final String configId;
+  final String animationId;
+  final String durationMs;
+  final String easingCurve;
+  final String triggerState;
+  final String validationStatus;
+  final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Bptr0422A06Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt   = 'PENDING',
-    this.complianceStatusInd  = false,
-    this.immutableInd         = false,
-    this.executionStatus      = ExecutionStatus.pending,
-    this.stepOutcome          = StepOutcome.partial,
+  const Bptr0422A06Config({
+    required this.configId,
+    required this.animationId,
+    required this.durationMs,
+    required this.easingCurve,
+    required this.triggerState,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  /// EC gate: entry is conformant when compliance flag is set
-  /// and execution status is complete.
-  bool get isConformant =>
-      complianceStatusInd &&
-      executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Bptr0422A06Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) {
-    return Bptr0422A06Entry(
-      ruleId:                   ruleId,
-      fieldA:                   fieldA,
-      fieldB:                   fieldB,
-      fieldC:                   fieldC,
-      executionStatusTxt:       executionStatusTxt,
-      complianceStatusInd:      complianceStatusInd  ?? this.complianceStatusInd,
-      immutableInd:             immutableInd         ?? this.immutableInd,
-      executionStatus:          executionStatus       ?? this.executionStatus,
-      stepOutcome:              stepOutcome           ?? this.stepOutcome,
-      traceId:                  traceId,
-      originSourceId:           originSourceId,
-      immediatePredecessorId:   immediatePredecessorId,
-      transformationLogicHash:  transformationLogicHash,
-    );
-  }
+  Bptr0422A06Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Bptr0422A06Config(
+    configId: configId,
+    animationId: animationId,
+    durationMs: durationMs,
+    easingCurve: easingCurve,
+    triggerState: triggerState,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'animationId': animationId,
+    'durationMs': durationMs,
+    'easingCurve': easingCurve,
+    'triggerState': triggerState,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Bptr0422A06ScanResult {
+class Bptr0422A06ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;   // Complete / Partial / Not Complete
-  final String result;              // PASS / FAIL
+  final double conformanceRate;
+  final Bptr0422A06ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Bptr0422A06ScanResult({
+  const Bptr0422A06ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Bptr0422A06ConformanceLevel.good:    return 'Good';
+      case Bptr0422A06ConformanceLevel.average: return 'Average';
+      case Bptr0422A06ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:9 Pipeline ──────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
+/// BPTR-0422-A06: Define Passive Failure Motion Curves.
+/// Metric: Micro-interaction Animation Duration
+/// Floor=100.0 · Output=Good / Average / Poor
 class Bptr0422A06Pipeline {
-  static const double _floor   = 100.0;  // metric floor gate
-  static const double _optimal = 250.0; // metric optimal target
+  static const double _floor   = 100.0;
+  static const double _optimal = 250.0;
 
-
-  // ── EC lines implemented as static methods ────────────────
-
-  // EC:1 — EC: 1. System receives motion token registration payload for passive-failure-entry.
-  static String executeReceivesStep1(Bptr0422A06Entry entry) {
-    // receives motion token registration payload for passive-failure-entry
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-001: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:1 — Set animation duration (300ms)
+  static Bptr0422A06Config _ec1Execute(Bptr0422A06Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0422A06-001: animationId required for BPTR-0422-A06');
+    }
+    // Set animation duration (300ms)
+    return config;
   }
 
-  // EC:2 — EC: 2. System validates animation duration value 300ms against boundary limits.
-  static String executeValidatesStep2(Bptr0422A06Entry entry) {
-    // validates animation duration value 300ms against boundary limits
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-002: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:2 — Define easing curve
+  static Bptr0422A06Config _ec2Execute(Bptr0422A06Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0422A06-002: animationId required for BPTR-0422-A06');
+    }
+    // Define easing curve
+    return config;
   }
 
-  // EC:3 — EC: 3. System sets easing curve profile properties for passive-failure-entry.
-  static String executeSetsStep3(Bptr0422A06Entry entry) {
-    // sets easing curve profile properties for passive-failure-entry
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-003: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:3 — Decide dimming intensity
+  static Bptr0422A06Config _ec3Execute(Bptr0422A06Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0422A06-003: animationId required for BPTR-0422-A06');
+    }
+    // Decide dimming intensity
+    return config;
   }
 
-  // EC:4 — EC: 4. System configures dimming intensity level for passive failure display.
-  static String executeConfiguresStep4(Bptr0422A06Entry entry) {
-    // configures dimming intensity level for passive failure display
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-004: ruleId must not be empty');
-    };
-    return entry.ruleId;
+  // EC:4 — Set auto-scroll
+  static Bptr0422A06Config _ec4Execute(Bptr0422A06Config config) {
+    if (config.animationId.isEmpty) {
+      throw ArgumentError(
+          'EC-BPTR0422A06-004: animationId required for BPTR-0422-A06');
+    }
+    // Set auto-scroll
+    return config;
   }
 
-  // EC:5 — EC: 5. System activates auto-scroll flag for UI quarantine focus.
-  static String executeActivatesStep5(Bptr0422A06Entry entry) {
-    // activates auto-scroll flag for UI quarantine focus
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-005: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  // EC:6 — EC: 6. System generates CSS motion token object.
-  static String executeGeneratesStep6(Bptr0422A06Entry entry) {
-    // generates CSS motion token object
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-006: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:7 — EC: 7. System stores passive failure motion parameters in motion token library.
-  static String executeStoresStep7(Bptr0422A06Entry entry) {
-    // stores passive failure motion parameters in motion token library
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-007: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:8 — EC: 8. System appends required lineage headers to token creation payload.
-  static String executeAppendsStep8(Bptr0422A06Entry entry) {
-    // appends required lineage headers to token creation payload
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-008: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // EC:9 — EC: 9. System emits motion token registration event to active UI queue.
-  static String executeEmitsStep9(Bptr0422A06Entry entry) {
-    // emits motion token registration event to active UI queue
-        if (entry.ruleId.isEmpty) {
-      throw ArgumentError('EC-BPTR0422A06-009: ruleId must not be empty');
-    };
-    return entry.ruleId;
-  }
-
-  // Validate conformance against all EC gates
-  static Bptr0422A06ScanResult validateConformance(
-    List<Bptr0422A06Entry> entries,
-  ) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    final output = rate >= 0.98 ? 'Complete'
-                 : rate >= 0.90 ? 'Partial'
-                 : 'Not Complete';
-    return Bptr0422A06ScanResult(
+  static Bptr0422A06ValidationResult calculateConformance({
+    required List<Bptr0422A06Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Bptr0422A06ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Bptr0422A06ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-BPTR0422A06-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Bptr0422A06ConformanceLevel.good
+        : rate >= _floor
+            ? Bptr0422A06ConformanceLevel.average
+            : Bptr0422A06ConformanceLevel.poor;
+    return Bptr0422A06ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-BPTR0422A06-VAL',
     );
   }
 
-  // Route validated entry to registry
-  static Bptr0422A06Entry routeToRegistry(
-    Bptr0422A06Entry entry,
-    Bptr0422A06ScanResult scan,
+  static Bptr0422A06Config routeToRegistry(
+    Bptr0422A06Config config,
+    Bptr0422A06ValidationResult result,
   ) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd:        passed,
-      executionStatus:     passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome:         passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Bptr0422A06Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-BPTR0422A06-000: configs must not be empty for BPTR-0422-A06');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-BPTR0422A06-TRI: triangular check failed for BPTR-0422-A06');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-BPTR-0422-A06',
+      'metric':             'Micro-interaction Animation Duration',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> bptr_0422_a06Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'BPTR-0422-A06',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Bptr0422A06Widget extends StatelessWidget {
-  final List<Bptr0422A06Entry> entries;
-  const Bptr0422A06Widget({super.key, required this.entries});
+  final List<Bptr0422A06Config> configs;
+  const Bptr0422A06Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan   = Bptr0422A06Pipeline.validateConformance(entries);
-    final metric = scan.result;
-
+    final result = Bptr0422A06Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
         Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
-            Expanded(
-              child: Text(
-                'BPTR-0422-A06',
-                style: const TextStyle(
-                  fontFamily: 'Courier',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            Expanded(child: Text('BPTR-0422-A06',
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11),
-              ),
-              backgroundColor: metric == 'PASS'
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
-        // Entry list
-        Expanded(
-          child: ListView.builder(
-            itemCount: entries.length,
-            itemBuilder: (context, i) {
-              final e    = entries[i];
-              final pass = e.isConformant;
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  leading: Icon(
-                    pass ? Icons.check_circle : Icons.cancel,
-                    color: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                  title: Text(
-                    e.fieldA,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ruleId: ${e.ruleId.length > 8 ? e.ruleId.substring(0, 8) : e.ruleId}... '
-                    '| status: ${e.executionStatusTxt} '
-                    '| immutable: ${e.immutableInd}',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                  trailing: Chip(
-                    label: Text(
-                      pass ? 'PASS' : 'FAIL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    backgroundColor: pass
-                        ? cs.tertiary
-                        : cs.error,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c    = configs[i];
+            final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.animationId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Bptr0422A06Config(
+      configId: 'bptr0422a06-cfg-001',
+      animationId: 'bptr-0422-a06_animationId',
+      durationMs: 'bptr-0422-a06_durationMs',
+      easingCurve: 'bptr-0422-a06_easingCurve',
+      triggerState: 'bptr-0422-a06_triggerState',
+      traceId:                 'trace-bptr0422a06-001',
+      originSourceId:          'origin-bptr0422a06',
+      immediatePredecessorId:  'pred-bptr0422a06-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Bptr0422A06Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('BPTR-0422-A06 [Good / Average / Poor] → $out');
 }

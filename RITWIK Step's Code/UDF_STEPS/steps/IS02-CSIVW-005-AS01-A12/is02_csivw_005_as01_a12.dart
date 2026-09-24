@@ -1,47 +1,47 @@
 // ============================================================
-// IS02-CSIVW-005-AS01-A12 — Implementation System 02
-// Atomic Step: Program dynamic inline error layouts to activate when input fields fail validation checks.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Pass / Partial / Fail
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        18-Sep-2026
-// Step No:     428 of 440
+// IS02-CSIVW-005-AS01-A12 — IS02 System Module
+// Atomic Step:  Program dynamic inline error layouts to activate when input fields fail validation checks.
+// Metric:       Configuration Conformance Rate - Aria accessibility attributes aria-in
+// Floor:        0.97  ·  Optimal: 0.97
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      800 of 1073
 // ============================================================
-// Why this matters: Eliminates confusing multi-step submission failures by correcting errors immediately at the individu
-// Mobile impl:      Corrects data entries instantly on small mobile layouts, removing the need for heavy page reloads ov
+// Why:          Eliminates confusing multi-step submission failures by correcting errors immediately at the individu
+// Mobile:       Corrects data entries instantly on small mobile layouts, removing the need for heavy page reloads ov
+// col41:        Pass/Fail
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
 enum Is02Csivw005As01A12ConformanceLevel {
-  complete,
-  partial,
-  notComplete,
+  pass_,   // ≥ floor
+  fail_,   // < floor
 }
 
-enum Is02Csivw005As01A12ExecutionStatus {
-  pending,
-  running,
-  complete,
-  failed,
-}
+// ── Execution status ─────────────────────────────────────────
+
+enum Is02Csivw005As01A12ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS02-CSIVW-005-AS01-A12.
-/// All 5 DCDF lineage fields mandatory per AEETE-018.
+/// IS02-CSIVW-005-AS01-A12 — IS02 System Module
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is02Csivw005As01A12Config {
-  final String configId;               // PK — UUID v4
-  final String ruleKey;
-  final String ruleValue;
-  final String validationStatus;       // PENDING | VALID | INVALID
+  final String configId;
+  final String colorToken;
+  final String hexValue;
+  final String wcagRatio;
+  final String usageContext;
+  final String validationStatus;
   final bool   immutableInd;
-  // DCDF lineage headers — AEETE-018
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -50,8 +50,10 @@ class Is02Csivw005As01A12Config {
 
   const Is02Csivw005As01A12Config({
     required this.configId,
-    required this.ruleKey,
-    required this.ruleValue,
+    required this.colorToken,
+    required this.hexValue,
+    required this.wcagRatio,
+    required this.usageContext,
     this.validationStatus   = 'PENDING',
     this.immutableInd       = false,
     required this.traceId,
@@ -69,29 +71,33 @@ class Is02Csivw005As01A12Config {
     bool?   immutableInd,
     bool?   complianceStatusInd,
   }) => Is02Csivw005As01A12Config(
-    configId:                  configId,
-    ruleKey:                   ruleKey,
-    ruleValue:                 ruleValue,
-    validationStatus:          validationStatus  ?? this.validationStatus,
-    immutableInd:              immutableInd      ?? this.immutableInd,
-    traceId:                   traceId,
-    originSourceId:            originSourceId,
-    immediatePredecessorId:    immediatePredecessorId,
-    transformationLogicHash:   transformationLogicHash,
-    complianceStatusInd:       complianceStatusInd ?? this.complianceStatusInd,
+    configId: configId,
+    colorToken: colorToken,
+    hexValue: hexValue,
+    wcagRatio: wcagRatio,
+    usageContext: usageContext,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
 
   Map<String, dynamic> toJson() => {
-    'config_id':                  configId,
-    'rule_key':                   ruleKey,
-    'rule_value':                 ruleValue,
-    'validation_status':          validationStatus,
-    'immutable_ind':              immutableInd,
-    'trace_id':                   traceId,
-    'origin_source_id':           originSourceId,
-    'immediate_predecessor_id':   immediatePredecessorId,
-    'transformation_logic_hash':  transformationLogicHash,
-    'compliance_status_ind':      complianceStatusInd,
+    'config_id': configId,
+    'colorToken': colorToken,
+    'hexValue': hexValue,
+    'wcagRatio': wcagRatio,
+    'usageContext': usageContext,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
   };
 }
 
@@ -118,28 +124,26 @@ class Is02Csivw005As01A12ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is02Csivw005As01A12ConformanceLevel.complete:    return 'Pass';
-      case Is02Csivw005As01A12ConformanceLevel.partial:     return 'Partial';
-      case Is02Csivw005As01A12ConformanceLevel.notComplete: return 'Fail';
+      case Is02Csivw005As01A12ConformanceLevel.pass_: return 'Pass';
+      case Is02Csivw005As01A12ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
 /// IS02-CSIVW-005-AS01-A12: Program dynamic inline error layouts to activate when input fields fail validati
-///
-/// Metric: Layout Consistency Score
-/// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
+/// Metric: Configuration Conformance Rate - Aria accessibility attribut
+/// Floor=0.97 · Output=Pass / Fail
 class Is02Csivw005As01A12Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.97;
   static const double _optimal = 0.97;
 
   // EC:1 — Bind custom inline error components to the blur events of core entry inputs
   static Is02Csivw005As01A12Config _ec1Execute(Is02Csivw005As01A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-IS02CSIVW005-001: configId required for IS02-CSIVW-005-AS01-A12');
+          'EC-IS02CSIVW005-001: colorToken required for IS02-CSIVW-005-AS01-A12');
     }
     // Bind custom inline error components to the blur events of co
     return config;
@@ -147,9 +151,9 @@ class Is02Csivw005As01A12Pipeline {
 
   // EC:2 — Lock message text strings to display in high-contrast red parameters directly below affect
   static Is02Csivw005As01A12Config _ec2Execute(Is02Csivw005As01A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-IS02CSIVW005-002: configId required for IS02-CSIVW-005-AS01-A12');
+          'EC-IS02CSIVW005-002: colorToken required for IS02-CSIVW-005-AS01-A12');
     }
     // Lock message text strings to display in high-contrast red pa
     return config;
@@ -157,9 +161,9 @@ class Is02Csivw005As01A12Pipeline {
 
   // EC:3 — Program form frameworks to freeze submission actions if active errors are present
   static Is02Csivw005As01A12Config _ec3Execute(Is02Csivw005As01A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-IS02CSIVW005-003: configId required for IS02-CSIVW-005-AS01-A12');
+          'EC-IS02CSIVW005-003: colorToken required for IS02-CSIVW-005-AS01-A12');
     }
     // Program form frameworks to freeze submission actions if acti
     return config;
@@ -167,9 +171,9 @@ class Is02Csivw005As01A12Pipeline {
 
   // EC:4 — Run automated user boundary input tests to confirm clear error block display
   static Is02Csivw005As01A12Config _ec4Execute(Is02Csivw005As01A12Config config) {
-    if (config.configId.isEmpty) {
+    if (config.colorToken.isEmpty) {
       throw ArgumentError(
-          'EC-IS02CSIVW005-004: configId required for IS02-CSIVW-005-AS01-A12');
+          'EC-IS02CSIVW005-004: colorToken required for IS02-CSIVW-005-AS01-A12');
     }
     // Run automated user boundary input tests to confirm clear err
     return config;
@@ -179,27 +183,23 @@ class Is02Csivw005As01A12Pipeline {
   static bool triangularCheck(int sourceCount, int destinationCount) =>
       (sourceCount - destinationCount) == 0;
 
-  // Conformance gate — Floor=0.90 · Optimal=0.97
   static Is02Csivw005As01A12ValidationResult calculateConformance({
     required List<Is02Csivw005As01A12Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is02Csivw005As01A12ValidationResult(
+      return Is02Csivw005As01A12ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is02Csivw005As01A12ConformanceLevel.notComplete,
-        gatePass: false,
-        ecLineRef: 'EC-IS02CSIVW005-VAL',
+        conformanceLevel: Is02Csivw005As01A12ConformanceLevel.fail_,
+        gatePass: false, ecLineRef: 'EC-IS02CSIVW005-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is02Csivw005As01A12ConformanceLevel.complete
-        : rate >= _floor
-            ? Is02Csivw005As01A12ConformanceLevel.partial
-            : Is02Csivw005As01A12ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is02Csivw005As01A12ConformanceLevel.pass_
+        : Is02Csivw005As01A12ConformanceLevel.fail_;
     return Is02Csivw005As01A12ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -228,7 +228,7 @@ class Is02Csivw005As01A12Pipeline {
     String userId = 'system',
   }) async {
     if (configs.isEmpty) {
-      return {'error': 'EC-IS02CSIVW005-001: empty config list', 'dlq': true};
+      throw ArgumentError('EC-IS02CSIVW005-000: configs must not be empty for IS02-CSIVW-005-AS01-A12');
     }
     final p1 = configs.map(_ec1Execute).toList();
     final p2 = configs.map(_ec2Execute).toList();
@@ -236,21 +236,19 @@ class Is02Csivw005As01A12Pipeline {
     final p4 = configs.map(_ec4Execute).toList();
 
     if (!triangularCheck(configs.length, p4.length)) {
-      return {'error': 'EC-IS02CSIVW005-TRI: triangular check failed', 'dlq': true};
+      throw ArgumentError('EC-IS02CSIVW005-TRI: triangular check failed for IS02-CSIVW-005-AS01-A12');
     }
-
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
-
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS02-CSIVW-005-AS01-A12',
-      'metric':             'Layout Consistency Score',
+      'metric':             'Configuration Conformance Rate - Aria accessibility attribut',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -260,9 +258,7 @@ class Is02Csivw005As01A12Pipeline {
 // ── DLQ Helper ────────────────────────────────────────────────
 
 Map<String, dynamic> is02_csivw_005_as01_a12Dlq(
-  String errorCode,
-  Map<String, dynamic> payload,
-) => {
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -281,6 +277,7 @@ class Is02Csivw005As01A12Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Is02Csivw005As01A12Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -288,18 +285,13 @@ class Is02Csivw005As01A12Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS02-CSIVW-005-AS01-A12',
-              style: const TextStyle(
-                fontFamily: 'Courier',
-                fontWeight: FontWeight.bold,
-                fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount == 1 ? '' : 's'}',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: result.gatePass
-                  ? cs.tertiary
-                  : cs.error,
-            ),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
@@ -308,24 +300,22 @@ class Is02Csivw005As01A12Widget extends StatelessWidget {
             final c    = configs[i];
             final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
                 leading: Icon(
                   pass ? Icons.check_circle : Icons.cancel,
-                  color: pass ? cs.tertiary : cs.error,
-                ),
-                title: Text(c.ruleKey,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600, fontSize: 12)),
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.colorToken,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length > 8 ? c.configId.substring(0, 8) : c.configId}… '
-                  '| ${c.validationStatus} | immutable: ${c.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -340,16 +330,17 @@ class Is02Csivw005As01A12Widget extends StatelessWidget {
 void main() async {
   final configs = [
     Is02Csivw005As01A12Config(
-      configId:                'is02csivw005-cfg-001',
-      ruleKey:                 'is02-csivw-005-as01-a12_rule',
-      ruleValue:               'is02-csivw-005-as01-a12_value',
+      configId: 'is02csivw005-cfg-001',
+      colorToken: 'is02-csivw-005-as01-a12_colorToken',
+      hexValue: 'is02-csivw-005-as01-a12_hexValue',
+      wcagRatio: 'is02-csivw-005-as01-a12_wcagRatio',
+      usageContext: 'is02-csivw-005-as01-a12_usageContext',
       traceId:                 'trace-is02csivw005-001',
       originSourceId:          'origin-is02csivw005',
       immediatePredecessorId:  'pred-is02csivw005-001',
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is02Csivw005As01A12Pipeline.run(
-    configs: configs, userId: 'ritwik-udf');
-  print('IS02-CSIVW-005-AS01-A12 → $result');
+  final out = await Is02Csivw005As01A12Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS02-CSIVW-005-AS01-A12 [Pass / Fail] → $out');
 }

@@ -1,31 +1,38 @@
 // ============================================================
 // HAZFE-002-A08 — High Availability Zone Frontend Engine
-// Atomic Step: Active On-Load Backup & Automated Failover (HAZFE-002)
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     561 of 1073
+// Atomic Step:  Active On-Load Backup & Automated Failover (HAZFE-002)
+// Metric:       UI/UX Design System Conformity (Material 3)
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      781 of 1073
 // ============================================================
-// Why this matters: 
-// Mobile impl:      
-// Data requirement: Configure Material Design snackbar elements for "Connection Recovery" notifications.
+// Why:          
+// Mobile:       
+// col41:        Good
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum Hazfe002A08ConformanceLevel { complete, partial, notComplete }
-enum Hazfe002A08ExecutionStatus  { pending, running, complete, failed }
+enum Hazfe002A08ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Hazfe002A08ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for HAZFE-002-A08.
-/// Fields derived from AISS sheet — High Availability Zone Frontend Engine.
+/// HAZFE-002-A08 — High Availability Zone Frontend Engine
 /// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Hazfe002A08Config {
   final String configId;
@@ -35,6 +42,7 @@ class Hazfe002A08Config {
   final String appliedComponent;
   final String validationStatus;
   final bool   immutableInd;
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
@@ -117,20 +125,21 @@ class Hazfe002A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Hazfe002A08ConformanceLevel.complete:    return 'Good';
-      case Hazfe002A08ConformanceLevel.partial:     return 'Average';
-      case Hazfe002A08ConformanceLevel.notComplete: return 'Poor';
+      case Hazfe002A08ConformanceLevel.good:    return 'Good';
+      case Hazfe002A08ConformanceLevel.average: return 'Average';
+      case Hazfe002A08ConformanceLevel.poor:    return 'Poor';
     }
   }
 }
 
-// ── EC:8 Pipeline ────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
 /// HAZFE-002-A08: Active On-Load Backup & Automated Failover (HAZFE-002)
-/// Metric: Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
+/// Metric: UI/UX Design System Conformity (Material 3)
+/// Floor=0.9 · Output=Good / Average / Poor
 class Hazfe002A08Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
   // EC:1 — System locates the HAZFE-002-A08 configuration in the source repository.
   static Hazfe002A08Config _ec1Locates(Hazfe002A08Config config) {
@@ -152,13 +161,13 @@ class Hazfe002A08Pipeline {
     return config;
   }
 
-  // EC:3 — System compiles the implementation rule set per Design System Token Coverage Rate.
+  // EC:3 — System compiles the implementation rule set per UI/UX Design System Conformity (Material 3
   static Hazfe002A08Config _ec3Compiles(Hazfe002A08Config config) {
     if (config.tokenName.isEmpty) {
       throw ArgumentError(
           'EC-HAZFE002A08-003: tokenName required for HAZFE-002-A08');
     }
-    // the implementation rule set per Design System Token Coverage
+    // the implementation rule set per UI/UX Design System Conformi
     return config;
   }
 
@@ -182,13 +191,13 @@ class Hazfe002A08Pipeline {
     return config;
   }
 
-  // EC:6 — System validates configuration against Design System Token Coverage Rate gate (floor=0.90)
+  // EC:6 — System validates configuration against UI/UX Design System Conformity (Material 3) gate (f
   static Hazfe002A08Config _ec6Validates(Hazfe002A08Config config) {
     if (config.tokenName.isEmpty) {
       throw ArgumentError(
           'EC-HAZFE002A08-006: tokenName required for HAZFE-002-A08');
     }
-    // configuration against Design System Token Coverage Rate gate
+    // configuration against UI/UX Design System Conformity (Materi
     return config;
   }
 
@@ -220,7 +229,7 @@ class Hazfe002A08Pipeline {
     required List<Hazfe002A08Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Hazfe002A08ValidationResult(
+      return Hazfe002A08ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
         conformanceLevel: Hazfe002A08ConformanceLevel.notComplete,
@@ -230,11 +239,11 @@ class Hazfe002A08Pipeline {
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Hazfe002A08ConformanceLevel.complete
+    final level = rate >= _optimal
+        ? Hazfe002A08ConformanceLevel.good
         : rate >= _floor
-            ? Hazfe002A08ConformanceLevel.partial
-            : Hazfe002A08ConformanceLevel.notComplete;
+            ? Hazfe002A08ConformanceLevel.average
+            : Hazfe002A08ConformanceLevel.poor;
     return Hazfe002A08ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -280,14 +289,14 @@ class Hazfe002A08Pipeline {
     final result     = calculateConformance(configs: p8);
     final registered = p8.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-HAZFE-002-A08',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'UI/UX Design System Conformity (Material 3)',
+      'output_vocab':       'Good / Average / Poor',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -296,7 +305,8 @@ class Hazfe002A08Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> hazfe_002_a08Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> hazfe_002_a08Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -315,6 +325,7 @@ class Hazfe002A08Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = Hazfe002A08Pipeline.calculateConformance(configs: configs);
     final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,30 +333,35 @@ class Hazfe002A08Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('HAZFE-002-A08',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
-              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.tokenName,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -373,6 +389,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Hazfe002A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('HAZFE-002-A08 → $result');
+  final out = await Hazfe002A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('HAZFE-002-A08 [Good / Average / Poor] → $out');
 }

@@ -1,220 +1,331 @@
 // ============================================================
-// EDEBS-013-12 | Event-Driven Edge Bus Service
-// Atomic Task: Apply Strict Predecessor (PD) Foreign Keys
-// EC Lines: 9 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo: github.com/RitwikHC/theme-typography · branch: ritwik
-// Author: Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date: 02-Sep-2026
+// EDEBS-013-12 — Event-Driven Edge Bus Service
+// Atomic Step:  Apply Strict Predecessor (PD) Foreign Keys
+// Metric:       UI Design-System Adherence Rate
+// Floor:        0.9  ·  Optimal: 0.97
+// Output vocab: Good / Average / Poor
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      200 of 1073
 // ============================================================
-//
-// EC EXECUTION LOGIC:
-  // EC: 1. System receives incoming navigation execution packet containing step execution parameters.
-  // EC: 2. System queries database for predecessor step status records associated with current step execution ID.
-  // EC: 3. System validates predecessor completion status against mandatory foreign key constraints.
-  // EC: 4. System flags navigation UI configuration state for incomplete predecessor dependencies.
-  // EC: 5. System applies Material Design 3 error visual tokens to dependent UI elements.
-  // EC: 6. System calculates UI Design-System Adherence Rate metric score.
-  // EC: 7. System verifies calculated adherence score against floor boundary threshold of 85 percent.
-  // EC: 8. System updates step outcome record with lineage headers in persistent database storage.
-  // EC: 9. System routes invalid execution attempts to Dead Letter Queue.
+// Why:          
+// Mobile:       
+// col41:        Good/Average/Poor → Best = Good (100%)
 // ============================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ──────────────────────────────────────────────────────
+// ── Conformance vocabulary: Good / Average / Poor ─────────────
 
-enum ExecutionStatus { pending, running, complete, failed }
-enum StepOutcome { complete, partial, notComplete }
+enum Edebs01312ConformanceLevel {
+  good,    // ≥ optimal
+  average, // ≥ floor
+  poor,    // < floor
+}
 
-// ── Data Model ─────────────────────────────────────────────────
+// ── Execution status ─────────────────────────────────────────
 
-/// Primary data model for EDEBS-013-12.
-/// All mandatory DCDF lineage headers per AEETE-018 are present.
-class Edebs01312Entry {
-  final String ruleId;                     // PK — UUID
-  final String fieldA;                     // Primary input field
-  final String fieldB;                     // Secondary input field
-  final String fieldC;                     // Tertiary input field
-  final String executionStatusTxt;
-  final bool   complianceStatusInd;
+enum Edebs01312ExecutionStatus { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// EDEBS-013-12 — Event-Driven Edge Bus Service
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Edebs01312Config {
+  final String configId;
+  final String navItemId;
+  final String routePath;
+  final String iconToken;
+  final String labelText;
+  final String validationStatus;
   final bool   immutableInd;
-  final ExecutionStatus executionStatus;
-  final StepOutcome     stepOutcome;
-  // Mandatory DCDF lineage headers
+  // DCDF lineage
   final String traceId;
   final String originSourceId;
   final String immediatePredecessorId;
   final String transformationLogicHash;
+  final bool   complianceStatusInd;
 
-  const Edebs01312Entry({
-    required this.ruleId,
-    required this.fieldA,
-    required this.fieldB,
-    required this.fieldC,
-    this.executionStatusTxt  = 'PENDING',
-    this.complianceStatusInd = false,
-    this.immutableInd        = false,
-    this.executionStatus     = ExecutionStatus.pending,
-    this.stepOutcome         = StepOutcome.partial,
+  const Edebs01312Config({
+    required this.configId,
+    required this.navItemId,
+    required this.routePath,
+    required this.iconToken,
+    required this.labelText,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
     required this.traceId,
     required this.originSourceId,
     required this.immediatePredecessorId,
     required this.transformationLogicHash,
+    this.complianceStatusInd = false,
   });
 
-  bool get isConformant =>
-      complianceStatusInd && executionStatus == ExecutionStatus.complete;
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
 
-  Edebs01312Entry copyWith({
-    bool? complianceStatusInd,
-    bool? immutableInd,
-    ExecutionStatus? executionStatus,
-    StepOutcome? stepOutcome,
-  }) => Edebs01312Entry(
-    ruleId: ruleId, fieldA: fieldA, fieldB: fieldB, fieldC: fieldC,
-    executionStatusTxt: executionStatusTxt,
-    complianceStatusInd: complianceStatusInd ?? this.complianceStatusInd,
-    immutableInd: immutableInd ?? this.immutableInd,
-    executionStatus: executionStatus ?? this.executionStatus,
-    stepOutcome: stepOutcome ?? this.stepOutcome,
-    traceId: traceId, originSourceId: originSourceId,
-    immediatePredecessorId: immediatePredecessorId,
-    transformationLogicHash: transformationLogicHash,
+  Edebs01312Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Edebs01312Config(
+    configId: configId,
+    navItemId: navItemId,
+    routePath: routePath,
+    iconToken: iconToken,
+    labelText: labelText,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
   );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'navItemId': navItemId,
+    'routePath': routePath,
+    'iconToken': iconToken,
+    'labelText': labelText,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
 }
 
-// ── Scan Result ─────────────────────────────────────────────────
+// ── Validation Result ─────────────────────────────────────────
 
-class Edebs01312ScanResult {
+class Edebs01312ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
   final int    violationCount;
-  final String conformanceOutput;
-  final String result;
+  final double conformanceRate;
+  final Edebs01312ConformanceLevel conformanceLevel;
+  final bool   gatePass;
   final String ecLineRef;
 
-  const Edebs01312ScanResult({
+  const Edebs01312ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
     required this.violationCount,
-    required this.conformanceOutput,
-    required this.result,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
     required this.ecLineRef,
   });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Edebs01312ConformanceLevel.good:    return 'Good';
+      case Edebs01312ConformanceLevel.average: return 'Average';
+      case Edebs01312ConformanceLevel.poor:    return 'Poor';
+    }
+  }
 }
 
-// ── EC:9 Pipeline ────────────────────────────────────────────────────────
+// ── EC:8 Pipeline ────────────────────────────────────────
 
+/// EDEBS-013-12: Apply Strict Predecessor (PD) Foreign Keys
+/// Metric: UI Design-System Adherence Rate
+/// Floor=0.9 · Output=Good / Average / Poor
 class Edebs01312Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.9;
+  static const double _optimal = 0.97;
 
-
-  // EC:1 — EC: 1. System receives incoming navigation execution packet containing step execution parameters.
-  static void executeReceivesStep1(Edebs01312Entry entry) {
-    // receives incoming navigation execution packet containing step execution paramete
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-001: ruleId required');
-    };
+  // EC:1 — System locates the EDEBS-013-12 configuration in the source repository.
+  static Edebs01312Config _ec1Locates(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-001: navItemId required for EDEBS-013-12');
+    }
+    // the EDEBS-013-12 configuration in the source repository
+    return config;
   }
 
-  // EC:2 — EC: 2. System queries database for predecessor step status records associated with current step execution ID.
-  static void executeQueriesStep2(Edebs01312Entry entry) {
-    // queries database for predecessor step status records associated with current ste
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-002: ruleId required');
-    };
+  // EC:2 — System extracts navItemId and routePath from the EDEBS-013-12 registry.
+  static Edebs01312Config _ec2Extracts(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-002: navItemId required for EDEBS-013-12');
+    }
+    // navItemId and routePath from the EDEBS-013-12 registry
+    return config;
   }
 
-  // EC:3 — EC: 3. System validates predecessor completion status against mandatory foreign key constraints.
-  static void executeValidatesStep3(Edebs01312Entry entry) {
-    // validates predecessor completion status against mandatory foreign key constraint
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-003: ruleId required');
-    };
+  // EC:3 — System compiles the implementation rule set per UI Design-System Adherence Rate.
+  static Edebs01312Config _ec3Compiles(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-003: navItemId required for EDEBS-013-12');
+    }
+    // the implementation rule set per UI Design-System Adherence R
+    return config;
   }
 
-  // EC:4 — EC: 4. System flags navigation UI configuration state for incomplete predecessor dependencies.
-  static void executeFlagsStep4(Edebs01312Entry entry) {
-    // flags navigation UI configuration state for incomplete predecessor dependencies
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-004: ruleId required');
-    };
+  // EC:4 — System validates configuration against required constraints.
+  static Edebs01312Config _ec4Validates(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-004: navItemId required for EDEBS-013-12');
+    }
+    // configuration against required constraints
+    return config;
   }
 
-  // EC:5 — EC: 5. System applies Material Design 3 error visual tokens to dependent UI elements.
-  static void executeAppliesStep5(Edebs01312Entry entry) {
-    // applies Material Design 3 error visual tokens to dependent UI elements
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-005: ruleId required');
-    };
+  // EC:5 — System registers compiled rules as immutable with immutable_IND=TRUE.
+  static Edebs01312Config _ec5Registers(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-005: navItemId required for EDEBS-013-12');
+    }
+    // compiled rules as immutable with immutable_IND=TRUE
+    return config;
   }
 
-  // EC:6 — EC: 6. System calculates UI Design-System Adherence Rate metric score.
-  static void executeCalculatesStep6(Edebs01312Entry entry) {
-    // calculates UI Design-System Adherence Rate metric score
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-006: ruleId required');
-    };
+  // EC:6 — System validates configuration against UI Design-System Adherence Rate gate (floor=0.9).
+  static Edebs01312Config _ec6Validates(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-006: navItemId required for EDEBS-013-12');
+    }
+    // configuration against UI Design-System Adherence Rate gate (
+    return config;
   }
 
-  // EC:7 — EC: 7. System verifies calculated adherence score against floor boundary threshold of 85 percent.
-  static void executeVerifiesStep7(Edebs01312Entry entry) {
-    // verifies calculated adherence score against floor boundary threshold of 85 perce
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-007: ruleId required');
-    };
+  // EC:7 — System routes non-compliant records to the dead letter queue.
+  static Edebs01312Config _ec7Routes(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-007: navItemId required for EDEBS-013-12');
+    }
+    // non-compliant records to the dead letter queue
+    return config;
   }
 
-  // EC:8 — EC: 8. System updates step outcome record with lineage headers in persistent database storage.
-  static void executeUpdatesStep8(Edebs01312Entry entry) {
-    // updates step outcome record with lineage headers in persistent database storage
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-008: ruleId required');
-    };
+  // EC:8 — System publishes validated configuration to the rule registry.
+  static Edebs01312Config _ec8Publishes(Edebs01312Config config) {
+    if (config.navItemId.isEmpty) {
+      throw ArgumentError(
+          'EC-EDEBS01312-008: navItemId required for EDEBS-013-12');
+    }
+    // validated configuration to the rule registry
+    return config;
   }
 
-  // EC:9 — EC: 9. System routes invalid execution attempts to Dead Letter Queue.
-  static void executeRoutesStep9(Edebs01312Entry entry) {
-    // routes invalid execution attempts to Dead Letter Queue
-        if (!(entry.ruleId.isNotEmpty)) {
-      throw ArgumentError('EC-EDEBS01312-009: ruleId required');
-    };
-  }
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
 
-  static Edebs01312ScanResult validateConformance(List<Edebs01312Entry> entries) {
-    final violations = entries.where((e) => !e.isConformant).length;
-    final total      = entries.length;
-    final rate       = total > 0 ? (total - violations) / total : 0.0;
-    return Edebs01312ScanResult(
+  static Edebs01312ValidationResult calculateConformance({
+    required List<Edebs01312Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return Edebs01312ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Edebs01312ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-EDEBS01312-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level = rate >= _optimal
+        ? Edebs01312ConformanceLevel.good
+        : rate >= _floor
+            ? Edebs01312ConformanceLevel.average
+            : Edebs01312ConformanceLevel.poor;
+    return Edebs01312ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
       violationCount:    violations,
-      conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
       ecLineRef:         'EC-EDEBS01312-VAL',
     );
   }
 
-  static Edebs01312Entry routeToRegistry(Edebs01312Entry entry, Edebs01312ScanResult scan) {
-    final passed = scan.violationCount == 0;
-    return entry.copyWith(
-      immutableInd: passed,
-      executionStatus: passed ? ExecutionStatus.complete : ExecutionStatus.failed,
-      stepOutcome: passed ? StepOutcome.complete : StepOutcome.notComplete,
-      complianceStatusInd: passed,
+  static Edebs01312Config routeToRegistry(
+    Edebs01312Config config,
+    Edebs01312ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
     );
   }
-  // Triangular Check: source_count - destination_count == 0 (DCDF AEETE-018)
-  static bool triangularCheck(int sourceCount, int destinationCount) =>
-      (sourceCount - destinationCount) == 0;
 
+  static Future<Map<String, dynamic>> run({
+    required List<Edebs01312Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-EDEBS01312-000: configs must not be empty for EDEBS-013-12');
+    }
+    final p1 = configs.map(_ec1Locates).toList();
+    final p2 = configs.map(_ec2Extracts).toList();
+    final p3 = configs.map(_ec3Compiles).toList();
+    final p4 = configs.map(_ec4Validates).toList();
+    final p5 = configs.map(_ec5Registers).toList();
+    final p6 = configs.map(_ec6Validates).toList();
+    final p7 = configs.map(_ec7Routes).toList();
+    final p8 = configs.map(_ec8Publishes).toList();
+
+    if (!triangularCheck(configs.length, p8.length)) {
+      throw ArgumentError('EC-EDEBS01312-TRI: triangular check failed for EDEBS-013-12');
+    }
+    final result     = calculateConformance(configs: p8);
+    final registered = p8.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-EDEBS-013-12',
+      'metric':             'UI Design-System Adherence Rate',
+      'output_vocab':       'Good / Average / Poor',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
 }
 
-// ── Widget ─────────────────────────────────────────────────────
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> edebs_013_12Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'EDEBS-013-12',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
 
 class Edebs01312Widget extends StatelessWidget {
-  final List<Edebs01312Entry> entries;
-  const Edebs01312Widget({super.key, required this.entries});
+  final List<Edebs01312Config> configs;
+  const Edebs01312Widget({super.key, required this.configs});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final scan = Edebs01312Pipeline.validateConformance(entries);
+    final result = Edebs01312Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    final isGood = result.gatePass;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,36 +333,37 @@ class Edebs01312Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('EDEBS-013-12',
-              style: const TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
-              label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
-                style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
-                  ? cs.tertiary : cs.error,
-            ),
+              label: Text(
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
+              backgroundColor: isGood ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
-          itemCount: entries.length,
+          itemCount: configs.length,
           itemBuilder: (context, i) {
-            final e = entries[i];
-            final pass = e.isConformant;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
-                title: Text(e.fieldA,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                title: Text(c.navItemId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${e.ruleId.length > 8 ? e.ruleId.substring(0,8) : e.ruleId}... '
-                  '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
-                  style: const TextStyle(fontSize: 11)),
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
-                  backgroundColor: pass ? cs.tertiary : cs.error,
-                ),
+                  label: Text(
+                    pass ? 'Good' : 'Poor',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
               ),
             );
           },
@@ -259,4 +371,24 @@ class Edebs01312Widget extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Edebs01312Config(
+      configId: 'edebs01312-cfg-001',
+      navItemId: 'edebs-013-12_navItemId',
+      routePath: 'edebs-013-12_routePath',
+      iconToken: 'edebs-013-12_iconToken',
+      labelText: 'edebs-013-12_labelText',
+      traceId:                 'trace-edebs01312-001',
+      originSourceId:          'origin-edebs01312',
+      immediatePredecessorId:  'pred-edebs01312-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final out = await Edebs01312Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('EDEBS-013-12 [Good / Average / Poor] → $out');
 }

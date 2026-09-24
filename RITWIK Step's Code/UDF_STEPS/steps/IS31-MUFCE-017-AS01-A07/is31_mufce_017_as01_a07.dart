@@ -1,32 +1,36 @@
 // ============================================================
 // IS31-MUFCE-017-AS01-A07 — Implementation System 31
-// Atomic Step: Build Dynamic Screen Ratio Image Cropping Canvas
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
-// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
-// Repo:        github.com/varal-uae/UDF · branch: ritwik
-// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
-// Date:        24-Sep-2026
-// Step No:     552 of 1073
+// Atomic Step:  Build Dynamic Screen Ratio Image Cropping Canvas
+// Metric:       UI Response / Rendering Latency - Visual crop selection outline grid i
+// Floor:        0.95  ·  Optimal: 0.95
+// Output vocab: Pass / Fail
+// Standard:     ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:         github.com/varal-uae/UDF · branch: ritwik
+// Author:       Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:         25-Sep-2026
+// Step No:      827 of 1073
 // ============================================================
-// Why this matters: Uploading raw, multi-megabyte photos from phone cameras consumes massive mobile data allowances and 
-// Mobile impl:      Shrinks image weights directly on the client hardware, ensuring fast uploads and data savings.
-// Data requirement: Render visual crop selection outline grid over target image zone.
+// Why:          Uploading raw, multi-megabyte photos from phone cameras consumes massive mobile data allowances and 
+// Mobile:       Shrinks image weights directly on the client hardware, ensuring fast uploads and data savings.
+// col41:        Good/Average/Poor
 // ============================================================
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-// ── Enums ────────────────────────────────────────────────────
+// ── Conformance vocabulary: Pass / Fail ─────────────
 
-enum Is31Mufce017As01A07ConformanceLevel { complete, partial, notComplete }
-enum Is31Mufce017As01A07ExecutionStatus  { pending, running, complete, failed }
+enum Is31Mufce017As01A07ConformanceLevel {
+  pass_,   // ≥ floor
+  fail_,   // < floor
+}
+
+// ── Execution status ─────────────────────────────────────────
+
+enum Is31Mufce017As01A07ExecutionStatus { pending, running, complete, failed }
 
 // ── Data Model ───────────────────────────────────────────────
 
-/// Configuration record for IS31-MUFCE-017-AS01-A07.
-/// Fields derived from AISS sheet — Implementation System 31.
-/// DCDF AEETE-018: all 5 lineage fields mandatory.
 class Is31Mufce017As01A07Config {
   final String configId;
   final String gridColumns;
@@ -117,20 +121,17 @@ class Is31Mufce017As01A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is31Mufce017As01A07ConformanceLevel.complete:    return 'Good';
-      case Is31Mufce017As01A07ConformanceLevel.partial:     return 'Average';
-      case Is31Mufce017As01A07ConformanceLevel.notComplete: return 'Poor';
+      case Is31Mufce017As01A07ConformanceLevel.pass_: return 'Pass';
+      case Is31Mufce017As01A07ConformanceLevel.fail_: return 'Fail';
     }
   }
 }
 
-// ── EC:4 Pipeline ────────────────────────────────────────────
+// ── EC:4 Pipeline ────────────────────────────────────────
 
-/// IS31-MUFCE-017-AS01-A07: Build Dynamic Screen Ratio Image Cropping Canvas
-/// Metric: Layout Consistency Score · Floor=0.90 · Optimal=0.97
 class Is31Mufce017As01A07Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.95;
+  static const double _optimal = 0.95;
 
   // EC:1 — Link file attachment hooks directly to device camera outputs and photo libraries
   static Is31Mufce017As01A07Config _ec1Execute(Is31Mufce017As01A07Config config) {
@@ -180,21 +181,19 @@ class Is31Mufce017As01A07Pipeline {
     required List<Is31Mufce017As01A07Config> configs,
   }) {
     if (configs.isEmpty) {
-      return const Is31Mufce017As01A07ValidationResult(
+      return Is31Mufce017As01A07ValidationResult(
         totalRecords: 0, conformantRecords: 0, violationCount: 0,
         conformanceRate: 0.0,
-        conformanceLevel: Is31Mufce017As01A07ConformanceLevel.notComplete,
+        conformanceLevel: Is31Mufce017As01A07ConformanceLevel.fail_,
         gatePass: false, ecLineRef: 'EC-IS31MUFCE017-VAL',
       );
     }
     final conformant = configs.where((c) => c.isRegistered).length;
     final violations = configs.length - conformant;
     final rate       = conformant / configs.length;
-    final level      = rate >= _optimal
-        ? Is31Mufce017As01A07ConformanceLevel.complete
-        : rate >= _floor
-            ? Is31Mufce017As01A07ConformanceLevel.partial
-            : Is31Mufce017As01A07ConformanceLevel.notComplete;
+    final level = rate >= _floor
+        ? Is31Mufce017As01A07ConformanceLevel.pass_
+        : Is31Mufce017As01A07ConformanceLevel.fail_;
     return Is31Mufce017As01A07ValidationResult(
       totalRecords:      configs.length,
       conformantRecords: conformant,
@@ -236,14 +235,14 @@ class Is31Mufce017As01A07Pipeline {
     final result     = calculateConformance(configs: p4);
     final registered = p4.map((c) => routeToRegistry(c, result)).toList();
     return {
-      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
-      'conformance_rate':   result.conformanceRate,
-      'conformance_output': result.conformanceOutput,
+      'status':             result.gatePass ? 'COMPLETE' : 'FAILED',
+      'conformance_verdict': result.conformanceOutput,
       'gate_pass':          result.gatePass,
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-IS31-MUFCE-017-AS01-A07',
-      'metric':             'Layout Consistency Score',
+      'metric':             'UI Response / Rendering Latency - Visual crop selection outl',
+      'output_vocab':       'Pass / Fail',
       'floor':              _floor,
       'optimal':            _optimal,
     };
@@ -252,7 +251,8 @@ class Is31Mufce017As01A07Pipeline {
 
 // ── DLQ Helper ────────────────────────────────────────────────
 
-Map<String, dynamic> is31_mufce_017_as01_a07Dlq(String errorCode, Map<String, dynamic> payload) => {
+Map<String, dynamic> is31_mufce_017_as01_a07Dlq(
+    String errorCode, Map<String, dynamic> payload) => {
   'error_code':        errorCode,
   'payload_snapshot':  jsonEncode(payload),
   'dlq':               true,
@@ -278,30 +278,35 @@ class Is31Mufce017As01A07Widget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(child: Text('IS31-MUFCE-017-AS01-A07',
-              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+              style: const TextStyle(fontFamily:'Courier',
+                fontWeight:FontWeight.bold, fontSize:12))),
             Chip(
               label: Text(
-                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
-                style: const TextStyle(color:Colors.white,fontSize:11)),
+                result.conformanceOutput,
+                style: const TextStyle(color:Colors.white, fontSize:11)),
               backgroundColor: result.gatePass ? cs.tertiary : cs.error),
           ]),
         ),
         Expanded(child: ListView.builder(
           itemCount: configs.length,
           itemBuilder: (context, i) {
-            final c = configs[i]; final pass = c.isRegistered;
+            final c    = configs[i];
+            final pass = c.isRegistered;
             return Card(
               margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
               child: ListTile(
-                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                leading: Icon(
+                  pass ? Icons.check_circle : Icons.cancel,
                   color: pass ? cs.tertiary : cs.error),
                 title: Text(c.gridColumns,
                   style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
                 subtitle: Text(
-                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  '${c.configId.length>8?c.configId.substring(0,8):c.configId}…'
+                  ' | ${c.validationStatus}',
                   style: const TextStyle(fontSize:11)),
                 trailing: Chip(
-                  label: Text(pass?'PASS':'FAIL',
+                  label: Text(
+                    pass ? 'Pass' : 'Fail',
                     style: const TextStyle(color:Colors.white,fontSize:10)),
                   backgroundColor: pass ? cs.tertiary : cs.error),
               ),
@@ -329,6 +334,6 @@ void main() async {
       transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     ),
   ];
-  final result = await Is31Mufce017As01A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
-  print('IS31-MUFCE-017-AS01-A07 → $result');
+  final out = await Is31Mufce017As01A07Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS31-MUFCE-017-AS01-A07 [Pass / Fail] → $out');
 }
