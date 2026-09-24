@@ -2,7 +2,7 @@
 // ANSA-001-A06 · Active Destination Indicator Brand Color Token Manager
 // Habot Connect DMCC · UDF Team · Ritwik Sharma
 // Atomic Step: Apply the brand primary color token to the active destination indicator.
-// Metric: Implementation Completeness Against Spec · Floor=90% · Optimal=98% · Output=Complete/Partial/Not Complete
+// Metric: Implementation Completeness Against Spec · Floor=0.9% · Optimal=0.98% · Output=Complete/Partial/Not Complete
 // Standard: Design system rules must be verifiable — CI linters or snapshot tests confirm token application.
 // ============================================================
 
@@ -99,8 +99,8 @@ class IndicatorBindingResult {
 // ── Core Manager (EC:1–8) ────────────────────────────────────
 
 class Ansa001A06Manager {
-  static const double _floor   = 90;  // metric floor gate
-  static const double _optimal = 98; // metric optimal target
+  static const double _floor   = 0.9;  // metric floor gate
+  static const double _optimal = 0.98; // metric optimal target
 
   static const double _floorCoverage = 0.90;
   static const double _optimalCoverage = 0.98;

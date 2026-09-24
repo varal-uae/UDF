@@ -2,7 +2,7 @@
 // IS44-RCGLA-042-AS01-A03 — Implementation System 44
 // Atomic Step: Build layout wrapper definitions using structural multi-window responsive breakpoints.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is44Rcgla042As01A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is44Rcgla042As01A03ConformanceLevel.complete:    return 'Complete';
+      case Is44Rcgla042As01A03ConformanceLevel.complete:    return 'Pass';
       case Is44Rcgla042As01A03ConformanceLevel.partial:     return 'Partial';
-      case Is44Rcgla042As01A03ConformanceLevel.notComplete: return 'Not Complete';
+      case Is44Rcgla042As01A03ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

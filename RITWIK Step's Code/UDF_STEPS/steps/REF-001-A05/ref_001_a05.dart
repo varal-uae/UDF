@@ -1,8 +1,8 @@
 // ============================================================
 // REF-001-A05 — Reference Implementation Framework
 // Atomic Step: Configure the global frontend SubmitInterceptor and full-screen Scrim Lock layer to freeze interacti
-// Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Metric:      Implementation Conformance Rate · Floor=100.0 · Optimal=30.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ref001A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref001A05ConformanceLevel.complete:    return 'Complete';
+      case Ref001A05ConformanceLevel.complete:    return 'Pass';
       case Ref001A05ConformanceLevel.partial:     return 'Partial';
-      case Ref001A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref001A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -132,8 +132,8 @@ class Ref001A05ValidationResult {
 /// Metric: Implementation Conformance Rate
 /// Floor=0.90 · Optimal=0.97 · Output=Complete / Partial / Not Complete
 class Ref001A05Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 100.0;
+  static const double _optimal = 30.0;
 
   // EC:1 — Build a high-contrast <ScrimLock> container component anchored to a high layer hierarchy (
   static Ref001A05Config _ec1Execute(Ref001A05Config config) {

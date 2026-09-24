@@ -2,7 +2,7 @@
 // FLADE-011-07 — Friction Logging & Analytics Data Engine
 // Atomic Step: "Shakti Alert Panel" (Critical System Breach UI). (Un-ignorable, global red banners alerting all use
 // Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Flade01107ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade01107ConformanceLevel.complete:    return 'Complete';
-      case Flade01107ConformanceLevel.partial:     return 'Partial';
-      case Flade01107ConformanceLevel.notComplete: return 'Not Complete';
+      case Flade01107ConformanceLevel.complete:    return 'Good';
+      case Flade01107ConformanceLevel.partial:     return 'Average';
+      case Flade01107ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

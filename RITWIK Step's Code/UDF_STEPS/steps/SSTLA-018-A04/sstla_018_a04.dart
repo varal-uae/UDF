@@ -129,9 +129,9 @@ class Sstla018A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sstla018A04ConformanceLevel.complete:    return 'Complete';
+      case Sstla018A04ConformanceLevel.complete:    return 'Pass';
       case Sstla018A04ConformanceLevel.partial:     return 'Partial';
-      case Sstla018A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Sstla018A04ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

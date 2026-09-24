@@ -129,9 +129,9 @@ class Is36Slplu012As01A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is36Slplu012As01A07ConformanceLevel.complete:    return 'Complete';
-      case Is36Slplu012As01A07ConformanceLevel.partial:     return 'Partial';
-      case Is36Slplu012As01A07ConformanceLevel.notComplete: return 'Not Complete';
+      case Is36Slplu012As01A07ConformanceLevel.complete:    return 'Good';
+      case Is36Slplu012As01A07ConformanceLevel.partial:     return 'Average';
+      case Is36Slplu012As01A07ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

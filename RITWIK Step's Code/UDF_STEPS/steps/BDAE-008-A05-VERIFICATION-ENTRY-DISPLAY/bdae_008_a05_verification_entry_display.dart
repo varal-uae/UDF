@@ -2,7 +2,7 @@
 // BDAE-008-A05 | Inline Secondary Security Validation Forms
 // Atomic Task: Display the verification entry block upon workflow pause.
 // Primary Table: verification_entry_registry
-// Metric: Task Execution Accuracy Rate | Floor=95% | Optimal=100%
+// Metric: Task Execution Accuracy Rate | Floor=0.95% | Optimal=1.0%
 // Library: mobile-secure-auth-lib | Component: <StepUpMFAPrompt>
 // EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo: github.com/RitwikHC/theme-typography · branch: ritwik
@@ -109,8 +109,8 @@ class VerificationDisplayScanResult {
 // ── EC:1–8 Pipeline ──────────────────────────────────────────
 
 class Bdae008A05VerificationEntryDisplay {
-  static const double _floor   = 95;  // metric floor gate
-  static const double _optimal = 100; // metric optimal target
+  static const double _floor   = 0.95;  // metric floor gate
+  static const double _optimal = 1.0; // metric optimal target
 
 
   static const double kFloor   = 0.95; // 95% task execution accuracy

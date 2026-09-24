@@ -2,7 +2,7 @@
 // IRBCA-048 — Immutable Rule-Based Component Architecture
 // Atomic Step: Cloud Storage Signed URL Expiry Interceptor for Mobile Evidence
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Irbca048ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Irbca048ConformanceLevel.complete:    return 'Complete';
+      case Irbca048ConformanceLevel.complete:    return 'Pass';
       case Irbca048ConformanceLevel.partial:     return 'Partial';
-      case Irbca048ConformanceLevel.notComplete: return 'Not Complete';
+      case Irbca048ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

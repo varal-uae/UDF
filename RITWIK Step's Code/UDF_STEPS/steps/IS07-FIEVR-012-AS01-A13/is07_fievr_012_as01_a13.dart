@@ -2,7 +2,7 @@
 // IS07-FIEVR-012-AS01-A13 — Implementation System 07
 // Atomic Step: Local Reconciliation Gate Logic & Mathematical Validator Setup
 // Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is07Fievr012As01A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is07Fievr012As01A13ConformanceLevel.complete:    return 'Complete';
+      case Is07Fievr012As01A13ConformanceLevel.complete:    return 'Pass';
       case Is07Fievr012As01A13ConformanceLevel.partial:     return 'Partial';
-      case Is07Fievr012As01A13ConformanceLevel.notComplete: return 'Not Complete';
+      case Is07Fievr012As01A13ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

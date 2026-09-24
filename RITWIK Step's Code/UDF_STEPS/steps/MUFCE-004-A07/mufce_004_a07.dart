@@ -129,9 +129,9 @@ class Mufce004A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mufce004A07ConformanceLevel.complete:    return 'Complete';
+      case Mufce004A07ConformanceLevel.complete:    return 'Pass';
       case Mufce004A07ConformanceLevel.partial:     return 'Partial';
-      case Mufce004A07ConformanceLevel.notComplete: return 'Not Complete';
+      case Mufce004A07ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

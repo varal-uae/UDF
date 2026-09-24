@@ -2,7 +2,7 @@
 // FIEVR-028-A16 — Form Input Entry Validation Registry
 // Atomic Step: Build Dynamic Form Renderer Engine.
 // Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Fievr028A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fievr028A16ConformanceLevel.complete:    return 'Complete';
+      case Fievr028A16ConformanceLevel.complete:    return 'Pass';
       case Fievr028A16ConformanceLevel.partial:     return 'Partial';
-      case Fievr028A16ConformanceLevel.notComplete: return 'Not Complete';
+      case Fievr028A16ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

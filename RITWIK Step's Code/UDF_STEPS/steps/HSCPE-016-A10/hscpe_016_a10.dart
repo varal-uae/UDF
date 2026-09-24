@@ -2,7 +2,7 @@
 // HSCPE-016-A10 — Habot Service Config & Platform Engine
 // Atomic Step: ConfigMap Injection for Decoupled redis.conf (HSCPE-016)
 // Metric:      Infrastructure Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Hscpe016A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Hscpe016A10ConformanceLevel.complete:    return 'Complete';
-      case Hscpe016A10ConformanceLevel.partial:     return 'Partial';
-      case Hscpe016A10ConformanceLevel.notComplete: return 'Not Complete';
+      case Hscpe016A10ConformanceLevel.complete:    return 'Good';
+      case Hscpe016A10ConformanceLevel.partial:     return 'Average';
+      case Hscpe016A10ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

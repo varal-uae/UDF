@@ -2,7 +2,7 @@
 // IS04-RIMV-005-AS01-A16 — Implementation System 04
 // Atomic Step: Configuration of Poka-Yoke Date & Coordinate Input Masking Components
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is04Rimv005As01A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is04Rimv005As01A16ConformanceLevel.complete:    return 'Complete';
+      case Is04Rimv005As01A16ConformanceLevel.complete:    return 'Pass';
       case Is04Rimv005As01A16ConformanceLevel.partial:     return 'Partial';
-      case Is04Rimv005As01A16ConformanceLevel.notComplete: return 'Not Complete';
+      case Is04Rimv005As01A16ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -2,7 +2,7 @@
 // TTIAS-014-A16 — Token Integration & Automation System
 // Atomic Step: TTIAS-014 - Configure Viewport-Adaptive Dynamic Font Resizing Engine.
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Complete / Partial / Not Complete
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team

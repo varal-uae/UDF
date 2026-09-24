@@ -1,8 +1,8 @@
 // ============================================================
 // REF-407-A07 — Reference Implementation Framework
 // Atomic Step: Establish Skeleton Loader Shimmer Speed.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Metric:      Layout Consistency Score · Floor=100.0 · Optimal=100.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ref407A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref407A07ConformanceLevel.complete:    return 'Complete';
+      case Ref407A07ConformanceLevel.complete:    return 'Pass';
       case Ref407A07ConformanceLevel.partial:     return 'Partial';
-      case Ref407A07ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref407A07ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -143,8 +143,8 @@ class Ref407A07ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Ref407A07Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 100.0;
+  static const double _optimal = 100.0;
 
   // EC:1 — Define skeleton block colors
   static Ref407A07Config _ec1Execute(Ref407A07Config config) {

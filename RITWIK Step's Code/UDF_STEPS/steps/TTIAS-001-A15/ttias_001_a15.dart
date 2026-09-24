@@ -2,7 +2,7 @@
 // TTIAS-001-A15 — Token Integration & Automation System
 // Atomic Step: Configure System-Verb Iconography Matrix.
 // Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ttias001A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttias001A15ConformanceLevel.complete:    return 'Complete';
+      case Ttias001A15ConformanceLevel.complete:    return 'Pass';
       case Ttias001A15ConformanceLevel.partial:     return 'Partial';
-      case Ttias001A15ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttias001A15ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

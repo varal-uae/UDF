@@ -2,7 +2,7 @@
 // IS05-CSIVW-026-AS01-A09 — Implementation System 05
 // Atomic Step: Implement Swipeable Chip Arrays for ENUMs.
 // Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is05Csivw026As01A09ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is05Csivw026As01A09ConformanceLevel.complete:    return 'Complete';
+      case Is05Csivw026As01A09ConformanceLevel.complete:    return 'Pass';
       case Is05Csivw026As01A09ConformanceLevel.partial:     return 'Partial';
-      case Is05Csivw026As01A09ConformanceLevel.notComplete: return 'Not Complete';
+      case Is05Csivw026As01A09ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

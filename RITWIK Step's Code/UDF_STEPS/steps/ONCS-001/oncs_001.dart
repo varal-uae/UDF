@@ -1,8 +1,8 @@
 // ============================================================
 // ONCS-001 — Operational Network & Cloud Services
 // Atomic Step: Regional VPC Network & Subnet Allocation
-// Metric:      Infrastructure Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      Touch Target Compliance Rate · Floor=· Floor=0.95 · Optimal=1.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Oncs001ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Oncs001ConformanceLevel.complete:    return 'Complete';
+      case Oncs001ConformanceLevel.complete:    return 'Pass';
       case Oncs001ConformanceLevel.partial:     return 'Partial';
-      case Oncs001ConformanceLevel.notComplete: return 'Not Complete';
+      case Oncs001ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -129,7 +129,7 @@ class Oncs001ValidationResult {
 
 /// ONCS-001: Regional VPC Network & Subnet Allocation
 ///
-/// Metric: Infrastructure Compliance Rate
+/// Metric: Touch Target Compliance Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Oncs001Pipeline {
   static const double _floor   = 0.95;
@@ -294,7 +294,7 @@ class Oncs001Pipeline {
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-ONCS-001',
-      'metric':             'Infrastructure Compliance Rate',
+      'metric':             'Touch Target Compliance Rate',
       'floor':              _floor,
       'optimal':            _optimal,
     };

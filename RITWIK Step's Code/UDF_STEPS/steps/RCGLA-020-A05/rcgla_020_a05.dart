@@ -2,7 +2,7 @@
 // RCGLA-020-A05 — Responsive CSS Grid Layout Architecture
 // Atomic Step: Reusable Contextual Mirror Grid Module Design.
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rcgla020A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla020A05ConformanceLevel.complete:    return 'Complete';
+      case Rcgla020A05ConformanceLevel.complete:    return 'Pass';
       case Rcgla020A05ConformanceLevel.partial:     return 'Partial';
-      case Rcgla020A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla020A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

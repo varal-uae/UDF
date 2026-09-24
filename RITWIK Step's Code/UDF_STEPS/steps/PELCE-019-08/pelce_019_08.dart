@@ -2,7 +2,7 @@
 // PELCE-019-08 — Platform Element Logic & Config Engine
 // Atomic Step: English Code (EC) System Verbs on Mobile CTAs. (Restrict all mobile buttons to strict machine-action
 // Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Pelce01908ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Pelce01908ConformanceLevel.complete:    return 'Complete';
-      case Pelce01908ConformanceLevel.partial:     return 'Partial';
-      case Pelce01908ConformanceLevel.notComplete: return 'Not Complete';
+      case Pelce01908ConformanceLevel.complete:    return 'Good';
+      case Pelce01908ConformanceLevel.partial:     return 'Average';
+      case Pelce01908ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

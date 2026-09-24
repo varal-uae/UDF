@@ -2,7 +2,7 @@
 // FLADE-006-01 — Friction Logging & Analytics Data Engine
 // Atomic Step: Implement Rapid Backtracking Tracking on Mobile Forms. (Connect UI interaction Byts to drop-off poin
 // Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Flade00601ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade00601ConformanceLevel.complete:    return 'Complete';
-      case Flade00601ConformanceLevel.partial:     return 'Partial';
-      case Flade00601ConformanceLevel.notComplete: return 'Not Complete';
+      case Flade00601ConformanceLevel.complete:    return 'Good';
+      case Flade00601ConformanceLevel.partial:     return 'Average';
+      case Flade00601ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

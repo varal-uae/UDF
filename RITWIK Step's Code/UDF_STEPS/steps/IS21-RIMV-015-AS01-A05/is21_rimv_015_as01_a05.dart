@@ -2,7 +2,7 @@
 // IS21-RIMV-015-AS01-A05 — Implementation System 21
 // Atomic Step: Implement Strict Input Masking (Poka-Yoke). Overlay 15-Minute Execution Timer (Self-Chasing).
 // Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is21Rimv015As01A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is21Rimv015As01A05ConformanceLevel.complete:    return 'Complete';
+      case Is21Rimv015As01A05ConformanceLevel.complete:    return 'Pass';
       case Is21Rimv015As01A05ConformanceLevel.partial:     return 'Partial';
-      case Is21Rimv015As01A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Is21Rimv015As01A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

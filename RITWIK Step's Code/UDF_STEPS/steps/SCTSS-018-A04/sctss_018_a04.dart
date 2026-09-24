@@ -1,8 +1,8 @@
 // ============================================================
 // SCTSS-018-A04 — Semantic Color Token Styling System
 // Atomic Step: Implement AI Rationale Accordion (Trust Layer) to decide the layout for the collapsible panel explai
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Metric:      Design System Token Coverage Rate · Floor=3.5 · Optimal=4.5
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sctss018A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss018A04ConformanceLevel.complete:    return 'Complete';
-      case Sctss018A04ConformanceLevel.partial:     return 'Partial';
-      case Sctss018A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss018A04ConformanceLevel.complete:    return 'Good';
+      case Sctss018A04ConformanceLevel.partial:     return 'Average';
+      case Sctss018A04ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -143,8 +143,8 @@ class Sctss018A04ValidationResult {
 /// Metric: Design System Token Coverage Rate
 /// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
 class Sctss018A04Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 3.5;
+  static const double _optimal = 4.5;
 
   // EC:1 — Design the "Show Reasoning" toggle
   static Sctss018A04Config _ec1Execute(Sctss018A04Config config) {

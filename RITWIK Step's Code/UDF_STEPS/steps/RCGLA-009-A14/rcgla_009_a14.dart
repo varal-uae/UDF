@@ -2,7 +2,7 @@
 // RCGLA-009-A14 — Responsive CSS Grid Layout Architecture
 // Atomic Step: Build proportional width column rules across dashboard frames.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rcgla009A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla009A14ConformanceLevel.complete:    return 'Complete';
+      case Rcgla009A14ConformanceLevel.complete:    return 'Pass';
       case Rcgla009A14ConformanceLevel.partial:     return 'Partial';
-      case Rcgla009A14ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla009A14ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

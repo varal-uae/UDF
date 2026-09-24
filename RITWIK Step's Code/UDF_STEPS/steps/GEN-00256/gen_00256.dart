@@ -2,7 +2,7 @@
 // GEN-00256 — GEN System Module
 // Atomic Step: Isolate atomic component styles to prevent global CSS leaks.
 // Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Gen00256ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Gen00256ConformanceLevel.complete:    return 'Complete';
+      case Gen00256ConformanceLevel.complete:    return 'Pass';
       case Gen00256ConformanceLevel.partial:     return 'Partial';
-      case Gen00256ConformanceLevel.notComplete: return 'Not Complete';
+      case Gen00256ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -1,8 +1,8 @@
 // ============================================================
 // TTMAC-020-A15 — Touch Target & Material Accessibility Compliance
 // Atomic Step: TTMAC-020 - Map EC to M3 Touch Targets (48dp)
-// Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=· Floor=0.95 · Optimal=1.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ttmac020A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac020A15ConformanceLevel.complete:    return 'Complete';
+      case Ttmac020A15ConformanceLevel.complete:    return 'Pass';
       case Ttmac020A15ConformanceLevel.partial:     return 'Partial';
-      case Ttmac020A15ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmac020A15ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -129,7 +129,7 @@ class Ttmac020A15ValidationResult {
 
 /// TTMAC-020-A15: TTMAC-020 - Map EC to M3 Touch Targets (48dp)
 ///
-/// Metric: Touch Target Compliance Rate
+/// Metric: WCAG 2.1 Accessibility Compliance Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Ttmac020A15Pipeline {
   static const double _floor   = 0.95;
@@ -217,7 +217,7 @@ class Ttmac020A15Pipeline {
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMAC-020-A15',
-      'metric':             'Touch Target Compliance Rate',
+      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
       'floor':              _floor,
       'optimal':            _optimal,
     };

@@ -1,8 +1,8 @@
 // ============================================================
 // REF-167-A03 — Reference Implementation Framework
 // Atomic Step: Build Input Architecture with Contextual Mobile Keyboard Hooks
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      Input Validation Coverage Rate · Floor=99.0 · Optimal=100.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ref167A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref167A03ConformanceLevel.complete:    return 'Complete';
+      case Ref167A03ConformanceLevel.complete:    return 'Pass';
       case Ref167A03ConformanceLevel.partial:     return 'Partial';
-      case Ref167A03ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref167A03ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -142,8 +142,8 @@ class Ref167A03ValidationResult {
 /// Metric: Input Validation Coverage Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Ref167A03Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 99.0;
+  static const double _optimal = 100.0;
 
   // EC:1 — Map input fields with precise HTML5 semantic attributes (type="email", inputmode="numeric"
   static Ref167A03Config _ec1Execute(Ref167A03Config config) {

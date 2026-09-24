@@ -2,7 +2,7 @@
 // IS46-FIEVR-036-AS01-A14 — Implementation System 46
 // Atomic Step: Build an automated client-side testing environment for evaluating input form masking rules and local
 // Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is46Fievr036As01A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is46Fievr036As01A14ConformanceLevel.complete:    return 'Complete';
-      case Is46Fievr036As01A14ConformanceLevel.partial:     return 'Partial';
-      case Is46Fievr036As01A14ConformanceLevel.notComplete: return 'Not Complete';
+      case Is46Fievr036As01A14ConformanceLevel.complete:    return 'Good';
+      case Is46Fievr036As01A14ConformanceLevel.partial:     return 'Average';
+      case Is46Fievr036As01A14ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

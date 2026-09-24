@@ -2,7 +2,7 @@
 // BDAE-008-A09 | Inline Secondary Security Validation Forms
 // Atomic Task: Test the multi-factor connection with an invalid security key.
 // Primary Table: mfa_test_registry
-// Metric: Functional Test Pass Rate | Floor=95% | Optimal=100%
+// Metric: Functional Test Pass Rate | Floor=0.95% | Optimal=1.0%
 // Library: mobile-secure-auth-lib | Component: <StepUpMFAPrompt>
 // EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Security: Invalid TOTP must be rejected < 100ms; lockout on attempt_count=3
@@ -123,8 +123,8 @@ class MfaRejectionScanResult {
 // ── EC:1–8 Pipeline ──────────────────────────────────────────
 
 class Bdae008A09MfaRejectionTest {
-  static const double _floor   = 95;  // metric floor gate
-  static const double _optimal = 100; // metric optimal target
+  static const double _floor   = 0.95;  // metric floor gate
+  static const double _optimal = 1.0; // metric optimal target
 
 
   // EC:1 — Locate MFA rejection test config in bdae-008-kit repo.

@@ -2,7 +2,7 @@
 // SSELC-002-A16 — Split-Screen Element Layout Controller
 // Atomic Step: Design Visual Context Isolation Panel.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sselc002A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc002A16ConformanceLevel.complete:    return 'Complete';
+      case Sselc002A16ConformanceLevel.complete:    return 'Pass';
       case Sselc002A16ConformanceLevel.partial:     return 'Partial';
-      case Sselc002A16ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc002A16ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

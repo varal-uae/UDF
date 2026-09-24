@@ -2,7 +2,7 @@
 // SCTAS-002-A14 — Semantic Color Token Application System
 // Atomic Step: Hardcode the primary brand color token #2E86C1 across call-to-action component styling frameworks.
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sctas002A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctas002A14ConformanceLevel.complete:    return 'Complete';
+      case Sctas002A14ConformanceLevel.complete:    return 'Pass';
       case Sctas002A14ConformanceLevel.partial:     return 'Partial';
-      case Sctas002A14ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctas002A14ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

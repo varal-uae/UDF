@@ -2,7 +2,7 @@
 // RCGLA-034-A18 — Responsive CSS Grid Layout Architecture
 // Atomic Step: Define Global Grid Alignment Rules.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Rcgla034A18ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla034A18ConformanceLevel.complete:    return 'Complete';
+      case Rcgla034A18ConformanceLevel.complete:    return 'Pass';
       case Rcgla034A18ConformanceLevel.partial:     return 'Partial';
-      case Rcgla034A18ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla034A18ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

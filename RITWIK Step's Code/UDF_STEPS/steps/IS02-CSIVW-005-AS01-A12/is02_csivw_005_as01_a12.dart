@@ -2,7 +2,7 @@
 // IS02-CSIVW-005-AS01-A12 — Implementation System 02
 // Atomic Step: Program dynamic inline error layouts to activate when input fields fail validation checks.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Is02Csivw005As01A12ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is02Csivw005As01A12ConformanceLevel.complete:    return 'Complete';
+      case Is02Csivw005As01A12ConformanceLevel.complete:    return 'Pass';
       case Is02Csivw005As01A12ConformanceLevel.partial:     return 'Partial';
-      case Is02Csivw005As01A12ConformanceLevel.notComplete: return 'Not Complete';
+      case Is02Csivw005As01A12ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

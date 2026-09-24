@@ -2,7 +2,7 @@
 // RRCVG-049-A07 — Release Readiness & Compliance Validation Gate
 // Atomic Step: Enforce the Final Mobile Release Readiness Gate (RRCVG-049)
 // Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Rrcvg049A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rrcvg049A07ConformanceLevel.complete:    return 'Complete';
-      case Rrcvg049A07ConformanceLevel.partial:     return 'Partial';
-      case Rrcvg049A07ConformanceLevel.notComplete: return 'Not Complete';
+      case Rrcvg049A07ConformanceLevel.complete:    return 'Good';
+      case Rrcvg049A07ConformanceLevel.partial:     return 'Average';
+      case Rrcvg049A07ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

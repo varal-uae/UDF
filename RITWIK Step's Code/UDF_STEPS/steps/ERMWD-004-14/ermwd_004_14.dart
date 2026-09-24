@@ -118,9 +118,9 @@ class Ermwd00414ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ermwd00414ConformanceLevel.complete:    return 'Complete';
-      case Ermwd00414ConformanceLevel.partial:     return 'Partial';
-      case Ermwd00414ConformanceLevel.notComplete: return 'Not Complete';
+      case Ermwd00414ConformanceLevel.complete:    return 'Good';
+      case Ermwd00414ConformanceLevel.partial:     return 'Average';
+      case Ermwd00414ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

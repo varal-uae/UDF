@@ -125,9 +125,9 @@ class Nskfi014A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Nskfi014A01ConformanceLevel.complete:    return 'Complete';
+      case Nskfi014A01ConformanceLevel.complete:    return 'Pass';
       case Nskfi014A01ConformanceLevel.partial:     return 'Partial';
-      case Nskfi014A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Nskfi014A01ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

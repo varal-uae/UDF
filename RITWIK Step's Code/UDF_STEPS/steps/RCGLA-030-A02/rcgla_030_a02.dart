@@ -2,7 +2,7 @@
 // RCGLA-030-A02 — Responsive CSS Grid Layout Architecture
 // Atomic Step: RCGLA-030 - Assemble Atomic Base Elements Scaffolding.
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rcgla030A02ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla030A02ConformanceLevel.complete:    return 'Complete';
+      case Rcgla030A02ConformanceLevel.complete:    return 'Pass';
       case Rcgla030A02ConformanceLevel.partial:     return 'Partial';
-      case Rcgla030A02ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla030A02ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -1,7 +1,7 @@
 // ============================================================
 // SCTSS-013-A09 — Semantic Color Token Styling System
 // Atomic Step: Enforce System-Verb CTA Character Limits to decide max character count for call-to-action buttons to
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
+// Metric:      Layout Consistency Score · Floor=3.5 · Optimal=4.5
 // Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
@@ -129,9 +129,9 @@ class Sctss013A09ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss013A09ConformanceLevel.complete:    return 'Complete';
-      case Sctss013A09ConformanceLevel.partial:     return 'Partial';
-      case Sctss013A09ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss013A09ConformanceLevel.complete:    return 'Good';
+      case Sctss013A09ConformanceLevel.partial:     return 'Average';
+      case Sctss013A09ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -142,8 +142,8 @@ class Sctss013A09ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sctss013A09Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 3.5;
+  static const double _optimal = 4.5;
 
   // EC:1 — Set max limit
   static Sctss013A09Config _ec1Execute(Sctss013A09Config config) {

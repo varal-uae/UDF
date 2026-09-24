@@ -2,7 +2,7 @@
 // UPAT-012-A04 — User Platform Adaptation Templates
 // Atomic Step: Create platform-specific versions of job ads.
 // Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Upat012A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Upat012A04ConformanceLevel.complete:    return 'Complete';
-      case Upat012A04ConformanceLevel.partial:     return 'Partial';
-      case Upat012A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Upat012A04ConformanceLevel.complete:    return 'Good';
+      case Upat012A04ConformanceLevel.partial:     return 'Average';
+      case Upat012A04ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

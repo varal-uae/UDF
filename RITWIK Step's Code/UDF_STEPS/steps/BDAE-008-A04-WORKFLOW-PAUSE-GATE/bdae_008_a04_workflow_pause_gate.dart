@@ -2,7 +2,7 @@
 // BDAE-008-A04 | Inline Secondary Security Validation Forms
 // Atomic Task: Implement logic to pause the user workflow when a tagged action is triggered.
 // Primary Table: secondary_validation_action_registry
-// Metric: Build / Implementation Completeness | Floor=90% | Optimal=100%
+// Metric: Build / Implementation Completeness | Floor=0.9% | Optimal=1.0%
 // Library: mobile-secure-auth-lib | Component: <StepUpMFAPrompt>
 // EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Security: TOTP window=30s | max_attempts=3 | lockout=15min
@@ -138,8 +138,8 @@ class WorkflowPauseScanResult {
 // ── EC:1–8 Pipeline ──────────────────────────────────────────
 
 class Bdae008A04WorkflowPauseGate {
-  static const double _floor   = 90;  // metric floor gate
-  static const double _optimal = 100; // metric optimal target
+  static const double _floor   = 0.9;  // metric floor gate
+  static const double _optimal = 1.0; // metric optimal target
 
 
   // EC:1 — Locate workflow pause configuration for BDAE-008-A04 within

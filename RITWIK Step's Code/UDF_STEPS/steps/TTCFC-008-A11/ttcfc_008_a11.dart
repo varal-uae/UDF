@@ -1,8 +1,8 @@
 // ============================================================
 // TTCFC-008-A11 — TTCFC System Module
 // Atomic Step: Define Touch Target Minimums (48dp) to decide absolute minimum dimensions for interactive elements t
-// Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      Touch Target Compliance Rate · Floor=3.5 · Optimal=4.5
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttcfc008A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttcfc008A11ConformanceLevel.complete:    return 'Complete';
-      case Ttcfc008A11ConformanceLevel.partial:     return 'Partial';
-      case Ttcfc008A11ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttcfc008A11ConformanceLevel.complete:    return 'Good';
+      case Ttcfc008A11ConformanceLevel.partial:     return 'Average';
+      case Ttcfc008A11ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -143,8 +143,8 @@ class Ttcfc008A11ValidationResult {
 /// Metric: Touch Target Compliance Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Ttcfc008A11Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 3.5;
+  static const double _optimal = 4.5;
 
   // EC:1 — 48dp minimum dimension rules
   static Ttcfc008A11Config _ec1Execute(Ttcfc008A11Config config) {

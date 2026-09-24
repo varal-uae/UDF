@@ -2,7 +2,7 @@
 // RCGLA-016-A13 — Responsive CSS Grid Layout Architecture
 // Atomic Step: RCGLA-016 - Codify Content Grid Spacing Token Blueprint
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Rcgla016A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla016A13ConformanceLevel.complete:    return 'Complete';
+      case Rcgla016A13ConformanceLevel.complete:    return 'Pass';
       case Rcgla016A13ConformanceLevel.partial:     return 'Partial';
-      case Rcgla016A13ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla016A13ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

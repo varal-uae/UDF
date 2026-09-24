@@ -1,8 +1,8 @@
 // ============================================================
 // REF-242-A10 — Reference Implementation Framework
 // Atomic Step: Implement Strict Input Masking
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      Input Validation Coverage Rate · Floor=20.0 · Optimal=5.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ref242A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref242A10ConformanceLevel.complete:    return 'Complete';
+      case Ref242A10ConformanceLevel.complete:    return 'Pass';
       case Ref242A10ConformanceLevel.partial:     return 'Partial';
-      case Ref242A10ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref242A10ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -143,8 +143,8 @@ class Ref242A10ValidationResult {
 /// Metric: Input Validation Coverage Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Ref242A10Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 20.0;
+  static const double _optimal = 5.0;
 
   // EC:1 — Map schemas to inputs
   static Ref242A10Config _ec1Execute(Ref242A10Config config) {

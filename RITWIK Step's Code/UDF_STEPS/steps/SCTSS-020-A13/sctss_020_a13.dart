@@ -129,9 +129,9 @@ class Sctss020A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss020A13ConformanceLevel.complete:    return 'Complete';
+      case Sctss020A13ConformanceLevel.complete:    return 'Pass';
       case Sctss020A13ConformanceLevel.partial:     return 'Partial';
-      case Sctss020A13ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss020A13ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -2,7 +2,7 @@
 // ANSA-002-A06 · Multi-Step Form Back Button Navigation Handler
 // Habot Connect DMCC · UDF Team · Ritwik Sharma
 // Atomic Step: Access the application state management architecture layers.
-// Metric: File/Asset Discovery Accuracy · Floor=3 attempts/5 min · Optimal=1st attempt <1 min · Output=Pass/Fail
+// Metric: File/Asset Discovery Accuracy · Floor=0.9 attempts/5 min · Optimal=1st attempt <1 min · Output=Pass/Fail
 // Standard: Documented repository structure / automated IDE symbol search resolves target instantly.
 // ============================================================
 
@@ -119,7 +119,7 @@ class StateArchitectureDiscovery {
 // ── Core Manager (EC:1–8) ────────────────────────────────────
 
 class Ansa002A06Manager {
-  static const double _floor   = 3;  // metric floor gate
+  static const double _floor   = 0.9;  // metric floor gate
   static const double _optimal = 1; // metric optimal target
 
   static const double _floorPassRate = 0.90;

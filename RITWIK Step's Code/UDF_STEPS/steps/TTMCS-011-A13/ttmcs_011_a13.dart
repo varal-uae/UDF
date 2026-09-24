@@ -2,7 +2,7 @@
 // TTMCS-011-A13 — Material Design Token Configuration System
 // Atomic Step: TTMCS-011 - Apply MD3 Expressive Color/Typography
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttmcs011A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs011A13ConformanceLevel.complete:    return 'Complete';
+      case Ttmcs011A13ConformanceLevel.complete:    return 'Pass';
       case Ttmcs011A13ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs011A13ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmcs011A13ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

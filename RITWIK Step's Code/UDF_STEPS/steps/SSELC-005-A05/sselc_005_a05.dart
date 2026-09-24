@@ -2,7 +2,7 @@
 // SSELC-005-A05 — Split-Screen Element Layout Controller
 // Atomic Step: Implementation Step 50: Implement SVG Bounding Box Cropping Layer. (SSELC-005)
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sselc005A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc005A05ConformanceLevel.complete:    return 'Complete';
+      case Sselc005A05ConformanceLevel.complete:    return 'Pass';
       case Sselc005A05ConformanceLevel.partial:     return 'Partial';
-      case Sselc005A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc005A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

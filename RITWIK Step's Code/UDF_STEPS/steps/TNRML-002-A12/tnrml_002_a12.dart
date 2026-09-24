@@ -2,7 +2,7 @@
 // TNRML-002-A12 — Theme Navigation Rail Module Layer
 // Atomic Step: Responsive Breakpoint Parameters & Scale Controls Setup
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Tnrml002A12ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Tnrml002A12ConformanceLevel.complete:    return 'Complete';
+      case Tnrml002A12ConformanceLevel.complete:    return 'Pass';
       case Tnrml002A12ConformanceLevel.partial:     return 'Partial';
-      case Tnrml002A12ConformanceLevel.notComplete: return 'Not Complete';
+      case Tnrml002A12ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

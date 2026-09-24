@@ -2,7 +2,7 @@
 // SCTSS-017-A02 — Semantic Color Token Styling System
 // Atomic Step: Create AI Draft vs Human Edit Split Ratio to decide exact viewport ratio for the dual-pane workspace
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Complete / Partial / Not Complete
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team

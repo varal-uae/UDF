@@ -3,7 +3,7 @@
 // Atomic Step: Position high-contrast persistent action buttons inside the lower right viewport quadrant.
   Deploy 
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -130,9 +130,9 @@ class Vpvmp017A19ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Vpvmp017A19ConformanceLevel.complete:    return 'Complete';
-      case Vpvmp017A19ConformanceLevel.partial:     return 'Partial';
-      case Vpvmp017A19ConformanceLevel.notComplete: return 'Not Complete';
+      case Vpvmp017A19ConformanceLevel.complete:    return 'Good';
+      case Vpvmp017A19ConformanceLevel.partial:     return 'Average';
+      case Vpvmp017A19ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

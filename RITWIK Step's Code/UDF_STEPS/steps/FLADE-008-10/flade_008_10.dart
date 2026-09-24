@@ -2,7 +2,7 @@
 // FLADE-008-10 — Friction Logging & Analytics Data Engine
 // Atomic Step: Build Friction Log Cascades.
 // Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Flade00810ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade00810ConformanceLevel.complete:    return 'Complete';
-      case Flade00810ConformanceLevel.partial:     return 'Partial';
-      case Flade00810ConformanceLevel.notComplete: return 'Not Complete';
+      case Flade00810ConformanceLevel.complete:    return 'Good';
+      case Flade00810ConformanceLevel.partial:     return 'Average';
+      case Flade00810ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

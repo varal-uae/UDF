@@ -2,7 +2,7 @@
 // MCIIM-014-04 — Mobile Context Isolation & Image Module
 // Atomic Step: Isolate Mobile Visual Context
 // Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Mciim01404ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mciim01404ConformanceLevel.complete:    return 'Complete';
+      case Mciim01404ConformanceLevel.complete:    return 'Pass';
       case Mciim01404ConformanceLevel.partial:     return 'Partial';
-      case Mciim01404ConformanceLevel.notComplete: return 'Not Complete';
+      case Mciim01404ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -2,7 +2,7 @@
 // FIEVR-032-A15 — Form Input Entry Validation Registry
 // Atomic Step: FIEVR-032 - Code Dynamic Form Error Positioning Engine
 // Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Fievr032A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fievr032A15ConformanceLevel.complete:    return 'Complete';
+      case Fievr032A15ConformanceLevel.complete:    return 'Pass';
       case Fievr032A15ConformanceLevel.partial:     return 'Partial';
-      case Fievr032A15ConformanceLevel.notComplete: return 'Not Complete';
+      case Fievr032A15ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

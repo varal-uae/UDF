@@ -2,7 +2,7 @@
 // GRLIC-020-16 — Grid Layout & Interaction Compliance
 // Atomic Step: Constructing Passive_Timeout_Escalation_Record Fields
 // Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Grlic02016ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Grlic02016ConformanceLevel.complete:    return 'Complete';
-      case Grlic02016ConformanceLevel.partial:     return 'Partial';
-      case Grlic02016ConformanceLevel.notComplete: return 'Not Complete';
+      case Grlic02016ConformanceLevel.complete:    return 'Good';
+      case Grlic02016ConformanceLevel.partial:     return 'Average';
+      case Grlic02016ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

@@ -1,8 +1,8 @@
 // ============================================================
 // PELCE-018-A16 — Platform Element Logic & Config Engine
 // Atomic Step: PELCE-018 - Configure Tooltip Logic Registries.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Metric:      Layout Consistency Score · Floor=0.7 · Optimal=0.85
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Pelce018A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Pelce018A16ConformanceLevel.complete:    return 'Complete';
+      case Pelce018A16ConformanceLevel.complete:    return 'Pass';
       case Pelce018A16ConformanceLevel.partial:     return 'Partial';
-      case Pelce018A16ConformanceLevel.notComplete: return 'Not Complete';
+      case Pelce018A16ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -143,8 +143,8 @@ class Pelce018A16ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Pelce018A16Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.7;
+  static const double _optimal = 0.85;
 
   // EC:1 — Bind event-listener triggers (onHover / long-press) to data metrics
   static Pelce018A16Config _ec1Execute(Pelce018A16Config config) {

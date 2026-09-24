@@ -1,0 +1,334 @@
+// ============================================================
+// IS31-MUFCE-017-AS01-A08 — Implementation System 31
+// Atomic Step: Build Dynamic Screen Ratio Image Cropping Canvas
+// Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
+// Output:      Pass / Partial / Fail
+// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:        github.com/varal-uae/UDF · branch: ritwik
+// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:        24-Sep-2026
+// Step No:     560 of 1073
+// ============================================================
+// Why this matters: Uploading raw, multi-megabyte photos from phone cameras consumes massive mobile data allowances and 
+// Mobile impl:      Shrinks image weights directly on the client hardware, ensuring fast uploads and data savings.
+// Data requirement: Add interactive resize handles to corner boundaries of visual crop selection box.
+// ============================================================
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+
+// ── Enums ────────────────────────────────────────────────────
+
+enum Is31Mufce017As01A08ConformanceLevel { complete, partial, notComplete }
+enum Is31Mufce017As01A08ExecutionStatus  { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// Configuration record for IS31-MUFCE-017-AS01-A08.
+/// Fields derived from AISS sheet — Implementation System 31.
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Is31Mufce017As01A08Config {
+  final String configId;
+  final String fontFamily;
+  final String scaleStep;
+  final String sizePx;
+  final String weightToken;
+  final String validationStatus;
+  final bool   immutableInd;
+  final String traceId;
+  final String originSourceId;
+  final String immediatePredecessorId;
+  final String transformationLogicHash;
+  final bool   complianceStatusInd;
+
+  const Is31Mufce017As01A08Config({
+    required this.configId,
+    required this.fontFamily,
+    required this.scaleStep,
+    required this.sizePx,
+    required this.weightToken,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
+    required this.traceId,
+    required this.originSourceId,
+    required this.immediatePredecessorId,
+    required this.transformationLogicHash,
+    this.complianceStatusInd = false,
+  });
+
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
+
+  Is31Mufce017As01A08Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Is31Mufce017As01A08Config(
+    configId: configId,
+    fontFamily: fontFamily,
+    scaleStep: scaleStep,
+    sizePx: sizePx,
+    weightToken: weightToken,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'fontFamily': fontFamily,
+    'scaleStep': scaleStep,
+    'sizePx': sizePx,
+    'weightToken': weightToken,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
+}
+
+// ── Validation Result ─────────────────────────────────────────
+
+class Is31Mufce017As01A08ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Is31Mufce017As01A08ConformanceLevel conformanceLevel;
+  final bool   gatePass;
+  final String ecLineRef;
+
+  const Is31Mufce017As01A08ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
+    required this.violationCount,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
+    required this.ecLineRef,
+  });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Is31Mufce017As01A08ConformanceLevel.complete:    return 'Pass';
+      case Is31Mufce017As01A08ConformanceLevel.partial:     return 'Partial';
+      case Is31Mufce017As01A08ConformanceLevel.notComplete: return 'Fail';
+    }
+  }
+}
+
+// ── EC:4 Pipeline ────────────────────────────────────────────
+
+/// IS31-MUFCE-017-AS01-A08: Build Dynamic Screen Ratio Image Cropping Canvas
+/// Metric: Component Reuse Rate · Floor=0.90 · Optimal=1.0
+class Is31Mufce017As01A08Pipeline {
+  static const double _floor   = 0.90;
+  static const double _optimal = 1.0;
+
+  // EC:1 — Link file attachment hooks directly to device camera outputs and photo libraries
+  static Is31Mufce017As01A08Config _ec1Execute(Is31Mufce017As01A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-IS31MUFCE017-001: fontFamily required for IS31-MUFCE-017-AS01-A08');
+    }
+    // Link file attachment hooks directly to device camera outputs
+    return config;
+  }
+
+  // EC:2 — Build an atomic image processing component under 20 lines of total functional code
+  static Is31Mufce017As01A08Config _ec2Execute(Is31Mufce017As01A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-IS31MUFCE017-002: fontFamily required for IS31-MUFCE-017-AS01-A08');
+    }
+    // Build an atomic image processing component under 20 lines of
+    return config;
+  }
+
+  // EC:3 — Program automated sizing scripts to scale and shape attached images to standard dimensions
+  static Is31Mufce017As01A08Config _ec3Execute(Is31Mufce017As01A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-IS31MUFCE017-003: fontFamily required for IS31-MUFCE-017-AS01-A08');
+    }
+    // Program automated sizing scripts to scale and shape attached
+    return config;
+  }
+
+  // EC:4 — Apply client-side compression tools to shrink files before queueing items for network uplo
+  static Is31Mufce017As01A08Config _ec4Execute(Is31Mufce017As01A08Config config) {
+    if (config.fontFamily.isEmpty) {
+      throw ArgumentError(
+          'EC-IS31MUFCE017-004: fontFamily required for IS31-MUFCE-017-AS01-A08');
+    }
+    // Apply client-side compression tools to shrink files before q
+    return config;
+  }
+
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Is31Mufce017As01A08ValidationResult calculateConformance({
+    required List<Is31Mufce017As01A08Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return const Is31Mufce017As01A08ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Is31Mufce017As01A08ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-IS31MUFCE017-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level      = rate >= _optimal
+        ? Is31Mufce017As01A08ConformanceLevel.complete
+        : rate >= _floor
+            ? Is31Mufce017As01A08ConformanceLevel.partial
+            : Is31Mufce017As01A08ConformanceLevel.notComplete;
+    return Is31Mufce017As01A08ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-IS31MUFCE017-VAL',
+    );
+  }
+
+  static Is31Mufce017As01A08Config routeToRegistry(
+    Is31Mufce017As01A08Config config,
+    Is31Mufce017As01A08ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Is31Mufce017As01A08Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-IS31MUFCE017-000: configs must not be empty for IS31-MUFCE-017-AS01-A08');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-IS31MUFCE017-TRI: triangular check failed for IS31-MUFCE-017-AS01-A08');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
+      'conformance_rate':   result.conformanceRate,
+      'conformance_output': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-IS31-MUFCE-017-AS01-A08',
+      'metric':             'Component Reuse Rate',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
+}
+
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> is31_mufce_017_as01_a08Dlq(String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'IS31-MUFCE-017-AS01-A08',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
+
+class Is31Mufce017As01A08Widget extends StatelessWidget {
+  final List<Is31Mufce017As01A08Config> configs;
+  const Is31Mufce017As01A08Widget({super.key, required this.configs});
+
+  @override
+  Widget build(BuildContext context) {
+    final result = Is31Mufce017As01A08Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            Expanded(child: Text('IS31-MUFCE-017-AS01-A08',
+              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+            Chip(
+              label: Text(
+                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
+                style: const TextStyle(color:Colors.white,fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+          ]),
+        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c = configs[i]; final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.fontFamily,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(pass?'PASS':'FAIL',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
+      ],
+    );
+  }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Is31Mufce017As01A08Config(
+      configId: 'is31mufce017-cfg-001',
+      fontFamily: 'is31-mufce-017-as01-a08_fontFamily',
+      scaleStep: 'is31-mufce-017-as01-a08_scaleStep',
+      sizePx: 'is31-mufce-017-as01-a08_sizePx',
+      weightToken: 'is31-mufce-017-as01-a08_weightToken',
+      traceId:                 'trace-is31mufce017-001',
+      originSourceId:          'origin-is31mufce017',
+      immediatePredecessorId:  'pred-is31mufce017-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final result = await Is31Mufce017As01A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS31-MUFCE-017-AS01-A08 → $result');
+}

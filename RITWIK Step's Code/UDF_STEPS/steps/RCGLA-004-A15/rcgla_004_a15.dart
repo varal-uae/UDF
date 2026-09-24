@@ -2,7 +2,7 @@
 // RCGLA-004-A15 — Responsive CSS Grid Layout Architecture
 // Atomic Step: Implementation Step 4: Build Side Sheet Progressive Disclosure Viewer Component. (RCGLA-004)
 // Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Rcgla004A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla004A15ConformanceLevel.complete:    return 'Complete';
-      case Rcgla004A15ConformanceLevel.partial:     return 'Partial';
-      case Rcgla004A15ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla004A15ConformanceLevel.complete:    return 'Good';
+      case Rcgla004A15ConformanceLevel.partial:     return 'Average';
+      case Rcgla004A15ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

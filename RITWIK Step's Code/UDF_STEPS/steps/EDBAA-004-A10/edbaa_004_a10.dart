@@ -194,7 +194,7 @@ class Edbaa004A10Pipeline {
     return Edbaa004A10ScanResult(
       violationCount:    violations,
       conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      result:            violations == 0 ? 'Complete' : 'Not Complete',
       ecLineRef:         'EC-EDBAA004A10-VAL',
     );
   }
@@ -235,7 +235,7 @@ class Edbaa004A10Widget extends StatelessWidget {
             Chip(
               label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
                 style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
+              backgroundColor: scan.result == 'Complete'
                   ? cs.tertiary : cs.error,
             ),
           ]),
@@ -257,7 +257,7 @@ class Edbaa004A10Widget extends StatelessWidget {
                   '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
                   style: const TextStyle(fontSize: 11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
+                  label: Text(pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color: Colors.white, fontSize: 10)),
                   backgroundColor: pass ? cs.tertiary : cs.error,
                 ),

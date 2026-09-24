@@ -1,7 +1,7 @@
 // ============================================================
 // MUFCE-027 — Mobile UX Flow & Content Engine
 // Atomic Step: Mandate Hiring Project Form (HPF) Attachment.
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
+// Metric:      Input Validation Coverage Rate · Floor=95.0 · Optimal=99.0
 // Output:      Pass / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
@@ -142,8 +142,8 @@ class Mufce027ValidationResult {
 /// Metric: Input Validation Coverage Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Mufce027Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 95.0;
+  static const double _optimal = 99.0;
 
   // EC:1 — System locates the MUFCE-027 configuration in the source repository.
   static Mufce027Config _ec1Locates(Mufce027Config config) {

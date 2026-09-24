@@ -2,7 +2,7 @@
 // TECH-ENG-049 — Technical Engineering Implementation
 // Atomic Step: Step 49: Cross-Functional Engineering Intelligence Dashboard
 // Metric:      Data Visualisation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class TechEng049ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case TechEng049ConformanceLevel.complete:    return 'Complete';
+      case TechEng049ConformanceLevel.complete:    return 'Pass';
       case TechEng049ConformanceLevel.partial:     return 'Partial';
-      case TechEng049ConformanceLevel.notComplete: return 'Not Complete';
+      case TechEng049ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

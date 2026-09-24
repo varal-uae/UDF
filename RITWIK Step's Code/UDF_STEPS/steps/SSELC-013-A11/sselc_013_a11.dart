@@ -2,7 +2,7 @@
 // SSELC-013-A11 — Split-Screen Element Layout Controller
 // Atomic Step: SSELC-013 - Split-Screen Contextual Mirror UI Template Standardization
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sselc013A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc013A11ConformanceLevel.complete:    return 'Complete';
+      case Sselc013A11ConformanceLevel.complete:    return 'Pass';
       case Sselc013A11ConformanceLevel.partial:     return 'Partial';
-      case Sselc013A11ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc013A11ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

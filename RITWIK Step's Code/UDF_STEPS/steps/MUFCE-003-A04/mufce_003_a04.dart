@@ -2,7 +2,7 @@
 // MUFCE-003-A04 — Mobile UX Flow & Content Engine
 // Atomic Step: Build and deploy a secure data submission portal for micro video uploads.
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Mufce003A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mufce003A04ConformanceLevel.complete:    return 'Complete';
-      case Mufce003A04ConformanceLevel.partial:     return 'Partial';
-      case Mufce003A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Mufce003A04ConformanceLevel.complete:    return 'Good';
+      case Mufce003A04ConformanceLevel.partial:     return 'Average';
+      case Mufce003A04ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

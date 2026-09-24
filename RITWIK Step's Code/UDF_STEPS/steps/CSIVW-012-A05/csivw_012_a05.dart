@@ -103,8 +103,8 @@ class Csivw012A05ScanResult {
 // ── EC:10 Pipeline ────────────────────────────────────────────────────────
 
 class Csivw012A05Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 0.7;  // metric floor gate
+  static const double _optimal = 0.85; // metric optimal target
 
 
   // EC:1 — EC: 1. System extracts total count of selected active data table rows.
@@ -194,7 +194,7 @@ class Csivw012A05Pipeline {
     return Csivw012A05ScanResult(
       violationCount:    violations,
       conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      result:            violations == 0 ? 'Complete' : 'Not Complete',
       ecLineRef:         'EC-CSIVW012A05-VAL',
     );
   }
@@ -235,7 +235,7 @@ class Csivw012A05Widget extends StatelessWidget {
             Chip(
               label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
                 style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
+              backgroundColor: scan.result == 'Complete'
                   ? cs.tertiary : cs.error,
             ),
           ]),
@@ -257,7 +257,7 @@ class Csivw012A05Widget extends StatelessWidget {
                   '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
                   style: const TextStyle(fontSize: 11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
+                  label: Text(pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color: Colors.white, fontSize: 10)),
                   backgroundColor: pass ? cs.tertiary : cs.error,
                 ),

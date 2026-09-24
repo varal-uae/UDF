@@ -2,7 +2,7 @@
 // TTMAC-012-A01 — Touch Target & Material Accessibility Compliance
 // Atomic Step: Implementation Step 1: Standardize Core Button Component Touch Sizing Matrix (TTMAC-012)
 // Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ttmac012A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac012A01ConformanceLevel.complete:    return 'Complete';
+      case Ttmac012A01ConformanceLevel.complete:    return 'Pass';
       case Ttmac012A01ConformanceLevel.partial:     return 'Partial';
-      case Ttmac012A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmac012A01ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

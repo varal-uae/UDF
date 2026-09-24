@@ -2,7 +2,7 @@
 // HC-SCH-0015 — Habot Core Schema
 // Atomic Step: Define the relational database foreign keys linking the mobile view inputs back to the ultimate Sour
 // Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class HcSch0015ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case HcSch0015ConformanceLevel.complete:    return 'Complete';
-      case HcSch0015ConformanceLevel.partial:     return 'Partial';
-      case HcSch0015ConformanceLevel.notComplete: return 'Not Complete';
+      case HcSch0015ConformanceLevel.complete:    return 'Good';
+      case HcSch0015ConformanceLevel.partial:     return 'Average';
+      case HcSch0015ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

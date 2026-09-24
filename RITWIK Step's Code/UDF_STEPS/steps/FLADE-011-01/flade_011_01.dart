@@ -129,9 +129,9 @@ class Flade01101ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade01101ConformanceLevel.complete:    return 'Complete';
-      case Flade01101ConformanceLevel.partial:     return 'Partial';
-      case Flade01101ConformanceLevel.notComplete: return 'Not Complete';
+      case Flade01101ConformanceLevel.complete:    return 'Good';
+      case Flade01101ConformanceLevel.partial:     return 'Average';
+      case Flade01101ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

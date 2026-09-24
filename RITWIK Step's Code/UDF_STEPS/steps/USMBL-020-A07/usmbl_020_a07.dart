@@ -129,9 +129,9 @@ class Usmbl020A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Usmbl020A07ConformanceLevel.complete:    return 'Complete';
+      case Usmbl020A07ConformanceLevel.complete:    return 'Pass';
       case Usmbl020A07ConformanceLevel.partial:     return 'Partial';
-      case Usmbl020A07ConformanceLevel.notComplete: return 'Not Complete';
+      case Usmbl020A07ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

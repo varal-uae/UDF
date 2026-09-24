@@ -2,7 +2,7 @@
 // SSTLA-015-A01 — Split-Screen Template Layout Architecture
 // Atomic Step: Context-Removed Split-Screen Master Templates for Compact Screen Classes.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Complete / Partial / Not Complete
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team

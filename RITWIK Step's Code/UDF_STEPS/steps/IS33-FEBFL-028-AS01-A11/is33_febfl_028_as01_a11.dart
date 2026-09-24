@@ -2,7 +2,7 @@
 // IS33-FEBFL-028-AS01-A11 — Implementation System 33
 // Atomic Step: Design Error Boundary Fallback UI.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is33Febfl028As01A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is33Febfl028As01A11ConformanceLevel.complete:    return 'Complete';
+      case Is33Febfl028As01A11ConformanceLevel.complete:    return 'Pass';
       case Is33Febfl028As01A11ConformanceLevel.partial:     return 'Partial';
-      case Is33Febfl028As01A11ConformanceLevel.notComplete: return 'Not Complete';
+      case Is33Febfl028As01A11ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

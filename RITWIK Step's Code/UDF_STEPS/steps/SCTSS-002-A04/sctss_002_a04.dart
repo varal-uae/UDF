@@ -1,7 +1,7 @@
 // ============================================================
 // SCTSS-002-A04 — Semantic Color Token Styling System
 // Atomic Step: Define Global Grid Alignment Rules to establish strict 4-column mobile pixel spacing for gutters to 
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
+// Metric:      Layout Consistency Score · Floor=3.5 · Optimal=4.5
 // Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
@@ -129,9 +129,9 @@ class Sctss002A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss002A04ConformanceLevel.complete:    return 'Complete';
-      case Sctss002A04ConformanceLevel.partial:     return 'Partial';
-      case Sctss002A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss002A04ConformanceLevel.complete:    return 'Good';
+      case Sctss002A04ConformanceLevel.partial:     return 'Average';
+      case Sctss002A04ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -143,8 +143,8 @@ class Sctss002A04ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sctss002A04Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 3.5;
+  static const double _optimal = 4.5;
 
   // EC:1 — Set mobile 4-column constraints
   static Sctss002A04Config _ec1Execute(Sctss002A04Config config) {

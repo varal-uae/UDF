@@ -2,7 +2,7 @@
 // IRBCA-028-A01 — Immutable Rule-Based Component Architecture
 // Atomic Step: Role-Based Analytics View Authorization Limits (IRBCA-028)
 // Metric:      Security Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Irbca028A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Irbca028A01ConformanceLevel.complete:    return 'Complete';
-      case Irbca028A01ConformanceLevel.partial:     return 'Partial';
-      case Irbca028A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Irbca028A01ConformanceLevel.complete:    return 'Good';
+      case Irbca028A01ConformanceLevel.partial:     return 'Average';
+      case Irbca028A01ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

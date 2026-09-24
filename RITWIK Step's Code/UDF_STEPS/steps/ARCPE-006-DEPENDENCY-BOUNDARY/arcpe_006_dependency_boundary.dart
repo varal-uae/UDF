@@ -37,8 +37,8 @@ class Arcpe006DependencyBoundaryLog {
 // ── EC:1–8 Pipeline ──────────────────────────────────────────
 
 class Arcpe006DependencyBoundary {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 95.0;  // metric floor gate
+  static const double _optimal = 99.0; // metric optimal target
 
 
   static const double _threshold = 0;

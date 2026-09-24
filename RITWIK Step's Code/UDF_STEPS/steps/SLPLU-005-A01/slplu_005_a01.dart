@@ -129,9 +129,9 @@ class Slplu005A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Slplu005A01ConformanceLevel.complete:    return 'Complete';
-      case Slplu005A01ConformanceLevel.partial:     return 'Partial';
-      case Slplu005A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Slplu005A01ConformanceLevel.complete:    return 'Good';
+      case Slplu005A01ConformanceLevel.partial:     return 'Average';
+      case Slplu005A01ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

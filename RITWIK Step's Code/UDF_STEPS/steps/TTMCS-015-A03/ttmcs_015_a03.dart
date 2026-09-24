@@ -1,8 +1,8 @@
 // ============================================================
 // TTMCS-015-A03 — Material Design Token Configuration System
 // Atomic Step: TTMCS-015 - Initialize Material Design 3 Centralized Design Token Engine.
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=· Floor=0.90 · Optimal=1.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttmcs015A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs015A03ConformanceLevel.complete:    return 'Complete';
+      case Ttmcs015A03ConformanceLevel.complete:    return 'Pass';
       case Ttmcs015A03ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs015A03ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmcs015A03ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -140,7 +140,7 @@ class Ttmcs015A03ValidationResult {
 
 /// TTMCS-015-A03: TTMCS-015 - Initialize Material Design 3 Centralized Design Token Engine.
 ///
-/// Metric: Design System Token Coverage Rate
+/// Metric: WCAG 2.1 Accessibility Compliance Rate
 /// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
 class Ttmcs015A03Pipeline {
   static const double _floor   = 0.90;
@@ -228,7 +228,7 @@ class Ttmcs015A03Pipeline {
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMCS-015-A03',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
       'floor':              _floor,
       'optimal':            _optimal,
     };

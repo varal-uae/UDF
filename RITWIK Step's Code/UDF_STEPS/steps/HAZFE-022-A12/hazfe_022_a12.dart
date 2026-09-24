@@ -2,7 +2,7 @@
 // HAZFE-022-A12 — High Availability Zone Frontend Engine
 // Atomic Step: Designing Mobile Layouts for High Availability (HA) Failover Visual Banners
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Hazfe022A12ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Hazfe022A12ConformanceLevel.complete:    return 'Complete';
+      case Hazfe022A12ConformanceLevel.complete:    return 'Pass';
       case Hazfe022A12ConformanceLevel.partial:     return 'Partial';
-      case Hazfe022A12ConformanceLevel.notComplete: return 'Not Complete';
+      case Hazfe022A12ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

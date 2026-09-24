@@ -2,7 +2,7 @@
 // TECH-ENG-004 — Technical Engineering Implementation
 // Atomic Step: Step 4: Implement Dead Letter Queue (DLQ) Routing Architecture
 // Metric:      Pipeline Routing Conformance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class TechEng004ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case TechEng004ConformanceLevel.complete:    return 'Complete';
+      case TechEng004ConformanceLevel.complete:    return 'Pass';
       case TechEng004ConformanceLevel.partial:     return 'Partial';
-      case TechEng004ConformanceLevel.notComplete: return 'Not Complete';
+      case TechEng004ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

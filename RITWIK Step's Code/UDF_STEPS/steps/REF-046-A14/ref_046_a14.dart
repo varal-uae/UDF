@@ -1,8 +1,8 @@
 // ============================================================
 // REF-046-A14 — Reference Implementation Framework
 // Atomic Step: Build an overlay card system that processes status updates.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Metric:      Layout Consistency Score · Floor=95.0 · Optimal=100.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ref046A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref046A14ConformanceLevel.complete:    return 'Complete';
+      case Ref046A14ConformanceLevel.complete:    return 'Pass';
       case Ref046A14ConformanceLevel.partial:     return 'Partial';
-      case Ref046A14ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref046A14ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -143,8 +143,8 @@ class Ref046A14ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Ref046A14Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 95.0;
+  static const double _optimal = 100.0;
 
   // EC:1 — Construct an overlay alert portal that mounts above main workspace rows
   static Ref046A14Config _ec1Execute(Ref046A14Config config) {

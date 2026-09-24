@@ -2,7 +2,7 @@
 // RCGLA-004-A01 — Responsive CSS Grid Layout Architecture
 // Atomic Step: Implementation Step 4: Build Side Sheet Progressive Disclosure Viewer Component. (RCGLA-004)
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rcgla004A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla004A01ConformanceLevel.complete:    return 'Complete';
+      case Rcgla004A01ConformanceLevel.complete:    return 'Pass';
       case Rcgla004A01ConformanceLevel.partial:     return 'Partial';
-      case Rcgla004A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla004A01ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

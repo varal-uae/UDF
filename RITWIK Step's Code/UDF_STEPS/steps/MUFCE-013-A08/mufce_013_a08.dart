@@ -2,7 +2,7 @@
 // MUFCE-013-A08 — Mobile UX Flow & Content Engine
 // Atomic Step: Code Stateful Switch Component Status Interlock.
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Mufce013A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mufce013A08ConformanceLevel.complete:    return 'Complete';
-      case Mufce013A08ConformanceLevel.partial:     return 'Partial';
-      case Mufce013A08ConformanceLevel.notComplete: return 'Not Complete';
+      case Mufce013A08ConformanceLevel.complete:    return 'Good';
+      case Mufce013A08ConformanceLevel.partial:     return 'Average';
+      case Mufce013A08ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

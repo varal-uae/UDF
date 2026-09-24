@@ -129,9 +129,9 @@ class Febfl013A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Febfl013A04ConformanceLevel.complete:    return 'Complete';
-      case Febfl013A04ConformanceLevel.partial:     return 'Partial';
-      case Febfl013A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Febfl013A04ConformanceLevel.complete:    return 'Good';
+      case Febfl013A04ConformanceLevel.partial:     return 'Average';
+      case Febfl013A04ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

@@ -2,7 +2,7 @@
 // ERMWD-031-04 — Error Mapping & Widget Display
 // Atomic Step: Implement the frontend logic mapping failed mobile Byt JSON payloads to the worker UI task cards. (C
 // Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ermwd03104ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ermwd03104ConformanceLevel.complete:    return 'Complete';
-      case Ermwd03104ConformanceLevel.partial:     return 'Partial';
-      case Ermwd03104ConformanceLevel.notComplete: return 'Not Complete';
+      case Ermwd03104ConformanceLevel.complete:    return 'Good';
+      case Ermwd03104ConformanceLevel.partial:     return 'Average';
+      case Ermwd03104ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

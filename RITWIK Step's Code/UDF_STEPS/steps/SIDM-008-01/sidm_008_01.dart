@@ -129,9 +129,9 @@ class Sidm00801ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sidm00801ConformanceLevel.complete:    return 'Complete';
-      case Sidm00801ConformanceLevel.partial:     return 'Partial';
-      case Sidm00801ConformanceLevel.notComplete: return 'Not Complete';
+      case Sidm00801ConformanceLevel.complete:    return 'Good';
+      case Sidm00801ConformanceLevel.partial:     return 'Average';
+      case Sidm00801ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

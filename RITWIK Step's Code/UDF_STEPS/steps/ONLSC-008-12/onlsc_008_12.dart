@@ -2,7 +2,7 @@
 // ONLSC-008-12 — Online Service Compiler
 // Atomic Step: Execute Final Pipeline Compiler Lint Check for Zero-Variance Architectural Design Reconciliation.
 // Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Onlsc00812ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Onlsc00812ConformanceLevel.complete:    return 'Complete';
-      case Onlsc00812ConformanceLevel.partial:     return 'Partial';
-      case Onlsc00812ConformanceLevel.notComplete: return 'Not Complete';
+      case Onlsc00812ConformanceLevel.complete:    return 'Good';
+      case Onlsc00812ConformanceLevel.partial:     return 'Average';
+      case Onlsc00812ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

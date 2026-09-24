@@ -2,7 +2,7 @@
 // FCSES-022-A07 — Fail-Closed Session Execution System
 // Atomic Step: Lock "Release to Tech" Button Fail-Closed (FCSES-022)
 // Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Fcses022A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fcses022A07ConformanceLevel.complete:    return 'Complete';
+      case Fcses022A07ConformanceLevel.complete:    return 'Pass';
       case Fcses022A07ConformanceLevel.partial:     return 'Partial';
-      case Fcses022A07ConformanceLevel.notComplete: return 'Not Complete';
+      case Fcses022A07ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

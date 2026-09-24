@@ -2,7 +2,7 @@
 // SCTSS-002-A08 — Semantic Color Token Styling System
 // Atomic Step: Define Global Grid Alignment Rules to establish strict 4-column mobile pixel spacing for gutters to 
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sctss002A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss002A08ConformanceLevel.complete:    return 'Complete';
+      case Sctss002A08ConformanceLevel.complete:    return 'Pass';
       case Sctss002A08ConformanceLevel.partial:     return 'Partial';
-      case Sctss002A08ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss002A08ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

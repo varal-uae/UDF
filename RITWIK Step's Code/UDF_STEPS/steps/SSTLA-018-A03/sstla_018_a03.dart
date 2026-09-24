@@ -1,7 +1,7 @@
 // ============================================================
 // SSTLA-018-A03 — Split-Screen Template Layout Architecture
 // Atomic Step: Formulating the responsive layout rules to organize parent command sections on 5.5-inch mobile viewp
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
+// Metric:      Layout Consistency Score · Floor=3.5 · Optimal=4.5
 // Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
@@ -129,9 +129,9 @@ class Sstla018A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sstla018A03ConformanceLevel.complete:    return 'Complete';
-      case Sstla018A03ConformanceLevel.partial:     return 'Partial';
-      case Sstla018A03ConformanceLevel.notComplete: return 'Not Complete';
+      case Sstla018A03ConformanceLevel.complete:    return 'Good';
+      case Sstla018A03ConformanceLevel.partial:     return 'Average';
+      case Sstla018A03ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -142,8 +142,8 @@ class Sstla018A03ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sstla018A03Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 3.5;
+  static const double _optimal = 4.5;
 
   // EC:1 — System locates the SSTLA-018-A03 configuration in the source repository.
   static Sstla018A03Config _ec1Locates(Sstla018A03Config config) {

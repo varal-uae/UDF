@@ -2,7 +2,7 @@
 // IS40-FEBFL-031-AS01-A10 — Implementation System 40
 // Atomic Step: Build Package Selection Steppers.
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is40Febfl031As01A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is40Febfl031As01A10ConformanceLevel.complete:    return 'Complete';
+      case Is40Febfl031As01A10ConformanceLevel.complete:    return 'Pass';
       case Is40Febfl031As01A10ConformanceLevel.partial:     return 'Partial';
-      case Is40Febfl031As01A10ConformanceLevel.notComplete: return 'Not Complete';
+      case Is40Febfl031As01A10ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

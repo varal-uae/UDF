@@ -2,7 +2,7 @@
 // TTMCS-002-A17 — Material Design Token Configuration System
 // Atomic Step: Establish DCYN Binary Semantic Color Gates.
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttmcs002A17ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs002A17ConformanceLevel.complete:    return 'Complete';
+      case Ttmcs002A17ConformanceLevel.complete:    return 'Pass';
       case Ttmcs002A17ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs002A17ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmcs002A17ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

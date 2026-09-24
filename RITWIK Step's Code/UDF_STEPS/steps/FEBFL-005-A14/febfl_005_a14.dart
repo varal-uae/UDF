@@ -2,7 +2,7 @@
 // FEBFL-005-A14 — Frontend Element Build & Feature Library
 // Atomic Step: FEBFL-005 - Enforce Private NPM Package Component Imports across Frontend Repositories.
 // Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Complete / Partial / Not Complete
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team

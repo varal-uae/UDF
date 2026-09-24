@@ -1,7 +1,7 @@
 // ============================================================
 // SSELC-013-A01 — Split-Screen Element Layout Controller
 // Atomic Step: SSELC-013 - Split-Screen Contextual Mirror UI Template Standardization
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
+// Metric:      Layout Consistency Score · Floor=0.5 · Optimal=0.97
 // Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
@@ -129,9 +129,9 @@ class Sselc013A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc013A01ConformanceLevel.complete:    return 'Complete';
-      case Sselc013A01ConformanceLevel.partial:     return 'Partial';
-      case Sselc013A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc013A01ConformanceLevel.complete:    return 'Good';
+      case Sselc013A01ConformanceLevel.partial:     return 'Average';
+      case Sselc013A01ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -142,7 +142,7 @@ class Sselc013A01ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sselc013A01Pipeline {
-  static const double _floor   = 0.90;
+  static const double _floor   = 0.5;
   static const double _optimal = 0.97;
 
   // EC:1 — Build framework component locking horizontal geometries

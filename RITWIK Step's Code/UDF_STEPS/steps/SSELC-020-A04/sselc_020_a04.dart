@@ -2,7 +2,7 @@
 // SSELC-020-A04 — Split-Screen Element Layout Controller
 // Atomic Step: SSELC-020 - Define Consensus Split-Pane Ratios.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sselc020A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc020A04ConformanceLevel.complete:    return 'Complete';
+      case Sselc020A04ConformanceLevel.complete:    return 'Pass';
       case Sselc020A04ConformanceLevel.partial:     return 'Partial';
-      case Sselc020A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc020A04ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

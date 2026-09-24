@@ -2,7 +2,7 @@
 // TECH-ENG-022 — Technical Engineering Implementation
 // Atomic Step: Step 22: Infrastructure Zero-Trust Network and Biometric Access Policy
 // Metric:      Infrastructure Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class TechEng022ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case TechEng022ConformanceLevel.complete:    return 'Complete';
-      case TechEng022ConformanceLevel.partial:     return 'Partial';
-      case TechEng022ConformanceLevel.notComplete: return 'Not Complete';
+      case TechEng022ConformanceLevel.complete:    return 'Good';
+      case TechEng022ConformanceLevel.partial:     return 'Average';
+      case TechEng022ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

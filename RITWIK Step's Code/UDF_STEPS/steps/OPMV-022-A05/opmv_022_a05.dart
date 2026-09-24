@@ -2,7 +2,7 @@
 // OPMV-022-A05 — Optimized Platform Motion & Visualization
 // Atomic Step: Build an algorithmic delay visualization wrapper inside the platform overview maps.
 // Metric:      UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Opmv022A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Opmv022A05ConformanceLevel.complete:    return 'Complete';
+      case Opmv022A05ConformanceLevel.complete:    return 'Pass';
       case Opmv022A05ConformanceLevel.partial:     return 'Partial';
-      case Opmv022A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Opmv022A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

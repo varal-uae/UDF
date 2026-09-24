@@ -2,7 +2,7 @@
 // FCSES-001-A09 — Fail-Closed Session Execution System
 // Atomic Step: Implement Pre-Execution Boolean Check Logic (FCSES-001)
 // Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Fcses001A09ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fcses001A09ConformanceLevel.complete:    return 'Complete';
-      case Fcses001A09ConformanceLevel.partial:     return 'Partial';
-      case Fcses001A09ConformanceLevel.notComplete: return 'Not Complete';
+      case Fcses001A09ConformanceLevel.complete:    return 'Good';
+      case Fcses001A09ConformanceLevel.partial:     return 'Average';
+      case Fcses001A09ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

@@ -2,7 +2,7 @@
 // SSELC-029-A14 — Split-Screen Element Layout Controller
 // Atomic Step: Implementation Step 31: Build an adaptive panel router that adjusts interfaces based on screen width
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sselc029A14ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc029A14ConformanceLevel.complete:    return 'Complete';
+      case Sselc029A14ConformanceLevel.complete:    return 'Pass';
       case Sselc029A14ConformanceLevel.partial:     return 'Partial';
-      case Sselc029A14ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc029A14ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

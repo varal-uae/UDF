@@ -2,7 +2,7 @@
 // BDAE-011-A09 | WebAuthn Biometric Authentication
 // Atomic Task: Test the button triggers native FaceID/Fingerprint dialog correctly.
 // Primary Table: biometric_test_registry
-// Metric: Functional Test Pass Rate | Floor=95% | Optimal=100%
+// Metric: Functional Test Pass Rate | Floor=0.95% | Optimal=1.0%
 // Library: @habot-connect/layout-shell | GCP: Pub/Sub fan-out to Cloud Run
 // EC Lines: 8 | Standard: ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Security: device_credential_ref = Secure Enclave ref only — never raw credential
@@ -122,8 +122,8 @@ class BiometricTriggerScanResult {
 // ── EC:1–8 Pipeline ──────────────────────────────────────────
 
 class Bdae011A09BiometricTriggerTest {
-  static const double _floor   = 95;  // metric floor gate
-  static const double _optimal = 100; // metric optimal target
+  static const double _floor   = 0.95;  // metric floor gate
+  static const double _optimal = 1.0; // metric optimal target
 
 
   // EC:1 — Locate biometric button trigger test config in bdae-011-kit repo.

@@ -118,9 +118,9 @@ class Is50Mufce014As01A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is50Mufce014As01A05ConformanceLevel.complete:    return 'Complete';
-      case Is50Mufce014As01A05ConformanceLevel.partial:     return 'Partial';
-      case Is50Mufce014As01A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Is50Mufce014As01A05ConformanceLevel.complete:    return 'Good';
+      case Is50Mufce014As01A05ConformanceLevel.partial:     return 'Average';
+      case Is50Mufce014As01A05ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

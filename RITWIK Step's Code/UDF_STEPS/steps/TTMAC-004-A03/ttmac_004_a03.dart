@@ -2,7 +2,7 @@
 // TTMAC-004-A03 — Touch Target & Material Accessibility Compliance
 // Atomic Step: Implementation Step 23: Implement a global linting check and CSS utility layer that strictly mandate
 // Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttmac004A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac004A03ConformanceLevel.complete:    return 'Complete';
-      case Ttmac004A03ConformanceLevel.partial:     return 'Partial';
-      case Ttmac004A03ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmac004A03ConformanceLevel.complete:    return 'Good';
+      case Ttmac004A03ConformanceLevel.partial:     return 'Average';
+      case Ttmac004A03ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

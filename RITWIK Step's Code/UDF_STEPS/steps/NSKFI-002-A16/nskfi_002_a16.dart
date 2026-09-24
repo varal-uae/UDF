@@ -2,7 +2,7 @@
 // NSKFI-002-A16 — Navigation Shell & Key Feature Integration
 // Atomic Step: Catalog reusable mobile components (SRCs).
 // Metric:      Component Reuse Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Nskfi002A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Nskfi002A16ConformanceLevel.complete:    return 'Complete';
+      case Nskfi002A16ConformanceLevel.complete:    return 'Pass';
       case Nskfi002A16ConformanceLevel.partial:     return 'Partial';
-      case Nskfi002A16ConformanceLevel.notComplete: return 'Not Complete';
+      case Nskfi002A16ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

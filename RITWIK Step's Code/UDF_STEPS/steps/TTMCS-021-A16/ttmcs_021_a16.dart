@@ -2,7 +2,7 @@
 // TTMCS-021-A16 — Material Design Token Configuration System
 // Atomic Step: Deploy a unified corporate Material Design theme configuration library across platform views.
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttmcs021A16ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs021A16ConformanceLevel.complete:    return 'Complete';
-      case Ttmcs021A16ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs021A16ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmcs021A16ConformanceLevel.complete:    return 'Good';
+      case Ttmcs021A16ConformanceLevel.partial:     return 'Average';
+      case Ttmcs021A16ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

@@ -2,7 +2,7 @@
 // PBTC-007-A11 — Platform Build & Test Compliance
 // Atomic Step: PBTC-007 — Code viewpager structures to divide "AND" logic into swipeable, paginated screens.
 // Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -125,9 +125,9 @@ class Pbtc007A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Pbtc007A11ConformanceLevel.complete:    return 'Complete';
+      case Pbtc007A11ConformanceLevel.complete:    return 'Pass';
       case Pbtc007A11ConformanceLevel.partial:     return 'Partial';
-      case Pbtc007A11ConformanceLevel.notComplete: return 'Not Complete';
+      case Pbtc007A11ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

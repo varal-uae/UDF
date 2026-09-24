@@ -129,9 +129,9 @@ class Ttcfc008A13ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttcfc008A13ConformanceLevel.complete:    return 'Complete';
+      case Ttcfc008A13ConformanceLevel.complete:    return 'Pass';
       case Ttcfc008A13ConformanceLevel.partial:     return 'Partial';
-      case Ttcfc008A13ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttcfc008A13ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -1,8 +1,8 @@
 // ============================================================
 // REF-392-A04 — Reference Implementation Framework
 // Atomic Step: BigQuery Skeleton Loaders (Mobile)
-// Metric:      Data Loading UX Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Metric:      Data Loading UX Compliance Rate · Floor=95.0 · Optimal=100.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ref392A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref392A04ConformanceLevel.complete:    return 'Complete';
+      case Ref392A04ConformanceLevel.complete:    return 'Pass';
       case Ref392A04ConformanceLevel.partial:     return 'Partial';
-      case Ref392A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref392A04ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -132,8 +132,8 @@ class Ref392A04ValidationResult {
 /// Metric: Data Loading UX Compliance Rate
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Ref392A04Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 95.0;
+  static const double _optimal = 100.0;
 
   // EC:1 — Read size dynamically
   static Ref392A04Config _ec1Execute(Ref392A04Config config) {

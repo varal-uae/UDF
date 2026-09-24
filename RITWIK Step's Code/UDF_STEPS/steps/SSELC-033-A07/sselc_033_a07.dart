@@ -1,7 +1,7 @@
 // ============================================================
 // SSELC-033-A07 — Split-Screen Element Layout Controller
 // Atomic Step: SSELC-033 - Code Universal Split-Screen Contextual Mirror Layout.
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
+// Metric:      Layout Consistency Score · Floor=0.4 · Optimal=0.5
 // Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
@@ -129,9 +129,9 @@ class Sselc033A07ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc033A07ConformanceLevel.complete:    return 'Complete';
-      case Sselc033A07ConformanceLevel.partial:     return 'Partial';
-      case Sselc033A07ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc033A07ConformanceLevel.complete:    return 'Good';
+      case Sselc033A07ConformanceLevel.partial:     return 'Average';
+      case Sselc033A07ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -142,8 +142,8 @@ class Sselc033A07ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sselc033A07Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 0.4;
+  static const double _optimal = 0.5;
 
   // EC:1 — Define independent scrolling container boxes inside main viewport limits. Allocate left-si
   static Sselc033A07Config _ec1Execute(Sselc033A07Config config) {

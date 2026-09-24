@@ -2,7 +2,7 @@
 // FIEVR-033-A12 — Form Input Entry Validation Registry
 // Atomic Step: FIEVR-033 - Build Multi-Step Guided Carousel Layout Stepper
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Fievr033A12ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Fievr033A12ConformanceLevel.complete:    return 'Complete';
+      case Fievr033A12ConformanceLevel.complete:    return 'Pass';
       case Fievr033A12ConformanceLevel.partial:     return 'Partial';
-      case Fievr033A12ConformanceLevel.notComplete: return 'Not Complete';
+      case Fievr033A12ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

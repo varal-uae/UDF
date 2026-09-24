@@ -2,7 +2,7 @@
 // SCTSS-011-A05 — Semantic Color Token Styling System
 // Atomic Step: Define MTO Viewport Crop Padding to decide exact pixel/percentage margins around an isolated documen
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sctss011A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss011A05ConformanceLevel.complete:    return 'Complete';
+      case Sctss011A05ConformanceLevel.complete:    return 'Pass';
       case Sctss011A05ConformanceLevel.partial:     return 'Partial';
-      case Sctss011A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss011A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

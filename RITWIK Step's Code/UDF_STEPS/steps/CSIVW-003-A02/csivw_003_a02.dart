@@ -176,7 +176,7 @@ class Csivw003A02Pipeline {
     return Csivw003A02ScanResult(
       violationCount:    violations,
       conformanceOutput: rate >= 0.98 ? 'Complete' : rate >= 0.90 ? 'Partial' : 'Not Complete',
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      result:            violations == 0 ? 'Complete' : 'Not Complete',
       ecLineRef:         'EC-CSIVW003A02-VAL',
     );
   }
@@ -217,7 +217,7 @@ class Csivw003A02Widget extends StatelessWidget {
             Chip(
               label: Text('${scan.conformanceOutput} · ${scan.violationCount} violations',
                 style: const TextStyle(color: Colors.white, fontSize: 11)),
-              backgroundColor: scan.result == 'PASS'
+              backgroundColor: scan.result == 'Complete'
                   ? cs.tertiary : cs.error,
             ),
           ]),
@@ -239,7 +239,7 @@ class Csivw003A02Widget extends StatelessWidget {
                   '| ${e.executionStatusTxt} | immutable: ${e.immutableInd}',
                   style: const TextStyle(fontSize: 11)),
                 trailing: Chip(
-                  label: Text(pass ? 'PASS' : 'FAIL',
+                  label: Text(pass ? 'Complete' : 'Not Complete',
                     style: const TextStyle(color: Colors.white, fontSize: 10)),
                   backgroundColor: pass ? cs.tertiary : cs.error,
                 ),

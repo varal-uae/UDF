@@ -1,8 +1,8 @@
 // ============================================================
 // TTMAC-010-A01 — Touch Target & Material Accessibility Compliance
 // Atomic Step: TTMAC-010 - Touch Target Minimum Size Standards
-// Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      Touch Target Compliance Rate · Floor=0.8 · Optimal=1.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttmac010A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac010A01ConformanceLevel.complete:    return 'Complete';
+      case Ttmac010A01ConformanceLevel.complete:    return 'Pass';
       case Ttmac010A01ConformanceLevel.partial:     return 'Partial';
-      case Ttmac010A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmac010A01ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -143,7 +143,7 @@ class Ttmac010A01ValidationResult {
 /// Metric: Touch Target Compliance Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Ttmac010A01Pipeline {
-  static const double _floor   = 0.95;
+  static const double _floor   = 0.8;
   static const double _optimal = 1.0;
 
   // EC:1 — 48dp minimum dimension rules

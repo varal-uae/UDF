@@ -2,7 +2,7 @@
 // TTMAC-025-A10 — Touch Target & Material Accessibility Compliance
 // Atomic Step: TTMAC-025 - Build Hardware-Accelerated Mobile Touch Ripple Feeds.
 // Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ttmac025A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac025A10ConformanceLevel.complete:    return 'Complete';
-      case Ttmac025A10ConformanceLevel.partial:     return 'Partial';
-      case Ttmac025A10ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmac025A10ConformanceLevel.complete:    return 'Good';
+      case Ttmac025A10ConformanceLevel.partial:     return 'Average';
+      case Ttmac025A10ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

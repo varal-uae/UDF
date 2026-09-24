@@ -2,7 +2,7 @@
 // FEBFL-018-A12 — Frontend Element Build & Feature Library
 // Atomic Step: Unified "Error Boundary" Fallback UI (Mobile).
 // Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Febfl018A12ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Febfl018A12ConformanceLevel.complete:    return 'Complete';
+      case Febfl018A12ConformanceLevel.complete:    return 'Pass';
       case Febfl018A12ConformanceLevel.partial:     return 'Partial';
-      case Febfl018A12ConformanceLevel.notComplete: return 'Not Complete';
+      case Febfl018A12ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

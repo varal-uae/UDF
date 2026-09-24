@@ -1,8 +1,8 @@
 // ============================================================
 // REF-377-A09 — Reference Implementation Framework
 // Atomic Step: Set Progressive Stepper Transitions.
-// Metric:      UI Animation Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Metric:      UI Animation Compliance Rate · Floor=100.0 · Optimal=100.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Ref377A09ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref377A09ConformanceLevel.complete:    return 'Complete';
+      case Ref377A09ConformanceLevel.complete:    return 'Pass';
       case Ref377A09ConformanceLevel.partial:     return 'Partial';
-      case Ref377A09ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref377A09ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -143,8 +143,8 @@ class Ref377A09ValidationResult {
 /// Metric: UI Animation Compliance Rate
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Ref377A09Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 100.0;
+  static const double _optimal = 100.0;
 
   // EC:1 — Define slide-in duration (200ms)
   static Ref377A09Config _ec1Execute(Ref377A09Config config) {

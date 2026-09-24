@@ -1,7 +1,7 @@
 // ============================================================
 // SSTLA-001-A08 — Split-Screen Template Layout Architecture
 // Atomic Step: Split-Screen Contextual Mirror UI Layout Spec -- Define strict parameter constraints for naming prop
-// Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
+// Metric:      Layout Consistency Score · Floor=7.0 · Optimal=9.0
 // Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
@@ -129,9 +129,9 @@ class Sstla001A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sstla001A08ConformanceLevel.complete:    return 'Complete';
-      case Sstla001A08ConformanceLevel.partial:     return 'Partial';
-      case Sstla001A08ConformanceLevel.notComplete: return 'Not Complete';
+      case Sstla001A08ConformanceLevel.complete:    return 'Good';
+      case Sstla001A08ConformanceLevel.partial:     return 'Average';
+      case Sstla001A08ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -142,8 +142,8 @@ class Sstla001A08ValidationResult {
 /// Metric: Layout Consistency Score
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Sstla001A08Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 7.0;
+  static const double _optimal = 9.0;
 
   // EC:1 — Create a responsive parent container element that detects screen size shifts automatically
   static Sstla001A08Config _ec1Execute(Sstla001A08Config config) {

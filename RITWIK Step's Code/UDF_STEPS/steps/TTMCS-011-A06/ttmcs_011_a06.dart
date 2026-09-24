@@ -1,7 +1,7 @@
 // ============================================================
 // TTMCS-011-A06 — Material Design Token Configuration System
 // Atomic Step: TTMCS-011 - Apply MD3 Expressive Color/Typography
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
+// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=· Floor=0.90 · Optimal=1.0
 // Output:      Complete / Partial / Not Complete
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
@@ -129,7 +129,7 @@ class Ttmcs011A06ValidationResult {
 
 /// TTMCS-011-A06: TTMCS-011 - Apply MD3 Expressive Color/Typography
 ///
-/// Metric: Design System Token Coverage Rate
+/// Metric: WCAG 2.1 Accessibility Compliance Rate
 /// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
 class Ttmcs011A06Pipeline {
   static const double _floor   = 0.90;
@@ -217,7 +217,7 @@ class Ttmcs011A06Pipeline {
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMCS-011-A06',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
       'floor':              _floor,
       'optimal':            _optimal,
     };

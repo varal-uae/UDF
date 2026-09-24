@@ -129,9 +129,9 @@ class Rcgla006A12ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla006A12ConformanceLevel.complete:    return 'Complete';
-      case Rcgla006A12ConformanceLevel.partial:     return 'Partial';
-      case Rcgla006A12ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla006A12ConformanceLevel.complete:    return 'Good';
+      case Rcgla006A12ConformanceLevel.partial:     return 'Average';
+      case Rcgla006A12ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

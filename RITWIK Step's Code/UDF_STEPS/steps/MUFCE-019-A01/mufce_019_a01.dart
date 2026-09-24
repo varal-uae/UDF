@@ -2,7 +2,7 @@
 // MUFCE-019-A01 — Mobile UX Flow & Content Engine
 // Atomic Step: Implementation Step 9: Conditional Upload Gates (MUFCE-019)
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Mufce019A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mufce019A01ConformanceLevel.complete:    return 'Complete';
+      case Mufce019A01ConformanceLevel.complete:    return 'Pass';
       case Mufce019A01ConformanceLevel.partial:     return 'Partial';
-      case Mufce019A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Mufce019A01ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

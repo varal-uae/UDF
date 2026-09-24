@@ -129,9 +129,9 @@ class Sgtim005A01ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sgtim005A01ConformanceLevel.complete:    return 'Complete';
-      case Sgtim005A01ConformanceLevel.partial:     return 'Partial';
-      case Sgtim005A01ConformanceLevel.notComplete: return 'Not Complete';
+      case Sgtim005A01ConformanceLevel.complete:    return 'Good';
+      case Sgtim005A01ConformanceLevel.partial:     return 'Average';
+      case Sgtim005A01ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

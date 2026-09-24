@@ -2,7 +2,7 @@
 // RCGLA-021-A08 — Responsive CSS Grid Layout Architecture
 // Atomic Step: RCGLA-021 - Responsive Layout Grid & Breakpoint Engine Deployment
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rcgla021A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla021A08ConformanceLevel.complete:    return 'Complete';
+      case Rcgla021A08ConformanceLevel.complete:    return 'Pass';
       case Rcgla021A08ConformanceLevel.partial:     return 'Partial';
-      case Rcgla021A08ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla021A08ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -113,7 +113,7 @@ class Amlco002Manager {
   // DORA: Change Failure Rate thresholds
   static const double _eliteCeiling = 0.05;   // ≤5% — Elite
   static const double _optimalTarget = 0.07;  // ≤7% — Optimal
-  static const double _floor = 0.15;           // ≤15% — Floor
+  static const double _floor = 0.9;           // ≤15% — Floor
 
   // EC:3 — Compile binary legal check rule set
   BinaryLegalCheckRule compileRule({

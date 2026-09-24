@@ -2,7 +2,7 @@
 // SLPLU-017-A08 — Styling & Layout Pattern Language Unit
 // Atomic Step: Define Trace Time Y-Axis Limits.
 // Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Slplu017A08ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Slplu017A08ConformanceLevel.complete:    return 'Complete';
-      case Slplu017A08ConformanceLevel.partial:     return 'Partial';
-      case Slplu017A08ConformanceLevel.notComplete: return 'Not Complete';
+      case Slplu017A08ConformanceLevel.complete:    return 'Good';
+      case Slplu017A08ConformanceLevel.partial:     return 'Average';
+      case Slplu017A08ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

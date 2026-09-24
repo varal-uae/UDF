@@ -1,8 +1,8 @@
 // ============================================================
 // TTMCS-008-A15 — Material Design Token Configuration System
 // Atomic Step: TTMCS-008 - Dark Mode & Light Mode Dynamic Material Theme Canvas Color Palette Setup
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=· Floor=0.90 · Optimal=1.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ttmcs008A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs008A15ConformanceLevel.complete:    return 'Complete';
+      case Ttmcs008A15ConformanceLevel.complete:    return 'Pass';
       case Ttmcs008A15ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs008A15ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmcs008A15ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -129,7 +129,7 @@ class Ttmcs008A15ValidationResult {
 
 /// TTMCS-008-A15: TTMCS-008 - Dark Mode & Light Mode Dynamic Material Theme Canvas Color Palette S
 ///
-/// Metric: Design System Token Coverage Rate
+/// Metric: WCAG 2.1 Accessibility Compliance Rate
 /// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
 class Ttmcs008A15Pipeline {
   static const double _floor   = 0.90;
@@ -250,7 +250,7 @@ class Ttmcs008A15Pipeline {
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-TTMCS-008-A15',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
       'floor':              _floor,
       'optimal':            _optimal,
     };

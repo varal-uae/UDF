@@ -2,7 +2,7 @@
 // ANSA-001-A11 · MD3 NavigationBar Scroll Persistence Manager
 // Habot Connect DMCC · UDF Team · Ritwik Sharma
 // Atomic Step: Ensure the bottom navigation bar is positioned at the bottom and remains persistent during scrolling.
-// Metric: Verification / QA Pass Rate · Floor=90% · Optimal=98–100% · Output=Pass/Fail
+// Metric: Verification / QA Pass Rate · Floor=0.9% · Optimal=98–100% · Output=Pass/Fail
 // Standard: World-class teams treat verification as a repeatable, automated gate.
 // ============================================================
 
@@ -88,7 +88,7 @@ class ScrollSimulationResult {
 // ── Core Manager (EC:1–8) ────────────────────────────────────
 
 class Ansa001A11Manager {
-  static const double _floor   = 90;  // metric floor gate
+  static const double _floor   = 0.9;  // metric floor gate
   static const double _optimal = 98; // metric optimal target
 
   static const double _floorPassRate = 0.90;

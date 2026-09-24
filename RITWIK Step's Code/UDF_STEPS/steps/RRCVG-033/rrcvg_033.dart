@@ -1,8 +1,8 @@
 // ============================================================
 // RRCVG-033 — Release Readiness & Compliance Validation Gate
 // Atomic Step: Isolate 360-Degree Peer Nominations Quota'
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      Input Validation Coverage Rate · Floor=95.0 · Optimal=99.5
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rrcvg033ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rrcvg033ConformanceLevel.complete:    return 'Complete';
+      case Rrcvg033ConformanceLevel.complete:    return 'Pass';
       case Rrcvg033ConformanceLevel.partial:     return 'Partial';
-      case Rrcvg033ConformanceLevel.notComplete: return 'Not Complete';
+      case Rrcvg033ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -142,8 +142,8 @@ class Rrcvg033ValidationResult {
 /// Metric: Input Validation Coverage Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Rrcvg033Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 95.0;
+  static const double _optimal = 99.5;
 
   // EC:1 — System locates the RRCVG-033 configuration in the source repository.
   static Rrcvg033Config _ec1Locates(Rrcvg033Config config) {

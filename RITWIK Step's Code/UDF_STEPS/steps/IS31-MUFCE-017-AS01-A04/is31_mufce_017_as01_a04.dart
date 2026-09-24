@@ -2,7 +2,7 @@
 // IS31-MUFCE-017-AS01-A04 — Implementation System 31 — Media Cropping
 // Atomic Step: Build Dynamic Screen Ratio Image Cropping Canvas
 // Metric:      Media Rendering Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Is31Mufce017As01A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is31Mufce017As01A04ConformanceLevel.complete:    return 'Complete';
+      case Is31Mufce017As01A04ConformanceLevel.complete:    return 'Pass';
       case Is31Mufce017As01A04ConformanceLevel.partial:     return 'Partial';
-      case Is31Mufce017As01A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Is31Mufce017As01A04ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

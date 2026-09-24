@@ -129,9 +129,9 @@ class Ref046A02ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ref046A02ConformanceLevel.complete:    return 'Complete';
-      case Ref046A02ConformanceLevel.partial:     return 'Partial';
-      case Ref046A02ConformanceLevel.notComplete: return 'Not Complete';
+      case Ref046A02ConformanceLevel.complete:    return 'Good';
+      case Ref046A02ConformanceLevel.partial:     return 'Average';
+      case Ref046A02ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

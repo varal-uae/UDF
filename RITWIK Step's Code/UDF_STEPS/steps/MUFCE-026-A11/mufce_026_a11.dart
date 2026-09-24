@@ -2,7 +2,7 @@
 // MUFCE-026-A11 — Mobile UX Flow & Content Engine
 // Atomic Step: MUFCE-026 - Implement Force Majeure Constraints.
 // Metric:      Implementation Conformance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -125,9 +125,9 @@ class Mufce026A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mufce026A11ConformanceLevel.complete:    return 'Complete';
+      case Mufce026A11ConformanceLevel.complete:    return 'Pass';
       case Mufce026A11ConformanceLevel.partial:     return 'Partial';
-      case Mufce026A11ConformanceLevel.notComplete: return 'Not Complete';
+      case Mufce026A11ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

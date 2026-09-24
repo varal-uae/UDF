@@ -2,7 +2,7 @@
 // TTMAC-015-A05 — Touch Target & Material Accessibility Compliance
 // Atomic Step: Build Lightweight Touch-Responsive Mini Sparkline Component.
 // Metric:      Touch Target Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ttmac015A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac015A05ConformanceLevel.complete:    return 'Complete';
-      case Ttmac015A05ConformanceLevel.partial:     return 'Partial';
-      case Ttmac015A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmac015A05ConformanceLevel.complete:    return 'Good';
+      case Ttmac015A05ConformanceLevel.partial:     return 'Average';
+      case Ttmac015A05ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

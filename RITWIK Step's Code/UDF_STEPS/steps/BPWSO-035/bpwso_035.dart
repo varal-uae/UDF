@@ -224,7 +224,7 @@ class Bpwso035Pipeline {
     return Bpwso035ScanResult(
       violationCount:    violations,
       conformanceOutput: output,
-      result:            violations == 0 ? 'PASS' : 'FAIL',
+      result:            violations == 0 ? 'Complete' : 'Not Complete',
       ecLineRef:         'EC-BPWSO035-VAL',
     );
   }
@@ -282,7 +282,7 @@ class Bpwso035Widget extends StatelessWidget {
                 '${scan.conformanceOutput} · ${scan.violationCount} violations',
                 style: const TextStyle(color: Colors.white, fontSize: 11),
               ),
-              backgroundColor: metric == 'PASS'
+              backgroundColor: metric == 'Complete'
                   ? cs.tertiary
                   : cs.error,
             ),
@@ -319,7 +319,7 @@ class Bpwso035Widget extends StatelessWidget {
                   ),
                   trailing: Chip(
                     label: Text(
-                      pass ? 'PASS' : 'FAIL',
+                      pass ? 'Complete' : 'Not Complete',
                       style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                     backgroundColor: pass

@@ -2,7 +2,7 @@
 // ANSA-001-A02 · MD3 NavigationBar Item Definition Manager
 // Habot Connect DMCC · UDF Team · Ritwik Sharma
 // Atomic Step: Define the navigation items — maximum 5 destinations, minimum 3.
-// Metric: Business Rule / Threshold Definition Coverage · Floor=90% · Optimal=100% · Output=Complete/Partial/Not Complete
+// Metric: Business Rule / Threshold Definition Coverage · Floor=0.9% · Optimal=1.0% · Output=Complete/Partial/Not Complete
 // Standard: Threshold values must be sourced from approved policy — not hardcoded assumptions.
 // ============================================================
 
@@ -94,8 +94,8 @@ class DefinitionValidationResult {
 // ── Core Manager (EC:1–8) ────────────────────────────────────
 
 class Ansa001A02Manager {
-  static const double _floor   = 90;  // metric floor gate
-  static const double _optimal = 100; // metric optimal target
+  static const double _floor   = 0.9;  // metric floor gate
+  static const double _optimal = 1.0; // metric optimal target
 
   static const double _floorCoverage = 0.90;
   static const double _optimalCoverage = 1.00;

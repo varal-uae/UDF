@@ -2,7 +2,7 @@
 // RCGLA-012-A06 — Responsive CSS Grid Layout Architecture
 // Atomic Step: RCGLA-012 - Initialize Atomic Grid System & Mobile Viewport Constraints
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rcgla012A06ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla012A06ConformanceLevel.complete:    return 'Complete';
+      case Rcgla012A06ConformanceLevel.complete:    return 'Pass';
       case Rcgla012A06ConformanceLevel.partial:     return 'Partial';
-      case Rcgla012A06ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla012A06ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

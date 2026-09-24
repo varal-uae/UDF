@@ -129,9 +129,9 @@ class Ttmac010A10ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmac010A10ConformanceLevel.complete:    return 'Complete';
+      case Ttmac010A10ConformanceLevel.complete:    return 'Pass';
       case Ttmac010A10ConformanceLevel.partial:     return 'Partial';
-      case Ttmac010A10ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmac010A10ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

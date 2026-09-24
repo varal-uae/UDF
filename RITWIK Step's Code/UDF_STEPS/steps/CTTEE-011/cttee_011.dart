@@ -101,8 +101,8 @@ class Cttee011ScanResult {
 // ── EC:8 Pipeline ────────────────────────────────────────────────────────
 
 class Cttee011Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 29.5;  // metric floor gate
+  static const double _optimal = 30.0; // metric optimal target
 
 
   // EC:1 — EC: 1. System receives expiration timestamp payload in ISO 8601:2019 format.

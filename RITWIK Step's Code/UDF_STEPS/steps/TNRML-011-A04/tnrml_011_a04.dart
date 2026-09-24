@@ -118,9 +118,9 @@ class Tnrml011A04ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Tnrml011A04ConformanceLevel.complete:    return 'Complete';
-      case Tnrml011A04ConformanceLevel.partial:     return 'Partial';
-      case Tnrml011A04ConformanceLevel.notComplete: return 'Not Complete';
+      case Tnrml011A04ConformanceLevel.complete:    return 'Good';
+      case Tnrml011A04ConformanceLevel.partial:     return 'Average';
+      case Tnrml011A04ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }

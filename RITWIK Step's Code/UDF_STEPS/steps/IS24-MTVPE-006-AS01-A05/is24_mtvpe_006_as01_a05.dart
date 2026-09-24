@@ -2,7 +2,7 @@
 // IS24-MTVPE-006-AS01-A05 — Implementation System 24 — Media Playback
 // Atomic Step: Build an optimized media playback player inside the task interface.
 // Metric:      Media Rendering Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Is24Mtvpe006As01A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is24Mtvpe006As01A05ConformanceLevel.complete:    return 'Complete';
+      case Is24Mtvpe006As01A05ConformanceLevel.complete:    return 'Pass';
       case Is24Mtvpe006As01A05ConformanceLevel.partial:     return 'Partial';
-      case Is24Mtvpe006As01A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Is24Mtvpe006As01A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

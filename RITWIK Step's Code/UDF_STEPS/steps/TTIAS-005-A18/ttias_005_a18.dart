@@ -2,7 +2,7 @@
 // TTIAS-005-A18 — Token Integration & Automation System
 // Atomic Step: TTIAS-005 - Enforce the Inter typography scale configuration rules for descriptive text blocks and f
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ttias005A18ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttias005A18ConformanceLevel.complete:    return 'Complete';
+      case Ttias005A18ConformanceLevel.complete:    return 'Pass';
       case Ttias005A18ConformanceLevel.partial:     return 'Partial';
-      case Ttias005A18ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttias005A18ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

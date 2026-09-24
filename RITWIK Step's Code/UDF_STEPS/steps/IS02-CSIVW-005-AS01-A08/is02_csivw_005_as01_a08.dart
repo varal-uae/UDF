@@ -1,0 +1,334 @@
+// ============================================================
+// IS02-CSIVW-005-AS01-A08 — Implementation System 02
+// Atomic Step: Program dynamic inline error layouts to activate when input fields fail validation checks.
+// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
+// Output:      Pass / Partial / Fail
+// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:        github.com/varal-uae/UDF · branch: ritwik
+// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:        24-Sep-2026
+// Step No:     559 of 1073
+// ============================================================
+// Why this matters: Eliminates confusing multi-step submission failures by correcting errors immediately at the individu
+// Mobile impl:      Corrects data entries instantly on small mobile layouts, removing the need for heavy page reloads ov
+// Data requirement: Assign the generated failure message string to the field's error state variable.
+// ============================================================
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+
+// ── Enums ────────────────────────────────────────────────────
+
+enum Is02Csivw005As01A08ConformanceLevel { complete, partial, notComplete }
+enum Is02Csivw005As01A08ExecutionStatus  { pending, running, complete, failed }
+
+// ── Data Model ───────────────────────────────────────────────
+
+/// Configuration record for IS02-CSIVW-005-AS01-A08.
+/// Fields derived from AISS sheet — Implementation System 02.
+/// DCDF AEETE-018: all 5 lineage fields mandatory.
+class Is02Csivw005As01A08Config {
+  final String configId;
+  final String fieldId;
+  final String validationRule;
+  final String errorMessage;
+  final String inputType;
+  final String validationStatus;
+  final bool   immutableInd;
+  final String traceId;
+  final String originSourceId;
+  final String immediatePredecessorId;
+  final String transformationLogicHash;
+  final bool   complianceStatusInd;
+
+  const Is02Csivw005As01A08Config({
+    required this.configId,
+    required this.fieldId,
+    required this.validationRule,
+    required this.errorMessage,
+    required this.inputType,
+    this.validationStatus   = 'PENDING',
+    this.immutableInd       = false,
+    required this.traceId,
+    required this.originSourceId,
+    required this.immediatePredecessorId,
+    required this.transformationLogicHash,
+    this.complianceStatusInd = false,
+  });
+
+  bool get isRegistered =>
+      immutableInd && validationStatus == 'VALID' && complianceStatusInd;
+
+  Is02Csivw005As01A08Config copyWith({
+    String? validationStatus,
+    bool?   immutableInd,
+    bool?   complianceStatusInd,
+  }) => Is02Csivw005As01A08Config(
+    configId: configId,
+    fieldId: fieldId,
+    validationRule: validationRule,
+    errorMessage: errorMessage,
+    inputType: inputType,
+    validationStatus:         validationStatus  ?? this.validationStatus,
+    immutableInd:             immutableInd      ?? this.immutableInd,
+    traceId:                  traceId,
+    originSourceId:           originSourceId,
+    immediatePredecessorId:   immediatePredecessorId,
+    transformationLogicHash:  transformationLogicHash,
+    complianceStatusInd:      complianceStatusInd ?? this.complianceStatusInd,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'config_id': configId,
+    'fieldId': fieldId,
+    'validationRule': validationRule,
+    'errorMessage': errorMessage,
+    'inputType': inputType,
+    'validation_status':         validationStatus,
+    'immutable_ind':             immutableInd,
+    'trace_id':                  traceId,
+    'origin_source_id':          originSourceId,
+    'immediate_predecessor_id':  immediatePredecessorId,
+    'transformation_logic_hash': transformationLogicHash,
+    'compliance_status_ind':     complianceStatusInd,
+  };
+}
+
+// ── Validation Result ─────────────────────────────────────────
+
+class Is02Csivw005As01A08ValidationResult {
+  final int    totalRecords;
+  final int    conformantRecords;
+  final int    violationCount;
+  final double conformanceRate;
+  final Is02Csivw005As01A08ConformanceLevel conformanceLevel;
+  final bool   gatePass;
+  final String ecLineRef;
+
+  const Is02Csivw005As01A08ValidationResult({
+    required this.totalRecords,
+    required this.conformantRecords,
+    required this.violationCount,
+    required this.conformanceRate,
+    required this.conformanceLevel,
+    required this.gatePass,
+    required this.ecLineRef,
+  });
+
+  String get conformanceOutput {
+    switch (conformanceLevel) {
+      case Is02Csivw005As01A08ConformanceLevel.complete:    return 'Pass';
+      case Is02Csivw005As01A08ConformanceLevel.partial:     return 'Partial';
+      case Is02Csivw005As01A08ConformanceLevel.notComplete: return 'Fail';
+    }
+  }
+}
+
+// ── EC:4 Pipeline ────────────────────────────────────────────
+
+/// IS02-CSIVW-005-AS01-A08: Program dynamic inline error layouts to activate when input fields fail validati
+/// Metric: WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
+class Is02Csivw005As01A08Pipeline {
+  static const double _floor   = 0.95;
+  static const double _optimal = 1.0;
+
+  // EC:1 — Bind custom inline error components to the blur events of core entry inputs
+  static Is02Csivw005As01A08Config _ec1Execute(Is02Csivw005As01A08Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-IS02CSIVW005-001: fieldId required for IS02-CSIVW-005-AS01-A08');
+    }
+    // Bind custom inline error components to the blur events of co
+    return config;
+  }
+
+  // EC:2 — Lock message text strings to display in high-contrast red parameters directly below affect
+  static Is02Csivw005As01A08Config _ec2Execute(Is02Csivw005As01A08Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-IS02CSIVW005-002: fieldId required for IS02-CSIVW-005-AS01-A08');
+    }
+    // Lock message text strings to display in high-contrast red pa
+    return config;
+  }
+
+  // EC:3 — Program form frameworks to freeze submission actions if active errors are present
+  static Is02Csivw005As01A08Config _ec3Execute(Is02Csivw005As01A08Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-IS02CSIVW005-003: fieldId required for IS02-CSIVW-005-AS01-A08');
+    }
+    // Program form frameworks to freeze submission actions if acti
+    return config;
+  }
+
+  // EC:4 — Run automated user boundary input tests to confirm clear error block display
+  static Is02Csivw005As01A08Config _ec4Execute(Is02Csivw005As01A08Config config) {
+    if (config.fieldId.isEmpty) {
+      throw ArgumentError(
+          'EC-IS02CSIVW005-004: fieldId required for IS02-CSIVW-005-AS01-A08');
+    }
+    // Run automated user boundary input tests to confirm clear err
+    return config;
+  }
+
+  // Triangular Check — DCDF AEETE-018
+  static bool triangularCheck(int sourceCount, int destinationCount) =>
+      (sourceCount - destinationCount) == 0;
+
+  static Is02Csivw005As01A08ValidationResult calculateConformance({
+    required List<Is02Csivw005As01A08Config> configs,
+  }) {
+    if (configs.isEmpty) {
+      return const Is02Csivw005As01A08ValidationResult(
+        totalRecords: 0, conformantRecords: 0, violationCount: 0,
+        conformanceRate: 0.0,
+        conformanceLevel: Is02Csivw005As01A08ConformanceLevel.notComplete,
+        gatePass: false, ecLineRef: 'EC-IS02CSIVW005-VAL',
+      );
+    }
+    final conformant = configs.where((c) => c.isRegistered).length;
+    final violations = configs.length - conformant;
+    final rate       = conformant / configs.length;
+    final level      = rate >= _optimal
+        ? Is02Csivw005As01A08ConformanceLevel.complete
+        : rate >= _floor
+            ? Is02Csivw005As01A08ConformanceLevel.partial
+            : Is02Csivw005As01A08ConformanceLevel.notComplete;
+    return Is02Csivw005As01A08ValidationResult(
+      totalRecords:      configs.length,
+      conformantRecords: conformant,
+      violationCount:    violations,
+      conformanceRate:   rate,
+      conformanceLevel:  level,
+      gatePass:          rate >= _floor,
+      ecLineRef:         'EC-IS02CSIVW005-VAL',
+    );
+  }
+
+  static Is02Csivw005As01A08Config routeToRegistry(
+    Is02Csivw005As01A08Config config,
+    Is02Csivw005As01A08ValidationResult result,
+  ) {
+    if (!result.gatePass) return config;
+    return config.copyWith(
+      validationStatus:    'VALID',
+      immutableInd:        true,
+      complianceStatusInd: true,
+    );
+  }
+
+  static Future<Map<String, dynamic>> run({
+    required List<Is02Csivw005As01A08Config> configs,
+    String userId = 'system',
+  }) async {
+    if (configs.isEmpty) {
+      throw ArgumentError('EC-IS02CSIVW005-000: configs must not be empty for IS02-CSIVW-005-AS01-A08');
+    }
+    final p1 = configs.map(_ec1Execute).toList();
+    final p2 = configs.map(_ec2Execute).toList();
+    final p3 = configs.map(_ec3Execute).toList();
+    final p4 = configs.map(_ec4Execute).toList();
+
+    if (!triangularCheck(configs.length, p4.length)) {
+      throw ArgumentError('EC-IS02CSIVW005-TRI: triangular check failed for IS02-CSIVW-005-AS01-A08');
+    }
+    final result     = calculateConformance(configs: p4);
+    final registered = p4.map((c) => routeToRegistry(c, result)).toList();
+    return {
+      'status':             result.gatePass ? 'COMPLETE' : 'PARTIAL',
+      'conformance_rate':   result.conformanceRate,
+      'conformance_output': result.conformanceOutput,
+      'gate_pass':          result.gatePass,
+      'records_processed':  registered.length,
+      'violations':         result.violationCount,
+      'ec_ref':             'EC-IS02-CSIVW-005-AS01-A08',
+      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
+      'floor':              _floor,
+      'optimal':            _optimal,
+    };
+  }
+}
+
+// ── DLQ Helper ────────────────────────────────────────────────
+
+Map<String, dynamic> is02_csivw_005_as01_a08Dlq(String errorCode, Map<String, dynamic> payload) => {
+  'error_code':        errorCode,
+  'payload_snapshot':  jsonEncode(payload),
+  'dlq':               true,
+  'step_ref':          'IS02-CSIVW-005-AS01-A08',
+  'trace_id':          payload['trace_id'] ?? '',
+  'compliance_status_ind': false,
+};
+
+// ── Widget ────────────────────────────────────────────────────
+
+class Is02Csivw005As01A08Widget extends StatelessWidget {
+  final List<Is02Csivw005As01A08Config> configs;
+  const Is02Csivw005As01A08Widget({super.key, required this.configs});
+
+  @override
+  Widget build(BuildContext context) {
+    final result = Is02Csivw005As01A08Pipeline.calculateConformance(configs: configs);
+    final cs     = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            Expanded(child: Text('IS02-CSIVW-005-AS01-A08',
+              style: const TextStyle(fontFamily:'Courier',fontWeight:FontWeight.bold,fontSize:12))),
+            Chip(
+              label: Text(
+                '${result.conformanceOutput} · ${result.violationCount} violation${result.violationCount==1?"":"s"}',
+                style: const TextStyle(color:Colors.white,fontSize:11)),
+              backgroundColor: result.gatePass ? cs.tertiary : cs.error),
+          ]),
+        ),
+        Expanded(child: ListView.builder(
+          itemCount: configs.length,
+          itemBuilder: (context, i) {
+            final c = configs[i]; final pass = c.isRegistered;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal:16,vertical:4),
+              child: ListTile(
+                leading: Icon(pass ? Icons.check_circle : Icons.cancel,
+                  color: pass ? cs.tertiary : cs.error),
+                title: Text(c.fieldId,
+                  style: const TextStyle(fontWeight:FontWeight.w600,fontSize:12)),
+                subtitle: Text(
+                  'id: ${c.configId.length>8?c.configId.substring(0,8):c.configId}… | ${c.validationStatus}',
+                  style: const TextStyle(fontSize:11)),
+                trailing: Chip(
+                  label: Text(pass?'PASS':'FAIL',
+                    style: const TextStyle(color:Colors.white,fontSize:10)),
+                  backgroundColor: pass ? cs.tertiary : cs.error),
+              ),
+            );
+          },
+        )),
+      ],
+    );
+  }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() async {
+  final configs = [
+    Is02Csivw005As01A08Config(
+      configId: 'is02csivw005-cfg-001',
+      fieldId: 'is02-csivw-005-as01-a08_fieldId',
+      validationRule: 'is02-csivw-005-as01-a08_validationRule',
+      errorMessage: 'is02-csivw-005-as01-a08_errorMessage',
+      inputType: 'is02-csivw-005-as01-a08_inputType',
+      traceId:                 'trace-is02csivw005-001',
+      originSourceId:          'origin-is02csivw005',
+      immediatePredecessorId:  'pred-is02csivw005-001',
+      transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    ),
+  ];
+  final result = await Is02Csivw005As01A08Pipeline.run(configs: configs, userId: 'ritwik-udf');
+  print('IS02-CSIVW-005-AS01-A08 → $result');
+}

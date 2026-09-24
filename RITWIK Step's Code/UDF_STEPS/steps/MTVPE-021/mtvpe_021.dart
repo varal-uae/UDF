@@ -1,8 +1,8 @@
 // ============================================================
 // MTVPE-021 — Mobile Touch & Viewport Platform Engine
 // Atomic Step: Contextual Interactive Guidance and User Onboarding Framework'
-// Metric:      UI Component Compliance Rate · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Metric:      UI Component Compliance Rate · Floor=95.0 · Optimal=99.0
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Mtvpe021ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Mtvpe021ConformanceLevel.complete:    return 'Complete';
+      case Mtvpe021ConformanceLevel.complete:    return 'Pass';
       case Mtvpe021ConformanceLevel.partial:     return 'Partial';
-      case Mtvpe021ConformanceLevel.notComplete: return 'Not Complete';
+      case Mtvpe021ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }
@@ -142,8 +142,8 @@ class Mtvpe021ValidationResult {
 /// Metric: UI Component Compliance Rate
 /// Floor=0.90 · Optimal=0.97 · Output=Good / Average / Poor
 class Mtvpe021Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 0.97;
+  static const double _floor   = 95.0;
+  static const double _optimal = 99.0;
 
   // EC:1 — System locates the MTVPE-021 configuration in the source repository.
   static Mtvpe021Config _ec1Locates(Mtvpe021Config config) {

@@ -2,7 +2,7 @@
 // SCTSS-005-A06 — Semantic Color Token Styling System
 // Atomic Step: Map Semantic State Colors to decide exact hex codes for states replacing subjective UI decoration.
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sctss005A06ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss005A06ConformanceLevel.complete:    return 'Complete';
+      case Sctss005A06ConformanceLevel.complete:    return 'Pass';
       case Sctss005A06ConformanceLevel.partial:     return 'Partial';
-      case Sctss005A06ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss005A06ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

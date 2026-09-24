@@ -2,7 +2,7 @@
 // SSELC-023-A15 — Split-Screen Element Layout Controller
 // Atomic Step: SSELC-023 — Split-Screen Byt Deconstruction.
 // Metric:      Layout Consistency Score · Floor=0.90 · Optimal=0.97
-// Output:      Good / Average / Poor
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sselc023A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sselc023A15ConformanceLevel.complete:    return 'Complete';
+      case Sselc023A15ConformanceLevel.complete:    return 'Pass';
       case Sselc023A15ConformanceLevel.partial:     return 'Partial';
-      case Sselc023A15ConformanceLevel.notComplete: return 'Not Complete';
+      case Sselc023A15ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

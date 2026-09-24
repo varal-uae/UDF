@@ -2,7 +2,7 @@
 // TTMCS-016-A20 — Material Design Token Configuration System
 // Atomic Step: TTMCS-016 - Construct the Design System token map across primary color ranges, typography, and struc
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Ttmcs016A20ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Ttmcs016A20ConformanceLevel.complete:    return 'Complete';
+      case Ttmcs016A20ConformanceLevel.complete:    return 'Pass';
       case Ttmcs016A20ConformanceLevel.partial:     return 'Partial';
-      case Ttmcs016A20ConformanceLevel.notComplete: return 'Not Complete';
+      case Ttmcs016A20ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

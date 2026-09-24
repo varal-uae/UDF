@@ -50,8 +50,8 @@ class SnapshotExecutionLog {
 
 class Ansa006A17VisualRegressionTolerance {
 
-  static const double _floor   = 2.0;   // EC:3 — floor gate  // error: EC-ANSA006A17-001
-  static const double _optimal = 0.5;   // EC:3 — optimal  // error: EC-ANSA006A17-002
+  static const double _floor   = 0.95;   // EC:3 — floor gate  // error: EC-ANSA006A17-001
+  static const double _optimal = 1.0;   // EC:3 — optimal  // error: EC-ANSA006A17-002
   static const double _ceiling = 0.0;   // EC:3 — ceiling (hard fail if exceeded downward)  // error: EC-ANSA006A17-003
 
   // EC:1 — Locate snapshot baseline registry  // error: EC-ANSA006A17-004

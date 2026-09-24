@@ -2,7 +2,7 @@
 // IS11-TTMAC-005-AS01-A15 — Implementation System 11
 // Atomic Step: Embed clear layout spacing standards inside the master UI design kit.
 // Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is11Ttmac005As01A15ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is11Ttmac005As01A15ConformanceLevel.complete:    return 'Complete';
+      case Is11Ttmac005As01A15ConformanceLevel.complete:    return 'Pass';
       case Is11Ttmac005As01A15ConformanceLevel.partial:     return 'Partial';
-      case Is11Ttmac005As01A15ConformanceLevel.notComplete: return 'Not Complete';
+      case Is11Ttmac005As01A15ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

@@ -1,8 +1,8 @@
 // ============================================================
 // MD3DA-018-A01-A05 — Material Design 3 Data Architecture
 // Atomic Step: Critical Data Element (CDE) Display Scale. Define large-format font token standards to emphasize key
-// Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Metric:      WCAG 2.1 Accessibility Compliance Rate · Floor=· Floor=3.0 · Optimal=5.0
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Md3da018A01A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Md3da018A01A05ConformanceLevel.complete:    return 'Complete';
-      case Md3da018A01A05ConformanceLevel.partial:     return 'Partial';
-      case Md3da018A01A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Md3da018A01A05ConformanceLevel.complete:    return 'Good';
+      case Md3da018A01A05ConformanceLevel.partial:     return 'Average';
+      case Md3da018A01A05ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -129,11 +129,11 @@ class Md3da018A01A05ValidationResult {
 
 /// MD3DA-018-A01-A05: Critical Data Element (CDE) Display Scale. Define large-format font token standa
 ///
-/// Metric: Design System Token Coverage Rate
+/// Metric: WCAG 2.1 Accessibility Compliance Rate
 /// Floor=0.90 · Optimal=1.0 · Output=Complete / Partial / Not Complete
 class Md3da018A01A05Pipeline {
-  static const double _floor   = 0.90;
-  static const double _optimal = 1.0;
+  static const double _floor   = 3.0;
+  static const double _optimal = 5.0;
 
   // EC:1 — 1) Review ED requirements. 2) Extract distinct fields. 3) Discard optional/vanity fields.
   static Md3da018A01A05Config _ec1Execute(Md3da018A01A05Config config) {
@@ -217,7 +217,7 @@ class Md3da018A01A05Pipeline {
       'records_processed':  registered.length,
       'violations':         result.violationCount,
       'ec_ref':             'EC-MD3DA-018-A01-A05',
-      'metric':             'Design System Token Coverage Rate',
+      'metric':             'WCAG 2.1 Accessibility Compliance Rate',
       'floor':              _floor,
       'optimal':            _optimal,
     };

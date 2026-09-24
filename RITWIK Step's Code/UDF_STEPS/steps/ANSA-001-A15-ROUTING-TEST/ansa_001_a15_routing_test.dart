@@ -2,7 +2,7 @@
 // ANSA-001-A15 · NavigationBar Destination Routing Test Manager
 // Habot Connect DMCC · UDF Team · Ritwik Sharma
 // Atomic Step: Test all navigation items route to the correct destinations.
-// Metric: Verification / QA Pass Rate · Floor=90% · Optimal=98–100% · Output=Pass/Fail
+// Metric: Verification / QA Pass Rate · Floor=0.9% · Optimal=98–100% · Output=Pass/Fail
 // Standard: World-class teams treat verification as a repeatable, automated gate.
 // ============================================================
 
@@ -86,7 +86,7 @@ class RoutingTestResult {
 // ── Core Manager (EC:1–8) ────────────────────────────────────
 
 class Ansa001A15Manager {
-  static const double _floor   = 90;  // metric floor gate
+  static const double _floor   = 0.9;  // metric floor gate
   static const double _optimal = 98; // metric optimal target
 
   static const double _floorPassRate = 0.90;

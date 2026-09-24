@@ -114,8 +114,8 @@ class Bptr0544A01ScanResult {
 // ── EC:9 Pipeline ──────────────────────────────────────────────────────
 
 class Bptr0544A01Pipeline {
-  static const double _floor   = 0.90;  // metric floor gate
-  static const double _optimal = 0.97; // metric optimal target
+  static const double _floor   = 90.0;  // metric floor gate
+  static const double _optimal = 98.0; // metric optimal target
 
 
   // ── EC lines implemented as static methods ────────────────

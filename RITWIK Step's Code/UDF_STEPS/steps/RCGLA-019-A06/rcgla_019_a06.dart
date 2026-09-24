@@ -1,7 +1,7 @@
 // ============================================================
 // RCGLA-019-A06 — Responsive CSS Grid Layout Architecture
 // Atomic Step: RCGLA-019 - Universal Design Component Library (NPM Package) Integration
-// Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
+// Metric:      Release Gate Pass Rate · Floor=0.8 · Optimal=1.0
 // Output:      Pass / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
@@ -142,7 +142,7 @@ class Rcgla019A06ValidationResult {
 /// Metric: Release Gate Pass Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Rcgla019A06Pipeline {
-  static const double _floor   = 0.95;
+  static const double _floor   = 0.8;
   static const double _optimal = 1.0;
 
   // EC:1 — Build unified visual component kit

@@ -2,7 +2,7 @@
 // TTMAC-004-A02 — Touch Target & Material Accessibility Compliance
 // Atomic Step: Implementation Step 23: Implement a global linting check and CSS utility layer that strictly mandate
 // Metric:      Release Gate Pass Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Complete / Partial / Not Complete
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team

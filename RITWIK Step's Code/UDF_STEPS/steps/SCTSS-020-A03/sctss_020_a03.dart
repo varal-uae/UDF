@@ -1,8 +1,8 @@
 // ============================================================
 // SCTSS-020-A03 — Semantic Color Token Styling System
 // Atomic Step: Configure LLM Confidence Score Threshold Visuals to decide how to color-code and gate AI outputs bas
-// Metric:      Input Validation Coverage Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Metric:      Input Validation Coverage Rate · Floor=3.5 · Optimal=4.5
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Sctss020A03ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss020A03ConformanceLevel.complete:    return 'Complete';
-      case Sctss020A03ConformanceLevel.partial:     return 'Partial';
-      case Sctss020A03ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss020A03ConformanceLevel.complete:    return 'Good';
+      case Sctss020A03ConformanceLevel.partial:     return 'Average';
+      case Sctss020A03ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -143,8 +143,8 @@ class Sctss020A03ValidationResult {
 /// Metric: Input Validation Coverage Rate
 /// Floor=0.95 · Optimal=1.0 · Output=Pass / Fail
 class Sctss020A03Pipeline {
-  static const double _floor   = 0.95;
-  static const double _optimal = 1.0;
+  static const double _floor   = 3.5;
+  static const double _optimal = 4.5;
 
   // EC:1 — Define High (>90%), Med (70-90%), Low (<70%) thresholds
   static Sctss020A03Config _ec1Execute(Sctss020A03Config config) {

@@ -2,7 +2,7 @@
 // RCGLA-032-A11 — Responsive CSS Grid Layout Architecture
 // Atomic Step: RCGLA-032 - Configure the Material Design 3 (MD3) adaptive 4-column fluid layout token engine for mo
 // Metric:      Design System Token Coverage Rate · Floor=0.90 · Optimal=1.0
-// Output:      Complete / Partial / Not Complete
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/varal-uae/UDF · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Rcgla032A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Rcgla032A11ConformanceLevel.complete:    return 'Complete';
+      case Rcgla032A11ConformanceLevel.complete:    return 'Pass';
       case Rcgla032A11ConformanceLevel.partial:     return 'Partial';
-      case Rcgla032A11ConformanceLevel.notComplete: return 'Not Complete';
+      case Rcgla032A11ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

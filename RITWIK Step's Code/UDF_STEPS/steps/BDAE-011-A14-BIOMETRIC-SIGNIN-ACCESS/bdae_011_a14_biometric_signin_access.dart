@@ -142,7 +142,7 @@ class BiometricAccessScanResult {
 // ── EC:1–8 Pipeline ──────────────────────────────────────────
 
 class Bdae011A14BiometricSignInAccess {
-  static const double _floor   = 95;  // metric floor gate
+  static const double _floor   = 0.95;  // metric floor gate
   static const double _optimal = 98; // metric optimal target
 
 

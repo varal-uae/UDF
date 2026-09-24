@@ -118,9 +118,9 @@ class Sctss008A05ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Sctss008A05ConformanceLevel.complete:    return 'Complete';
+      case Sctss008A05ConformanceLevel.complete:    return 'Pass';
       case Sctss008A05ConformanceLevel.partial:     return 'Partial';
-      case Sctss008A05ConformanceLevel.notComplete: return 'Not Complete';
+      case Sctss008A05ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

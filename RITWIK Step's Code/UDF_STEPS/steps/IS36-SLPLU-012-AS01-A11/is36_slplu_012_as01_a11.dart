@@ -2,7 +2,7 @@
 // IS36-SLPLU-012-AS01-A11 — Implementation System 36
 // Atomic Step: Lineage Trace Time Line Chart (System Latency)
 // Metric:      Infrastructure Compliance Rate · Floor=0.95 · Optimal=1.0
-// Output:      Pass / Fail
+// Output:      Pass / Partial / Fail
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -129,9 +129,9 @@ class Is36Slplu012As01A11ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Is36Slplu012As01A11ConformanceLevel.complete:    return 'Complete';
+      case Is36Slplu012As01A11ConformanceLevel.complete:    return 'Pass';
       case Is36Slplu012As01A11ConformanceLevel.partial:     return 'Partial';
-      case Is36Slplu012As01A11ConformanceLevel.notComplete: return 'Not Complete';
+      case Is36Slplu012As01A11ConformanceLevel.notComplete: return 'Fail';
     }
   }
 }

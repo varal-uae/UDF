@@ -1,8 +1,8 @@
 // ============================================================
 // FLADE-003 — Friction Logging & Analytics Data Engine
 // Atomic Step: Setup Telemetry Data Flow (Friction Logging)
-// Metric:      Telemetry Coverage Rate · Floor=0.92 · Optimal=0.98
-// Output:      Complete / Partial / Not Complete
+// Metric:      Telemetry Coverage Rate · Floor=50.0 · Optimal=200.0
+// Output:      Good / Average / Poor
 // Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
 // Repo:        github.com/RitwikHC/theme-typography · branch: ritwik
 // Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
@@ -118,9 +118,9 @@ class Flade003ValidationResult {
 
   String get conformanceOutput {
     switch (conformanceLevel) {
-      case Flade003ConformanceLevel.complete:    return 'Complete';
-      case Flade003ConformanceLevel.partial:     return 'Partial';
-      case Flade003ConformanceLevel.notComplete: return 'Not Complete';
+      case Flade003ConformanceLevel.complete:    return 'Good';
+      case Flade003ConformanceLevel.partial:     return 'Average';
+      case Flade003ConformanceLevel.notComplete: return 'Poor';
     }
   }
 }
@@ -132,8 +132,8 @@ class Flade003ValidationResult {
 /// Metric: Telemetry Coverage Rate
 /// Floor=0.92 · Optimal=0.98 · Output=Complete / Partial / Not Complete
 class Flade003Pipeline {
-  static const double _floor   = 0.92;
-  static const double _optimal = 0.98;
+  static const double _floor   = 50.0;
+  static const double _optimal = 200.0;
 
   // EC:1 — System locates the FLADE-003 configuration in the source repository.
   static Flade003Config _ec1Locates(Flade003Config config) {
