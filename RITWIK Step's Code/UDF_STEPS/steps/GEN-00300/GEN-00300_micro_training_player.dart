@@ -65,3 +65,19 @@ class _S extends State<MicroTrainingPlayer> {
     ]);
   }
 }
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() {
+  final executor = GenExecutor(
+    traceId:                 'trace-gen00300-001',
+    originSourceId:          'origin-gen00300',
+    immediatePredecessorId:  'pred-gen00300-001',
+    transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  );
+  final manifest = executor.run();
+  print('GEN-00300 manifest ready:');
+  print('  step_id:  ${manifest["step_id"]}');
+  print('  language: ${manifest["source_language"]}');
+  print('  valid:    ${executor.validateManifest()}');
+}

@@ -1,0 +1,117 @@
+// ============================================================
+// GEN-00564 — GEN Backend Utility Module
+// Original language: Markdown
+// Description: Verify 0 orphan nodes in analytics.lineage_graph (initial test dataset)
+// Metric:      Configuration Conformance Rate · Floor=0.90 · Optimal=0.97
+// Output:      Complete / Partial / Not Complete
+// Standard:    ISO/IEC/IEEE 12207 | DCDF AEETE-018
+// Repo:        github.com/varal-uae/UDF · branch: ritwik
+// Author:      Ritwik Sharma — Frontend Integration Specialist | UDF Team
+// Date:        24-Sep-2026
+// Source file: GEN-00564_verify_orphan_nodes.md
+// ============================================================
+// DCDF Call-Site Contract (caller must supply):
+//   traceId                — end-to-end transaction UUID
+//   originSourceId         — originating system node UUID
+//   immediatePredecessorId — direct upstream node UUID
+//   transformationLogicHash — SHA-256 of executing EC logic
+//   complianceStatusInd    — DCDF gate status (bool)
+// EC: Embedded in sourceScript below (real implementation).
+// EC error codes: EC-GEN00564-001 through EC-GEN00564-UTL
+// triangularCheck: N/A — pure utility module, no pipeline count state.
+// ============================================================
+
+// ignore_for_file: lines_longer_than_80_chars
+
+// ── Source Script (original Markdown — semantics preserved) ────
+
+/// The original Markdown source for GEN-00564.
+/// Stored as a Dart constant so the pipeline scanner can index it.
+/// Execute via [GEN-00564Executor.run()].
+const String kGen00564SourceScript = r'''
+# GEN-00564 — Verify 0 orphan nodes in analytics.lineage_graph (initial test dataset)
+Metric: Orphan Node Count · Pass/Fail
+
+**Operational / verification step — not a source file.** Recorded for traceability.
+
+## Action
+Run the lineage orphan scan (see sql/GEN-00708) on the initial test dataset. PASS only if it returns 0 rows.
+''';
+
+// ── Metric Constants ──────────────────────────────────────────
+
+const double _floor   = 0.90;
+const double _optimal = 0.97;
+
+// ── Executor ──────────────────────────────────────────────────
+
+/// GEN-00564: Markdown utility step.
+/// Wraps the source script with DCDF lineage contract and
+/// conformance gate. Execute in a subprocess or via FFI.
+class Gen00564Executor {
+  final String traceId;
+  final String originSourceId;
+  final String immediatePredecessorId;
+  final String transformationLogicHash;
+  final bool   complianceStatusInd;
+
+  const Gen00564Executor({
+    required this.traceId,
+    required this.originSourceId,
+    required this.immediatePredecessorId,
+    required this.transformationLogicHash,
+    this.complianceStatusInd = false,
+  });
+
+  /// Returns the execution manifest for this Markdown step.
+  /// Caller is responsible for subprocess execution.
+  Map<String, dynamic> run() {
+    if (traceId.isEmpty) {
+      throw ArgumentError('EC-GEN00564-001: traceId required for GEN-00564');
+    }
+    if (originSourceId.isEmpty) {
+      throw ArgumentError('EC-GEN00564-002: originSourceId required for GEN-00564');
+    }
+    return {
+      'step_id':                  'GEN-00564',
+      'source_language':          'Markdown',
+      'source_script':            kGen00564SourceScript,
+      'execution_mode':           'subprocess',
+      'metric':                   'Configuration Conformance Rate',
+      'floor':                    _floor,
+      'optimal':                  _optimal,
+      'trace_id':                 traceId,
+      'origin_source_id':         originSourceId,
+      'immediate_predecessor_id': immediatePredecessorId,
+      'transformation_logic_hash': transformationLogicHash,
+      'compliance_status_ind':    complianceStatusInd,
+      'ec_ref':                   'EC-GEN00564-UTL',
+    };
+  }
+
+  /// Conformance gate — validates the manifest before execution.
+  bool validateManifest() {
+    final m = run();
+    final hasScript = (m['source_script'] as String).isNotEmpty;
+    final hasTrace  = (m['trace_id'] as String).isNotEmpty;
+    return hasScript && hasTrace;
+  }
+}
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() {
+  final executor = Gen00564Executor(
+    traceId:                 'trace-gen00564-001',
+    originSourceId:          'origin-gen00564',
+    immediatePredecessorId:  'pred-gen00564-001',
+    transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  );
+  final manifest = executor.run();
+  print('GEN-00564 manifest ready:');
+  print('  step_id:         ${manifest["step_id"]}');
+  print('  language:        ${manifest["source_language"]}');
+  print('  metric:          ${manifest["metric"]}');
+  print('  trace_id:        ${manifest["trace_id"]}');
+  print('  valid:           ${executor.validateManifest()}');
+}

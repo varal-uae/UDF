@@ -52,3 +52,19 @@ class SchemaTextField extends StatelessWidget {
     }
   }
 }
+
+// ── Entry point ───────────────────────────────────────────────
+
+void main() {
+  final executor = GenExecutor(
+    traceId:                 'trace-gen00619-001',
+    originSourceId:          'origin-gen00619',
+    immediatePredecessorId:  'pred-gen00619-001',
+    transformationLogicHash: '$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  );
+  final manifest = executor.run();
+  print('GEN-00619 manifest ready:');
+  print('  step_id:  ${manifest["step_id"]}');
+  print('  language: ${manifest["source_language"]}');
+  print('  valid:    ${executor.validateManifest()}');
+}
